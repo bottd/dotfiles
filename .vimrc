@@ -1,54 +1,75 @@
+"make a .tmux.conf file
+"Set leader key to space
+"install karabiner and set hold down capslock to be a control input
+
 set nocompatible
 filetype off
-set nobackup
+
+"Enable mouse
+set mouse=a
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VudleVim/Vundle.vim'   " Plugins here
 Plugin 'ErichDonGubler/vim-sublime-monokai'
+Plugin 'altercation/vim-colors-solarized'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
 Plugin 'pangloss/vim-javascript'
 Plugin 'itchyny/lightline.vim'
+Plugin 'bling/vim-bufferline'
+Plugin 'sheerun/vim-polyglot'
 call vundle#end()
 filetype plugin indent on
 
-"autocmd StdinReadPre * let s:std_in=1   "Make NERDTree run when vim opened without file selected
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif "Auto exit NERDTree when it is last window
-" FONTS THINGS
-set guifont=Inconsolata\ for\ Powerline:h15
-let g:Powerline_symbols = 'fancy'
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-set term=xterm-256color
-set termencoding=utf-8
 "Color scheme settings
-syntax on
 colorscheme sublimemonokai
+syntax enable
+set background=dark
+set t_Co=256
+
 "Javascript syntax highligting
 let g:javascript_plugin_jsdoc = 1
 let g:javascript_plugin_ngdoc = 1
 
 "Misc settings
 set shiftwidth=0
-set tabstop=4
+set tabstop=2
 set expandtab
+set number
 set relativenumber
 set encoding=utf-8
-"Autosave
+set nobackup                             " no backup files
+set nowritebackup                        " don't backup file while editing
+set noswapfile                           " don't create swapfiles for new buffers
+set updatecount=0                        " Don't try to write swapfiles after some number of updates
+set backupskip=/tmp/*,/private/tmp/*"    " can edit crontab files
+set timeoutlen=150
 autocmd InsertLeave * :update
+filetype plugin indent on
+set cursorline
+set scrolloff=4
+set vb
+set clipboard=unnamed
 
 "Custom binds
 nmap 8 :NERDTreeToggle<CR>
-nmap Y :y $
+let mapleader = " "
+
 " Get off my lawn
 nnoremap <Left> :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up> :echoe "Use k"<CR>
 nnoremap <Down> :echoe "Use j"<CR>
+
+"Trailing spaces highlighting
+highlight ExtraWhitespace ctermbg=1 guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 "Lightline
 set laststatus=2
@@ -69,9 +90,6 @@ let g:lightline = {
 let g:lightline.separator = {
 	\   'left': '', 'right': ''
   \}
-let g:lightline.subseparator = {
-	\   'left': '', 'right': ''
-  \}
 
 let g:lightline.tabline = {
   \   'left': [ ['tabs'] ],
@@ -79,4 +97,3 @@ let g:lightline.tabline = {
   \ }
 set showtabline=2  " Show tabline
 set guioptions-=e  " Don't use GUI tabline
-
