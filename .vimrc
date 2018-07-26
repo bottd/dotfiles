@@ -1,16 +1,13 @@
-"make a .tmux.conf file
-"Set leader key to space
-"install karabiner and set hold down capslock to be a control input
-
 set nocompatible
 filetype off
 
 "Enable mouse
 set mouse=a
 
+"Plugins
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'VudleVim/Vundle.vim'   " Plugins here
+Plugin 'VudleVim/Vundle.vim'
 Plugin 'ErichDonGubler/vim-sublime-monokai'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'scrooloose/nerdtree'
@@ -20,6 +17,7 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'itchyny/lightline.vim'
 Plugin 'bling/vim-bufferline'
 Plugin 'sheerun/vim-polyglot'
+Plugin 'ctrlpvim/ctrlp.vim'
 call vundle#end()
 filetype plugin indent on
 
@@ -57,12 +55,6 @@ set clipboard=unnamed
 nmap 8 :NERDTreeToggle<CR>
 let mapleader = " "
 
-" Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
-
 "Trailing spaces highlighting
 highlight ExtraWhitespace ctermbg=1 guibg=red
 match ExtraWhitespace /\s\+$/
@@ -97,3 +89,11 @@ let g:lightline.tabline = {
   \ }
 set showtabline=2  " Show tabline
 set guioptions-=e  " Don't use GUI tabline
+
+"Ctrl P filter
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ }
