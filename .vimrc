@@ -3,7 +3,6 @@ filetype off
 
 "Enable mouse
 set mouse=a
-
 "Plugins
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
