@@ -1,16 +1,17 @@
-"------------------------------Required settings-------------------------------
+"-----------------------------Required settings-----------------------------
 
 set nocompatible
 filetype off
 set mouse=a
 
-"---------------------------------Plugins---------------------------------
+"---------------------------------Plugins----------------------------------
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'bling/vim-bufferline'
 Plugin 'blueyed/vim-diminactive'
+Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ErichDonGubler/vim-sublime-monokai'
 Plugin 'itchyny/lightline.vim'
@@ -24,14 +25,14 @@ Plugin 'VudleVim/Vundle.vim'
 call vundle#end()
 filetype plugin indent on
 
-"--------------------------Color scheme settings--------------------------
+"--------------------------Color scheme settings---------------------------
 
 colorscheme sublimemonokai
 syntax enable
 set background=dark
 set t_Co=256
 
-"----------------------Javascript syntax highligting----------------------
+"----------------------Javascript syntax highligting-----------------------
 
 let g:javascript_plugin_jsdoc = 1
 let g:javascript_plugin_ngdoc = 1
@@ -62,6 +63,7 @@ filetype plugin indent on
 
 map <C-n> :NERDTreeToggle<CR>
 let mapleader = "\<Space>"
+let g:tmux_navigator_save_on_switch = 2
 
 "----------------------Remove trailing spaces on save---------------------
 
