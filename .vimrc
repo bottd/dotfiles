@@ -8,17 +8,19 @@ set mouse=a
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'VudleVim/Vundle.vim'
-Plugin 'ErichDonGubler/vim-sublime-monokai'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'scrooloose/nerdtree'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-fugitive'
-Plugin 'pangloss/vim-javascript'
-Plugin 'itchyny/lightline.vim'
+
 Plugin 'bling/vim-bufferline'
-Plugin 'sheerun/vim-polyglot'
+Plugin 'blueyed/vim-diminactive'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'ErichDonGubler/vim-sublime-monokai'
+Plugin 'itchyny/lightline.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'scrooloose/nerdtree'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'VudleVim/Vundle.vim'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -34,7 +36,7 @@ set t_Co=256
 let g:javascript_plugin_jsdoc = 1
 let g:javascript_plugin_ngdoc = 1
 
-"------------------------------Misc settings------------------------------
+"------------------------------Misc settings-------------------------------
 
 set shiftwidth=0
 set tabstop=2
@@ -49,12 +51,12 @@ set noswapfile                           " don't create swapfiles for new buffer
 set updatecount=0                        " Don't try to write swapfiles after some number of updates
 set backupskip=/tmp/*,/private/tmp/*"    " can edit crontab files
 set timeoutlen=150
-autocmd InsertLeave * :update
-filetype plugin indent on
 set cursorline
 set scrolloff=4
 set vb
 set clipboard=unnamed
+autocmd InsertLeave * :update
+filetype plugin indent on
 
 "------------------------------Custom binds-------------------------------
 
@@ -88,7 +90,7 @@ let g:lightline.separator = {
 
 let g:lightline.tabline = {
   \   'left': [ ['tabs'] ],
-  \   'right': [ ['close'] ]
+  \  'right': [ ['gitbranch'] ],
   \ }
 set showtabline=2  " Show tabline
 set guioptions-=e  " Don't use GUI tabline
