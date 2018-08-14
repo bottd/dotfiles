@@ -1,9 +1,11 @@
+"------------------------------Required settings-------------------------------
+
 set nocompatible
 filetype off
-
-"Enable mouse
 set mouse=a
-"Plugins
+
+"---------------------------------Plugins---------------------------------
+
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VudleVim/Vundle.vim'
@@ -20,20 +22,24 @@ Plugin 'ctrlpvim/ctrlp.vim'
 call vundle#end()
 filetype plugin indent on
 
-"Color scheme settings
+"--------------------------Color scheme settings--------------------------
+
 colorscheme sublimemonokai
 syntax enable
 set background=dark
 set t_Co=256
 
-"Javascript syntax highligting
+"----------------------Javascript syntax highligting----------------------
+
 let g:javascript_plugin_jsdoc = 1
 let g:javascript_plugin_ngdoc = 1
 
-"Misc settings
+"------------------------------Misc settings------------------------------
+
 set shiftwidth=0
 set tabstop=2
 set expandtab
+set showmatch
 set number
 set relativenumber
 set encoding=utf-8
@@ -50,14 +56,17 @@ set scrolloff=4
 set vb
 set clipboard=unnamed
 
-"Custom binds
-nmap 8 :NERDTreeToggle<CR>
-let mapleader = " "
+"------------------------------Custom binds-------------------------------
 
-"Remove trailing spaces on save
+map <C-n> :NERDTreeToggle<CR>
+let mapleader = "\<Space>"
+
+"----------------------Remove trailing spaces on save---------------------
+
 autocmd BufWritePre * :%s/\s\+$//e
 
-"Lightline
+"--------------------------------Lightline--------------------------------
+
 set laststatus=2
 let g:lightline = {
   \   'colorscheme': 'one',
@@ -84,7 +93,8 @@ let g:lightline.tabline = {
 set showtabline=2  " Show tabline
 set guioptions-=e  " Don't use GUI tabline
 
-"Ctrl P filter
+"------------------------------Ctrl P filter------------------------------
+
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 let g:ctrlp_custom_ignore = {
