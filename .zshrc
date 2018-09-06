@@ -47,6 +47,7 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   git
+  vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
