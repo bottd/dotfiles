@@ -1,4 +1,4 @@
-"-----------------------------Required settings-----------------------------
+"----------------------------Required settings-----------------------------
 
 set nocompatible
 filetype off
@@ -6,8 +6,8 @@ set mouse=a
 
 "---------------------------------Plugins----------------------------------
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+set rtp+=~/.config/nvim/bundle/Vundle.vim
+call vundle#begin('~/.config/nvim/bundle')
 
 Plugin 'bling/vim-bufferline'
 Plugin 'blueyed/vim-diminactive'
@@ -34,8 +34,17 @@ set t_Co=256
 
 "----------------------Javascript syntax highligting-----------------------
 
-let g:javascript_plugin_jsdoc = 1
-let g:javascript_plugin_ngdoc = 1
+" let g:javascript_plugin_jsdoc = 1
+" let g:javascript_plugin_ngdoc = 1
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 "------------------------------Misc settings-------------------------------
 
@@ -105,3 +114,4 @@ set guioptions-=e  " Don't use GUI tabline
 "  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
 "  \ 'file': '\v\.(exe|so|dll)$',
 "  \ }
+

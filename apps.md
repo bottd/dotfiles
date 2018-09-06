@@ -5,3 +5,4 @@
 * zsh & oh-my-zsh
 * colorls
 * nerdfonts
+* rtv
