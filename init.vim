@@ -1,88 +1,89 @@
-"----------------------------Required settings-----------------------------
+"-----------------------------Required settings-----------------------------
 
-set nocompatible
-filetype off
-set mouse=a
+if &compatible
+  set nocompatible               " Be iMproved
+endif
 
-"---------------------------------Plugins----------------------------------
+"------------------------------------Dein-----------------------------------
 
-set rtp+=~/.config/nvim/bundle/Vundle.vim
-call vundle#begin('~/.config/nvim/bundle')
+"call dein#install() to update plugins
 
-Plugin 'bling/vim-bufferline'
-Plugin 'blueyed/vim-diminactive'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'ErichDonGubler/vim-sublime-monokai'
-Plugin 'itchyny/lightline.vim'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'scrooloose/nerdtree'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'VudleVim/Vundle.vim'
+set runtimepath+=/Users/drakebott/.config/nvim/dein/repos/github.com/Shougo/dein.vim
+if dein#load_state('/Users/drakebott/.config/nvim/dein')
+  call dein#begin('/Users/drakebott/.config/nvim/dein')
+  call dein#add('/Users/drakebott/.config/nvim/dein/repos/github.com/Shougo/dein.vim')
 
-call vundle#end()
+  "Plugins here
+  call dein#add('cakebaker/scss-syntax.vim')
+  call dein#add('christoomey/vim-tmux-navigator')
+	call dein#add('iCyMind/NeoSolarized')
+  call dein#add('itchyny/lightline.vim')
+  call dein#add('mxw/vim-jsx')
+  call dein#add('pangloss/vim-javascript')
+  call dein#add('prettier/vim-prettier')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('Shougo/deol.nvim')
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('tpope/vim-surround')
+
+ " Required:
+  call dein#end()
+  call dein#save_state()
+endif
+
+" Required:
 filetype plugin indent on
 
-"--------------------------Color scheme settings---------------------------
+"------------------------------Color scheme---------------------------------
 
-colorscheme sublimemonokai
+" let hour = strftime("%H")        "Solarized light between 6 AM and 5 PM
+"if 6 <= hour && hour < 18
+" set background=light
+" else
+"   set background=dark
+" endif
+" set background=light
 syntax enable
+colorscheme NeoSolarized
 set background=dark
-set t_Co=256
+set termguicolors
 
-"----------------------Javascript syntax highligting-----------------------
-
-" let g:javascript_plugin_jsdoc = 1
-" let g:javascript_plugin_ngdoc = 1
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-"------------------------------Misc settings-------------------------------
+"-------------------------------Misc settings-------------------------------
 
 set shiftwidth=0
 set tabstop=2
 set expandtab
 set showmatch
 set number
-set relativenumber
 set encoding=utf-8
-set nobackup                             " no backup files
-set nowritebackup                        " don't backup file while editing
-set noswapfile                           " don't create swapfiles for new buffers
-set updatecount=0                        " Don't try to write swapfiles after some number of updates
-set backupskip=/tmp/*,/private/tmp/*"    " can edit crontab files
+set nobackup
+set nowritebackup
+set noswapfile
+set updatecount=0
+set backupskip=/tmp/*,/private/tmp/*"
 set timeoutlen=150
 set cursorline
 set scrolloff=4
-set vb
 set clipboard=unnamed
-autocmd InsertLeave * :update
 filetype plugin indent on
-
-"------------------------------Custom binds-------------------------------
-
-map <C-n> :NERDTreeToggle<CR>
-let mapleader = "\<Space>"
 let g:tmux_navigator_save_on_switch = 2
+let g:prettier#config#bracket_spacing = 'true'
 
-"----------------------Remove trailing spaces on save---------------------
+"---------------------------------Binds-------------------------------------
+
+map <SPACE> <leader>
+map <C-n> :NERDTreeToggle<CR>
+
+
+"-----------------------Remove trailing spaces on save----------------------
 
 autocmd BufWritePre * :%s/\s\+$//e
 
-"--------------------------------Lightline--------------------------------
+"-------------------------------Lightline-----------------------------------
 
 set laststatus=2
 let g:lightline = {
-  \   'colorscheme': 'one',
+  \   'colorscheme': 'solarized',
   \   'active': {
   \     'left':[ [ 'mode', 'paste' ],
   \              [ 'gitbranch', 'readonly', 'filename', 'modified' ]
@@ -106,12 +107,4 @@ let g:lightline.tabline = {
 set showtabline=2  " Show tabline
 set guioptions-=e  " Don't use GUI tabline
 
-"------------------------------Ctrl P filter------------------------------
-
-"set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-"let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-"let g:ctrlp_custom_ignore = {
-"  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-"  \ 'file': '\v\.(exe|so|dll)$',
-"  \ }
-
+"---------------------------------------------------------------------------
