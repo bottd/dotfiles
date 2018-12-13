@@ -36,16 +36,14 @@ filetype plugin indent on
 
 "------------------------------Color scheme---------------------------------
 
-" let hour = strftime("%H")        "Solarized light between 6 AM and 5 PM
-"if 6 <= hour && hour < 18
-" set background=light
-" else
-"   set background=dark
-" endif
-" set background=light
+let hour = strftime("%H")        "Solarized light between 6 AM and 5 PM
+if 6 <= hour && hour < 18
+set background=light
+else
+  set background=dark
+endif
 syntax enable
 colorscheme NeoSolarized
-set background=dark
 set termguicolors
 
 "-------------------------------Misc settings-------------------------------

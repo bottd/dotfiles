@@ -1,8 +1,7 @@
 # Installed in terminal
+* kitty
+* zsh
 * vim
 * tmux
-* screenfetch
-* zsh & oh-my-zsh
-* colorls
 * nerdfonts
-* rtv
+* firacode
