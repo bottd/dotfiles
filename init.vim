@@ -16,15 +16,20 @@ if dein#load_state('/Users/drakebott/.config/nvim/dein')
   "Plugins here
   call dein#add('cakebaker/scss-syntax.vim')
   call dein#add('christoomey/vim-tmux-navigator')
+  call dein#add('ervandew/supertab')
 	call dein#add('iCyMind/NeoSolarized')
   call dein#add('itchyny/lightline.vim')
+  call dein#add('leafgarland/typescript-vim')
   call dein#add('mxw/vim-jsx')
   call dein#add('pangloss/vim-javascript')
+  call dein#add('posva/vim-vue')
   call dein#add('prettier/vim-prettier')
   call dein#add('scrooloose/nerdtree')
   call dein#add('Shougo/deol.nvim')
+  call dein#add('tpope/vim-commentary')
   call dein#add('tpope/vim-fugitive')
   call dein#add('tpope/vim-surround')
+  call dein#add('djoshea/vim-autoread')
 
  " Required:
   call dein#end()
@@ -64,6 +69,7 @@ set cursorline
 set scrolloff=4
 set clipboard=unnamed
 filetype plugin indent on
+let g:SuperTabDefaultCompletionType = "<c-n>"
 let g:tmux_navigator_save_on_switch = 2
 let g:prettier#config#bracket_spacing = 'true'
 
