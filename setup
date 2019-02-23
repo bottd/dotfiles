@@ -4,3 +4,8 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install git
 brew install tmux
 brew install neovim
+
+ln -s ./tmux.conf ~/.tmux.conf
+ln -s ./zshrc ~/.zshrc
+ln -s ./init.vim ~/.config/nvim/init.vim
+ln -s ./kitty.conf ~/.config/kitty/kitty.conf
