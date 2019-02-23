@@ -4,8 +4,12 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install git
 brew install tmux
 brew install neovim
+brew install caskroom/cask/brew-cask
+brew tap caskroom/fonts
+brew cask install font-fira-code
+brew cask install font-hack-nerd-font
 
-ln -s ./tmux.conf ~/.tmux.conf
-ln -s ./zshrc ~/.zshrc
-ln -s ./init.vim ~/.config/nvim/init.vim
-ln -s ./kitty.conf ~/.config/kitty/kitty.conf
+ln -s ./tmux/.tmux.conf ~/.tmux.conf
+ln -s ./zsh/.zshrc ~/.zshrc
+ln -s ./nvim/init.vim ~/.config/nvim/init.vim
+ln -s ./kitty/kitty.conf ~/.config/kitty/kitty.conf
