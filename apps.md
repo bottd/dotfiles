@@ -1,7 +1,10 @@
 # Installed in terminal
 * kitty
 * zsh
-* vim
+* neovim
 * tmux
 * nerdfonts
 * firacode
+
+# Trying out
+* [Ki](https://github.com/andweeb/ki)
