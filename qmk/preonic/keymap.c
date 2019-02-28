@@ -17,6 +17,9 @@
 #include QMK_KEYBOARD_H
 #include "muse.h"
 
+#define CTL_ESC CTL_T(KC_ESC)
+#define CTL_ENT CTL_T(KC_ENT)
+
 enum preonic_layers {
   _QWERTY,
   _COLEMAK,
