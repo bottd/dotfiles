@@ -6,7 +6,8 @@ endif
 
 "------------------------------------Dein-----------------------------------
 
-"call dein#install() to update plugins
+":DeinUpdate to update plugins
+"call coc#util#install() to update CoC
 
 set runtimepath+=/Users/drakebott/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 if dein#load_state('/Users/drakebott/.config/nvim/dein')
@@ -16,11 +17,13 @@ if dein#load_state('/Users/drakebott/.config/nvim/dein')
   "Plugins here
   call dein#add('cakebaker/scss-syntax.vim')
   call dein#add('christoomey/vim-tmux-navigator')
+  call dein#add('djoshea/vim-autoread')
   call dein#add('ervandew/supertab')
 	call dein#add('iCyMind/NeoSolarized')
   call dein#add('itchyny/lightline.vim')
   call dein#add('leafgarland/typescript-vim')
   call dein#add('mxw/vim-jsx')
+  call dein#add('neoclide/coc.nvim', {'merge':0, 'build': './install.sh nightly'})
   call dein#add('pangloss/vim-javascript')
   call dein#add('posva/vim-vue')
   call dein#add('prettier/vim-prettier')
@@ -29,7 +32,7 @@ if dein#load_state('/Users/drakebott/.config/nvim/dein')
   call dein#add('tpope/vim-commentary')
   call dein#add('tpope/vim-fugitive')
   call dein#add('tpope/vim-surround')
-  call dein#add('djoshea/vim-autoread')
+  call dein#add('wsdjeg/dein-ui.vim')
 
  " Required:
   call dein#end()
@@ -48,6 +51,7 @@ else
   set background=dark
 endif
 syntax enable
+set background=light
 colorscheme NeoSolarized
 set termguicolors
 
@@ -72,6 +76,7 @@ filetype plugin indent on
 let g:SuperTabDefaultCompletionType = "<c-n>"
 let g:tmux_navigator_save_on_switch = 2
 let g:prettier#config#bracket_spacing = 'true'
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 "---------------------------------Binds-------------------------------------
 
