@@ -1,4 +1,4 @@
-/* Copyright 2015-2017 Drake Bott
+/* Copyright 2015-2017 Jack Humbert
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,7 @@
 
 #include QMK_KEYBOARD_H
 #include "muse.h"
-
 #define CTL_ESC CTL_T(KC_ESC)
-#define CTL_ENT CTL_T(KC_ENT)
 
 enum preonic_layers {
   _QWERTY,
@@ -44,22 +42,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |  "   |
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  | Del  |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Esc  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  | Enter|
+ * | Esc  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |  "   |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | Shift|
+ * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |   [  | Ctrl | Alt  | GUI  |Lower |    Space    |Raise | Left | Down |  Up  |   ]  |
+ * | Brite| Ctrl | Alt  | GUI  |Lower |    Space    |Raise | Left | Down |  Up  |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_preonic_grid( \
   KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC, \
-  KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_QUOT,  \
-  CTL_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, CTL_ENT, \
-  KC_LSPO, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSPC,  \
-  KC_LCBR, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RCBR  \
+  KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_DEL,  \
+  CTL_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
+  KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,  \
+  BACKLIT, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT  \
 ),
+
 /* Colemak
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
@@ -261,41 +260,44 @@ void encoder_update_user(uint8_t index, bool clockwise) {
   }
 }
 
-void dip_update(uint8_t index, bool active) {
-  switch (index) {
-    case 0:
-      if (active) {
-        layer_on(_ADJUST);
-      } else {
-        layer_off(_ADJUST);
-      }
-      break;
-    case 1:
-      if (active) {
-        muse_mode = true;
-      } else {
-        muse_mode = false;
-        #ifdef AUDIO_ENABLE
-          stop_all_notes();
-        #endif
-      }
-   }
+void dip_switch_update_user(uint8_t index, bool active) {
+    switch (index) {
+        case 0:
+            if (active) {
+                layer_on(_ADJUST);
+            } else {
+                layer_off(_ADJUST);
+            }
+            break;
+        case 1:
+            if (active) {
+                muse_mode = true;
+            } else {
+                muse_mode = false;
+            }
+    }
 }
 
+
 void matrix_scan_user(void) {
-  #ifdef AUDIO_ENABLE
+#ifdef AUDIO_ENABLE
     if (muse_mode) {
-      if (muse_counter == 0) {
-        uint8_t muse_note = muse_offset + SCALE[muse_clock_pulse()];
-        if (muse_note != last_muse_note) {
-          stop_note(compute_freq_for_midi_note(last_muse_note));
-          play_note(compute_freq_for_midi_note(muse_note), 0xF);
-          last_muse_note = muse_note;
+        if (muse_counter == 0) {
+            uint8_t muse_note = muse_offset + SCALE[muse_clock_pulse()];
+            if (muse_note != last_muse_note) {
+                stop_note(compute_freq_for_midi_note(last_muse_note));
+                play_note(compute_freq_for_midi_note(muse_note), 0xF);
+                last_muse_note = muse_note;
+            }
         }
-      }
-      muse_counter = (muse_counter + 1) % muse_tempo;
+        muse_counter = (muse_counter + 1) % muse_tempo;
+    } else {
+        if (muse_counter) {
+            stop_all_notes();
+            muse_counter = 0;
+        }
     }
-  #endif
+#endif
 }
 
 bool music_mask_user(uint16_t keycode) {
