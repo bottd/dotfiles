@@ -72,8 +72,8 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
 
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-telescope/telescope.nvim'
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- Status line
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true }}
@@ -92,6 +92,9 @@ return packer.startup(function(use)
   -- :Copilot setup to authenticate with github
   -- :Copilot enable to turn on
   use 'github/copilot.vim'
+
+  -- Tmux/vim navigation
+  use 'christoomey/vim-tmux-navigator'
 
   -- Automatically set up configuration after cloning packer.nvim
   if PACKER_BOOTSTRAP then

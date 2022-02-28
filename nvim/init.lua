@@ -6,6 +6,7 @@ require('plugins');
 require'mapx'.setup{ global = true }
 require('default_settings');
 require('statusline');
+require('filetree');
 require('theme');
 require('completion');
 require('git');
