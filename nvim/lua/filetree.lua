@@ -3,3 +3,5 @@ require('nvim-tree').setup({
     enable = true,
   }
 })
+
+nnoremap('<C-n>', ':NvimTreeToggle<Cr>');
