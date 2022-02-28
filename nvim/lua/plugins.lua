@@ -72,13 +72,8 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
 
-  use {
-    'nvim-telescope/telescope.nvim',
-    requires = { 
-      {'nvim-lua/plenary.nvim'},
-      {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-    }
-  }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use 'nvim-telescope/telescope.nvim'
 
   -- Status line
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true }}
@@ -91,7 +86,12 @@ return packer.startup(function(use)
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   -- Git plugins
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+  use 'lewis6991/gitsigns.nvim'
+
+  -- Copilot
+  -- :Copilot setup to authenticate with github
+  -- :Copilot enable to turn on
+  use 'github/copilot.vim'
 
   -- Automatically set up configuration after cloning packer.nvim
   if PACKER_BOOTSTRAP then
