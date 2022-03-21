@@ -85,12 +85,13 @@ return packer.startup(function(use)
   -- Theme
   use 'EdenEast/nightfox.nvim'
   use 'lukas-reineke/indent-blankline.nvim'
+  use 'xiyaowong/nvim-transparent'
 
   -- Treesitter
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   -- Git plugins
-  use 'lewis6991/gitsigns.nvim'
+  -- use 'lewis6991/gitsigns.nvim'
 
   -- Copilot
   -- :Copilot setup to authenticate with github
