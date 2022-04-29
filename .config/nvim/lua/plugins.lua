@@ -101,6 +101,9 @@ return packer.startup(function(use)
   -- Tmux/vim navigation
   use 'christoomey/vim-tmux-navigator'
 
+  -- Vim Util plugins
+  use 'gioele/vim-autoswap'
+
   -- Automatically set up configuration after cloning packer.nvim
   if PACKER_BOOTSTRAP then
     require('packer').sync()

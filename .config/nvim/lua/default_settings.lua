@@ -17,6 +17,8 @@ nnoremap('<silent> {Up-Mapping}', ':TmuxNavigateUp<cr>');
 nnoremap('<silent> {Right-Mapping}', ':TmuxNavigateRight<cr>');
 nnoremap('<silent> {Previous-Mapping}', ':TmuxNavigatePrevious<cr>');
 
+-- Copy to clipboard
+nnoremap('<Leader>y', '"+y');
 
 -- vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts);
 -- vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts);
