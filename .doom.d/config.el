@@ -9,6 +9,9 @@
       user-mail-address "me@drake.dev")
 
 (setq doom-theme 'doom-laserwave)
+(setq doom-font (font-spec :family "FiraCode Nerd Font Mono"))
+(setq doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono"))
+
 
 (setq display-line-numbers-type t)
 
