@@ -18,6 +18,14 @@
 (setq org-directory "~/org/")
 (setq projectile-project-search-path '("~/workspace/"))
 
+(use-package prettier
+  :hook ((typescript-mode . prettier-mode)
+         (js-mode . prettier-mode)
+         (json-mode . prettier-mode)
+         (yaml-mode . prettier-mode)
+         (ruby-mode . prettier-mode)))
+
+(add-to-list 'auto-mode-alist '("\\.mjml\\'" . web-mode))
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
