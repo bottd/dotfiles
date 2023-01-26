@@ -63,8 +63,14 @@ return packer.startup(function(use)
   }
 
   -- LSP
-  use 'neovim/nvim-lspconfig'
-  use 'williamboman/nvim-lsp-installer'
+  use {
+    'folke/neodev.nvim',
+    'mfussenegger/nvim-dap',
+    'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    'neovim/nvim-lspconfig'
+  }
 
   -- Completion
   use 'hrsh7th/cmp-nvim-lsp'
@@ -81,14 +87,29 @@ return packer.startup(function(use)
 
   -- Status line
   use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true }}
+  use { 
+    'folke/which-key.nvim',
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require('which-key').setup()
+      end
+  }
+
 
   -- Theme
   use 'EdenEast/nightfox.nvim'
   use 'lukas-reineke/indent-blankline.nvim'
   use 'xiyaowong/nvim-transparent'
+  use 'vv9k/bogster'
 
   -- Treesitter
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use { 'nvim-treesitter/nvim-treesitter', 
+        run = function()
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            ts_update()
+        end,
+      }
 
   -- Git plugins
   -- use 'lewis6991/gitsigns.nvim'
