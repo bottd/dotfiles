@@ -75,6 +75,27 @@ return packer.startup(function(use)
   use 'hrsh7th/nvim-cmp'
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
+  use {
+    'zbirenbaum/copilot.lua',
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup({
+        -- disabling due to using copilot-cmp
+        suggestion = { enabled = false },
+        panel = { enabled = false }
+      })
+    end
+  }
+  use {
+    'zbirenbaum/copilot-cmp',
+    after = { 'copilot.lua' },
+    config = function()
+      require('copilot_cmp').setup {
+        method = 'getCompletionsCycling'
+      }
+    end
+  }
 
   -- Telescope
   use {
@@ -123,10 +144,11 @@ return packer.startup(function(use)
   -- Git plugins
   use 'lewis6991/gitsigns.nvim'
 
+  -- TODO: trying copilot-cmp instead
   -- Copilot
   -- :Copilot setup to authenticate with github
   -- :Copilot enable to turn on
-  use 'github/copilot.vim'
+  -- use 'github/copilot.vim'
 
   -- Tmux/vim navigation
   use 'christoomey/vim-tmux-navigator'
