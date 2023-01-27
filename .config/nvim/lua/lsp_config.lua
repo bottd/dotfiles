@@ -32,6 +32,7 @@ local servers = {
   stylelint_lsp = {},
   sumneko_lua = {
     Lua = {
+      diagnostics = { globals = { 'vim' } },
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },
@@ -88,7 +89,8 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  -- TODO: find alternate mapping, <C-k> is used with tmux vim navigator binds 
+  -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -117,5 +119,3 @@ require('mason-lspconfig').setup_handlers {
       }
     end
 }
-
-require('fidget').setup{}

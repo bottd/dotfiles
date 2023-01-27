@@ -4,4 +4,4 @@ require('nvim-tree').setup({
   }
 })
 
-nnoremap('<C-n>', ':NvimTreeToggle<Cr>');
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<Cr>');
