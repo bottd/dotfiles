@@ -3,7 +3,10 @@ if status is-interactive
 end
 
 starship init fish | source
+
 alias vim nvim
+
+source $HOME/.config/fish/config.(hostname).fish
 
 set -gx LAV_PRECOMMIT true
 set -gx AWS_REGION 'us-east-1'
@@ -15,4 +18,3 @@ set PATH $HOME/.cargo/bin /opt/homebrew/bin $PATH
 set -gx NVM_DIR "$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-set -gx JIRA_API_TOKEN "redacted"

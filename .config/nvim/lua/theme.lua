@@ -1,6 +1,6 @@
 -- Nightfox has multiple variants, one must be loaded for theme to work
 -- nordfox, dayfox, dawnfox, duskfox
-vim.cmd("colorscheme nightfox");
+vim.cmd("colorscheme duskfox");
 
 -- require('nightfox').load('duskfox')
 require("indent_blankline").setup {
