@@ -156,6 +156,14 @@ return packer.startup(function(use)
   -- Vim Util plugins
   use 'gioele/vim-autoswap'
 
+  -- Commenting, ts-context uses treesitter to determine commentstring
+  use 'numToStr/Comment.nvim'
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
+
+  -- Surround - closing tags and characters
+  use 'windwp/nvim-ts-autotag'
+  use 'windwp/nvim-autopairs'
+
   -- Automatically set up configuration after cloning packer.nvim
   if PACKER_BOOTSTRAP then
     require('packer').sync()
