@@ -23,3 +23,8 @@ vim.keymap.set('n', '<Leader>y', '"+y');
 
 -- Autopairs
 require('nvim-autopairs').setup {}
+
+-- Colorizer
+require('colorizer').setup {
+  mode = "virtualtext"
+}

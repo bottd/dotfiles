@@ -155,6 +155,7 @@ return packer.startup(function(use)
 
   -- Vim Util plugins
   use 'gioele/vim-autoswap'
+  use 'NvChad/nvim-colorizer.lua'
 
   -- Commenting, ts-context uses treesitter to determine commentstring
   use 'numToStr/Comment.nvim'
