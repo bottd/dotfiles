@@ -165,6 +165,9 @@ return packer.startup(function(use)
   use 'windwp/nvim-ts-autotag'
   use 'windwp/nvim-autopairs'
 
+  -- Run snippets inline!
+  use { 'michaelb/sniprun', run = 'bash ./install.sh'}
+
   -- Automatically set up configuration after cloning packer.nvim
   if PACKER_BOOTSTRAP then
     require('packer').sync()
