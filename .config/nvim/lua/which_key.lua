@@ -7,4 +7,8 @@ require('which-key').register({
     h = { ":Telescope help_tags<Cr>", "[F]ind [H]elp" },
   },
   u = { ":Telescope undo<Cr>", "[U]ndo tree" },
+  r = { 
+    r = { "<Plug>SnipRun<Cr>", "SnipRun Block"}
+    o = { "<Plug>SnipRunOperator<Cr>", "SnipRun Operator"}
+  },
 }, { prefix = "<leader>" })
