@@ -28,3 +28,9 @@ require('nvim-autopairs').setup {}
 require('colorizer').setup {
   mode = "virtualtext"
 }
+
+require('sniprun').setup({})
+vim.keymap.set('v', '<leader>r', '<Plug>SnipRun<Cr>')
+vim.keymap.set('n', '<leader>rr', '<Plug>SnipRun<Cr>')
+vim.keymap.set('n', '<leader>ro', '<Plug>SnipRunOperator<Cr>')
+
