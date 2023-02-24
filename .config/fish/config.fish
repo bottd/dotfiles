@@ -6,7 +6,7 @@ starship init fish | source
 
 alias vim nvim
 
-source $HOME/.config/fish/config.(hostname).fish
+source $HOME/.config/fish/config.(whoami).fish
 
 set -gx LAV_PRECOMMIT true
 set -gx AWS_REGION 'us-east-1'
