@@ -1,24 +1,23 @@
--- Nightfox has multiple variants, one must be loaded for theme to work
--- nordfox, dayfox, dawnfox, duskfox
-vim.cmd("colorscheme duskfox");
+require("rose-pine").setup({
+  dark_variant = "moon"
+})
 
--- require('nightfox').load('duskfox')
+local auto_dark_mode = require('auto-dark-mode')
+auto_dark_mode.setup({
+  update_interval = 1000,
+  set_dark_mode = function()
+    vim.api.nvim_set_option('background', 'dark')
+    vim.cmd('colorscheme rose-pine')
+  end,
+  set_light_mode = function()
+    vim.api.nvim_set_option('background', 'light')
+    vim.cmd('colorscheme rose-pine')
+  end,
+})
+auto_dark_mode.init()
+
 require("indent_blankline").setup {
     space_char_blankline = " ",
     show_current_context = true,
     show_current_context_start = true,
 }
-
-require("transparent").setup({
-enable = true, -- boolean: enable transparent
-extra_groups = { -- table/string: additional groups that should be clear
-    -- example of akinsho/nvim-bufferline.lua
-    -- "BufferLineTabClose",
-    -- "BufferlineBufferSelected",
-    -- "BufferLineFill",
-    -- "BufferLineBackground",
-    -- "BufferLineSeparator",
-    -- "BufferLineIndicatorSelected",
-  },
-  exclude = {}, -- table: groups you don't want to clear
-})
