@@ -129,9 +129,8 @@ return packer.startup(function(use)
 
 
   -- Theme
-  use 'EdenEast/nightfox.nvim'
+  use ({ 'rose-pine/neovim', as = 'rose-pine' })
   use 'lukas-reineke/indent-blankline.nvim'
-  use 'xiyaowong/nvim-transparent'
 
   -- Treesitter
   use { 'nvim-treesitter/nvim-treesitter',
@@ -156,6 +155,7 @@ return packer.startup(function(use)
   -- Vim Util plugins
   use 'gioele/vim-autoswap'
   use 'NvChad/nvim-colorizer.lua'
+  use 'f-person/auto-dark-mode.nvim'
 
   -- Commenting, ts-context uses treesitter to determine commentstring
   use 'numToStr/Comment.nvim'
