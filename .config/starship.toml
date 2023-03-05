@@ -1,39 +1,41 @@
 format = """
-$battery[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)\
-[](bg:#769ff0 fg:#a3aed2)\
+$battery[░▒▓](#e0def4)[  ](bg:#e0def4 fg:#31748f)\
+[](bg:#31748f fg:#e0def4)\
 $directory\
-[](fg:#769ff0 bg:#394260)\
+[](fg:#31748f bg:#6e6a86)\
 $git_branch\
 $git_status\
-[](fg:#394260 bg:#212736)\
+[](fg:#6e6a86 bg:#26233a)\
 $version\
-[](fg:#212736 bg:#1d2230)\
+[](fg:#26233a bg:#191724)\
 $time\
-[ ](fg:#1d2230)\
+[ ](fg:#191724)\
 $fill\
-[ ](fg:#1d2230)\
 (\n$status$cmd_duration)
 \n$character
 """
 
+[character]
+format  = '[➜](bold #31748f) '
+
 [directory]
-style = "fg:#e3e5e5 bg:#769ff0"
+style = "fg:#e0def4 bg:#31748f"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
 
+[fill]
+style = "bold #c4a7e7"
+
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+format = '[[ $symbol $branch ](fg:#9ccfd8 bg:#6e6a86)]($style)'
 
 [git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+format = '[[($all_status$ahead_behind )](fg:#c4a7e7 bg:#6e6a86)]($style)'
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+use_12hr = true
+format = '[[  $time ](fg:#c4a7e7 bg:#191724)]($style)'
 
