@@ -47,5 +47,18 @@ return {
   font_size = 13,
   hide_tab_bar_if_only_one_tab = true,
   tab_bar_at_bottom = true,
-  use_fancy_tab_bar = false
+  use_fancy_tab_bar = false,
+  leader = { key = 'a', mods = 'CTRL', timeout_miliseconds = 1000 },
+  keys = {
+    {
+      key = '/',
+      mods = 'LEADER',
+      action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain"}
+    },
+    {
+      key = '-',
+      mods = 'LEADER',
+      action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" }
+    }
+  }
 }
