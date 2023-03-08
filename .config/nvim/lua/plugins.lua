@@ -45,8 +45,9 @@ return packer.startup(function(use)
   -- Plugin manager, packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- Useful lua functions used ny lots of plugins
+  -- Useful lua functions used by lots of plugins
   use 'nvim-lua/plenary.nvim'
+  use 'MunifTanjim/nui.nvim'
 
   -- File tree
   use {
@@ -96,6 +97,7 @@ return packer.startup(function(use)
       }
     end
   }
+  use('dpayne/CodeGPT.nvim')
 
   -- Telescope
   use {
