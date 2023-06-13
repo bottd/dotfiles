@@ -1,7 +1,26 @@
 -- Treesitter
 local ts = require 'nvim-treesitter.configs'
 ts.setup({
-  ensure_installed = 'all',
+  ensure_installed = {
+    'comment',
+    'css',
+    'diff',
+    'fish',
+    'gitignore',
+    'graphql',
+    'html',
+    'json',
+    'markdown',
+    'markdown_inline',
+    'lua',
+    'python',
+    'rust',
+    'sql',
+    'svelte',
+    'toml',
+    'tsx',
+    'typescript'
+  },
   autotag = {
     enable = true
   },

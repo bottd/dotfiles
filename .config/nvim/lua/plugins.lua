@@ -106,8 +106,7 @@ return packer.startup(function(use)
       'debugloop/telescope-undo.nvim'
     }
   }
-
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'arch -arm64 make' }
 
   -- Status line
   use {
