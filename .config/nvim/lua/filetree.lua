@@ -5,6 +5,10 @@ vim.g.loaded_netrwPlugin = 1
 require('nvim-tree').setup({
   git = {
     enable = true,
+  },
+  -- todo: how show .gitignored files?
+  filters = {
+    dotfiles = true,
   }
 })
 
