@@ -5,17 +5,8 @@
 -- Example:
 -- Auto-format *.rs (rust) files prior to saving them
 -- autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 1000)
-require("mason").setup {
-  ui = {
-    icons = {
-      package_installed = "✓",
-      package_pending = "➜",
-      package_uninstalled = "✗"
-    }
-  }
-}
-
-
+-- list of available servers:
+-- https://github.com/williamboman/mason-lspconfig.nvim#default-configuration
 local servers = {
   cssls = {},
   -- cssmodules_ls = {}.
@@ -42,22 +33,9 @@ local servers = {
   tsserver = {},
 }
 
--- list of available servers:
--- https://github.com/williamboman/mason-lspconfig.nvim#default-configuration
 require("mason-lspconfig").setup {
   ensure_installed = vim.tbl_keys(servers),
   automatic_installation = true
-}
-
-require('mason-tool-installer').setup {
-  ensure_installed = {
-    "node-debug2-adapter",
-    "eslint_d",
-    "markdownlint",
-    "prettier"
-  },
-  auto_update = true,
-  run_on_start = true
 }
 
 -- LSP settings.
