@@ -42,7 +42,6 @@ packer.init({
 
 -- Install your plugins here
 return packer.startup(function(use)
-  -- Plugin manager, packer can manage itself
   use 'wbthomason/packer.nvim'
 
   -- Useful lua functions used by lots of plugins
