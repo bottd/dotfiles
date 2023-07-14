@@ -11,7 +11,7 @@ return {
         },
         -- todo: how show .gitignored files?
         filters = {
-          dotfiles = true,
+          dotfiles = false,
         }
       } 
       vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<Cr>');
