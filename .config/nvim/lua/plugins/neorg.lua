@@ -1,13 +1,23 @@
 return {
   {
-  "nvim-neorg/neorg",
+    "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("neorg").setup {
         load = {
           ["core.defaults"] = {}, -- Loads default behaviour
-          ["core.concealer"] = {}, -- Adds pretty icons to your documents
+          ["core.concealer"] = { -- Adds pretty icons to your documents
+            config = {
+              folds = false,
+            }
+          },
+          ["core.completion"] = {
+            config = {
+              engine = "nvim-cmp",
+              name = "[Norg]",
+            },
+          },
           ["core.dirman"] = { -- Manages Neorg workspaces
             config = {
               workspaces = {
@@ -16,11 +26,26 @@ return {
               default_workspace = "notes",
             },
           },
+          ["core.export"] = {},
+          ["core.export.markdown"] = {},
+          ["core.integrations.nvim-cmp"] = {},
+          ["core.integrations.treesitter"] = {},
+          ["core.journal"] = {
+            config = {
+              workspace = "home",
+              strategy = "flat",
+            },
+          },
+          ["core.qol.toc"] = {},
+          ["core.qol.todo_items"] = {},
           ["core.tangle"] = {},
         },
       }
-      vim.keymap.set('n', '<leader>ni', ':Neorg index<Cr>');
-      vim.keymap.set('n', '<leader>nr', ':Neorg return<Cr>');
     end,
+    keys = {
+      { mode = "n", "<leader>nj", ":Neorg journal<Cr>" },
+      { mode = "n", "<leader>ni", ":Neorg index<Cr>" },
+      { mode = "n", "<leader>nr", ":Neorg return<Cr>" },
+    },
   }
 }
