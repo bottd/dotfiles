@@ -32,8 +32,9 @@ return {
           ["core.integrations.treesitter"] = {},
           ["core.journal"] = {
             config = {
-              workspace = "home",
+              journal_folder = "journals",
               strategy = "flat",
+              workspace = "notes",
             },
           },
           ["core.qol.toc"] = {},
