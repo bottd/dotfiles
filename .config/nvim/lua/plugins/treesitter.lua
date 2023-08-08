@@ -19,6 +19,7 @@ return {
         'json',
         'markdown',
         'markdown_inline',
+        'norg',
         'lua',
         'python',
         'rust',
