@@ -2,7 +2,7 @@ return {
   {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope" },
     config = function()
       require("neorg").setup {
         load = {
@@ -24,8 +24,14 @@ return {
               default_workspace = "notes",
             },
           },
+          ["core.esupports.metagen"] = {
+            config = {
+              type = "auto",
+            }
+          },
           ["core.export"] = {},
           ["core.export.markdown"] = {},
+          ["core.integrations.telescope"] = {},
           ["core.integrations.nvim-cmp"] = {},
           ["core.integrations.treesitter"] = {},
           ["core.journal"] = {
