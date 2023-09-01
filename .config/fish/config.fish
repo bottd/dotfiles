@@ -18,3 +18,4 @@ function nvm
    bass source $HOME/.nvm/nvm.sh --no-use ';' nvm $argv
 end
 
+alias gitroot="cd (git rev-parse --show-toplevel)"
