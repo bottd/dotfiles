@@ -5,10 +5,7 @@ return {
       'windwp/nvim-ts-autotag',
       'nvim-treesitter/nvim-treesitter-context'
     },
-    build = function()
-      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
-      ts_update()
-    end,
+    build = ":TSUpdate",
     config = function()
       local ts = require 'nvim-treesitter.configs'
       ts.setup({
@@ -38,7 +35,6 @@ return {
       },
       highlight = {
         enable = true,
-        use_languagetree = true,
       }
     })
     end
