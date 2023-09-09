@@ -1,8 +1,9 @@
 return {
   { 
     'nvim-treesitter/nvim-treesitter',
-    depependencies = {
-      'windwp/nvim-ts-autotag'
+    dependencies = {
+      'windwp/nvim-ts-autotag',
+      'nvim-treesitter/nvim-treesitter-context'
     },
     build = function()
       local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
