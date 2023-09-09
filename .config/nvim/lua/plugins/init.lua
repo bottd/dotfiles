@@ -10,10 +10,6 @@ return {
   'gioele/vim-autoswap',
   'NvChad/nvim-colorizer.lua',
 
-  -- Surround - closing tags and characters
-  'windwp/nvim-ts-autotag',
-  'windwp/nvim-autopairs',
-
   -- Run snippets inline!
   { 'michaelb/sniprun', build = 'bash ./install.sh'},
 }

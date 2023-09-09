@@ -1,6 +1,9 @@
 return {
   { 
     'nvim-treesitter/nvim-treesitter',
+    depependencies = {
+      'windwp/nvim-ts-autotag'
+    },
     build = function()
       local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
       ts_update()
@@ -43,7 +46,7 @@ return {
     'numToStr/Comment.nvim',
     dependencies = {
       'JoosepAlviste/nvim-ts-context-commentstring',
-      'nvim-treesitter/nvim-treesitter'
+      'nvim-treesitter/nvim-treesitter',
     },
     config = function()
       require('Comment').setup {
