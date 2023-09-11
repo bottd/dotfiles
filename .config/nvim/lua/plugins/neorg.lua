@@ -3,6 +3,7 @@ return {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope" },
+    ft = "norg",
     config = function()
       require("neorg").setup {
         load = {
@@ -19,9 +20,9 @@ return {
           ["core.dirman"] = { -- Manages Neorg workspaces
             config = {
               workspaces = {
-                notes = "~/notes",
+                chalet = "~/chalet",
               },
-              default_workspace = "notes",
+              default_workspace = "chalet",
             },
           },
           ["core.esupports.metagen"] = {
@@ -34,20 +35,21 @@ return {
           ["core.integrations.telescope"] = {},
           ["core.integrations.nvim-cmp"] = {},
           ["core.integrations.treesitter"] = {},
+          ["core.itero"] = {},
           ["core.journal"] = {
             config = {
-              journal_folder = "journals",
+              journal_folder = "journals/daily",
               strategy = "flat",
-              workspace = "notes",
+              workspace = "chalet",
             },
           },
-          ["core.qol.toc"] = {},
-          ["core.qol.todo_items"] = {},
+          ["core.summary"] = {},
           ["core.tangle"] = {},
         },
       }
     end,
     keys = {
+      { mode = "n", "<leader>j", ":Neorg journal today<Cr>" },
       { mode = "n", "<leader>nj", ":Neorg journal<Cr>" },
       { mode = "n", "<leader>ni", ":Neorg index<Cr>" },
       { mode = "n", "<leader>nr", ":Neorg return<Cr>" },

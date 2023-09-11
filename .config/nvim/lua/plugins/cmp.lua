@@ -65,7 +65,8 @@ return {
           { name = 'nvim_lsp' },
           { name = "path" },
           { name = 'luasnip' },
-          { name = 'buffer' }
+          { name = 'buffer' },
+          { name = 'neorg' }
         })
       })
     end
