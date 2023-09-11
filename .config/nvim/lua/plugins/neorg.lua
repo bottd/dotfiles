@@ -1,3 +1,5 @@
+local workspace = os.getenv("NEORG_WORKSPACE")
+local workspace_path = os.getenv("NEORG_WORKSPACE_PATH")
 return {
   {
     "nvim-neorg/neorg",
@@ -20,9 +22,9 @@ return {
           ["core.dirman"] = { -- Manages Neorg workspaces
             config = {
               workspaces = {
-                chalet = "~/chalet",
+                [workspace] = workspace_path
               },
-              default_workspace = "chalet",
+              default_workspace = workspace,
             },
           },
           ["core.esupports.metagen"] = {
@@ -40,7 +42,7 @@ return {
             config = {
               journal_folder = "journals/daily",
               strategy = "flat",
-              workspace = "chalet",
+              workspace = workspace,
             },
           },
           ["core.summary"] = {},
