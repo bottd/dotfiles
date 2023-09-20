@@ -7,6 +7,7 @@ return {
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
       'L3MON4D3/LuaSnip',
+      'f3fora/cmp-spell',
       {
         'windwp/nvim-autopairs',
         event = "InsertEnter",
@@ -66,6 +67,7 @@ return {
           { name = "path" },
           { name = 'luasnip' },
           { name = 'buffer' },
+          { name = 'spell' },
           { name = 'neorg' }
         })
       })
