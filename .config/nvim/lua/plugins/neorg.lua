@@ -41,6 +41,7 @@ return {
           ["core.journal"] = {
             config = {
               journal_folder = "journals/daily",
+              template_name = "meta/templates/journal.norg",
               strategy = "flat",
               workspace = workspace,
             },
