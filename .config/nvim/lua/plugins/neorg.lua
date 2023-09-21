@@ -37,6 +37,7 @@ return {
           ["core.integrations.telescope"] = {},
           ["core.integrations.nvim-cmp"] = {},
           ["core.integrations.treesitter"] = {},
+          ["core.integrations.zen_mode"] = {},
           ["core.itero"] = {},
           ["core.journal"] = {
             config = {
