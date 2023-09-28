@@ -69,5 +69,13 @@ return {
         }
       })
     end
-  }
+  },
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {},
+    keys = {
+      { mode = "n", "<leader>l", function() require("trouble").open() end, desc = "Trouble" },
+    }
+ },
 }
