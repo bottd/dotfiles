@@ -7,14 +7,15 @@ return {
       require('which-key').setup()
       require('which-key').register({
         f = {
-          name = "[F]ind",
-          f = { ":Telescope find_files<Cr>", "[F]ind [F]ile" },
-          s = { ":Telescope live_grep<Cr>", "[F]ind [S]tring" },
-          k = { ":Telescope keymaps<Cr>", "[F]ind [K]eymap" },
-          h = { ":Telescope help_tags<Cr>", "[F]ind [H]elp" },
+          name = "Find",
+          f = { ":Telescope find_files<Cr>", "Find File" },
+          s = { ":Telescope live_grep<Cr>", "Find String" },
+          k = { ":Telescope keymaps<Cr>", "Find Keymap" },
+          h = { ":Telescope help_tags<Cr>", "Find Help" },
         },
-        u = { ":Telescope undo<Cr>", "[U]ndo tree" },
-        r = { 
+        n = "Neorg",
+        u = { ":Telescope undo<Cr>", "Undo tree" },
+        r = {
           r = { "<Plug>SnipRun<Cr>", "SnipRun Block"},
           o = { "<Plug>SnipRunOperator<Cr>", "SnipRun Operator"}
         },

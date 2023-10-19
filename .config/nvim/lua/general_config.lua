@@ -21,8 +21,5 @@ vim.keymap.set('n', '<C-k>', ':<C-U>TmuxNavigateUp<Cr>')
 vim.keymap.set('n', '<C-l>', ':<C-U>TmuxNavigateLeft<Cr>')
 vim.keymap.set('n', '<C-\\>', ':<C-U>TmuxNavigatePrevious<Cr>')
 
--- Reload config
-vim.keymap.set('n', '<leader>rc', ':source $MYVIMRC<Cr>')
-
 -- Copy to clipboard
-vim.keymap.set('n', '<Leader>y', '"+y');
+vim.keymap.set('n', '<Leader>y', '"+y', { desc = "Yank to clipboard" });
