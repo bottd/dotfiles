@@ -22,9 +22,16 @@ return {
           ["core.dirman"] = { -- Manages Neorg workspaces
             config = {
               workspaces = {
-                [workspace] = workspace_path
+                [workspace] = workspace_path,
+                inbox = workspace_path .. "/inbox",
+                journals = workspace_path .. "/journals",
+                meta = workspace_path .. "/meta",
+                notes = workspace_path .. "/notes",
+                resources = workspace_path .. "/resources",
+                scripts = workspace_path .. "/scripts",
+                zettel = workspace_path .. "/zettel",
               },
-              default_workspace = workspace,
+              default_workspace = workspace
             },
           },
           ["core.esupports.metagen"] = {
@@ -41,10 +48,10 @@ return {
           ["core.itero"] = {},
           ["core.journal"] = {
             config = {
-              journal_folder = "journals/daily",
+              journal_folder = "daily",
               template_name = "meta/templates/journal.norg",
               strategy = "flat",
-              workspace = workspace,
+              workspace = "journals",
             },
           },
           ["core.summary"] = {},
@@ -53,10 +60,36 @@ return {
       }
     end,
     keys = {
-      { mode = "n", "<leader>j", ":Neorg journal today<Cr>" },
-      { mode = "n", "<leader>nj", ":Neorg journal<Cr>" },
-      { mode = "n", "<leader>ni", ":Neorg index<Cr>" },
-      { mode = "n", "<leader>nr", ":Neorg return<Cr>" },
+      {
+        mode = "n",
+        "<leader>j",
+        ":Neorg journal today<Cr>",
+        desc = "Journal"
+      },
+      {
+        mode = "n",
+        "<leader>nj",
+        ":Neorg journal<Cr>",
+        desc = "Journal"
+      },
+      {
+        mode = "n",
+        "<leader>ni",
+        ":Neorg index<Cr>",
+        desc = "Index"
+      },
+      {
+        mode = "n",
+        "<leader>nf",
+        ":Telescope neorg find_norg_files<Cr>",
+        desc = "Find Norg"
+      },
+      {
+        mode = "n",
+        "<leader>nr",
+        ":Neorg return<Cr>",
+        desc = "Neorg"
+      },
     },
   }
 }
