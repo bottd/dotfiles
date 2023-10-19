@@ -40,7 +40,11 @@ return {
             }
           },
           ["core.export"] = {},
-          ["core.export.markdown"] = {},
+          ["core.export.markdown"] = {
+            config = {
+              extensions = "all"
+            }
+          },
           ["core.integrations.telescope"] = {},
           ["core.integrations.nvim-cmp"] = {},
           ["core.integrations.treesitter"] = {},
