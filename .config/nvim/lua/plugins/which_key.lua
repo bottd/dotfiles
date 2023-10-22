@@ -15,10 +15,6 @@ return {
         },
         n = "Neorg",
         u = { ":Telescope undo<Cr>", "Undo tree" },
-        r = {
-          r = { "<Plug>SnipRun<Cr>", "SnipRun Block"},
-          o = { "<Plug>SnipRunOperator<Cr>", "SnipRun Operator"}
-        },
       }, { prefix = "<leader>" })
     end
   },
