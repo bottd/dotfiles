@@ -13,6 +13,7 @@ return {
         'comment',
         'css',
         'diff',
+        'fennel',
         'fish',
         'gitignore',
         'graphql',
