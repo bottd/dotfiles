@@ -14,12 +14,5 @@ vim.opt.spell = true
 vim.opt.spelllang = { 'en_us' }
 
 
-vim.g.tmux_navigator_no_mappints = 1;
-vim.keymap.set('n', '<C-h>', ':<C-U>TmuxNavigateLeft<Cr>')
-vim.keymap.set('n', '<C-j>', ':<C-U>TmuxNavigateDown<Cr>')
-vim.keymap.set('n', '<C-k>', ':<C-U>TmuxNavigateUp<Cr>')
-vim.keymap.set('n', '<C-l>', ':<C-U>TmuxNavigateLeft<Cr>')
-vim.keymap.set('n', '<C-\\>', ':<C-U>TmuxNavigatePrevious<Cr>')
-
 -- Copy to clipboard
 vim.keymap.set('n', '<Leader>y', '"+y', { desc = "Yank to clipboard" });

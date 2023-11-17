@@ -3,9 +3,6 @@ return {
   'nvim-lua/plenary.nvim',
   'MunifTanjim/nui.nvim',
 
-  -- Tmux/vim navigation
-  'christoomey/vim-tmux-navigator',
-
   -- Vim Util plugins
   'gioele/vim-autoswap',
   {
