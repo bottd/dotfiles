@@ -11,7 +11,6 @@
 (local light (require "theme/rose-pine-dawn"))
 (local dark (require "theme/rose-pine-moon"))
 
-
 (fn scheme_for_appearance [appearance]
   (if (appearance:find "Dark")
     [(dark.colors) (dark.window_frame)]
@@ -22,10 +21,10 @@
   (local overrides (or (window:get_config_overrides) {}))
   (local appearance (window:get_appearance))
   (local [colors window_frame] (scheme_for_appearance appearance))
-  (if (not= overrides.colors colors)
-    (tset overrides :colors colors)
-    (tset overrides :window_frame window_frame)
-    (window:set_config_overrides overrides)
+  (when (not= overrides.colors colors)
+      (tset overrides :colors colors)
+      (tset overrides :window_frame window_frame)
+      (window:set_config_overrides overrides)
   )
 ))
 {
