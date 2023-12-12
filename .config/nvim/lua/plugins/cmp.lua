@@ -8,7 +8,7 @@ return {
       'hrsh7th/cmp-cmdline',
       'L3MON4D3/LuaSnip',
       'f3fora/cmp-spell',
-      "0lical/conjure",
+      "Olical/conjure",
       {
         'windwp/nvim-autopairs',
         event = "InsertEnter",
