@@ -1,5 +1,5 @@
 return {
-  { 
+  {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'windwp/nvim-ts-autotag',
@@ -10,34 +10,35 @@ return {
       local ts = require 'nvim-treesitter.configs'
       ts.setup({
         ensure_installed = {
-        'comment',
-        'css',
-        'diff',
-        'fennel',
-        'fish',
-        'gitignore',
-        'graphql',
-        'html',
-        'json',
-        'markdown',
-        'markdown_inline',
-        'norg',
-        'lua',
-        'python',
-        'rust',
-        'sql',
-        'svelte',
-        'toml',
-        'tsx',
-        'typescript'
-      },
-      autotag = {
-        enable = true
-      },
-      highlight = {
-        enable = true,
-      }
-    })
+          'comment',
+          'css',
+          'diff',
+          'fennel',
+          'fish',
+          'gitignore',
+          'graphql',
+          'html',
+          'json',
+          'markdown',
+          'markdown_inline',
+          'norg',
+          'lua',
+          'python',
+          'rust',
+          'sql',
+          'svelte',
+          'toml',
+          'tsx',
+          'typescript',
+          'vimdoc'
+        },
+        autotag = {
+          enable = true
+        },
+        highlight = {
+          enable = true,
+        }
+      })
     end
   },
   {
