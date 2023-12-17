@@ -4,7 +4,11 @@ return {
   {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-neorg/neorg-telescope",
+      { "pysan3/neorg-templates", dependencies = { "L3MON4D3/LuaSnip" } }
+    },
     ft = "norg",
     config = function()
       require("neorg").setup {
@@ -62,6 +66,11 @@ return {
           },
           ["core.summary"] = {},
           ["core.tangle"] = {},
+          ["external.templates"] = {
+            config = {
+              templates_dir = workspace_path .. "/meta/templates"
+            }
+          }
         },
       }
     end,
