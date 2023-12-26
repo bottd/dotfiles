@@ -1,5 +1,5 @@
 return {
-  'nvim-island/hydra.nvim',
+  'nvimtools/hydra.nvim',
   dependencies = {
     'sindrets/winshift.nvim',
     'mrjones2014/smart-splits.nvim',
@@ -32,6 +32,7 @@ return {
     focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
     ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only
     _b_: choose buffer
+    _t_: open terminal buffer
     ]]
     Hydra({
       name = 'Windows',
@@ -76,6 +77,7 @@ return {
         { '<C-o>', '<C-w>o', { exit = true, desc = false } },
 
         { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
+        { 't', function () vim.fn.termopen() end},
 
         { 'c',     pcmd('close', 'E444') },
         { 'q',     pcmd('close', 'E444'), { desc = 'close window' } },
