@@ -101,6 +101,13 @@ return {
       },
       {
         mode = "n",
+        "<leader>nt",
+        ":Neorg tangle<Cr>",
+        desc = ":Neorg tangle"
+      },
+
+      {
+        mode = "n",
         "<leader>nr",
         ":Neorg return<Cr>",
         desc = "Neorg"
