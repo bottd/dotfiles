@@ -5,6 +5,7 @@ return {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
     dependencies = {
+      "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
       "nvim-neorg/neorg-telescope",
       { "pysan3/neorg-templates", dependencies = { "L3MON4D3/LuaSnip" } }
@@ -84,7 +85,23 @@ return {
       {
         mode = "n",
         "<leader>nj",
-        ":Neorg journal<Cr>",
+        function ()
+          local Popup = require("nui.popup")
+          local popup = Popup({
+            enter = true,
+            focusable = true,
+            border = {
+              style = "rounded",
+            },
+            position = "50%",
+            size = {
+              width = "80%",
+              height = "60%",
+            },
+          })
+
+          popup:mount()
+        end,
         desc = "Journal"
       },
       {
