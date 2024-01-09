@@ -35,14 +35,12 @@ return {
       end)
 
       require('mason-lspconfig').setup({
+        -- TODO: choose your lsp servers here, these are what I have
         ensure_installed = {
             'cssls',
             'eslint',
             'graphql',
             'html',
-            -- TODO: if using jdtls get plugin
-            -- https://github.com/mfussenegger/nvim-jdtls
-            -- 'jdtls',
             'jsonnet_ls',
             'pyright',
             'rust_analyzer',
@@ -70,12 +68,4 @@ return {
       })
     end
   },
-  {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {},
-    keys = {
-      { mode = "n", "<leader>l", function() require("trouble").open() end, desc = "Trouble" },
-    }
- },
 }
