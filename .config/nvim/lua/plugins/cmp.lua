@@ -7,35 +7,12 @@ return {
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
       'L3MON4D3/LuaSnip',
-      'rafamadriz/friendly-snippets',
       'f3fora/cmp-spell',
-      "Olical/conjure",
       {
         'windwp/nvim-autopairs',
         event = "InsertEnter",
         opts = {}
       },
-      {
-        'zbirenbaum/copilot.lua',
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-          require("copilot").setup({
-            -- disabling due to using copilot-cmp
-            suggestion = { enabled = false },
-            panel = { enabled = false }
-          })
-        end
-      },
-      {
-        'zbirenbaum/copilot-cmp',
-        -- after = { 'copilot.lua' },
-        config = function()
-          require('copilot_cmp').setup {
-            method = 'getCompletionsCycling'
-          }
-        end
-      }
     },
     config = function()
       -- Here is where you configure the autocompletion settings.
@@ -64,14 +41,11 @@ return {
           ['<CR>'] = cmp.mapping.confirm({ select = true }),
         }),
         sources = cmp.config.sources({
-          { name = 'copilot' },
           { name = 'nvim_lsp' },
           { name = "path" },
           { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'spell' },
-          { name = 'neorg' },
-          { name = 'conjure' }
         })
       })
     end

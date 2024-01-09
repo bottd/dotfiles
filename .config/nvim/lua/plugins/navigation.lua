@@ -1,3 +1,4 @@
+-- Optional, can remove if you don't like
 return {
   "folke/flash.nvim",
   event = "VeryLazy",
