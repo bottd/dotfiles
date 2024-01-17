@@ -17,6 +17,7 @@ set PATH $HOME/.cargo/bin /opt/homebrew/bin $PATH
 function nvm
    bass source $HOME/.nvm/nvm.sh --no-use ';' nvm $argv
 end
+nvm use default
 
 alias gitroot="cd (git rev-parse --show-toplevel)"
 
