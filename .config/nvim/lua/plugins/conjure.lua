@@ -2,6 +2,7 @@ return {
     "Olical/conjure",
     ft = { "fennel" },
     dependencies = {
+        { "Olical/nfnl", ft = "fennel" },
         {
             "PaterJason/cmp-conjure",
             config = function()
