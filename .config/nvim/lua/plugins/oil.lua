@@ -1,32 +1,16 @@
-return {
-  'stevearc/oil.nvim',
-  opts = {},
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  config = function()
-    require("oil").setup({
-      float = {
-        padding = 17
-      }
-    })
-  end,
-  keys = {
-    {
-      mode = 'n',
-      '<C-n>',
-      function()
-        require('oil').toggle_float()
-      end,
-      desc = 'Oil - parent directory'
-    },
-    {
-      mode = 'n',
-      '<C-m>',
-      function()
-        local buf_name = vim.api.nvim_buf_get_name(0)
-        local current_dir = buf_name:gsub('/[^/]+$', '')
-        require('oil').toggle_float(current_dir)
-      end,
-      desc = 'Oil - current directory'
-    }
-  }
-}
+-- [nfnl] Compiled from fnl/plugins/oil.fnl by https://github.com/Olical/nfnl, do not edit.
+local function _1_()
+  local oil = require("oil")
+  return oil.setup({float = {padding = 17}})
+end
+local function _2_()
+  local oil = require("oil")
+  return oil.toggle_float()
+end
+local function _3_()
+  local buf_name = vim.api.nvim_buf_get_name(0)
+  local current_dir = buf_name.gsub("/[^/]+$", "")
+  local oil = require("oil")
+  return oil.toggle_float(current_dir)
+end
+return {"stevearc/oil.nvim", dependencies = {"nvim-tree/nvim-web-devicons"}, config = _1_, keys = {{"<C-n>", _2_, mode = "n", desc = "Oil - parent directory"}, {"<C-m>", _3_, mode = "n", desc = "Oil - current directory"}}}
