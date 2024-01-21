@@ -1,12 +1,2 @@
-return {
-  -- Useful lua functions used by lots of plugins
-  "nvim-lua/plenary.nvim",
-  "MunifTanjim/nui.nvim",
-
-  -- Vim Util plugins
-  "gioele/vim-autoswap",
-  {
-    "NvChad/nvim-colorizer.lua",
-    config = true
-  }
-}
+-- [nfnl] Compiled from fnl/plugins/init.fnl by https://github.com/Olical/nfnl, do not edit.
+return {"nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", "gioele/vim-autoswap", {"NvChad/nvim-colorizer.lua", config = true}}
