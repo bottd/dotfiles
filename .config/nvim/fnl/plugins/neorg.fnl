@@ -28,7 +28,7 @@
           :core.dirman {
             :config {
               :workspaces {
-                [workspace] workspace_path
+                workspace workspace_path
                 :inbox (.. workspace_path "/inbox")
                 :journals (.. workspace_path "/journals")
                 :meta (.. workspace_path "/meta")
