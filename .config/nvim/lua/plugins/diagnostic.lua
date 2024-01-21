@@ -1,12 +1,2 @@
-return {
- "folke/trouble.nvim",
- dependencies = { "nvim-tree/nvim-web-devicons" },
- opts = {
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  -- refer to the configuration section below
- },
- keys = {
-  { mode = "n", "<leader>ci", ":Trouble<Cr>" },
- }
-}
+-- [nfnl] Compiled from fnl/plugins/diagnostic.fnl by https://github.com/Olical/nfnl, do not edit.
+return {"folke/trouble.nvim", dependencies = {"nvim-tree/nvim-web-devicons"}, keys = {{"<leader>ci", ":Trouble<Cr>", mode = "n", desc = "Trouble"}}}
