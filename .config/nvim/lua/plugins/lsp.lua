@@ -1,81 +1,21 @@
-return {
-  {
-    'VonHeikemen/lsp-zero.nvim',
-    branch = 'dev-v3',
-    lazy = true,
-    config = false,
-    init = function()
-      -- Disable automatic setup, we are doing it manually
-      vim.g.lsp_zero_extend_cmp = 0
-      vim.g.lsp_zero_extend_lspconfig = 0
-    end,
-  },
-  {
-    'williamboman/mason.nvim',
-    lazy = false,
-    config = true
-  },
-  {
-    'neovim/nvim-lspconfig',
-    cmd = {'LspInfo', 'LspInstall', 'LspStart'},
-    event = {'BufReadPre', 'BufNewFile'},
-    dependencies = {
-      {'hrsh7th/nvim-cmp'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'williamboman/mason-lspconfig.nvim'},
-    },
-    config = function()
-      local lsp_zero = require('lsp-zero')
-      lsp_zero.extend_lspconfig()
-
-      lsp_zero.on_attach(function(client, bufnr)
-        -- see :help lsp-zero-keybindings
-        -- to learn the available actions
-        lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false })
-      end)
-
-      require('mason-lspconfig').setup({
-        ensure_installed = {
-            'cssls',
-            'eslint',
-            'graphql',
-            'html',
-            -- TODO: if using jdtls get plugin
-            -- https://github.com/mfussenegger/nvim-jdtls
-            -- 'jdtls',
-            'jsonnet_ls',
-            'pyright',
-            'rust_analyzer',
-            'sqlls',
-            'stylelint_lsp',
-            sumneko_lua = {
-              Lua = {
-                diagnostics = { globals = { 'vim' } },
-                workspace = { checkThirdParty = false },
-                telemetry = { enable = false },
-              },
-            },
-            'svelte',
-            'tailwindcss',
-            'tsserver',
-        },
-        handlers = {
-          lsp_zero.default_setup,
-          lua_ls = function()
-            -- (Optional) Configure lua language server for neovim
-            local lua_opts = lsp_zero.nvim_lua_ls()
-            require('lspconfig').lua_ls.setup(lua_opts)
-          end,
-        }
-      })
+-- [nfnl] Compiled from fnl/plugins/lsp.fnl by https://github.com/Olical/nfnl, do not edit.
+local function _1_()
+  vim.g.lsp_zero_extend_cmp = 0
+  vim.g.lsp_zero_extend_lspconfig = 0
+  return nil
+end
+local function _2_()
+  local lsp_zero = require("lsp-zero")
+  lsp_zero.extend_lspconfig()
+  local function _3_(client, bufnr)
+    lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
+    local mason_lspconfig = require("mason-lspconfig")
+    local function _4_()
+      local lspconfig = require("lspconfig")
+      return lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
     end
-  },
-  {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {},
-    keys = {
-      { mode = "n", "<leader>l", function() require("trouble").open() end, desc = "Trouble" },
-    }
- },
-}
+    return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "svelte", "tailwindcss", "tsserver", sumneko_lua = {Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}}}, handlers = {lsp_zero.default_setup, lua_ls = _4_}})
+  end
+  return lsp_zero.on_attach(_3_)
+end
+return {{"VonHeikemen/lsp-zero.nvim", branch = "dev-v3", lazy = true, init = _1_, config = false}, {"williamboman/mason.nvim", config = true, lazy = false}, {"neovim/nvim-lspconfig", cmd = {"LspInfo", "LspInstall", "LspStart"}, event = {"BufReadPre", "BufNewFile"}, dependencies = {"hrsh7th/nvim-cmp", "hrsh7th/cmp-nvim-lsp", "williamboman/mason-lspconfig.nvim"}, config = _2_}}
