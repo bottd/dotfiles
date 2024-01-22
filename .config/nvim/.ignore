@@ -1,1 +1,2 @@
 lua/**/*.lua
+after/**/*.lua
