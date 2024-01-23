@@ -5,7 +5,14 @@
     :lazy false
     :priority 1000
     :config (fn [] 
-      ((. (require :rose-pine) :setup) { :dark_variant "moon" }))
+      ((. (require :rose-pine) :setup) { :dark_variant "moon" })
+      (vim.cmd "colorscheme rose-pine")
+      ;; window_appearance is set in wezterm config
+      (let [apperance (os.getenv :window_appearance)]
+        (when (= appearance nil) (set apppearance "dark"))
+        (vim.api.nvim_set_option_value "background" appearance {})
+      )
+    )
   }
   {
     1 :lukas-reineke/indent-blankline.nvim
@@ -21,17 +28,5 @@
         :show_current_context true
         :show_current_context_start true
       }
-  }
-  {
-    1 :f-person/auto-dark-mode.nvim
-    :config {
-      :update_interval 1000
-      :set_dark_mode (fn []
-        (vim.api.nvim_set_option "background" "dark")
-        (vim.cmd "colorscheme rose-pine"))
-      :set_light_mode (fn []
-       (vim.api.nvim_set_option "background" "light")
-       (vim.cmd "colorscheme rose-pine"))
-    }
   }
 ]
