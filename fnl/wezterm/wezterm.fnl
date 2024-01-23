@@ -11,25 +11,37 @@
 (local light (require "theme/rose-pine-dawn"))
 (local dark (require "theme/rose-pine-moon"))
 
-(fn scheme_for_appearance [appearance]
-  (if (appearance:find "Dark")
-    [(dark.colors) (dark.window_frame)]
-    [(light.colors) (light.window_frame)]
+(fn get_appearance []
+  (if wezterm.gui
+    (string.lower (wezterm.gui.get_appearance))
+    "dark"
   ))
+
+(fn scheme_for_appearance []
+  (let [appearance (get_appearance)]
+    (if (appearance:find "dark")
+      [(dark.colors) (dark.window_frame)]
+      [(light.colors) (light.window_frame)]
+  )))
 
 (wezterm.on "window-config-reloaded" (fn [window pane]
   (local overrides (or (window:get_config_overrides) {}))
-  (local appearance (window:get_appearance))
-  (local [colors window_frame] (scheme_for_appearance appearance))
+  (local [colors window_frame] (scheme_for_appearance))
   (when (not= overrides.colors colors)
       (tset overrides :colors colors)
       (tset overrides :window_frame window_frame)
+      (tset overrides :set_environment_variables {
+        :window_appearance (get_appearance)
+      })
       (window:set_config_overrides overrides)
   )
 ))
 {
   :colors (light.colors)
   :window_frame (light.window_frame)
+  :set_environment_variables {
+    :window_appearance (get_appearance)
+  }
   :font (wezterm.font "MonoLisa Nerd Font")
   :font_size 13
   :hide_tab_bar_if_only_one_tab true
