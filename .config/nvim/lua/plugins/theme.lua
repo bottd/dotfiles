@@ -2,7 +2,7 @@
 local function _1_()
   do end (require("rose-pine")).setup({dark_variant = "moon"})
   vim.cmd("colorscheme rose-pine")
-  local apperance = os.getenv("window_appearance")
+  local appearance = os.getenv("WINDOW_APPEARANCE")
   if (appearance == nil) then
     apppearance = "dark"
   else
