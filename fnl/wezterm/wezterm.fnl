@@ -31,7 +31,7 @@
       (tset overrides :colors colors)
       (tset overrides :window_frame window_frame)
       (tset overrides :set_environment_variables {
-        :window_appearance (get_appearance)
+        :WINDOW_APPEARANCE (get_appearance)
       })
       (window:set_config_overrides overrides)
   )
@@ -40,7 +40,7 @@
   :colors (light.colors)
   :window_frame (light.window_frame)
   :set_environment_variables {
-    :window_appearance (get_appearance)
+    :WINDOW_APPEARANCE (get_appearance)
   }
   :font (wezterm.font "MonoLisa Nerd Font")
   :font_size 13

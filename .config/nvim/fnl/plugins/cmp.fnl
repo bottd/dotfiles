@@ -58,12 +58,13 @@
       :sources (cmp.config.sources [
         { :name "copilot" }
         { :name "nvim_lsp" }
+        { :name "conjure" }
         { :name "path" }
         { :name "luasnip" }
         { :name "buffer" }
-        { :name "spell" }
+        ;; enable spell complete in md,norg, etc?
+        ;; { :name "spell" }
         { :name "neorg" }
-        { :name "conjure" }
       ])
     })))
 }
