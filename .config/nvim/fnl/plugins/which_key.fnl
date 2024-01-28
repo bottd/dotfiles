@@ -7,6 +7,7 @@
        (which-key.setup)
        (which-key.register {
        :e "Evaluate [Conjure]"
+       :w "Window"
        :f {
          :name "Find"
        }

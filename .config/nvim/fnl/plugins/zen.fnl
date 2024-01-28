@@ -7,6 +7,11 @@
     }
   }
   :keys [
-    [ :mode "n" :<leader>wz :ZenMode<Cr> ]
+    { 
+      :mode "n" 
+      1 "<leader>wz"
+      2 ":ZenMode<Cr>"
+      :desc "Zen Mode"
+    }
   ]
 }
