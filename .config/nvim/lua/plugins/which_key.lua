@@ -4,6 +4,6 @@ local function _1_()
   vim.o.timeoutlen = 300
   local which_key = require("which-key")
   which_key.setup()
-  return which_key.register({e = "Evaluate [Conjure]", f = {name = "Find"}, l = "Log [Conjure]", n = "Neorg"}, {prefix = "<leader>"})
+  return which_key.register({e = "Evaluate [Conjure]", w = "Window", f = {name = "Find"}, l = "Log [Conjure]", n = "Neorg"}, {prefix = "<leader>"})
 end
 return {"folke/which-key.nvim", config = _1_}
