@@ -33,6 +33,7 @@
                 :journals (.. workspace_path "/journals")
                 :meta (.. workspace_path "/meta")
                 :notes (.. workspace_path "/notes")
+                :public (.. workspace_path "/public")
                 :resources (.. workspace_path "/resources")
                 :scripts (.. workspace_path "/scripts")
                 :zettel (.. workspace_path "/zettel")
@@ -79,13 +80,16 @@
     {
       :mode "n"
       1 "<leader>j"
-      2 ":Neorg journal today<Cr>"
+      ;2 ":Neorg journal today<Cr>"
+      2 (fn [] (
+        (let [buf (nvim_create_buf)])
+      ))
       :desc "Journal"
     }
     {
       :mode "n"
       1 "<leader>nj"
-      2 ":Neorg journal"
+      2 ":Neorg journal<Cr>"
       :desc "Journal"
     }
     {
@@ -105,6 +109,24 @@
       1 "<leader>nt"
       2 ":Neorg tangle<Cr>"
       :desc ":Neorg tangle"
+    }
+    {
+      :mode "n"
+      1 "<leader>nef"
+      2 ":Neorg export to-file"
+      :desc "Export file"
+    }
+    {
+      :mode "n"
+      1 "<leader>ned"
+      2 ":Neorg export directory"
+      :desc "Export directory"
+    }
+    {
+      :mode "n"
+      1 "<leader>nep"
+      2 (.. ":Neorg export directory " workspace_path "/public md<Cr>")
+      :desc "Export posts"
     }
     {
       :mode "n"
