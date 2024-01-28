@@ -11,6 +11,10 @@
       1 :pysan3/neorg-templates 
       :dependencies [:L3MON4D3/LuaSnip]
     }
+    {
+      1 :lukas-reineke/headlines.nvim
+      :config true
+    }
   ]
   :ft "norg"
   :config (fn []
@@ -80,10 +84,10 @@
     {
       :mode "n"
       1 "<leader>j"
-      ;2 ":Neorg journal today<Cr>"
-      2 (fn [] (
-        (let [buf (nvim_create_buf)])
-      ))
+      2 ":Neorg journal today<Cr>"
+      ;2 (fn [] (
+      ;  (let [buf (nvim_create_buf)])
+      ;))
       :desc "Journal"
     }
     {
