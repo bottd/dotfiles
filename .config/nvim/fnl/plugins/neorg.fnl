@@ -84,10 +84,20 @@
     {
       :mode "n"
       1 "<leader>j"
-      2 ":Neorg journal today<Cr>"
-      ;2 (fn [] (
-      ;  (let [buf (nvim_create_buf)])
-      ;))
+      2 (fn []
+          (let [bufnr (vim.api.nvim_create_buf true false)]
+            (vim.api.nvim_open_win bufnr true { 
+               :width (math.floor (* (vim.api.nvim_win_get_width 0) 0.6))
+               :height (math.floor (* (vim.api.nvim_win_get_height 0) 0.8))
+               :row 5
+               :col 5
+               :relative "editor" 
+               :border "rounded" 
+               :title "Daily Journal"
+               :title_pos "center"
+           })
+          (vim.api.nvim_command ":Neorg journal today")
+        ))
       :desc "Journal"
     }
     {
