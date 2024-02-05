@@ -26,7 +26,7 @@
       1 "<C-m>"
       2 (fn []
         (let [buf_name (vim.api.nvim_buf_get_name 0)]
-          (let [current_dir (buf_name.gsub "/[^/]+$" "")]
+          (let [current_dir (string.gsub buf_name "/[^/]+$" "")]
             (let [oil (require :oil)]
               (oil.toggle_float current_dir)
             )
