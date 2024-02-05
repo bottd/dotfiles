@@ -9,7 +9,7 @@ local function _2_()
 end
 local function _3_()
   local buf_name = vim.api.nvim_buf_get_name(0)
-  local current_dir = buf_name.gsub("/[^/]+$", "")
+  local current_dir = string.gsub(buf_name, "/[^/]+$", "")
   local oil = require("oil")
   return oil.toggle_float(current_dir)
 end
