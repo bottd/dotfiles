@@ -85,17 +85,15 @@
       1 "<leader>j"
       2 (fn []
           (let [
-            ed_width (vim.fn.winwidth :%)
-            ed_height (vim.fn.winwidth :%)
-            win_width (math.floor (* ed_width 0.6))
-            win_height (math.floor (* ed_height 0.8))
+            win_width (math.floor (* vim.o.columns 0.6))
+            win_height (math.floor (* vim.o.lines 0.8))
             bufnr (vim.api.nvim_create_buf true false)
           ]
           (vim.api.nvim_open_win bufnr true { 
              :width win_width
              :height win_height
-             :row (/ (- ed_height win_height) 2)
-             :col (/ (- ed_width win_width) 2)
+             :row (/ (- vim.o.lines win_height) 2)
+             :col (/ (- vim.o.columns win_width) 2)
              :relative "editor" 
              :border "rounded" 
              :title "Daily Journal"
