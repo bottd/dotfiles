@@ -7,12 +7,10 @@ local function _1_()
 end
 local function _2_()
   do
-    local ed_width = vim.fn.winwidth("%")
-    local ed_height = vim.fn.winwidth("%")
-    local win_width = math.floor((ed_width * 0.6))
-    local win_height = math.floor((ed_height * 0.8))
+    local win_width = math.floor((vim.o.columns * 0.6))
+    local win_height = math.floor((vim.o.lines * 0.8))
     local bufnr = vim.api.nvim_create_buf(true, false)
-    vim.api.nvim_open_win(bufnr, true, {width = win_width, height = win_height, row = ((ed_height - win_height) / 2), col = ((ed_width - win_width) / 2), relative = "editor", border = "rounded", title = "Daily Journal", title_pos = "center"})
+    vim.api.nvim_open_win(bufnr, true, {width = win_width, height = win_height, row = ((vim.o.lines - win_height) / 2), col = ((vim.o.columns - win_width) / 2), relative = "editor", border = "rounded", title = "Daily Journal", title_pos = "center"})
   end
   return vim.api.nvim_command(":Neorg journal today")
 end
