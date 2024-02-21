@@ -1,3 +1,4 @@
+(local {: get_sorted_zettel } (require :../zk))
 (local workspace (os.getenv :NEORG_WORKSPACE))
 (local workspace_path (os.getenv :NEORG_WORKSPACE_PATH))
 {
@@ -87,9 +88,9 @@
           (let [
             win_width (math.floor (* vim.o.columns 0.6))
             win_height (math.floor (* vim.o.lines 0.8))
-            bufnr (vim.api.nvim_create_buf true false)
+            buf (vim.api.nvim_create_buf true false)
           ]
-          (vim.api.nvim_open_win bufnr true { 
+          (vim.api.nvim_open_win buf true { 
              :width win_width
              :height win_height
              :row (/ (- vim.o.lines win_height) 2)
@@ -99,8 +100,7 @@
              :title "Daily Journal"
              :title_pos "center"
           }))
-        (vim.api.nvim_command ":Neorg journal today")
-        )
+        (vim.api.nvim_command ":Neorg journal today"))
       :desc "Journal"
     }
     {
@@ -150,6 +150,12 @@
       1 "<leader>nr"
       2 ":Neorg return<Cr>"
       :desc "Neorg"
+    }
+    {
+      :mode "n"
+      1 "<leader>nz"
+      2 get_sorted_zettel
+      :desc "Get Zettels"
     }
   ]
 }
