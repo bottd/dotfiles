@@ -26,10 +26,10 @@
     :config (fn []
       (let [lsp_zero (require :lsp-zero)]
         (lsp_zero.extend_lspconfig)
-        (lsp_zero.on_attach (fn [client bufnr]
+        (lsp_zero.on_attach (fn [client buf]
           ;see :help lsp-zero-keybindings
           ;to learn the available actions
-          (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false })
+          (lsp_zero.default_keymaps {:buffer buf :preserve_mappings false })
           (let [mason_lspconfig (require :mason-lspconfig)]
             (mason_lspconfig.setup {
               :ensure_installed {

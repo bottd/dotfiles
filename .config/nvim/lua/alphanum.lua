@@ -1,5 +1,18 @@
 -- [nfnl] Compiled from fnl/alphanum.fnl by https://github.com/Olical/nfnl, do not edit.
-local function key_to_list(key)
+local function file_to_key(filename)
+  local key = filename:match("^(.-)%-")
+  if (key == nil) then
+    key = filename:match("^(.-)%.")
+  else
+  end
+  return key
+end
+local function key_to_list(filename)
+  if (filename == "index.norg") then
+    return {0}
+  else
+  end
+  local key = file_to_key(filename)
   local result = {string.sub(key, 0, 0)}
   local curr_type = "num"
   for i = 1, #key do
@@ -47,37 +60,38 @@ local function key_to_list(key)
 end
 local function an_compare(a, b)
   local result = nil
-  local a_keys = key_to_list(a)
-  local b_keys = key_to_list(b)
-  for k, a_val in pairs(a_keys) do
+  for k, a_val in pairs(a.keys) do
     if not (result == nil) then break end
-    local b_val = b_keys[k]
-    local _6_ = {a_val, b_val}
-    if ((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and ((_6_)[2] == nil)) then
-      local x = (_6_)[1]
+    local b_val = b.keys[k]
+    local _8_ = {a_val, b_val}
+    if ((_G.type(_8_) == "table") and (nil ~= (_8_)[1]) and ((_8_)[1] == (_8_)[2])) then
+      local x = (_8_)[1]
+      result = nil
+    elseif ((_G.type(_8_) == "table") and (nil ~= (_8_)[1]) and ((_8_)[2] == nil)) then
+      local x = (_8_)[1]
       result = false
-    elseif ((_G.type(_6_) == "table") and ((_6_)[1] == nil) and (nil ~= (_6_)[2])) then
-      local y = (_6_)[2]
+    elseif ((_G.type(_8_) == "table") and ((_8_)[1] == nil) and (nil ~= (_8_)[2])) then
+      local y = (_8_)[2]
       result = true
     else
-      local function _7_()
-        local x = (_6_)[1]
-        local y = (_6_)[2]
+      local function _9_()
+        local x = (_8_)[1]
+        local y = (_8_)[2]
         return (x > y)
       end
-      if (((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and (nil ~= (_6_)[2])) and _7_()) then
-        local x = (_6_)[1]
-        local y = (_6_)[2]
+      if (((_G.type(_8_) == "table") and (nil ~= (_8_)[1]) and (nil ~= (_8_)[2])) and _9_()) then
+        local x = (_8_)[1]
+        local y = (_8_)[2]
         result = false
       else
-        local function _8_()
-          local x = (_6_)[1]
-          local y = (_6_)[2]
+        local function _10_()
+          local x = (_8_)[1]
+          local y = (_8_)[2]
           return (x < y)
         end
-        if (((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and (nil ~= (_6_)[2])) and _8_()) then
-          local x = (_6_)[1]
-          local y = (_6_)[2]
+        if (((_G.type(_8_) == "table") and (nil ~= (_8_)[1]) and (nil ~= (_8_)[2])) and _10_()) then
+          local x = (_8_)[1]
+          local y = (_8_)[2]
           result = true
         else
         end
@@ -90,4 +104,22 @@ local function an_compare(a, b)
   end
   return result
 end
-return {an_compare = an_compare}
+local function an_srt(items)
+  local result
+  do
+    local tbl_17_auto = {}
+    local i_18_auto = #tbl_17_auto
+    for k, v in pairs(items) do
+      local val_19_auto = {keys = key_to_list(v), id = v}
+      if (nil ~= val_19_auto) then
+        i_18_auto = (i_18_auto + 1)
+        do end (tbl_17_auto)[i_18_auto] = val_19_auto
+      else
+      end
+    end
+    result = tbl_17_auto
+  end
+  table.sort(result, an_compare)
+  return result
+end
+return {an_srt = an_srt, an_compare = an_compare}
