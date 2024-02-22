@@ -1,16 +1,16 @@
-(local {: an_compare } (require :alphanum))
+(local {: an-compare } (require :alphanum))
 
 (fn open_zettel []
   (var neorg (require :neorg))
-  (var dirman ((. (. neorg :modules) :get_module) :core.dirman))
+  (var dirman (neorg.modules.get_module :core.dirman))
   (var line (vim.api.nvim_get_current_line))
   (dirman.open_file :zettel line))
 
 (fn get_sorted_zettel []
   (var neorg (require :neorg))
-  (var dirman ((. (. neorg :modules) :get_module) :core.dirman))
+  (var dirman (neorg.modules.get_module :core.dirman))
   (var files (dirman.get_norg_files :zettel))
-  (table.sort files an_compare)
+  (table.sort files an-compare)
   (let [
      ed_width (vim.fn.winwidth :%)
      ed_height (vim.fn.winwidth :%)

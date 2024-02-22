@@ -1,6 +1,6 @@
 -- [nfnl] Compiled from fnl/zk.fnl by https://github.com/Olical/nfnl, do not edit.
 local _local_1_ = require("alphanum")
-local an_compare = _local_1_["an_compare"]
+local an_compare = _local_1_["an-compare"]
 local function open_zettel()
   local neorg = require("neorg")
   local dirman = neorg.modules.get_module("core.dirman")
