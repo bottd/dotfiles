@@ -38,10 +38,8 @@
       to_num))))
   result)
 
-(fn an_compare [a b]
+(fn an-compare [a b]
   (case [a b]
-    [x nil] (lua "return false")
-    [nil y] (lua "return true")
     (where [x y] (string.find x "index.norg")) (lua "return false")
     (where [x y] (string.find y "index.norg")) (lua "return true"))
 
@@ -63,4 +61,4 @@
   (if (= result nil) (set result false))
   result)
 
-{ :an_compare an_compare }
+{ :an-compare an-compare }
