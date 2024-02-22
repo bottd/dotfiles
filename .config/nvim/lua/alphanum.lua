@@ -61,34 +61,26 @@ end
 local function an_compare(a, b)
   do
     local _7_ = {a, b}
-    if ((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and ((_7_)[2] == nil)) then
+    local function _8_()
       local x = (_7_)[1]
-      return false
-    elseif ((_G.type(_7_) == "table") and ((_7_)[1] == nil) and (nil ~= (_7_)[2])) then
       local y = (_7_)[2]
-      return true
+      return string.find(x, "index.norg")
+    end
+    if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _8_()) then
+      local x = (_7_)[1]
+      local y = (_7_)[2]
+      return false
     else
-      local function _8_()
+      local function _9_()
         local x = (_7_)[1]
         local y = (_7_)[2]
-        return string.find(x, "index.norg")
+        return string.find(y, "index.norg")
       end
-      if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _8_()) then
+      if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _9_()) then
         local x = (_7_)[1]
         local y = (_7_)[2]
-        return false
+        return true
       else
-        local function _9_()
-          local x = (_7_)[1]
-          local y = (_7_)[2]
-          return string.find(y, "index.norg")
-        end
-        if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _9_()) then
-          local x = (_7_)[1]
-          local y = (_7_)[2]
-          return true
-        else
-        end
       end
     end
   end
@@ -141,4 +133,4 @@ local function an_compare(a, b)
   end
   return result
 end
-return {an_compare = an_compare}
+return {["an-compare"] = an_compare}
