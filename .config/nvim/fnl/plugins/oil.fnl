@@ -34,6 +34,14 @@
         ))
       :desc "Oil - current directory"
     }
-
+    {
+      :mode "n"
+      :ft "oil"
+      1 "<C-v>"
+      2 (fn []
+          (let [oil (require :oil)]
+            (oil.select { :vertical true })))
+      :desc "Oil - select vsplit"
+    }
   ]
 }
