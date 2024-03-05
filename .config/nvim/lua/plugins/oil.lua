@@ -13,4 +13,8 @@ local function _3_()
   local oil = require("oil")
   return oil.toggle_float(current_dir)
 end
-return {"stevearc/oil.nvim", dependencies = {"nvim-tree/nvim-web-devicons"}, config = _1_, keys = {{"<C-n>", _2_, mode = "n", desc = "Oil - parent directory"}, {"<C-m>", _3_, mode = "n", desc = "Oil - current directory"}}}
+local function _4_()
+  local oil = require("oil")
+  return oil.select({vertical = true})
+end
+return {"stevearc/oil.nvim", dependencies = {"nvim-tree/nvim-web-devicons"}, config = _1_, keys = {{"<C-n>", _2_, mode = "n", desc = "Oil - parent directory"}, {"<C-m>", _3_, mode = "n", desc = "Oil - current directory"}, {"<C-v>", _4_, mode = "n", ft = "oil", desc = "Oil - select vsplit"}}}
