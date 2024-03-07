@@ -12,6 +12,7 @@
         (when (= appearance nil) (set apppearance "dark"))
         (vim.api.nvim_set_option_value "background" appearance {})
       )
+      (set vim.g.neovide_theme :auto)
     )
   }
   {
