@@ -2,12 +2,16 @@
 local function _1_()
   do end (require("rose-pine")).setup({dark_variant = "moon"})
   vim.cmd("colorscheme rose-pine")
-  local appearance = os.getenv("WINDOW_APPEARANCE")
-  if (appearance == nil) then
-    apppearance = "dark"
-  else
+  do
+    local appearance = os.getenv("WINDOW_APPEARANCE")
+    if (appearance == nil) then
+      apppearance = "dark"
+    else
+    end
+    vim.api.nvim_set_option_value("background", appearance, {})
   end
-  return vim.api.nvim_set_option_value("background", appearance, {})
+  vim.g.neovide_theme = "auto"
+  return nil
 end
 local function _3_()
   local ibl = require("ibl")
