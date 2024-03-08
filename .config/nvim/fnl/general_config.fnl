@@ -8,6 +8,7 @@
 (set vim.opt.foldlevelstart  99)
 (set vim.opt.spell true)
 (set vim.opt.spelllang [:en_us])
+(set vim.o.guifont "MonoLisa Nerd Font")
 
 ;; Copy to clipboard
 (vim.keymap.set :n :<Leader>y "\"+y" { :desc "Yank to clipboard" })
