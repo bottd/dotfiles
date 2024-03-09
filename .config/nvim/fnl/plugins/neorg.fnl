@@ -54,11 +54,6 @@
                 :default_workspace workspace
               }
             }
-            :core.esupports.metagen {
-              :config {
-                :type "auto"
-              }
-            }
             :core.export {}
             :core.export.markdown {
               :config {
@@ -123,6 +118,13 @@
         2 ":Neorg index<Cr>"
         :desc "Index"
       }
+      {
+        :mode "n"
+        1 "<leader>nmi"
+        2 ":Neorg inject-metadata<Cr>"
+        :desc "Inject Metadata"
+      }
+
       {
         :mode "n"
         1 "<leader>nf"
