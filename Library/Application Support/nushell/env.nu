@@ -2,6 +2,21 @@
 #
 # version = 0.82.0
 
+# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
+# let-env PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
+$env.PATH = (
+  $env.PATH
+  | split row (char esep)
+  | prepend '/opt/homebrew/bin'
+  | prepend '~/.cargo/bin'
+  | prepend '/Applications/calibre.app/Contents/MacOS'
+  | prepend '~/platform-tool'
+  | prepend '/Users/drakebott/.local/bin'
+)
+
+$env.NEORG_WORKSPACE = "chalet"
+$env.NEORG_WORKSPACE_PATH = "~/chalet"
+
 $env.STARSHIP_SHELL = "nu"
 
 def create_left_prompt [] {
@@ -69,11 +84,4 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins')
 ]
 
-# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-# let-env PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-$env.PATH = (
-  $env.PATH
-  | split row (char esep)
-  | prepend '/opt/homebrew/bin'
-  | prepend '/usr/local/cargo/bin'
-)
+
