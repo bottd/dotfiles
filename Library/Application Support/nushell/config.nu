@@ -548,3 +548,5 @@ $env.config = {
     }
   ]
 }
+
+source git.nu
