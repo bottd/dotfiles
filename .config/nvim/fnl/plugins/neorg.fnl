@@ -4,15 +4,13 @@
 [
   {
     1 :vhyrro/luarocks.nvim
-    :branch "more-fixes"
-    :config (fn []
-              (let [luarocks (require :luarocks)]
-                (luarocks.setup {})))
+    :priority 1000
+    :config true
   }
   {
     1 :nvim-neorg/neorg
-    :build ":Neorg sync-parsers"
     :dependencies [
+      :vhyrro/luarocks.nvim
       :MunifTanjim/nui.nvim
       :nvim-lua/plenary.nvim
       :nvim-neorg/neorg-telescope
