@@ -8,19 +8,20 @@
     :config true
   }
   {
+    1 :lukas-reineke/headlines.nvim
+    :config true
+  }
+  {
     1 :nvim-neorg/neorg
     :dependencies [
       :vhyrro/luarocks.nvim
       :MunifTanjim/nui.nvim
       :nvim-lua/plenary.nvim
       :nvim-neorg/neorg-telescope
+      :lukas-reineke/headlines.nvim
       { 
         1 :pysan3/neorg-templates 
         :dependencies [:L3MON4D3/LuaSnip]
-      }
-      {
-        1 :lukas-reineke/headlines.nvim
-        :config true
       }
     ]
     :ft "norg"
