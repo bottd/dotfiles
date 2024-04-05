@@ -37,20 +37,4 @@
       })
     ))
   }
-  2 {
-    1 :numToStr/Comment.nvim
-    :dependencies [
-      :JoosepAlviste/nvim-ts-context-commentstring
-      :nvim-treesitter/nvim-treesitter
-    ]
-    :config (fn []
-      (let [comment-nvim (require :Comment)]
-      (comment-nvim.setup {
-        :pre_hook (fn []
-          (let [ts-comment-integration (require :ts_context_commentstring.integrations.comment_nvim)]
-          (ts-comment-integration.create_pre_hook)
-       ))
-      })
-    ))
-  }
 }
