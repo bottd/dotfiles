@@ -4,7 +4,7 @@
     :debugloop/telescope-undo.nvim
     {
       1 :nvim-telescope/telescope-fzf-native.nvim
-      :build "arch -arm64 make"
+      :build "make"
     }
   ]
   :config (fn []
