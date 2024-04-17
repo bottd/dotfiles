@@ -20,6 +20,7 @@
   "image.nvim": { "branch": "master", "commit": "6ca359021f7bc3d850d4592cf8bf6295f457b2c5" },
   "indent-blankline.nvim": { "branch": "master", "commit": "3d08501caef2329aba5121b753e903904088f7e6" },
   "lazy.nvim": { "branch": "main", "commit": "31ddbea7c10b6920c9077b66c97951ca8682d5c8" },
+  "lazygit.nvim": { "branch": "main", "commit": "0ada6c6e7e138df92f5009b6952f4ac41248305a" },
   "lsp-zero.nvim": { "branch": "dev-v3", "commit": "b768db11b7ff3a142a779a321dee86098c82fe4f" },
   "lualine-lsp-progress": { "branch": "master", "commit": "56842d097245a08d77912edf5f2a69ba29f275d7" },
   "lualine.nvim": { "branch": "master", "commit": "0a5a66803c7407767b799067986b4dc3036e1983" },
