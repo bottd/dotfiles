@@ -1,9 +1,13 @@
 -- [nfnl] Compiled from fnl/plugins/neorg.fnl by https://github.com/Olical/nfnl, do not edit.
+local _local_1_ = require("../zk")
+local get_sorted_zettel = _local_1_["get_sorted_zettel"]
+local workspace = os.getenv("NEORG_WORKSPACE")
+local workspace_path = os.getenv("NEORG_WORKSPACE_PATH")
 do
   local neorg = require("neorg")
   neorg.setup({load = {["core.defaults"] = {}, ["core.concealer"] = {config = {}}, ["core.completion"] = {config = {engine = "nvim-cmp", name = "[Norg]"}}, ["core.dirman"] = {config = {workspaces = {[workspace] = workspace_path, inbox = (workspace_path .. "/inbox"), journals = (workspace_path .. "/journals"), meta = (workspace_path .. "/meta"), notes = (workspace_path .. "/notes"), public = (workspace_path .. "/public"), resources = (workspace_path .. "/resources"), scripts = (workspace_path .. "/scripts"), zettel = (workspace_path .. "/zettel")}, default_workspace = workspace}}, ["core.export"] = {}, ["core.export.markdown"] = {config = {extensions = "all"}}, ["core.integrations.telescope"] = {}, ["core.integrations.nvim-cmp"] = {}, ["core.integrations.treesitter"] = {}, ["core.itero"] = {}, ["core.journal"] = {config = {journal_folder = "daily", template_name = "meta/templates/journal.norg", strategy = "flat", workspace = "journals"}}, ["core.summary"] = {}, ["core.tangle"] = {}, ["external.templates"] = {config = {templates_dir = (workspace_path .. "/meta/templates")}}}})
 end
-local function _1_()
+local function _2_()
   do
     local win_width = math.floor((vim.o.columns * 0.6))
     local win_height = math.floor((vim.o.lines * 0.8))
@@ -12,7 +16,7 @@ local function _1_()
   end
   return vim.api.nvim_command(":Neorg journal today")
 end
-vim.keymap.set("n", "<leader>j", _1_, {desc = "Journal"})
+vim.keymap.set("n", "<leader>j", _2_, {desc = "Journal"})
 vim.keymap.set("n", "<leader>nj", ":Neorg journal<Cr>", {desc = "Journal"})
 vim.keymap.set("n", "<leader>ni", ":Neorg index<Cr>", {desc = "Index"})
 vim.keymap.set("n", "<leader>nmi", ":Neorg inject-metadata<Cr>", {desc = "Inject Metadata"})

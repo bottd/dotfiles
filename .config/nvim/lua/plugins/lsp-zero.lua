@@ -1,4 +1,4 @@
--- [nfnl] Compiled from fnl/plugins/nvim-lspconfig.fnl by https://github.com/Olical/nfnl, do not edit.
+-- [nfnl] Compiled from fnl/plugins/lsp-zero.fnl by https://github.com/Olical/nfnl, do not edit.
 vim.g.lsp_zero_extend_cmp = 0
 vim.g.lsp_zero_extend_lspconfig = 0
 local lsp_zero = require("lsp-zero")
