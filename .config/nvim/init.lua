@@ -26,16 +26,7 @@
  vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
 
 -- Image.nvim setup
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
-
--- require('plugin_manager');
--- loading lazy prevents rocks.nvim from loading
--- lazy loads plugins from /lua/plugins/*.lua files
--- require('lazy').setup('plugins')
+-- package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
+-- package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
 
 require('general_config');
-
--- Copy to clipboard
-vim.keymap.set('n', '<Leader>y', '"+y');
-
