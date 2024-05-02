@@ -12,4 +12,9 @@ local function _2_()
   local oil0 = require("oil")
   return oil0.toggle_float(current_dir)
 end
-return vim.keymap.set("n", "<C-m>", _2_, {desc = "Oil - current directory"})
+vim.keymap.set("n", "<C-m>", _2_, {desc = "Oil - current directory"})
+local function _3_()
+  local oil0 = require("oil")
+  return oil0.select({vertical = true})
+end
+return vim.keymap.set("n", "<C-v>", _3_, {desc = "Oil - select vsplit", buffer = "oil"})
