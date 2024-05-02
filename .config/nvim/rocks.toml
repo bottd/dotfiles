@@ -78,3 +78,4 @@ vim-autoswap = { git = "gioele/vim-autoswap"}
 nvim-colorizer = { git = "NvChad/nvim-colorizer.lua" }
 "nui.nvim" = "0.3.0"
 "plenary.nvim" = "scm"
+nvim-ts-autotag = "scm"

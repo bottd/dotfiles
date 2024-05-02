@@ -1,3 +1,6 @@
+(local {: get_sorted_zettel } (require :../zk))
+(local workspace (os.getenv :NEORG_WORKSPACE))
+(local workspace_path (os.getenv :NEORG_WORKSPACE_PATH))
 (let [neorg (require :neorg)]
   (neorg.setup {
     :load {
