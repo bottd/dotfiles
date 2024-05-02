@@ -1,14 +1,80 @@
-# This is your rocks.nvim plugins declaration file.
-# Here is a small yet pretty detailed example on how to use it:
-#
-# [plugins]
-# nvim-treesitter = "semver_version"  # e.g. "1.0.0"
+[config]
+plugins_dir = "plugins/"
+auto_setup = true
 
-# List of non-Neovim rocks.
-# This includes things like `toml` or other lua packages.
-[rocks]
+# Plugins I didn't install
+# rafamadriz/friendly-snippets
+# f3fora/cmp-spell
+# akinsho/toggleterm.nvim
+# nvim-pack/nvim-spectre
+# dustinblackman/oatmeal.nvim
 
-# List of Neovim plugins to install alongside their versions.
-# If the plugin name contains a dot then you must add quotes to the key name!
+# TODO: plugins files to migrate:
+# image, hydra, git, diagnostic, conjure
+
+# TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.18.0" # rocks.nvim can also manage itself :D
+"rocks.nvim" = "2.26.0"
+"rocks-config.nvim" = "1.5.0"
+neorg = "8.4.0"
+"rocks-git.nvim" = "1.5.0"
+"rocks-treesitter.nvim" = "scm"
+"oil.nvim" = "2.8.0"
+"nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
+"cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
+"cmp-buffer" = { git = "hrsh7th/cmp-buffer" }
+"cmp-path" = { git = "hrsh7th/cmp-path" }
+"cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
+luasnip = "2.3.0"
+"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "dev-v3" }
+conjure = { git = "Olical/conjure" }
+nvim-autopairs = "scm"
+"copilot.lua" = "scm"
+"mason.nvim" = "1.10.0"
+nfnl = { git = "Olical/nfnl" }
+nvim-treesitter = { git = "nvim-treesitter/nvim-treesitter" } 
+neorg-templates = { git = "pysan3/neorg-templates" }
+"zen-mode.nvim" = "scm"
+rose-pine = "scm"
+
+# ts parsers
+tree-sitter-comment = "scm"
+tree-sitter-css = "scm"
+tree-sitter-diff = "scm"
+tree-sitter-fennel = "scm"
+tree-sitter-fish = "scm"
+tree-sitter-gitignore = "scm"
+tree-sitter-graphql = "scm"
+tree-sitter-html = "scm"
+tree-sitter-json = "scm"
+tree-sitter-markdown = "scm"
+tree-sitter-markdown_inline = "scm"
+# tree-sitter-norg = "scm"
+tree-sitter-lua = "scm"
+tree-sitter-python = "scm"
+tree-sitter-rust = "scm"
+tree-sitter-sql = "scm"
+tree-sitter-svelte = "scm"
+tree-sitter-toml = "scm"
+tree-sitter-tsx = "scm"
+tree-sitter-typescript = "scm"
+tree-sitter-vimdoc = "scm"
+"headlines.nvim" = "4.0.1"
+neorg-telescope = "1.1.0"
+"which-key.nvim" = "1.6.0"
+"indent-blankline.nvim" = "3.5.4"
+"telescope.nvim" = "scm"
+"telescope-undo.nvim" = "scm"
+"telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make"}
+
+# out of date with git
+nvim-web-devicons = "0.99"
+"lualine.nvim" = "scm"
+alpha-nvim = "scm"
+"bufdelete.nvim" = "scm"
+"flash.nvim" = "1.18.2"
+nvim-lspconfig = "0.1.7"
+vim-autoswap = { git = "gioele/vim-autoswap"}
+nvim-colorizer = { git = "NvChad/nvim-colorizer.lua" }
+"nui.nvim" = "0.3.0"
+"plenary.nvim" = "scm"

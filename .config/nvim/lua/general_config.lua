@@ -9,5 +9,7 @@ vim.opt.foldlevelstart = 99
 vim.opt.spell = true
 vim.opt.spelllang = {"en_us"}
 vim.o.guifont = "MonoLisa Nerd Font"
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 vim.keymap.set("n", "<Leader>y", "\"+y", {desc = "Yank to clipboard"})
 return vim.keymap.set("t", "<Esc>", "<C-\\\\><C-n>")
