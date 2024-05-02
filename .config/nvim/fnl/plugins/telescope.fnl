@@ -1,14 +1,4 @@
-{
-  1 :nvim-telescope/telescope.nvim
-  :dependencies [
-    :debugloop/telescope-undo.nvim
-    {
-      1 :nvim-telescope/telescope-fzf-native.nvim
-      :build "make"
-    }
-  ]
-  :config (fn []
-    (let [telescope (require :telescope)]
+(let [telescope (require :telescope)]
       (telescope.setup {
         :pickers {
           :find_files {
@@ -31,45 +21,41 @@
         }
       })
       (telescope.load_extension :fzf)
-      (telescope.load_extension :undo)
-    )
-  )
-  :keys [
-   {
-     :mode "n" 
-     1 "<leader>fb"
-     2 ":Telescope buffers<Cr>"
-     :desc "Find Buffer"
-   }
-   {
-     :mode "n" 
-     1 "<leader>ff"
-     2 ":Telescope find_files<Cr>"
-     :desc "Find Files"
-   }
-   {
-     :mode "n" 
-     1 "<leader>fs"
-     2 ":Telescope live_grep<Cr>"
-     :desc "Find String"
-   }
-   {
-     :mode "n" 
-     1 "<leader>fk"
-     2 ":Telescope keymaps<Cr>"
-     :desc "Find Keymap"
-   }
-   {
-     :mode "n" 
-     1 "<leader>fh"
-     2 ":Telescope help_tags<Cr>"
-     :desc "Find Help"
-   }
-   {
-     :mode "n" 
-     1 "<leader>fu"
-     2 ":Telescope undo<Cr>"
-     :desc "Undo Tree"
-   }
-  ]
-}
+      (telescope.load_extension :undo))
+
+
+(vim.keymap.set
+     "n" 
+     "<leader>fb"
+     ":Telescope buffers<Cr>"
+     { :desc "Find Buffer" })
+
+(vim.keymap.set
+     "n" 
+     "<leader>ff"
+     ":Telescope find_files<Cr>"
+     { :desc "Find Files" })
+
+(vim.keymap.set
+     "n" 
+     "<leader>fs"
+     ":Telescope live_grep<Cr>"
+     { :desc "Find String" })
+
+(vim.keymap.set
+  "n" 
+     "<leader>fk"
+     ":Telescope keymaps<Cr>"
+     { :desc "Find Keymap" })
+
+(vim.keymap.set
+     "n" 
+     "<leader>fh"
+     ":Telescope help_tags<Cr>"
+     { :desc "Find Help" })
+
+(vim.keymap.set
+     "n" 
+     "<leader>fu"
+     ":Telescope undo<Cr>"
+     { :desc "Undo Tree" })
