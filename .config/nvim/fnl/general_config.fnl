@@ -10,7 +10,6 @@
 (set vim.opt.spelllang [:en_us])
 (set vim.o.guifont "MonoLisa Nerd Font")
 (set vim.g.mapleader " ")
-(set vim.g.maplocalleader " ")
 
 ;; Copy to clipboard
 (vim.keymap.set :n :<Leader>y "\"+y" { :desc "Yank to clipboard" })
