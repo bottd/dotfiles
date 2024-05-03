@@ -11,4 +11,8 @@ vim.opt.spelllang = {"en_us"}
 vim.o.guifont = "MonoLisa Nerd Font"
 vim.g.mapleader = " "
 vim.keymap.set("n", "<Leader>y", "\"+y", {desc = "Yank to clipboard"})
-return vim.keymap.set("t", "<Esc>", "<C-\\\\><C-n>")
+vim.keymap.set("t", "<Esc>", "<C-\\\\><C-n>")
+vim.o.winwidth = 10
+vim.o.winminwidth = 10
+vim.o.equalalways = false
+return nil
