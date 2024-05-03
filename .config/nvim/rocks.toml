@@ -10,7 +10,7 @@ auto_setup = true
 # dustinblackman/oatmeal.nvim
 
 # TODO: plugins files to migrate:
-# image, hydra, git, diagnostic, conjure
+# image, diagnostic, conjure
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
@@ -55,6 +55,13 @@ auto_setup = true
 "nui.nvim" = "0.3.0"
 "plenary.nvim" = "scm"
 "nvim-ts-autotag" = "scm"
+"hydra.nvim" = "1.0.2"
+"smart-splits.nvim" = "1.4.0"
+"middleclass" = { git = "anuvyklack/middleclass" }
+"animation.nvim" = { git = "anuvyklack/animation.nvim" }
+"windows.nvim" = { git = "anuvyklack/windows.nvim" }
+"gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
+"lazygit.nvim" = "scm"
 
 # ts parsers
 "tree-sitter-comment" = "scm"
