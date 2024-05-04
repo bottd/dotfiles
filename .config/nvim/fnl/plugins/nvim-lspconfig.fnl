@@ -25,7 +25,7 @@
             7 :rust_analyzer
             8 :sqlls
             9 :stylelint_lsp
-            :sumneko_lua {
+            :lua_ls {
               :Lua {
                 :diagnostics { :globals [:vim] }
                 :workspace { :checkThirdParty false }

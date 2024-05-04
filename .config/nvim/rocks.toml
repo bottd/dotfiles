@@ -3,8 +3,6 @@ plugins_dir = "plugins/"
 auto_setup = true
 
 # Plugins I didn't install
-# rafamadriz/friendly-snippets
-# f3fora/cmp-spell
 # akinsho/toggleterm.nvim
 # nvim-pack/nvim-spectre
 # dustinblackman/oatmeal.nvim
@@ -18,7 +16,7 @@ auto_setup = true
 "rocks-config.nvim" = "1.5.0"
 "neorg" = "8.4.0"
 "rocks-git.nvim" = "1.5.0"
-"rocks-treesitter.nvim" = "scm"
+"rocks-treesitter.nvim" = { dir = "~/workspace/github/rocks-treesitter.nvim" }
 "oil.nvim" = "2.8.0"
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
 "cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
@@ -28,6 +26,7 @@ auto_setup = true
 "luasnip" = "2.3.0"
 "lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
 "conjure" = { git = "Olical/conjure" }
+"cmp-conjure" = { git = "PaterJason/cmp-conjure" }
 "nvim-autopairs" = "scm"
 "copilot.lua" = "scm"
 "mason.nvim" = "1.10.0"
@@ -48,7 +47,7 @@ auto_setup = true
 "lualine.nvim" = "scm"
 "alpha-nvim" = "scm"
 "bufdelete.nvim" = "scm"
-"flash.nvim" = "1.18.2"
+# "flash.nvim" = "1.18.2"
 "nvim-lspconfig" = "0.1.7"
 "vim-autoswap" = { git = "gioele/vim-autoswap"}
 "nvim-colorizer" = { git = "NvChad/nvim-colorizer.lua" }
@@ -62,29 +61,31 @@ auto_setup = true
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
+"rocks-dev.nvim" = "1.2.1"
 
-# ts parsers
-"tree-sitter-comment" = "scm"
-"tree-sitter-css" = "scm"
-"tree-sitter-diff" = "scm"
-"tree-sitter-fennel" = "scm"
-"tree-sitter-fish" = "scm"
-"tree-sitter-gitignore" = "scm"
-"tree-sitter-graphql" = "scm"
-"tree-sitter-html" = "scm"
-"tree-sitter-json" = "scm"
-"tree-sitter-markdown" = "scm"
-"tree-sitter-markdown_inline" = "scm"
-# someday 🙏
-# tree-sitter-norg = "scm"
-"tree-sitter-lua" = "scm"
-"tree-sitter-python" = "scm"
-"tree-sitter-rust" = "scm"
-"tree-sitter-sql" = "scm"
-"tree-sitter-svelte" = "scm"
-"tree-sitter-toml" = "scm"
-"tree-sitter-tsx" = "scm"
-"tree-sitter-typescript" = "scm"
-"tree-sitter-vimdoc" = "scm"
-
-
+[treesitter]
+auto_highlight = [
+  "comment",
+  "css",
+  "diff",
+  "fennel",
+  "fish",
+  "gitignore",
+  "graphql",
+  "html",
+  "json",
+  "markdown",
+  "markdown_inline",
+  # someday 🙏
+  # norg
+  "lua",
+  "python",
+  "rust",
+  "sql",
+  "svelte",
+  "toml",
+  "tsx",
+  "typescript",
+  "vimdoc"
+]
+auto_install = true

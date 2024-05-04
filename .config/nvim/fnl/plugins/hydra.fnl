@@ -34,7 +34,6 @@
       [:j :<C-w>j]
       [:k (pcmd "wincmd k" :E11 :close)]
       [:l :<C-w>l]
-
       [:H (cmd "WinShift left")]
       [:J (cmd "WinShift down")]
       [:K (cmd "WinShift up")]
@@ -44,24 +43,18 @@
       [:<C-k> (fn [] (splits.resize_up 2))]
       [:<C-l> (fn [] (splits.resize_right 2))]
       [:= :<C-w>= { :desc "equalize"}]
-
       [:s (pcmd :split :E36)]
       [:<C-s> (pcmd :split :E36) { :desc false }]
       [:v (pcmd :vsplit :E36)]
       [:<C-v> (pcmd :vsplit :E36) { :desc false }]
-
       [:w :<C-w>w { :exit true :desc false }]
       [:<C-w> :<C-w>w { :exit true :desc false }]
-
       [:z (cmd :WindowsMaximaze) { :exit true :desc "maximize" }]
       [:<C-z> (cmd :WindowsMaximaze) { :exit true :desc false }]
-
       [:o :<C-w>o { :exit true :desc "remain only"}]
       [:<C-o> :<C-w>o { :exit true :desc false }]
-
       [:b choose_buffer { :exit true :desc "choose buffer" }]
       [:t (fn [] (vim.fn.termopen))]
-
       [:c (pcmd :close :E444)]
       [:q (pcmd :close :E444) { :desc "close window" }]
       [:<C-c> (pcmd :close :E444) { :desc false }]
