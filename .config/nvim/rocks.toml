@@ -14,7 +14,7 @@ auto_setup = true
 [plugins]
 "rocks.nvim" = "2.26.0"
 "rocks-config.nvim" = "1.5.0"
-"neorg" = "8.4.0"
+"neorg" = "8.5.0"
 "rocks-git.nvim" = "1.5.0"
 "rocks-treesitter.nvim" = { dir = "~/workspace/github/rocks-treesitter.nvim" }
 "oil.nvim" = "2.8.0"
@@ -54,6 +54,7 @@ auto_setup = true
 "nui.nvim" = "0.3.0"
 "plenary.nvim" = "scm"
 "nvim-ts-autotag" = "scm"
+"ts-comments.nvim" = { git = "folke/ts-comments.nvim" }
 "hydra.nvim" = "1.0.2"
 "smart-splits.nvim" = "1.4.0"
 "middleclass" = { git = "anuvyklack/middleclass" }
