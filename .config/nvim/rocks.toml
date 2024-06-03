@@ -12,11 +12,12 @@ auto_setup = true
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.26.0"
-"rocks-config.nvim" = "1.5.0"
+"rocks.nvim" = "2.29.2"
+# "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
+"rocks-config.nvim" = "1.6.0"
 "neorg" = "8.5.0"
 "rocks-git.nvim" = "1.5.0"
-"rocks-treesitter.nvim" = { dir = "~/workspace/github/rocks-treesitter.nvim" }
+"rocks-treesitter.nvim" = "scm"
 "oil.nvim" = "2.8.0"
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
 "cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
@@ -39,7 +40,7 @@ auto_setup = true
 "headlines.nvim" = "4.0.1"
 "neorg-telescope" = "1.1.0"
 "which-key.nvim" = "1.6.0"
-"indent-blankline.nvim" = "3.5.4"
+"indent-blankline.nvim" = { version = "3.5.4", nosetup = true }
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make"}

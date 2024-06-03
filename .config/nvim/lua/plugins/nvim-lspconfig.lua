@@ -15,4 +15,4 @@ do
 end
 local lsp_zero = require("lsp-zero")
 local mason_lspconfig = require("mason-lspconfig")
-return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "svelte", "tailwindcss", "tsserver", "fennel_ls", lua_ls = {Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}}}, handlers = {lsp_zero.default_setup}})
+return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", rust_analyzer = {cargo = {features = {"ssr"}}, procMacro = {ignored = {leptos_macro = {"server"}}}}, [8] = "sqlls", [9] = "stylelint_lsp", lua_ls = {Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}}, [10] = "svelte", [11] = "tailwindcss", [12] = "tsserver", [13] = "fennel_ls"}, handlers = {lsp_zero.default_setup}})
