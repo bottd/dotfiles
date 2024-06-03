@@ -22,7 +22,16 @@
             4 :html
             5 :jsonnet_ls
             6 :pyright
-            7 :rust_analyzer
+            :rust_analyzer {
+              :cargo {
+                :features [:ssr]
+              }
+              :procMacro {
+                :ignored {
+                  :leptos_macro [:server]
+                }
+              }
+            }
             8 :sqlls
             9 :stylelint_lsp
             :lua_ls {
