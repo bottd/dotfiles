@@ -8,9 +8,6 @@
 ; (local SOLID-RIGHT-ARROW (_G.utf8.char 0xe0b0))
 ; (local SOLID-LEFT-CIRCLE (_G.utf8.char 0xE3))
 
-(local light (require "theme/rose-pine-dawn"))
-(local dark (require "theme/rose-pine-moon"))
-
 (fn get_appearance []
   (if wezterm.gui
     (string.lower (wezterm.gui.get_appearance))
@@ -19,17 +16,16 @@
 
 (fn scheme_for_appearance []
   (let [appearance (get_appearance)]
-    (if (appearance:find "dark")
-      [(dark.colors) (dark.window_frame)]
-      [(light.colors) (light.window_frame)]
+    (if (appearance:find "Dark")
+      "rose-pine-moon"
+      "rose-pine-dawn"
   )))
 
 (wezterm.on "window-config-reloaded" (fn [window pane]
   (local overrides (or (window:get_config_overrides) {}))
-  (local [colors window_frame] (scheme_for_appearance))
-  (when (not= overrides.colors colors)
-      (tset overrides :colors colors)
-      (tset overrides :window_frame window_frame)
+  (local scheme (scheme_for_appearance))
+  (when (not= overrides.color_scheme scheme)
+      (tset overrides :color_scheme scheme)
       (tset overrides :set_environment_variables {
         :WINDOW_APPEARANCE (get_appearance)
       })
@@ -37,8 +33,7 @@
   )
 ))
 {
-  :colors (light.colors)
-  :window_frame (light.window_frame)
+  :color_scheme (scheme_for_appearance)
   :set_environment_variables {
     :WINDOW_APPEARANCE (get_appearance)
   }
