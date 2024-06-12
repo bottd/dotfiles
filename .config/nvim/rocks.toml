@@ -12,11 +12,11 @@ auto_setup = true
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.30.0"
+"rocks.nvim" = "2.31.0"
 # "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
 "rocks-config.nvim" = "1.6.0"
 # "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
-"rocks-dev.nvim" = "1.2.2"
+"rocks-dev.nvim" = "1.2.3"
 "neorg" = "8.5.0"
 "neodev.nvim"= "scm"
 "rocks-git.nvim" = "1.5.0"
