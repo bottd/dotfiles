@@ -9,9 +9,11 @@ $env.PATH = (
   | split row (char esep)
   | prepend '/opt/homebrew/bin'
   | prepend '~/.cargo/bin'
-  | prepend '/Applications/calibre.app/Contents/MacOS'
-  | prepend '~/platform-tool'
+#  | prepend '/Applications/calibre.app/Contents/MacOS'
+#  | prepend '~/platform-tool'
   | prepend '/Users/drakebott/.local/bin'
+  | prepend '~/.volta/bin'
+  | prepend '/nix/var/nix/profiles/default/bin'
 )
 
 $env.NEORG_WORKSPACE = "chalet"
