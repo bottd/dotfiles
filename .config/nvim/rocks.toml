@@ -12,29 +12,33 @@ auto_setup = true
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.31.0"
-# "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
+"rocks.nvim" = "2.31.3"
 "rocks-config.nvim" = "1.6.0"
-# "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
 "rocks-dev.nvim" = "1.2.3"
-"neorg" = "8.5.0"
-"neodev.nvim"= "scm"
-"rocks-git.nvim" = "1.5.0"
+"rocks-git.nvim" = "1.5.1"
 "rocks-treesitter.nvim" = "scm"
-"oil.nvim" = "2.8.0"
+# "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
+# "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
+
+# plugins for cmp bundle
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
 "cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
 "cmp-buffer" = { git = "hrsh7th/cmp-buffer" }
 "cmp-path" = { git = "hrsh7th/cmp-path" }
 "cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
-"luasnip" = "2.3.0"
-"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
-"conjure" = { git = "Olical/conjure" }
 "cmp-conjure" = { git = "PaterJason/cmp-conjure" }
-"nvim-autopairs" = "scm"
 "copilot.lua" = "scm"
+"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
+"luasnip" = "2.3.0"
+
+
+"neorg" = "8.5.0"
+"neodev.nvim"= "scm"
+"oil.nvim" = "2.9.0"
+"conjure" = { git = "Olical/conjure" }
+"nvim-autopairs" = "scm"
 "mason.nvim" = "1.10.0"
-"mason-lspconfig.nvim" = "1.28.0"
+"mason-lspconfig.nvim" = "1.29.0"
 "nfnl" = { git = "Olical/nfnl" }
 "nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" } 
 "neorg-templates" = { git = "pysan3/neorg-templates" }
@@ -42,30 +46,42 @@ auto_setup = true
 "rose-pine" = "scm"
 "headlines.nvim" = "4.0.1"
 "neorg-telescope" = "1.1.0"
-"which-key.nvim" = "1.6.0"
-"indent-blankline.nvim" = { version = "3.5.4", nosetup = true }
+"which-key.nvim" = "2.1.0"
+"indent-blankline.nvim" = { version = "3.6.2" }
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make"}
-"nvim-web-devicons" = "0.99"
+"nvim-web-devicons" = "0.100"
 "lualine.nvim" = "scm"
 "alpha-nvim" = "scm"
 "bufdelete.nvim" = "scm"
 # "flash.nvim" = "1.18.2"
-"nvim-lspconfig" = "0.1.7"
+"nvim-lspconfig" = "0.1.8"
 "vim-autoswap" = { git = "gioele/vim-autoswap"}
 "nvim-colorizer" = { git = "NvChad/nvim-colorizer.lua" }
-"nui.nvim" = "0.3.0"
-"plenary.nvim" = "scm"
+"plenary.nvim" = { version = "scm" }
 "nvim-ts-autotag" = "scm"
 "ts-comments.nvim" = { git = "folke/ts-comments.nvim" }
 "hydra.nvim" = "1.0.2"
-"smart-splits.nvim" = "1.4.0"
+"smart-splits.nvim" = "1.5.0"
 "middleclass" = { git = "anuvyklack/middleclass" }
 "animation.nvim" = { git = "anuvyklack/animation.nvim" }
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
+
+[bundles.cmp]
+items = [
+  "nvim-cmp",
+  "cmp-nvim-lsp",
+  "cmp-buffer",
+  "cmp-path",
+  "cmp-cmdline",
+  "cmp-conjure",
+  "copilot.lua",
+  "lsp-zero.nvim",
+  "luasnip"
+]
 
 [treesitter]
 auto_highlight = [
