@@ -10,14 +10,12 @@ $env.PATH = (
   | prepend '/opt/homebrew/bin'
   | prepend '~/.cargo/bin'
 #  | prepend '/Applications/calibre.app/Contents/MacOS'
-#  | prepend '~/platform-tool'
-  | prepend '/Users/drakebott/.local/bin'
+  | prepend '~/platform-tool'
+  | prepend $"/Users/(whoami | str trim)/.local/bin"
   | prepend '~/.volta/bin'
   | prepend '/nix/var/nix/profiles/default/bin'
 )
-
-$env.NEORG_WORKSPACE = "chalet"
-$env.NEORG_WORKSPACE_PATH = "~/chalet"
+let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
 
@@ -86,4 +84,6 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins')
 ]
 
-
+# Source local.env.nu for untracked, per-machine env variables
+const some_path = $nu.default-config-dir
+source-env $"($some_path)/local.env.nu"
