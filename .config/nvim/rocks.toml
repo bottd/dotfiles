@@ -16,7 +16,6 @@ auto_setup = true
 "rocks-config.nvim" = "2.1.1"
 "rocks-dev.nvim" = "1.2.3"
 "rocks-git.nvim" = "1.5.1"
-"rocks-treesitter.nvim" = "scm"
 # "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
 # "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
 
@@ -40,11 +39,10 @@ auto_setup = true
 "mason.nvim" = "1.10.0"
 "mason-lspconfig.nvim" = "1.29.0"
 "nfnl" = { git = "Olical/nfnl" }
-"nvim-treesitter" = "0.9.2"
 "neorg-templates" = { git = "pysan3/neorg-templates" }
 "zen-mode.nvim" = "scm"
 "rose-pine" = "scm"
-"headlines.nvim" = "4.0.1"
+"headlines.nvim" = "scm"
 "neorg-telescope" = "1.1.0"
 "which-key.nvim" = "2.1.0"
 "indent-blankline.nvim" = { version = "3.7.1" }
@@ -68,6 +66,29 @@ auto_setup = true
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
+tree-sitter-json = "scm"
+tree-sitter-javascript = "scm"
+tree-sitter-toml = "scm"
+tree-sitter-css = "scm"
+tree-sitter-comment = "scm"
+tree-sitter-diff = "scm"
+tree-sitter-fennel = "scm"
+tree-sitter-fish = "scm"
+tree-sitter-gitignore = "scm"
+tree-sitter-graphql = "scm"
+tree-sitter-html = "scm"
+tree-sitter-markdown = "scm"
+tree-sitter-markdown_inline = "scm"
+tree-sitter-lua = "scm"
+tree-sitter-python = "scm"
+tree-sitter-rust = "scm"
+tree-sitter-sql = "scm"
+tree-sitter-svelte = "scm"
+tree-sitter-tsx = "scm"
+tree-sitter-typescript = "scm"
+tree-sitter-vimdoc = "scm"
+# tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
+nvim-treesitter-legacy-api = "0.9.2"
 
 [bundles.cmp]
 items = [
@@ -83,28 +104,5 @@ items = [
 ]
 
 [treesitter]
-auto_highlight = [
-  "comment",
-  "css",
-  "diff",
-  "fennel",
-  "fish",
-  "gitignore",
-  "graphql",
-  "html",
-  "json",
-  "markdown",
-  "markdown_inline",
-  # someday 🙏
-  # norg
-  "lua",
-  "python",
-  "rust",
-  "sql",
-  "svelte",
-  "toml",
-  "tsx",
-  "typescript",
-  "vimdoc"
-]
-auto_install = true
+auto_highlight = "all"
+auto_install = "prompt"
