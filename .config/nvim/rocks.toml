@@ -12,8 +12,8 @@ auto_setup = true
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.31.3"
-"rocks-config.nvim" = "1.6.0"
+"rocks.nvim" = "2.32.1"
+"rocks-config.nvim" = "2.1.1"
 "rocks-dev.nvim" = "1.2.3"
 "rocks-git.nvim" = "1.5.1"
 "rocks-treesitter.nvim" = "scm"
@@ -34,20 +34,20 @@ auto_setup = true
 
 "neorg" = "8.5.0"
 "neodev.nvim"= "scm"
-"oil.nvim" = "2.9.0"
+"oil.nvim" = "2.10.0"
 "conjure" = { git = "Olical/conjure" }
 "nvim-autopairs" = "scm"
 "mason.nvim" = "1.10.0"
 "mason-lspconfig.nvim" = "1.29.0"
 "nfnl" = { git = "Olical/nfnl" }
-"nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" } 
+"nvim-treesitter" = "0.9.2"
 "neorg-templates" = { git = "pysan3/neorg-templates" }
 "zen-mode.nvim" = "scm"
 "rose-pine" = "scm"
 "headlines.nvim" = "4.0.1"
 "neorg-telescope" = "1.1.0"
 "which-key.nvim" = "2.1.0"
-"indent-blankline.nvim" = { version = "3.6.2" }
+"indent-blankline.nvim" = { version = "3.7.1" }
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make"}
@@ -59,7 +59,6 @@ auto_setup = true
 "nvim-lspconfig" = "0.1.8"
 "vim-autoswap" = { git = "gioele/vim-autoswap"}
 "nvim-colorizer" = { git = "NvChad/nvim-colorizer.lua" }
-"plenary.nvim" = { version = "scm" }
 "nvim-ts-autotag" = "scm"
 "ts-comments.nvim" = { git = "folke/ts-comments.nvim" }
 "hydra.nvim" = "1.0.2"
