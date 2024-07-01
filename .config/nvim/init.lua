@@ -1,11 +1,10 @@
 -- Rocks.nvim configuration from installer
  local rocks_config = {
      rocks_path = vim.env.HOME .. "/.local/share/nvim/rocks",
-     luarocks_binary = vim.env.HOME .. "/.local/share/nvim/rocks/bin/luarocks",
  }
- 
+
  vim.g.rocks_nvim = rocks_config
- 
+
  local luarocks_path = {
      vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?.lua"),
      vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?", "init.lua"),
@@ -28,6 +27,6 @@
 -- Image.nvim setup
 -- package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
 -- package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
-vim.cmd([[packadd rocks-dev.nvim]])
+-- vim.cmd([[packadd rocks-dev.nvim]])
 
 require('general_config');
