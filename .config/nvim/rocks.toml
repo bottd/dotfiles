@@ -13,9 +13,11 @@ auto_setup = true
 # TODO: read and fix lspconfig plugins file error
 [plugins]
 "rocks.nvim" = "2.32.1"
-"rocks-config.nvim" = "2.1.1"
+"rocks-config.nvim" = "2.1.2"
 "rocks-dev.nvim" = "1.2.3"
 "rocks-git.nvim" = "1.5.1"
+"rocks-treesitter.nvim" = "scm"
+"nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 # "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
 # "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
 
@@ -30,10 +32,9 @@ auto_setup = true
 "lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
 "luasnip" = "2.3.0"
 
-
-"neorg" = "8.5.0"
+"neorg" = "8.8.1"
 "neodev.nvim"= "scm"
-"oil.nvim" = "2.10.0"
+"oil.nvim" = "scm"
 "conjure" = { git = "Olical/conjure" }
 "nvim-autopairs" = "scm"
 "mason.nvim" = "1.10.0"
@@ -87,8 +88,8 @@ tree-sitter-svelte = "scm"
 tree-sitter-tsx = "scm"
 tree-sitter-typescript = "scm"
 tree-sitter-vimdoc = "scm"
-# tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
 nvim-treesitter-legacy-api = "0.9.2"
+# tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
 
 [bundles.cmp]
 items = [
@@ -101,6 +102,11 @@ items = [
   "copilot.lua",
   "lsp-zero.nvim",
   "luasnip"
+]
+
+[bundles.treesitter]
+items = [
+  "nvim-treesitter-legacy-api"
 ]
 
 [treesitter]
