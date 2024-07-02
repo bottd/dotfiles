@@ -67,28 +67,27 @@ auto_setup = true
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
-tree-sitter-json = "scm"
-tree-sitter-javascript = "scm"
-tree-sitter-toml = "scm"
-tree-sitter-css = "scm"
-tree-sitter-comment = "scm"
-tree-sitter-diff = "scm"
-tree-sitter-fennel = "scm"
-tree-sitter-fish = "scm"
-tree-sitter-gitignore = "scm"
-tree-sitter-graphql = "scm"
-tree-sitter-html = "scm"
-tree-sitter-markdown = "scm"
-tree-sitter-markdown_inline = "scm"
-tree-sitter-lua = "scm"
-tree-sitter-python = "scm"
-tree-sitter-rust = "scm"
-tree-sitter-sql = "scm"
-tree-sitter-svelte = "scm"
-tree-sitter-tsx = "scm"
-tree-sitter-typescript = "scm"
-tree-sitter-vimdoc = "scm"
-nvim-treesitter-legacy-api = "0.9.2"
+# tree-sitter-json = "scm"
+# tree-sitter-javascript = "scm"
+# tree-sitter-toml = "scm"
+# tree-sitter-css = "scm"
+# tree-sitter-comment = "scm"
+# tree-sitter-diff = "scm"
+# tree-sitter-fennel = "scm"
+# tree-sitter-fish = "scm"
+# tree-sitter-gitignore = "scm"
+# tree-sitter-graphql = "scm"
+# tree-sitter-html = "scm"
+# tree-sitter-markdown = "scm"
+# tree-sitter-markdown_inline = "scm"
+# tree-sitter-lua = "scm"
+# tree-sitter-python = "scm"
+# tree-sitter-rust = "scm"
+# tree-sitter-sql = "scm"
+# tree-sitter-svelte = "scm"
+# tree-sitter-tsx = "scm"
+# tree-sitter-typescript = "scm"
+# tree-sitter-vimdoc = "scm"
 # tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
 
 [bundles.cmp]
@@ -102,11 +101,6 @@ items = [
   "copilot.lua",
   "lsp-zero.nvim",
   "luasnip"
-]
-
-[bundles.treesitter]
-items = [
-  "nvim-treesitter-legacy-api"
 ]
 
 [treesitter]
