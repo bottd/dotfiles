@@ -12,15 +12,16 @@ auto_setup = true
 
 # TODO: read and fix lspconfig plugins file error
 [plugins]
-"rocks.nvim" = "2.32.1"
+"rocks.nvim" = "2.33.0"
 "rocks-config.nvim" = "2.1.2"
 "rocks-dev.nvim" = "1.2.3"
 "rocks-git.nvim" = "1.5.1"
-"rocks-treesitter.nvim" = "scm"
-"nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
+# "rocks-treesitter.nvim" = "scm"
+# nvim-treesitter-legacy-api = "0.9.2"
 # "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
 # "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
 
+"nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 # plugins for cmp bundle
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
 "cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
@@ -32,7 +33,7 @@ auto_setup = true
 "lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
 "luasnip" = "2.3.0"
 
-"neorg" = "8.8.1"
+"neorg" = { version = "8.8.1", ft = "norg" }
 "neodev.nvim"= "scm"
 "oil.nvim" = "scm"
 "conjure" = { git = "Olical/conjure" }
@@ -67,6 +68,8 @@ auto_setup = true
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
+"rocks-lazy.nvim" = "scm"
+# tree-sitter-norg = "0.2.4"
 # tree-sitter-json = "scm"
 # tree-sitter-javascript = "scm"
 # tree-sitter-toml = "scm"
@@ -103,6 +106,6 @@ items = [
   "luasnip"
 ]
 
-[treesitter]
-auto_highlight = "all"
-auto_install = "prompt"
+# [treesitter]
+# auto_highlight = "all"
+# auto_install = "prompt"
