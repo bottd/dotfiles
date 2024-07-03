@@ -16,7 +16,7 @@
 
 (fn scheme_for_appearance []
   (let [appearance (get_appearance)]
-    (if (appearance:find "Dark")
+    (if (appearance:find "dark")
       "rose-pine-moon"
       "rose-pine-dawn"
   )))
