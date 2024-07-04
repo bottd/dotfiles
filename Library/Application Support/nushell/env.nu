@@ -87,3 +87,6 @@ $env.NU_PLUGIN_DIRS = [
 # Source local.env.nu for untracked, per-machine env variables
 const some_path = $nu.default-config-dir
 source-env $"($some_path)/local.env.nu"
+
+# CXXFLAGS needed to avoid Treesitter parser compilation errors
+$env.CXXFLAGS = "-std=c++11"
