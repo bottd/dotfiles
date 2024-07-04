@@ -1,6 +1,7 @@
 -- Rocks.nvim configuration from installer
  local rocks_config = {
      rocks_path = vim.env.HOME .. "/.local/share/nvim/rocks",
+     luarocks_config = vim.env.HOME .. "/.config/nvim/luarocks_config.lua"
  }
 
  vim.g.rocks_nvim = rocks_config

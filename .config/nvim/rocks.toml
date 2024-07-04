@@ -17,10 +17,6 @@ auto_setup = true
 "rocks-dev.nvim" = "1.2.3"
 "rocks-git.nvim" = "1.5.1"
 "rocks-treesitter.nvim" = "scm"
-nvim-treesitter-legacy-api = "0.9.2"
-# "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
-# "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
-# "nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 
 # plugins for cmp bundle
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
@@ -69,30 +65,35 @@ nvim-treesitter-legacy-api = "0.9.2"
 "gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
 "rocks-lazy.nvim" = "scm"
+tree-sitter-json = "scm"
+tree-sitter-javascript = "scm"
 tree-sitter-toml = "scm"
-# tree-sitter-norg = "0.2.4"
-# tree-sitter-json = "scm"
-# tree-sitter-javascript = "scm"
-# tree-sitter-toml = "scm"
-# tree-sitter-css = "scm"
-# tree-sitter-comment = "scm"
-# tree-sitter-diff = "scm"
-# tree-sitter-fennel = "scm"
-# tree-sitter-fish = "scm"
-# tree-sitter-gitignore = "scm"
-# tree-sitter-graphql = "scm"
-# tree-sitter-html = "scm"
-# tree-sitter-markdown = "scm"
-# tree-sitter-markdown_inline = "scm"
-# tree-sitter-lua = "scm"
-# tree-sitter-python = "scm"
-# tree-sitter-rust = "scm"
-# tree-sitter-sql = "scm"
-# tree-sitter-svelte = "scm"
-# tree-sitter-tsx = "scm"
-# tree-sitter-typescript = "scm"
-# tree-sitter-vimdoc = "scm"
-# tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
+tree-sitter-css = "scm"
+tree-sitter-comment = "scm"
+tree-sitter-diff = "scm"
+tree-sitter-fennel = "scm"
+tree-sitter-fish = "scm"
+tree-sitter-gitignore = "scm"
+tree-sitter-graphql = "scm"
+tree-sitter-html = "scm"
+tree-sitter-markdown = "scm"
+tree-sitter-markdown_inline = "scm"
+tree-sitter-lua = "scm"
+tree-sitter-python = "scm"
+tree-sitter-rust = "scm"
+tree-sitter-sql = "scm"
+tree-sitter-svelte = "scm"
+tree-sitter-tsx = "scm"
+tree-sitter-typescript = "scm"
+tree-sitter-vimdoc = "scm"
+tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
+
+# "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
+# "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
+
+[plugins.nvim-treesitter]
+git = "nvim-treesitter/nvim-treesitter"
+rev = "v0.9.2^{}"
 
 [bundles.cmp]
 items = [
