@@ -83,10 +83,11 @@ tree-sitter-python = "scm"
 tree-sitter-rust = "scm"
 tree-sitter-sql = "scm"
 tree-sitter-svelte = "scm"
-tree-sitter-tsx = "scm"
-tree-sitter-typescript = "scm"
+# tree-sitter-tsx = "scm"
+# tree-sitter-typescript = "scm"
 tree-sitter-vimdoc = "scm"
 tree-sitter-nu = { git = "nushell/tree-sitter-nu", build = ":TSUpdate" }
+tree-sitter-jsonc = "scm"
 
 # "rocks-config.nvim" = { dir = "~/workspace/github/rocks-config.nvim" }
 # "rocks-dev.nvim" = { dir = "~/workspace/github/rocks-dev.nvim" }
@@ -106,6 +107,11 @@ items = [
   "copilot.lua",
   "lsp-zero.nvim",
   "luasnip"
+]
+
+[bundles.no-setup]
+items = [
+  "nvim-ts-autotag"
 ]
 
 [treesitter]
