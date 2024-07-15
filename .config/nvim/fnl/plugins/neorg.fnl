@@ -137,3 +137,10 @@
   "<leader>nz"
   get_sorted_zettel
   { :desc "Get Zettels" })
+
+ (let [which-key (require :which-key)]
+  (which-key.add [
+    { 
+      1 "<leader>n" 
+      :desc "Neorg"
+    }]))
