@@ -26,4 +26,6 @@ vim.keymap.set("n", "<leader>nef", ":Neorg export to-file", {desc = "Export file
 vim.keymap.set("n", "<leader>ned", ":Neorg export directory", {desc = "Export directory"})
 vim.keymap.set("n", "<leader>nep", (":Neorg export directory " .. workspace_path .. "/public md<Cr>"), {desc = "Export posts"})
 vim.keymap.set("n", "<leader>nr", ":Neorg return<Cr>", {desc = "Neorg"})
-return vim.keymap.set("n", "<leader>nz", get_sorted_zettel, {desc = "Get Zettels"})
+vim.keymap.set("n", "<leader>nz", get_sorted_zettel, {desc = "Get Zettels"})
+local which_key = require("which-key")
+return which_key.add({{"<leader>n", desc = "Neorg"}})

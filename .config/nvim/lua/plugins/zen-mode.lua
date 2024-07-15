@@ -3,4 +3,6 @@ do
   local zen_mode = require("zen-mode")
   zen_mode.setup({plugins = {wezterm = {enabled = true}}})
 end
-return vim.keymap.set("n", "<leader>wz", ":ZenMode<Cr>", {desc = "Zen Mode"})
+vim.keymap.set("n", "<leader>wz", ":ZenMode<Cr>", {desc = "Zen Mode"})
+local which_key = require("which-key")
+return which_key.add({{"<leader>w", desc = "Window"}})
