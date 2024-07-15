@@ -6,4 +6,6 @@ do
   cmp.setup(config)
 end
 do end (require("conjure.main")).main()
-return (require("conjure.mapping"))["on-filetype"]()
+do end (require("conjure.mapping"))["on-filetype"]()
+local which_key = require("which-key")
+return which_key.add({{"<leader>e", desc = "Evaluate [Conjure]"}, {"<leader>l", desc = "Log [Conjure]"}})

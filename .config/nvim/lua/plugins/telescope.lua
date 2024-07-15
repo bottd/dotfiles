@@ -10,4 +10,6 @@ vim.keymap.set("n", "<leader>ff", ":Telescope find_files<Cr>", {desc = "Find Fil
 vim.keymap.set("n", "<leader>fs", ":Telescope live_grep<Cr>", {desc = "Find String"})
 vim.keymap.set("n", "<leader>fk", ":Telescope keymaps<Cr>", {desc = "Find Keymap"})
 vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<Cr>", {desc = "Find Help"})
-return vim.keymap.set("n", "<leader>fu", ":Telescope undo<Cr>", {desc = "Undo Tree"})
+vim.keymap.set("n", "<leader>fu", ":Telescope undo<Cr>", {desc = "Undo Tree"})
+local which_key = require("which-key")
+return which_key.add({{"<leader>f", desc = "Find"}})

@@ -59,3 +59,9 @@
      "<leader>fu"
      ":Telescope undo<Cr>"
      { :desc "Undo Tree" })
+(let [which-key (require :which-key)]
+  (which-key.add [
+    { 
+      1 "<leader>f" 
+      :desc "Find"
+    }]))
