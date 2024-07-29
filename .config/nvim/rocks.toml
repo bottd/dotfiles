@@ -26,18 +26,19 @@ auto_setup = true
 "lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
 "luasnip" = "2.3.0"
 "neorg" = { version = "9.0.1" }
+"neorg-templates" = { git = "pysan3/neorg-templates" }
+"neorg-worklog" = { git = "bottd/neorg-worklog" }
+"neorg-telescope" = "1.2.2"
 "oil.nvim" = "scm"
 "conjure" = { git = "Olical/conjure" }
 "nvim-autopairs" = "scm"
 "mason.nvim" = "1.10.0"
 "mason-lspconfig.nvim" = "1.29.0"
 "nfnl" = { git = "Olical/nfnl" }
-"neorg-templates" = { git = "pysan3/neorg-templates" }
 "zen-mode.nvim" = "scm"
 "rose-pine" = "scm"
 "headlines.nvim" = "scm"
-"neorg-telescope" = "1.2.2"
-"which-key.nvim" = "3.3.0"
+"which-key.nvim" = "3.7.0"
 "indent-blankline.nvim" = { version = "3.7.1" }
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
@@ -75,6 +76,7 @@ tree-sitter-markdown = "scm"
 tree-sitter-markdown_inline = "scm"
 tree-sitter-lua = "scm"
 tree-sitter-python = "scm"
+tree-sitter-query = "scm"
 tree-sitter-rust = "scm"
 tree-sitter-sql = "scm"
 tree-sitter-svelte = "scm"
