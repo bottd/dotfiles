@@ -16,14 +16,14 @@
         :config {
           :workspaces {
             workspace workspace_path
-            :inbox (.. workspace_path "/inbox")
-            :journals (.. workspace_path "/journals")
-            :meta (.. workspace_path "/meta")
-            :notes (.. workspace_path "/notes")
-            :public (.. workspace_path "/public")
-            :resources (.. workspace_path "/resources")
-            :scripts (.. workspace_path "/scripts")
-            :zettel (.. workspace_path "/zettel")
+            :Inbox (.. workspace_path "/inbox")
+            :Journals (.. workspace_path "/journals")
+            :Meta (.. workspace_path "/meta")
+            :Notes (.. workspace_path "/notes")
+            :Public (.. workspace_path "/public")
+            :Resources (.. workspace_path "/resources")
+            :Scripts (.. workspace_path "/scripts")
+            :Zettel (.. workspace_path "/zettel")
           }
           :default_workspace workspace
         }
@@ -43,7 +43,7 @@
           :journal_folder "daily"
           :template_name "meta/templates/journal.norg"
           :strategy "flat"
-          :workspace "journals"
+          :workspace "Journals"
         }
       }
       :core.summary {}
