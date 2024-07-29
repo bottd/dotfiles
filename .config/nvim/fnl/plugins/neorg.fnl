@@ -53,6 +53,7 @@
           :templates_dir (.. workspace_path "/meta/templates")
         }
       }
+      :external.worklog {}
     }
   }))
 
