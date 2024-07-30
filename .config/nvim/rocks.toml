@@ -27,7 +27,7 @@ auto_setup = true
 "luasnip" = "2.3.0"
 "neorg" = { version = "9.0.1" }
 "neorg-templates" = { git = "pysan3/neorg-templates" }
-"neorg-worklog" = "1.1.0"
+"neorg-worklog" = "1.1.1"
 "neorg-telescope" = "1.2.2"
 "oil.nvim" = "scm"
 "conjure" = { git = "Olical/conjure" }
