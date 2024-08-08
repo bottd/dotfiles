@@ -111,11 +111,7 @@ items = [
 ]
 
 [bundls.treesitter]
-items = [
-  "nvim-treesitter",
-  #  "nvim-treesitter-legacy-api",
-  "nvim-ts-autotag",
-]
+items = ["nvim-treesitter", "nvim-ts-autotag"]
 
 [treesitter]
 auto_highlight = "all"
