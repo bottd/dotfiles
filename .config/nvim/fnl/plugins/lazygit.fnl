@@ -1,5 +1,2 @@
-(vim.keymap.set 
-  "n"
-  "<leader>gg"
-  ":LazyGit<cr>"
-  { :desc "LazyGit" })
+(vim.keymap.set :n :<leader>gg ":LazyGit<cr>" {:desc :LazyGit})
+

@@ -36,49 +36,51 @@ local function key_to_list(path)
     end
   end
   do
-    local tbl_17_auto = {}
-    local i_18_auto = #tbl_17_auto
+    local tbl_21_auto = {}
+    local i_22_auto = 0
     for k, v in pairs(result) do
-      local val_19_auto
+      local val_23_auto
       do
         local to_num = tonumber(v)
         if (to_num == nil) then
-          val_19_auto = v
+          val_23_auto = v
         else
-          val_19_auto = to_num
+          val_23_auto = to_num
         end
       end
-      if (nil ~= val_19_auto) then
-        i_18_auto = (i_18_auto + 1)
-        do end (tbl_17_auto)[i_18_auto] = val_19_auto
+      if (nil ~= val_23_auto) then
+        i_22_auto = (i_22_auto + 1)
+        tbl_21_auto[i_22_auto] = val_23_auto
       else
       end
     end
-    result = tbl_17_auto
+    result = tbl_21_auto
   end
   return result
 end
 local function an_compare(a, b)
   do
     local _7_ = {a, b}
-    local function _8_()
-      local x = (_7_)[1]
-      local y = (_7_)[2]
-      return string.find(x, "index.norg")
+    local and_8_ = ((_G.type(_7_) == "table") and (nil ~= _7_[1]) and (nil ~= _7_[2]))
+    if and_8_ then
+      local x = _7_[1]
+      local y = _7_[2]
+      and_8_ = string.find(x, "index.norg")
     end
-    if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _8_()) then
-      local x = (_7_)[1]
-      local y = (_7_)[2]
+    if and_8_ then
+      local x = _7_[1]
+      local y = _7_[2]
       return false
     else
-      local function _9_()
-        local x = (_7_)[1]
-        local y = (_7_)[2]
-        return string.find(y, "index.norg")
+      local and_10_ = ((_G.type(_7_) == "table") and (nil ~= _7_[1]) and (nil ~= _7_[2]))
+      if and_10_ then
+        local x = _7_[1]
+        local y = _7_[2]
+        and_10_ = string.find(y, "index.norg")
       end
-      if (((_G.type(_7_) == "table") and (nil ~= (_7_)[1]) and (nil ~= (_7_)[2])) and _9_()) then
-        local x = (_7_)[1]
-        local y = (_7_)[2]
+      if and_10_ then
+        local x = _7_[1]
+        local y = _7_[2]
         return true
       else
       end
@@ -92,35 +94,37 @@ local function an_compare(a, b)
   for k, a_val in pairs(a_keys) do
     if not (result == nil) then break end
     local b_val = b_keys[k]
-    local _11_ = {a_val, b_val}
-    if ((_G.type(_11_) == "table") and (nil ~= (_11_)[1]) and ((_11_)[1] == (_11_)[2])) then
-      local x = (_11_)[1]
+    local _13_ = {a_val, b_val}
+    if ((_G.type(_13_) == "table") and (nil ~= _13_[1]) and (_13_[1] == _13_[2])) then
+      local x = _13_[1]
       result = nil
-    elseif ((_G.type(_11_) == "table") and (nil ~= (_11_)[1]) and ((_11_)[2] == nil)) then
-      local x = (_11_)[1]
+    elseif ((_G.type(_13_) == "table") and (nil ~= _13_[1]) and (_13_[2] == nil)) then
+      local x = _13_[1]
       result = false
-    elseif ((_G.type(_11_) == "table") and ((_11_)[1] == nil) and (nil ~= (_11_)[2])) then
-      local y = (_11_)[2]
+    elseif ((_G.type(_13_) == "table") and (_13_[1] == nil) and (nil ~= _13_[2])) then
+      local y = _13_[2]
       result = true
     else
-      local function _12_()
-        local x = (_11_)[1]
-        local y = (_11_)[2]
-        return (x > y)
+      local and_14_ = ((_G.type(_13_) == "table") and (nil ~= _13_[1]) and (nil ~= _13_[2]))
+      if and_14_ then
+        local x = _13_[1]
+        local y = _13_[2]
+        and_14_ = (x > y)
       end
-      if (((_G.type(_11_) == "table") and (nil ~= (_11_)[1]) and (nil ~= (_11_)[2])) and _12_()) then
-        local x = (_11_)[1]
-        local y = (_11_)[2]
+      if and_14_ then
+        local x = _13_[1]
+        local y = _13_[2]
         result = false
       else
-        local function _13_()
-          local x = (_11_)[1]
-          local y = (_11_)[2]
-          return (x < y)
+        local and_16_ = ((_G.type(_13_) == "table") and (nil ~= _13_[1]) and (nil ~= _13_[2]))
+        if and_16_ then
+          local x = _13_[1]
+          local y = _13_[2]
+          and_16_ = (x < y)
         end
-        if (((_G.type(_11_) == "table") and (nil ~= (_11_)[1]) and (nil ~= (_11_)[2])) and _13_()) then
-          local x = (_11_)[1]
-          local y = (_11_)[2]
+        if and_16_ then
+          local x = _13_[1]
+          local y = _13_[2]
           result = true
         else
         end

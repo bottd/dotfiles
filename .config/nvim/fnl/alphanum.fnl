@@ -21,34 +21,30 @@
     (var k (string.sub key i i))
     (var k_type "")
     (if (= (tonumber k) nil)
-      (set k_type :alpha)
-      (set k_type :num))
+        (set k_type :alpha)
+        (set k_type :num))
     (when (= k_type curr_type)
       (let [item (. result len)]
         (tset result len (.. item k))))
-    (when (not (= k_type curr_type)) 
+    (when (not (= k_type curr_type))
       (table.insert result k)
-      (set curr_type k_type)))
-
-  ; parse numbers for later comparisons
+      (set curr_type k_type))) ; parse numbers for later comparisons
   (set result (icollect [k v (pairs result)]
-    (let [to_num (tonumber v)]
-    (if (= to_num nil)
-      v
-      to_num))))
+                (let [to_num (tonumber v)]
+                  (if (= to_num nil)
+                      v
+                      to_num))))
   result)
 
 (fn an-compare [a b]
   (case [a b]
-    (where [x y] (string.find x "index.norg")) (lua "return false")
-    (where [x y] (string.find y "index.norg")) (lua "return true"))
-
+    (where [x y] (string.find x :index.norg)) (lua "return false")
+    (where [x y] (string.find y :index.norg)) (lua "return true"))
   (var a-id (path-to-filename a))
   (var b-id (path-to-filename b))
   (var a-keys (key-to-list a))
   (var b-keys (key-to-list b))
   (var result nil)
-
   (each [k a-val (pairs a-keys) &until (not (= result nil))]
     (var b-val (. b-keys k))
     (case [a-val b-val]
@@ -56,9 +52,9 @@
       [x nil] (set result false)
       [nil y] (set result true)
       (where [x y] (> x y)) (set result false)
-      (where [x y] (< x y)) (set result true)
-    ))
+      (where [x y] (< x y)) (set result true)))
   (if (= result nil) (set result false))
   result)
 
-{ :an-compare an-compare }
+{: an-compare}
+
