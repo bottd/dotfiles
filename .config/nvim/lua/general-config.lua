@@ -1,4 +1,4 @@
--- [nfnl] Compiled from fnl/general_config.fnl by https://github.com/Olical/nfnl, do not edit.
+-- [nfnl] Compiled from fnl/general-config.fnl by https://github.com/Olical/nfnl, do not edit.
 vim.api.nvim_command("set number")
 vim.api.nvim_command("set cursorline")
 vim.api.nvim_command("set smartindent")
