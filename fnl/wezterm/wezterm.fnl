@@ -27,7 +27,9 @@
                 (window:set_config_overrides overrides))))
 
 {:color_scheme (scheme_for_appearance)
- :set_environment_variables {:WINDOW_APPEARANCE (get_appearance) :XDG_CONFIG_HOME (.. (os.getenv "HOME") "/.config")}
+ :default_prog [:/opt/homebrew/bin/nu]
+ :set_environment_variables {:WINDOW_APPEARANCE (get_appearance)
+                             :XDG_CONFIG_HOME (.. (os.getenv :HOME) :/.config)}
  :font (wezterm.font "MonoLisa Nerd Font")
  :font_size 13
  :hide_tab_bar_if_only_one_tab true
