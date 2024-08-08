@@ -5,7 +5,7 @@ do
   table.insert(config.sources, {name = "buffer", option = {sources = {{name = "conjure"}}}})
   cmp.setup(config)
 end
-do end (require("conjure.main")).main()
-do end (require("conjure.mapping"))["on-filetype"]()
+require("conjure.main").main()
+require("conjure.mapping")["on-filetype"]()
 local which_key = require("which-key")
 return which_key.add({{"<leader>e", desc = "Evaluate [Conjure]"}, {"<leader>l", desc = "Log [Conjure]"}})

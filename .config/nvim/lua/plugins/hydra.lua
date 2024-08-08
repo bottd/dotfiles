@@ -1,8 +1,8 @@
 -- [nfnl] Compiled from fnl/plugins/hydra.fnl by https://github.com/Olical/nfnl, do not edit.
 local hydra = require("hydra")
 local splits = require("smart-splits")
-local cmd = (require("hydra.keymap-util")).cmd
-local pcmd = (require("hydra.keymap-util")).pcmd
+local cmd = require("hydra.keymap-util").cmd
+local pcmd = require("hydra.keymap-util").pcmd
 local function _1_()
   return splits.resize_left(2)
 end
