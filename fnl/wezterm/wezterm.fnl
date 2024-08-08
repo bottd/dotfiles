@@ -22,9 +22,12 @@
               (local scheme (scheme_for_appearance))
               (when (not= overrides.color_scheme scheme)
                 (tset overrides :color_scheme scheme)
+                (tset overrides :set_environment_variables
+                      {:WINDOW_APPEARANCE (get_appearance)})
                 (window:set_config_overrides overrides))))
 
 {:color_scheme (scheme_for_appearance)
+ :set_environment_variables {:WINDOW_APPEARANCE (get_appearance) :XDG_CONFIG_HOME (.. (os.getenv "HOME") "/.config")}
  :font (wezterm.font "MonoLisa Nerd Font")
  :font_size 13
  :hide_tab_bar_if_only_one_tab true

@@ -19,6 +19,13 @@ let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
 
+let starship_dir = ($env.HOME | path join ".config/starship/")
+if $env.WINDOW_APPEARANCE == "dark" {
+    $env.STARSHIP_CONFIG = ($starship_dir | path join "starship.dark.toml")
+} else if $env.WINDOW_APPEARANCE == "light" {
+    $env.STARSHIP_CONFIG = ($starship_dir | path join "starship.light.toml")
+}
+
 def create_left_prompt [] {
     starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)'
 }
