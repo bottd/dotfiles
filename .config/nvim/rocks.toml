@@ -36,7 +36,7 @@ auto_setup = true
 "mason-lspconfig.nvim" = "1.30.0"
 "nfnl" = { git = "Olical/nfnl" }
 "zen-mode.nvim" = "scm"
-"rose-pine" = "scm"
+"catppuccin" = { git = "catppuccin/nvim" }
 "headlines.nvim" = "scm"
 "which-key.nvim" = "3.7.0"
 "indent-blankline.nvim" = "3.7.1"
