@@ -1,21 +1,32 @@
 palette = "dark"
+format = """
+[┌$fill](bold blue)
+[│](bold blue) $time
+[│](bold blue) $all
+[└───> ](bold blue)"""
 
 [character]
-format = '[➜](bold #31748f) '
+disabled = true
 
 [directory]
 truncation_length = 4
 style = "bold lavender"
 
 [fill]
-style = "bold #c4a7e7"
+symbol = "─"
+style = "bold lavender"
 
 [git_branch]
-symbol = ""
-format = '[[ $symbol $branch ](fg:#9ccfd8 bg:#6e6a86)]($style)'
+style = "bold maroon"
 
-[git_status]
-format = '[[($all_status$ahead_behind )](fg:#c4a7e7 bg:#6e6a86)]($style)'
+[line_break]
+disabled = true
+
+[time]
+disabled = false
+style = "italic sky"
+format = "[$time]($style)"
+time_format = "%A, %b%e at %I:%M%p"
 
 [palettes.light]
 rosewater = "#dc8a78"

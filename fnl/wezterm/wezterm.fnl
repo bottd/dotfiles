@@ -30,7 +30,7 @@
  :default_prog [:/opt/homebrew/bin/nu]
  :set_environment_variables {:WINDOW_APPEARANCE (get_appearance)
                              :XDG_CONFIG_HOME (.. (os.getenv :HOME) :/.config)}
- :font (wezterm.font "MonoLisa Nerd Font")
+ :font (wezterm.font "MonoLisa Variable")
  :font_size 13
  :hide_tab_bar_if_only_one_tab true
  :tab_bar_at_bottom true
