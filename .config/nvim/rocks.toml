@@ -38,8 +38,8 @@ auto_setup = true
 "zen-mode.nvim" = "scm"
 "catppuccin" = { git = "catppuccin/nvim" }
 "headlines.nvim" = "scm"
-"which-key.nvim" = "3.7.0"
-"indent-blankline.nvim" = "3.7.1"
+"which-key.nvim" = "3.13.2"
+"indent-blankline.nvim" = "3.7.2"
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
@@ -53,8 +53,7 @@ auto_setup = true
 "nvim-colorizer" = { git = "NvChad/nvim-colorizer.lua" }
 "nvim-ts-autotag" = "scm"
 "ts-comments.nvim" = { git = "folke/ts-comments.nvim" }
-"hydra.nvim" = "1.0.2"
-"smart-splits.nvim" = "1.5.0"
+"smart-splits.nvim" = "1.6.0"
 "middleclass" = { git = "anuvyklack/middleclass" }
 "animation.nvim" = { git = "anuvyklack/animation.nvim" }
 "windows.nvim" = { git = "anuvyklack/windows.nvim" }
@@ -88,6 +87,7 @@ tree-sitter-jsonc = "scm"
 tree-sitter-yaml = "scm"
 "nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 "conform.nvim" = "7.0.0"
+"trouble.nvim" = "3.6.0"
 
 [bundles.cmp]
 items = [
