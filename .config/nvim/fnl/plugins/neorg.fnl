@@ -36,6 +36,7 @@
                                                :workspace :Journals}}
                        :core.summary {}
                        :core.tangle {}
+                       :external.context {}
                        :external.templates {:config {:templates_dir (.. workspace_path
                                                                         :/meta/templates)}}
                        :external.worklog {:config {:default_workspace_title :External}}}}))
