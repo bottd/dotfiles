@@ -1,36 +1,72 @@
-(set vim.g.lsp_zero_extend_cmp 0)
-(set vim.g.lsp_zero_extend_lspconfig 0)
+(local lsp_zero (require :lsp-zero))
+(local cmp_nvim_lsp (require :cmp_nvim_lsp))
+(local mason (require :mason))
+(local mason_lspconfig (require :mason-lspconfig))
+;see :help lsp-zero-keybindings
+;to learn the available actions
 
-(let [lsp_zero (require :lsp-zero)]
-  (lsp_zero.extend_lspconfig)
-  (lsp_zero.on_attach (fn [client buf]
-                        ;see :help lsp-zero-keybindings
-                        ;to learn the available actions
-                        (lsp_zero.default_keymaps {:buffer buf
-                                                   :preserve_mappings false}))))
+(fn lsp_attach [client bufnr]
+  (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false}))
 
-(let [mason (require :mason)]
-  (mason.setup {}))
+(lsp_zero.extend_lspconfig {:capabilities (cmp_nvim_lsp.default_capabilities)
+                            : lsp_attach
+                            :float_border :rounded
+                            :sign_text true})
 
-(let [lsp_zero (require :lsp-zero)
-      mason_lspconfig (require :mason-lspconfig)]
-  (mason_lspconfig.setup {:automatic_installation true
-                          :ensure_installed {1 :cssls
-                                             2 :eslint
-                                             3 :graphql
-                                             4 :html
-                                             5 :jsonnet_ls
-                                             6 :pyright
-                                             :rust_analyzer {:cargo {:features [:ssr]}
-                                                             :procMacro {:ignored {:leptos_macro [:server]}}}
-                                             8 :sqlls
-                                             9 :stylelint_lsp
-                                             :lua_ls {:Lua {:diagnostics {:globals [:vim]}
-                                                            :workspace {:checkThirdParty false}
-                                                            :telemetry {:enable false}}}
-                                             10 :svelte
-                                             11 :tailwindcss
-                                             12 :tsserver
-                                             13 :fennel_ls}
-                          :handlers {1 lsp_zero.default_setup}}))
+(mason.setup {})
+
+(mason_lspconfig.setup {:ensure_installed [:cssls
+                                           :eslint
+                                           :graphql
+                                           :html
+                                           :jsonnet_ls
+                                           :pyright
+                                           :rust_analyzer
+                                           :sqlls
+                                           :stylelint_lsp
+                                           :lua_ls
+                                           :svelte
+                                           :tailwindcss
+                                           :tsserver
+                                           ;:fennel_language_server
+                                           :harper_ls]
+                        :handlers {1 (fn [server_name]
+                                       (local server
+                                              (. (require :lspconfig)
+                                                 server_name))
+                                       (server.setup {}))
+                                   ; TODO user dict not appearing to work currently
+                                   :harper_ls (fn []
+                                                (local {: harper_ls}
+                                                       (require :lspconfig))
+                                                (harper_ls.setup {:filetypes [:norg
+                                                                              :markdown
+                                                                              :rust
+                                                                              :typescript
+                                                                              :typescriptreact
+                                                                              :javascript
+                                                                              :python
+                                                                              :go
+                                                                              :c
+                                                                              :cpp
+                                                                              :ruby
+                                                                              :swift
+                                                                              :csharp
+                                                                              :toml
+                                                                              :lua
+                                                                              :gitcommit
+                                                                              :java
+                                                                              :html]
+                                                                  :settings {:harper-ls {:userDictPath "~/.config/nvim/dict.txt"}}}))
+                                   :rust_analyzer (fn []
+                                                    (local {: rust_analyzer}
+                                                           (require :lspconfig))
+                                                    (rust_analyzer.setup {:cargo {:features [:ssr]}
+                                                                          :procMacro {:ignored {:leptos_macro [:server]}}}))
+                                   :lua_ls (fn []
+                                             (local {: lua_ls}
+                                                    (require :lspconfig))
+                                             (lua_ls.setup {:Lua {:diagnostics {:globals [:vim]}
+                                                                  :workspace {:checkThirdParty false}
+                                                                  :telemetry {:enable false}}}))}})
 

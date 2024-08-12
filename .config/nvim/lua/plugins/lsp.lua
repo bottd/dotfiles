@@ -1,18 +1,30 @@
 -- [nfnl] Compiled from fnl/plugins/lsp.fnl by https://github.com/Olical/nfnl, do not edit.
-vim.g.lsp_zero_extend_cmp = 0
-vim.g.lsp_zero_extend_lspconfig = 0
-do
-  local lsp_zero = require("lsp-zero")
-  lsp_zero.extend_lspconfig()
-  local function _1_(client, buf)
-    return lsp_zero.default_keymaps({buffer = buf, preserve_mappings = false})
-  end
-  lsp_zero.on_attach(_1_)
-end
-do
-  local mason = require("mason")
-  mason.setup({})
-end
 local lsp_zero = require("lsp-zero")
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
+local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
-return mason_lspconfig.setup({automatic_installation = true, ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", rust_analyzer = {cargo = {features = {"ssr"}}, procMacro = {ignored = {leptos_macro = {"server"}}}}, [8] = "sqlls", [9] = "stylelint_lsp", lua_ls = {Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}}, [10] = "svelte", [11] = "tailwindcss", [12] = "tsserver", [13] = "fennel_ls"}, handlers = {lsp_zero.default_setup}})
+local function lsp_attach(client, bufnr)
+  return lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
+end
+lsp_zero.extend_lspconfig({capabilities = cmp_nvim_lsp.default_capabilities(), lsp_attach = lsp_attach, float_border = "rounded", sign_text = true})
+mason.setup({})
+local function _1_(server_name)
+  local server = (require("lspconfig"))[server_name]
+  return server.setup({})
+end
+local function _2_()
+  local _local_3_ = require("lspconfig")
+  local harper_ls = _local_3_["harper_ls"]
+  return harper_ls.setup({filetypes = {"norg", "markdown", "rust", "typescript", "typescriptreact", "javascript", "python", "go", "c", "cpp", "ruby", "swift", "csharp", "toml", "lua", "gitcommit", "java", "html"}, settings = {["harper-ls"] = {userDictPath = "~/.config/nvim/dict.txt"}}})
+end
+local function _4_()
+  local _local_5_ = require("lspconfig")
+  local rust_analyzer = _local_5_["rust_analyzer"]
+  return rust_analyzer.setup({cargo = {features = {"ssr"}}, procMacro = {ignored = {leptos_macro = {"server"}}}})
+end
+local function _6_()
+  local _local_7_ = require("lspconfig")
+  local lua_ls = _local_7_["lua_ls"]
+  return lua_ls.setup({Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}})
+end
+return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "lua_ls", "svelte", "tailwindcss", "tsserver", "harper_ls"}, handlers = {_1_, harper_ls = _2_, rust_analyzer = _4_, lua_ls = _6_}})
