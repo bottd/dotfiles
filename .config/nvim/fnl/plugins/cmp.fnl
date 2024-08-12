@@ -4,7 +4,10 @@
       cmp_autopairs (require :nvim-autopairs.completion.cmp)]
   (lsp_zero.extend_cmp)
   (cmp.event:on :confirm_done (cmp_autopairs.on_confirm_done))
-  (cmp.setup {:formatting (lsp_zero.cmp_format)
+  (cmp.setup {:snippet {:expand (fn [args]
+                                  (local {: lsp_expand} (require :luasnip))
+                                  (lsp_expand args.body))}
+              :formatting (lsp_zero.cmp_format)
               :mapping (cmp.mapping.preset.insert {:<C-Space> (cmp.mapping.complete)
                                                    :<C-u> (cmp.mapping.scroll_docs -4)
                                                    :<C-d> (cmp.mapping.scroll_docs 4)
@@ -15,7 +18,7 @@
               :sources (cmp.config.sources [{:name :copilot}
                                             {:name :nvim_lsp}
                                             {:name :luasnip}
-                                            ; { :name "conjure" }
+                                            {:name :conjure}
                                             {:name :path}
                                             {:name :buffer}
                                             ;; enable spell complete in md,norg, etc?

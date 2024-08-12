@@ -1,13 +1,14 @@
-(let [telescope (require :telescope)]
-  (telescope.setup {:pickers {:find_files {:layout_strategy :vertical}
-                              :live_grep {:layout_strategy :vertical}}
-                    :extensions {:fzf {:fuzzy true
-                                       :override_generic_sorter true
-                                       :override_file_sorter true
-                                       :case_mode :smart_case}
-                                 :undo {:use_delta true}}})
-  (telescope.load_extension :fzf)
-  (telescope.load_extension :undo))
+(local {: setup : load_extension} (require :telescope))
+(setup {:pickers {:find_files {:layout_strategy :vertical}
+                  :live_grep {:layout_strategy :vertical}}
+        :extensions {:fzf {:fuzzy true
+                           :override_generic_sorter true
+                           :override_file_sorter true
+                           :case_mode :smart_case}
+                     :undo {:use_delta true}}})
+
+(load_extension :fzf)
+(load_extension :undo)
 
 (vim.keymap.set :n :<leader>fb ":Telescope buffers<Cr>" {:desc "Find Buffer"})
 
