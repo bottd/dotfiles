@@ -1,5 +1,3 @@
-[config]
-auto_setup = true
 
 # Plugins I didn't install
 # nvim-pack/nvim-spectre
@@ -14,6 +12,7 @@ auto_setup = true
 "rocks-dev.nvim" = "1.3.0"
 "rocks-git.nvim" = "2.0.1"
 "rocks-treesitter.nvim" = "1.0.3"
+"rocks-edit.nvim" = "scm"
 
 # plugins for cmp bundle
 "nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
@@ -23,7 +22,8 @@ auto_setup = true
 "cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
 "cmp-conjure" = { git = "PaterJason/cmp-conjure" }
 "copilot.lua" = "scm"
-"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", branch = "v3.x" }
+"copilot-cmp" = "scm"
+"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", rev = "v4.x" }
 "luasnip" = "2.3.0"
 "neorg" = "9.1.1"
 "neorg-contexts" = { git = "max397574/neorg-contexts" }
@@ -89,6 +89,7 @@ tree-sitter-yaml = "scm"
 "nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 "conform.nvim" = "7.0.0"
 "trouble.nvim" = "3.6.0"
+"helpview.nvim" = "1.0.0"
 
 [bundles.cmp]
 items = [
@@ -98,8 +99,8 @@ items = [
   "cmp-path",
   "cmp-cmdline",
   "cmp-conjure",
-  "copilot.lua",
   "lsp-zero.nvim",
+  "copilot-cmp",
   "luasnip",
 ]
 
@@ -117,3 +118,19 @@ items = ["nvim-treesitter", "nvim-ts-autotag"]
 [treesitter]
 auto_highlight = "all"
 auto_install = "prompt"
+
+[config]
+auto_setup = true
+colorscheme = "catpuccin"
+
+
+[config.options]
+cursorline = true
+expandtab = true
+foldlevelstart = 99
+number = true
+shiftwidth = 2
+smartindent = true
+tabstop = 2
+timeout = true
+timeoutlen = 300
