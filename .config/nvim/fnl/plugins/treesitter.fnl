@@ -1,3 +1,3 @@
-(let [ts (require :nvim-treesitter.configs)]
-  (ts.setup {:highlight {:enable true}}))
+(local {: setup} (require :nvim-treesitter.configs))
+(setup {:highlight {:enable true}})
 

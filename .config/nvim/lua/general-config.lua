@@ -2,12 +2,6 @@
 vim.api.nvim_command("set number")
 vim.api.nvim_command("set cursorline")
 vim.api.nvim_command("set smartindent")
-vim.opt.expandtab = true
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.foldlevelstart = 99
-vim.opt.spell = true
-vim.opt.spelllang = {"en_us"}
 vim.o.guifont = "MonoLisa Nerd Font"
 vim.g.mapleader = " "
 vim.keymap.set("n", "<Leader>y", "\"+y", {desc = "Yank to clipboard"})

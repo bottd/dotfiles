@@ -1,5 +1,3 @@
-((. (require :catppuccin) :setup) {:background {:light :latte :dark :mocha}
-                                   :flavor :auto})
-
-(vim.cmd "colorscheme catppuccin")
+(local {: setup} (require :catpuccin))
+(setup {:background {:light :latte :dark :mocha} :flavor :auto})
 
