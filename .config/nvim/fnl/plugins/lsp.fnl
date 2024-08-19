@@ -6,7 +6,9 @@
 ;to learn the available actions
 
 (fn lsp_attach [client bufnr]
-  (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false}))
+  (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false})
+  (vim.keymap.set :n :<leader>ca "<cmd>lua vim.lsp.buf.code_action()<cr>'"
+                  {:desc "Code Action"}))
 
 (lsp_zero.extend_lspconfig {:capabilities (cmp_nvim_lsp.default_capabilities)
                             : lsp_attach
