@@ -1,4 +1,5 @@
 -- [nfnl] Compiled from after/ftplugin/norg.fnl by https://github.com/Olical/nfnl, do not edit.
+vim.opt.spell = true
 vim.opt.conceallevel = 3
 vim.api.nvim_command("set nonumber")
 vim.api.nvim_command("set linebreak")
