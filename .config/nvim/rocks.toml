@@ -28,7 +28,7 @@
 "neorg" = "9.1.1"
 "neorg-contexts" = { git = "max397574/neorg-contexts" }
 "neorg-templates" = { git = "pysan3/neorg-templates" }
-"neorg-worklog" = "1.3.1"
+"neorg-worklog" = "1.3.4"
 "neorg-telescope" = "1.2.2"
 "oil.nvim" = "2.11.0"
 "conjure" = "4.52.2"
@@ -112,7 +112,7 @@ items = [
   "nvim-lspconfig",
 ]
 
-[bundls.treesitter]
+[bundles.treesitter]
 items = ["nvim-treesitter", "nvim-ts-autotag"]
 
 [treesitter]

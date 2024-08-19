@@ -1,4 +1,3 @@
-(local {: get_sorted_zettel} (require :../zk))
 (local workspace (os.getenv :NEORG_WORKSPACE))
 (local workspace_path (os.getenv :NEORG_WORKSPACE_PATH))
 (local {: setup} (require :neorg))
@@ -23,6 +22,26 @@
                                                    :Zettel (.. workspace_path
                                                                :/zettel)}
                                       :default_workspace workspace}}
+               :core.esupports.metagen {:config {:type :auto
+                                                 :template [[:title
+                                                             (fn []
+                                                               (var filename
+                                                                    (vim.fn.expand "%:p:t:r"))
+                                                               (set filename
+                                                                    (filename:gsub "-"
+                                                                                   " "))
+                                                               (set filename
+                                                                    (filename:gsub "(%a)([%w_']*)"
+                                                                                   (fn [first
+                                                                                        rest]
+                                                                                     (.. (first:upper)
+                                                                                         (rest:lower)))))
+                                                               filename)]
+                                                            [:authors
+                                                             "Drake Bott"]
+                                                            [:created]
+                                                            [:updated]
+                                                            [:version]]}}
                :core.export {}
                :core.export.markdown {:config {:extensions :all}}
                :core.integrations.telescope {}
@@ -61,9 +80,12 @@
 
 (vim.keymap.set :n :<leader>nj ":Neorg journal<Cr>" {:desc :Journal})
 
-(vim.keymap.set :n :<leader>ni ":Neorg index<Cr>" {:desc :Index})
+(vim.keymap.set :n :<leader>n<space> ":Neorg index<Cr>" {:desc :Index})
 
-(vim.keymap.set :n :<leader>nmi ":Neorg inject-metadata<Cr>"
+(vim.keymap.set :n :<leader>nif "<Plug>(neorg.telescope.insert_file_link)"
+                {:desc "Insert file link"})
+
+(vim.keymap.set :n :<leader>nim ":Neorg inject-metadata<Cr>"
                 {:desc "Inject Metadata"})
 
 (vim.keymap.set :n :<leader>nf ":Telescope neorg find_norg_files<Cr>"
@@ -82,8 +104,6 @@
 
 (vim.keymap.set :n :<leader>nr ":Neorg return<Cr>" {:desc :Neorg})
 
-(vim.keymap.set :n :<leader>nz get_sorted_zettel {:desc "Get Zettels"})
-
-(let [which-key (require :which-key)]
-  (which-key.add [{1 :<leader>n :desc :Neorg}]))
+(local which-key (require :which-key))
+(which-key.add [{1 :<leader>n :desc :Neorg}])
 
