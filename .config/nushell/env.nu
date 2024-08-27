@@ -15,6 +15,7 @@ $env.PATH = (
   | prepend '~/.volta/bin'
   | prepend '/nix/var/nix/profiles/default/bin'
 )
+
 let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
