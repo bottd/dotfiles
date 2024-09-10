@@ -4,4 +4,5 @@
 (require :items.uname)
 (require :items.battery)
 (require :items.media)
+(require :items.spaces)
 
