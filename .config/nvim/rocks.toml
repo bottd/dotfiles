@@ -11,8 +11,6 @@
 "cmp-path" = { git = "hrsh7th/cmp-path" }
 "cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
 "cmp-conjure" = { git = "PaterJason/cmp-conjure" }
-"copilot.lua" = "scm"
-"copilot-cmp" = "scm"
 "lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", rev = "v4.x" }
 "luasnip" = "2.3.0"
 "neorg" = "9.1.1"
@@ -77,11 +75,14 @@ tree-sitter-vimdoc = "scm"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "scm"
 tree-sitter-yaml = "scm"
+tree-sitter-bash = "scm"
 "nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 "conform.nvim" = "8.0.0"
 "trouble.nvim" = "3.6.0"
 "helpview.nvim" = "1.1.0"
 "mini.nvim" = "scm"
+"otter.nvim" = "2.5.0"
+tree-sitter-nu = "scm"
 
 [bundles.cmp]
 items = [
@@ -92,7 +93,6 @@ items = [
   "cmp-cmdline",
   "cmp-conjure",
   "lsp-zero.nvim",
-  "copilot-cmp",
   "luasnip",
 ]
 

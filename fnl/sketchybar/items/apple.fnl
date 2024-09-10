@@ -1,14 +1,14 @@
 (local icons (require :icons))
 (local {: get-system-palette : on-theme-change} (require :colors))
-(local popup_toggle "sketchybar --set $NAME popup.drawingtoggle")
+(local popup-toggle "sketchybar --set $NAME popup.drawingtoggle")
 
 (local base-palette (get-system-palette))
 (local apple-logo (sbar.add :item
                             {:padding_right 15
-                             :click_script popup_toggle
+                             :click_script popup-toggle
                              :icon {:string icons.apple
                                     :font {:size 16.0}
-                                    :color base-palette.green}
+                                    :color base-palette.blue}
                              :label {:drawing false}
                              :popup {:height 35}}))
 
@@ -24,7 +24,5 @@
                          (apple-logo:set {:popup {:drawing false}})))
 
 (on-theme-change (fn [palette]
-                   (apple-logo:set {:icon {:color palette.red}})
-                   (sbar.exec (.. "sketchybar --bar color=" palette.crust)
-                              (fn []))))
+                   (apple-logo:set {:icon {:color palette.red}})))
 
