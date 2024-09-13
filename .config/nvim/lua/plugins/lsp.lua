@@ -1,15 +1,14 @@
 -- [nfnl] Compiled from fnl/plugins/lsp.fnl by https://github.com/Olical/nfnl, do not edit.
 local lsp_zero = require("lsp-zero")
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 local function lsp_attach(client, bufnr)
-  return lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
+  lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
+  return vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>'", {desc = "Code Action"})
 end
-lsp_zero.extend_lspconfig({capabilities = cmp_nvim_lsp.default_capabilities(), lsp_attach = lsp_attach, float_border = "rounded", sign_text = true})
 mason.setup({})
 local function _1_(server_name)
-  local server = (require("lspconfig"))[server_name]
+  local server = require("lspconfig")[server_name]
   return server.setup({})
 end
 local function _2_()
@@ -27,4 +26,4 @@ local function _6_()
   local lua_ls = _local_7_["lua_ls"]
   return lua_ls.setup({Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}})
 end
-return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "lua_ls", "svelte", "tailwindcss", "tsserver", "harper_ls"}, handlers = {_1_, harper_ls = _2_, rust_analyzer = _4_, lua_ls = _6_}})
+return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "lua_ls", "svelte", "tailwindcss", "ts_ls", "harper_ls"}, handlers = {_1_, harper_ls = _2_, rust_analyzer = _4_, lua_ls = _6_}})
