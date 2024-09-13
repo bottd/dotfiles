@@ -22,7 +22,7 @@ local function _7_(body)
   local lsp_expand = _local_8_["lsp_expand"]
   return lsp_expand(body)
 end
-setup({ui = {ghost_text = {position = "inline"}, menu = {max_height = 10, format_entry = _2_}}, alignment = {"left", "right"}, selection_behavior = "insert", confirm_behavior = "insert", sorting_direction = "away-from-cursor", sources = {lsp = {max_entries = 5, priority = 99999}, cmp_buffer = {max_entries = 3, priority = 1}}, snippet_expansion = _7_})
+setup({ui = {ghost_text = {position = "inline"}, menu = {max_height = 10, format_entry = _2_}}, alignment = {"left", "right"}, selection_behavior = "insert", confirm_behavior = "insert", sorting_direction = "away-from-cursor", sources = {lsp = {max_entries = 5, priority = 1}, cmp_buffer = {max_entries = 3}}, snippet_expansion = _7_})
 vim.keymap.set("i", "<Cr>", "<Plug>(CareConfirm)")
 vim.keymap.set("i", "<c-e>", "<Plug>(CareClose)")
 vim.keymap.set("i", "<c-n>", "<Plug>(CareSelectNext)")
