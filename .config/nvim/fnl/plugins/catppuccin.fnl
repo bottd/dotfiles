@@ -3,4 +3,3 @@
         :flavor :auto
         :custom_highlights (fn [colors]
                              {:MiniIndentscopeSymbol {:fg colors.lavender}})})
-
