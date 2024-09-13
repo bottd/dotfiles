@@ -7,10 +7,10 @@
 "rocks-edit.nvim" = "scm"
 
 # plugins for cmp bundle
-#"nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
-# "cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
-"care.nvim" = { git = "max397574/care.nvim", rev = "df80439586a56394d4fcb99769be227760b52ad0" }
-"care-cmp" = { git = "max397574/care-cmp" }
+"nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
+"cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
+# "care.nvim" = { git = "max397574/care.nvim", rev = "df80439586a56394d4fcb99769be227760b52ad0" }
+# "care-cmp" = { git = "max397574/care-cmp" }
 "cmp-buffer" = { git = "hrsh7th/cmp-buffer" }
 "cmp-path" = { git = "hrsh7th/cmp-path" }
 "cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
@@ -29,7 +29,7 @@
 "mason-lspconfig.nvim" = "1.31.0"
 "nfnl" = { git = "Olical/nfnl" }
 "zen-mode.nvim" = "scm"
-"catppuccin" = { git = "catppuccin/nvim", rev = "1.9.0" }
+"catppuccin" = { git = "catppuccin/nvim", rev = "v1.9.0" }
 "headlines.nvim" = "scm"
 "which-key.nvim" = "3.13.2"
 "indent-blankline.nvim" = "3.7.2"
@@ -86,30 +86,30 @@ tree-sitter-yaml = "scm"
 "mini.nvim" = "scm"
 "otter.nvim" = "2.5.0"
 
-#[bundles.cmp]
-#items = [
-#"nvim-cmp",
-#"cmp-nvim-lsp",
-#"cmp-buffer",
-#"cmp-path",
-#"cmp-cmdline",
-#"cmp-conjure",
-#"lsp-zero.nvim",
-#"luasnip",
-#]
-
-[bundles.care]
+[bundles.cmp]
 items = [
-  "care.nvim",
-  "care-cmp",
+  "nvim-cmp",
+  "cmp-nvim-lsp",
   "cmp-buffer",
   "cmp-path",
   "cmp-cmdline",
   "cmp-conjure",
   "lsp-zero.nvim",
   "luasnip",
-  "nvim-autopairs",
 ]
+
+#[bundles.care]
+#items = [
+#"care.nvim",
+#"care-cmp",
+#"cmp-buffer",
+#"cmp-path",
+#"cmp-cmdline",
+#"cmp-conjure",
+#"lsp-zero.nvim",
+#"luasnip",
+#"nvim-autopairs",
+#]
 
 
 [bundles.lsp]
