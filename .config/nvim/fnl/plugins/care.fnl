@@ -32,8 +32,8 @@
         :selection_behavior :insert
         :confirm_behavior :insert
         :sorting_direction :away-from-cursor
-        :sources {:lsp {:max_entries 5 :priority 99999}
-                  :cmp_buffer {:max_entries 3 :priority 1}}
+        :sources {:lsp {:max_entries 5 :priority 1}
+                  :cmp_buffer {:max_entries 3}}
         :snippet_expansion (fn [body]
                              (local {: lsp_expand} (require :luasnip))
                              (lsp_expand body))})

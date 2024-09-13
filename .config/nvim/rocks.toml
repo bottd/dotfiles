@@ -7,10 +7,10 @@
 "rocks-edit.nvim" = "scm"
 
 # plugins for cmp bundle
-"nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
-"cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
-# "care.nvim" = { git = "max397574/care.nvim", rev = "df80439586a56394d4fcb99769be227760b52ad0" }
-# "care-cmp" = { git = "max397574/care-cmp" }
+#"nvim-cmp" = { git = "hrsh7th/nvim-cmp" }
+#"cmp-nvim-lsp" = { git = "hrsh7th/cmp-nvim-lsp" }
+"care.nvim" = { git = "max397574/care.nvim", rev = "afebbfccde24e82bcd680260ad8b089df5d460d4" }
+"care-cmp" = { git = "max397574/care-cmp" }
 "cmp-buffer" = { git = "hrsh7th/cmp-buffer" }
 "cmp-path" = { git = "hrsh7th/cmp-path" }
 "cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
@@ -86,30 +86,30 @@ tree-sitter-yaml = "scm"
 "mini.nvim" = "scm"
 "otter.nvim" = "2.5.0"
 
-[bundles.cmp]
+# [bundles.cmp]
+# items = [
+#   "nvim-cmp",
+#   "cmp-nvim-lsp",
+#   "cmp-buffer",
+#   "cmp-path",
+#   "cmp-cmdline",
+#   "cmp-conjure",
+#   "lsp-zero.nvim",
+#   "luasnip",
+# ]
+
+[bundles.care]
 items = [
-  "nvim-cmp",
-  "cmp-nvim-lsp",
+  "care.nvim",
+  "care-cmp",
   "cmp-buffer",
   "cmp-path",
   "cmp-cmdline",
   "cmp-conjure",
   "lsp-zero.nvim",
   "luasnip",
+  "nvim-autopairs",
 ]
-
-#[bundles.care]
-#items = [
-#"care.nvim",
-#"care-cmp",
-#"cmp-buffer",
-#"cmp-path",
-#"cmp-cmdline",
-#"cmp-conjure",
-#"lsp-zero.nvim",
-#"luasnip",
-#"nvim-autopairs",
-#]
 
 
 [bundles.lsp]
