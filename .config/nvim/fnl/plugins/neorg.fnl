@@ -3,7 +3,7 @@
 (local {: setup} (require :neorg))
 (setup {:load {:core.defaults {}
                :core.concealer {:config {}}
-               :core.completion {:config {:engine :nvim-cmp :name "[Norg]"}}
+               ;:core.completion {:config {:engine :nvim-cmp :name "[Norg]"}}
                :core.dirman {:config {:workspaces {workspace workspace_path
                                                    :Inbox (.. workspace_path
                                                               :/inbox)

@@ -1,5 +1,4 @@
 (local lsp_zero (require :lsp-zero))
-(local cmp_nvim_lsp (require :cmp_nvim_lsp))
 (local mason (require :mason))
 (local mason_lspconfig (require :mason-lspconfig))
 ;see :help lsp-zero-keybindings
@@ -9,11 +8,6 @@
   (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false})
   (vim.keymap.set :n :<leader>ca "<cmd>lua vim.lsp.buf.code_action()<cr>'"
                   {:desc "Code Action"}))
-
-(lsp_zero.extend_lspconfig {:capabilities (cmp_nvim_lsp.default_capabilities)
-                            : lsp_attach
-                            :float_border :rounded
-                            :sign_text true})
 
 (mason.setup {})
 
@@ -29,7 +23,7 @@
                                            :lua_ls
                                            :svelte
                                            :tailwindcss
-                                           :tsserver
+                                           :ts_ls
                                            ;:fennel_language_server
                                            :harper_ls]
                         :handlers {1 (fn [server_name]
@@ -71,4 +65,3 @@
                                              (lua_ls.setup {:Lua {:diagnostics {:globals [:vim]}
                                                                   :workspace {:checkThirdParty false}
                                                                   :telemetry {:enable false}}}))}})
-
