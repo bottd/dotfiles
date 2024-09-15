@@ -1,4 +1,6 @@
 -- [nfnl] Compiled from fnl/plugins/care.fnl by https://github.com/Olical/nfnl, do not edit.
+local nvim_autopairs = require("nvim-autopairs")
+nvim_autopairs.setup()
 local _local_1_ = require("care")
 local setup = _local_1_["setup"]
 local function _2_(entry, data)
@@ -15,14 +17,14 @@ local function _2_(entry, data)
   else
     entry_kind = get_kind_name(completion_item.kind)
   end
-  return {{{completion_item.label}}, {{(" " .. (type_icons[entry_kind] or type_icons.Text) .. " "), ("@care.type.%s"):format(entry_kind)}, {data.source_name}}}
+  return {{{completion_item.label}}, {{(" " .. (type_icons[entry_kind] or type_icons.Text) .. " " .. data.source_name .. ""), ("@care.type.%s"):format(entry_kind)}}}
 end
 local function _7_(body)
   local _local_8_ = require("luasnip")
   local lsp_expand = _local_8_["lsp_expand"]
   return lsp_expand(body)
 end
-setup({ui = {ghost_text = {position = "inline"}, menu = {max_height = 10, format_entry = _2_}}, alignment = {"left", "right"}, selection_behavior = "insert", confirm_behavior = "insert", sorting_direction = "away-from-cursor", sources = {lsp = {max_entries = 5, priority = 1}, cmp_buffer = {max_entries = 3}}, snippet_expansion = _7_})
+setup({ui = {ghost_text = {position = "inline"}, menu = {max_height = 10, format_entry = _2_}}, alignment = {"left", "right"}, selection_behavior = "insert", confirm_behavior = "replace", sorting_direction = "away-from-cursor", sources = {lsp = {max_entries = 5, priority = 1}, cmp_buffer = {max_entries = 3}}, snippet_expansion = _7_})
 vim.keymap.set("i", "<Cr>", "<Plug>(CareConfirm)")
 vim.keymap.set("i", "<c-e>", "<Plug>(CareClose)")
 vim.keymap.set("i", "<c-n>", "<Plug>(CareSelectNext)")
