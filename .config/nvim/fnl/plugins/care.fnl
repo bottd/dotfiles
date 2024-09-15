@@ -1,3 +1,5 @@
+(local nvim-autopairs (require :nvim-autopairs))
+(nvim-autopairs.setup)
 (local {: setup} (require :care))
 ; TODO: 
 ; - prioirty config
@@ -25,12 +27,11 @@
                                      [[(.. " "
                                            (or (. type_icons entry_kind)
                                                type_icons.Text)
-                                           " ")
-                                       (: "@care.type.%s" :format entry_kind)]
-                                      [data.source_name]]])}}
+                                           " " data.source_name "")
+                                       (: "@care.type.%s" :format entry_kind)]]])}}
         :alignment [:left :right]
         :selection_behavior :insert
-        :confirm_behavior :insert
+        :confirm_behavior :replace
         :sorting_direction :away-from-cursor
         :sources {:lsp {:max_entries 5 :priority 1}
                   :cmp_buffer {:max_entries 3}}
