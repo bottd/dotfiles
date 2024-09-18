@@ -3,7 +3,8 @@
 (local {: setup} (require :neorg))
 (setup {:load {:core.defaults {}
                :core.concealer {:config {}}
-               ;:core.completion {:config {:engine :nvim-cmp :name "[Norg]"}}
+               :core.completion {:config {:engine {:module_name :external.lsp-completion}
+                                          :name "[Norg]"}}
                :core.dirman {:config {:workspaces {workspace workspace_path
                                                    :Inbox (.. workspace_path
                                                               :/inbox)
@@ -107,4 +108,3 @@
 
 (local which-key (require :which-key))
 (which-key.add [{1 :<leader>n :desc :Neorg}])
-
