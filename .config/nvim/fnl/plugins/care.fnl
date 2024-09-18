@@ -43,4 +43,3 @@
 (vim.keymap.set :i :<c-e> "<Plug>(CareClose)")
 (vim.keymap.set :i :<c-n> "<Plug>(CareSelectNext)")
 (vim.keymap.set :i :<c-p> "<Plug>(CareSelectPrev)")
-
