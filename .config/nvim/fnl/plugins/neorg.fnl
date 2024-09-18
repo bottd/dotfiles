@@ -45,7 +45,6 @@
                :core.export {}
                :core.export.markdown {:config {:extensions :all}}
                :core.integrations.telescope {}
-               :core.integrations.nvim-cmp {}
                :core.integrations.treesitter {}
                :core.itero {}
                :core.journal {:config {:journal_folder :daily
@@ -57,6 +56,8 @@
                :external.context {}
                :external.templates {:config {:templates_dir (.. workspace_path
                                                                 :/meta/templates)}}
+               :external.interim-ls {:config {:completion_provider {:enable true
+                                                                    :categories false}}}
                :external.worklog {:config {:default_workspace_title :External}}}})
 
 (vim.keymap.set :n :<leader>j

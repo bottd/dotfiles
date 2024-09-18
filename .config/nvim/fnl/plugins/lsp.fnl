@@ -1,13 +1,53 @@
-(local lsp_zero (require :lsp-zero))
 (local mason (require :mason))
 (local mason_lspconfig (require :mason-lspconfig))
-;see :help lsp-zero-keybindings
-;to learn the available actions
 
-(fn lsp_attach [client bufnr]
-  (lsp_zero.default_keymaps {:buffer bufnr :preserve_mappings false})
-  (vim.keymap.set :n :<leader>ca "<cmd>lua vim.lsp.buf.code_action()<cr>'"
-                  {:desc "Code Action"}))
+; note: diagnostics are not exclusive to lsp servers
+; so these can be global keybindings
+(vim.keymap.set :n :gl (fn [] (vim.diagnostic.open_float)))
+(vim.keymap.set :n "[d" (fn [] (vim.diagnostic.goto_prev)))
+(vim.keymap.set :n "]d" (fn [] (vim.diagnostic.goto_next)))
+
+(vim.api.nvim_create_autocmd :LspAttach
+                             {:desc "LSP Actions"
+                              :callback (fn [event]
+                                          (local opts {:buffer event.buf}) ; these will be buffer-local keybindings
+                                          ; because they only work if you have an active language server
+                                          (vim.keymap.set :n :K
+                                                          (fn []
+                                                            (vim.lsp.buf.hover))
+                                                          opts)
+                                          (vim.keymap.set :n :gd
+                                                          (fn []
+                                                            (vim.lsp.buf.definition))
+                                                          opts)
+                                          (vim.keymap.set :n :gD
+                                                          (fn []
+                                                            (vim.lsp.buf.declaration))
+                                                          opts)
+                                          (vim.keymap.set :n :gi
+                                                          (fn []
+                                                            (vim.lsp.buf.implementation))
+                                                          opts)
+                                          (vim.keymap.set :n :go
+                                                          (fn []
+                                                            (vim.lsp.buf.type_definition))
+                                                          opts)
+                                          (vim.keymap.set :n :gr
+                                                          (fn []
+                                                            (vim.lsp.buf.references))
+                                                          opts)
+                                          (vim.keymap.set :n :gs
+                                                          (fn []
+                                                            (vim.lsp.buf.signature_help))
+                                                          opts)
+                                          (vim.keymap.set :n :<F2>
+                                                          (fn []
+                                                            (vim.lsp.buf.rename))
+                                                          opts)
+                                          (vim.keymap.set :n :<F4>
+                                                          (fn []
+                                                            (vim.lsp.buf.code_action))
+                                                          opts))})
 
 (mason.setup {})
 
@@ -65,3 +105,4 @@
                                              (lua_ls.setup {:Lua {:diagnostics {:globals [:vim]}
                                                                   :workspace {:checkThirdParty false}
                                                                   :telemetry {:enable false}}}))}})
+

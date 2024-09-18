@@ -1,34 +1,25 @@
 [plugins]
-"rocks.nvim" = "2.40.0"
-"rocks-config.nvim" = "2.3.1"
+"rocks.nvim" = "2.40.1"
+"rocks-config.nvim" = "3.0.0"
 "rocks-dev.nvim" = "1.7.0"
-"rocks-git.nvim" = "2.2.0"
+"rocks-git.nvim" = "2.3.1"
 "rocks-treesitter.nvim" = "1.1.2"
 "rocks-edit.nvim" = "scm"
 
-# completion
-"care.nvim" = { git = "max397574/care.nvim", rev = "677290e84ea07cc6f10bd19f67790a679cebc241" }
-"care-cmp" = { git = "max397574/care-cmp" }
-"cmp-buffer" = { git = "hrsh7th/cmp-buffer" }
-"cmp-path" = { git = "hrsh7th/cmp-path" }
-"cmp-cmdline" = { git = "hrsh7th/cmp-cmdline" }
-"cmp-conjure" = { git = "PaterJason/cmp-conjure" }
-"lsp-zero.nvim" = { git = "VonHeikemen/lsp-zero.nvim", rev = "v4.x" }
 "luasnip" = "2.3.0"
 "nvim-autopairs" = "scm"
 
-# neorg
+# Neorg
 "neorg" = "9.1.1"
-"neorg-contexts" = { git = "max397574/neorg-contexts" }
-"neorg-templates" = { git = "pysan3/neorg-templates" }
 "neorg-worklog" = "1.3.4"
 "neorg-telescope" = "1.2.2"
+# "neorg-interim-ls" = "1.2.1"
+"neorg-interim-ls" = { git = "benlubas/neorg-interim-ls", rev = "a5ad59d6db43a5867eb15faad2a62f23c85de201" }
 
 "oil.nvim" = "2.12.2"
 "conjure" = "4.52.2"
 "mason.nvim" = "1.10.0"
 "mason-lspconfig.nvim" = "1.31.0"
-"nfnl" = { git = "Olical/nfnl" }
 "zen-mode.nvim" = "scm"
 "catppuccin" = { git = "catppuccin/nvim", rev = "v1.9.0" }
 "headlines.nvim" = "scm"
@@ -36,22 +27,14 @@
 "indent-blankline.nvim" = "3.7.2"
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
-"telescope-fzf-native.nvim" = { git = "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
 "nvim-web-devicons" = { version = "0.100", config = false }
 "lualine.nvim" = "scm"
 "alpha-nvim" = "scm"
 "bufdelete.nvim" = "scm"
 # "flash.nvim" = "1.18.2"
 "nvim-lspconfig" = "1.0.0"
-"vim-autoswap" = { git = "gioele/vim-autoswap" }
-"nvim-colorizer" = { git = "NvChad/nvim-colorizer.lua" }
 "nvim-ts-autotag" = "scm"
-"ts-comments.nvim" = { git = "folke/ts-comments.nvim" }
 "smart-splits.nvim" = "1.6.0"
-"middleclass" = { git = "anuvyklack/middleclass" }
-"animation.nvim" = { git = "anuvyklack/animation.nvim" }
-"windows.nvim" = { git = "anuvyklack/windows.nvim" }
-"gitsigns.nvim" = { git = "lewis6991/gitsigns.nvim" }
 "lazygit.nvim" = "scm"
 "rocks-lazy.nvim" = "scm"
 tree-sitter-json = "scm"
@@ -62,7 +45,6 @@ tree-sitter-css = "scm"
 tree-sitter-comment = "scm"
 tree-sitter-diff = "scm"
 tree-sitter-fennel = "scm"
-tree-sitter-fish = "scm"
 tree-sitter-gitignore = "scm"
 tree-sitter-graphql = "scm"
 tree-sitter-html = "scm"
@@ -80,13 +62,90 @@ tree-sitter-vimdoc = "scm"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "scm"
 tree-sitter-yaml = "scm"
-"nvim-treesitter" = { git = "nvim-treesitter/nvim-treesitter" }
 "conform.nvim" = "8.1.0"
 "trouble.nvim" = "3.6.0"
 "helpview.nvim" = "1.1.0"
 "mini.nvim" = "scm"
 "otter.nvim" = "2.5.0"
-"lsp_lines.nvim" = { git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim" }
+nvim-treesitter-legacy-api =  "scm"
+nvim-treesitter-context = "scm"
+# nvim-treesitter = "scm"
+
+
+# Completion
+[plugins."care.nvim"]
+git = "max397574/care.nvim"
+rev = "800741c255939c0f345239662ec268557ac3eefa"
+
+[plugins."care-cmp"]
+git = "max397574/care-cmp"
+rev = "72cbb457e2ff246fd672d524270effe46f92ce4f"
+
+
+[plugins."cmp-buffer" ]
+git = "hrsh7th/cmp-buffer"
+rev = "3022dbc9166796b644a841a02de8dd1cc1d311fa"
+
+[plugins."cmp-path" ]
+git = "hrsh7th/cmp-path"
+rev = "91ff86cd9c29299a64f968ebb45846c485725f23"
+
+[plugins."cmp-cmdline" ]
+git = "hrsh7th/cmp-cmdline"
+rev = "d250c63aa13ead745e3a40f61fdd3470efde3923"
+
+[plugins."cmp-conjure" ]
+git = "PaterJason/cmp-conjure"
+rev = "8c9a88efedc0e5bf3165baa6af8a407afe29daf6"
+
+[plugins."neorg-contexts" ]
+git = "max397574/neorg-contexts"
+rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
+
+[plugins."neorg-templates" ]
+git = "pysan3/neorg-templates"
+rev = "v2.0.3"
+
+[plugins."nfnl" ]
+git = "Olical/nfnl"
+rev = "v1.0.0"
+
+[plugins."telescope-fzf-native.nvim" ]
+git = "nvim-telescope/telescope-fzf-native.nvim"
+rev = "cf48d4dfce44e0b9a2e19a008d6ec6ea6f01a83b"
+build = "make"
+
+[plugins."vim-autoswap" ]
+git = "gioele/vim-autoswap"
+rev = "v0.3^{}"
+
+[plugins."nvim-colorizer" ]
+git = "NvChad/nvim-colorizer.lua"
+rev = "0671e0eabc6842676d3310370e8fae4e1c51d7f9"
+
+[plugins."ts-comments.nvim" ]
+git = "folke/ts-comments.nvim"
+rev = "v1.5.0"
+
+[plugins."middleclass" ]
+git = "anuvyklack/middleclass"
+rev = "9fab4d5bca67262614960960ca35c4740eb2be2c"
+
+[plugins."animation.nvim" ]
+git = "anuvyklack/animation.nvim"
+rev = "fb77091ab72ec9971aee0562e7081182527aaa6a"
+
+[plugins."windows.nvim" ]
+git = "anuvyklack/windows.nvim"
+rev = "c7492552b23d0ab30325e90b56066ec51242adc8"
+
+[plugins."gitsigns.nvim" ]
+git = "lewis6991/gitsigns.nvim"
+rev = "v0.9.0"
+
+[plugins."lsp_lines.nvim" ]
+git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+rev = "v3.0.0^{}"
 
 [bundles.care]
 items = [
@@ -96,7 +155,6 @@ items = [
   "cmp-path",
   "cmp-cmdline",
   "cmp-conjure",
-  "lsp-zero.nvim",
   "luasnip",
   "nvim-autopairs",
 ]
@@ -104,14 +162,14 @@ items = [
 
 [bundles.lsp]
 items = [
-  "lsp-zero.nvim",
   "mason.nvim",
   "mason-lspconfig.nvim",
   "nvim-lspconfig",
+  "lsp_lines.nvim"
 ]
 
 [bundles.treesitter]
-items = ["nvim-treesitter", "nvim-ts-autotag"]
+items = ["nvim-treesitter-legacy-api", "nvim-ts-autotag"]
 
 [bundles.indent-lines]
 items = ["mini.nvim", "indent-blankline.nvim"]
