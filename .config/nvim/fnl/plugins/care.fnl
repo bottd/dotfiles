@@ -9,26 +9,17 @@
 (setup {:ui {:ghost_text {:position :inline}
              :menu {:max_height 10
                     :format_entry (fn [entry data]
-                                    (local {: get_kind_name}
-                                           (require :care.utils.lsp))
-                                    (local {: LabelEntries}
+                                    (local labels [:q :w :r :t :z :i])
+                                    (local components
+                                           (require :care.presets.components))
+                                    (local preset_utils
                                            (require :care.presets.utils))
-                                    (local {: completion_item} entry)
-                                    (local {: type_icons}
-                                           (. (. (require :care.config)
-                                                 :options)
-                                              :ui))
-                                    (local entry_kind
-                                           (if (= (type completion_item.kind)
-                                                  :string)
-                                               completion_item.kind
-                                               (get_kind_name completion_item.kind)))
-                                    [[[completion_item.label]]
-                                     [[(.. " "
-                                           (or (. type_icons entry_kind)
-                                               type_icons.Text)
-                                           " " data.source_name "")
-                                       (: "@care.type.%s" :format entry_kind)]]])}}
+                                    [(components.ShortcutLabel labels entry
+                                                               data)
+                                     (components.Label entry data true)
+                                     (components.KindIcon entry :blended)
+                                     [[(.. " (" data.source_name ") ")
+                                       (preset_utils.kind_highlight entry :fg)]]])}}
         :alignment [:left :right]
         :selection_behavior :insert
         :confirm_behavior :replace

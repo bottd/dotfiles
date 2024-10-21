@@ -3,4 +3,3 @@
 
 (local nvim-ts-autotag (require :nvim-ts-autotag))
 (nvim-ts-autotag.setup)
-
