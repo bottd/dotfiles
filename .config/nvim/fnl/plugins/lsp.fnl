@@ -56,15 +56,13 @@
                                            :graphql
                                            :html
                                            :jsonnet_ls
-                                           :pyright
                                            :rust_analyzer
                                            :sqlls
-                                           :stylelint_lsp
                                            :lua_ls
                                            :svelte
                                            :tailwindcss
                                            :ts_ls
-                                           ;:fennel_language_server
+                                           ;:fennel_ls
                                            :harper_ls]
                         :handlers {1 (fn [server_name]
                                        (local server
@@ -76,23 +74,7 @@
                                                 (local {: harper_ls}
                                                        (require :lspconfig))
                                                 (harper_ls.setup {:filetypes [:norg
-                                                                              :markdown
-                                                                              :rust
-                                                                              :typescript
-                                                                              :typescriptreact
-                                                                              :javascript
-                                                                              :python
-                                                                              :go
-                                                                              :c
-                                                                              :cpp
-                                                                              :ruby
-                                                                              :swift
-                                                                              :csharp
-                                                                              :toml
-                                                                              :lua
-                                                                              :gitcommit
-                                                                              :java
-                                                                              :html]
+                                                                              :markdown]
                                                                   :settings {:harper-ls {:userDictPath "~/.config/nvim/dict.txt"}}}))
                                    :rust_analyzer (fn []
                                                     (local {: rust_analyzer}
@@ -105,4 +87,3 @@
                                              (lua_ls.setup {:Lua {:diagnostics {:globals [:vim]}
                                                                   :workspace {:checkThirdParty false}
                                                                   :telemetry {:enable false}}}))}})
-

@@ -61,7 +61,7 @@ end
 local function _15_()
   local _local_16_ = require("lspconfig")
   local harper_ls = _local_16_["harper_ls"]
-  return harper_ls.setup({filetypes = {"norg", "markdown", "rust", "typescript", "typescriptreact", "javascript", "python", "go", "c", "cpp", "ruby", "swift", "csharp", "toml", "lua", "gitcommit", "java", "html"}, settings = {["harper-ls"] = {userDictPath = "~/.config/nvim/dict.txt"}}})
+  return harper_ls.setup({filetypes = {"norg", "markdown"}, settings = {["harper-ls"] = {userDictPath = "~/.config/nvim/dict.txt"}}})
 end
 local function _17_()
   local _local_18_ = require("lspconfig")
@@ -73,4 +73,4 @@ local function _19_()
   local lua_ls = _local_20_["lua_ls"]
   return lua_ls.setup({Lua = {diagnostics = {globals = {"vim"}}, workspace = {checkThirdParty = false}, telemetry = {enable = false}}})
 end
-return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "pyright", "rust_analyzer", "sqlls", "stylelint_lsp", "lua_ls", "svelte", "tailwindcss", "ts_ls", "harper_ls"}, handlers = {_14_, harper_ls = _15_, rust_analyzer = _17_, lua_ls = _19_}})
+return mason_lspconfig.setup({ensure_installed = {"cssls", "eslint", "graphql", "html", "jsonnet_ls", "rust_analyzer", "sqlls", "lua_ls", "svelte", "tailwindcss", "ts_ls", "harper_ls"}, handlers = {_14_, harper_ls = _15_, rust_analyzer = _17_, lua_ls = _19_}})
