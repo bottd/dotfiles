@@ -57,4 +57,3 @@
   result)
 
 {: an-compare}
-
