@@ -1,30 +1,21 @@
--- [nfnl] Compiled from fnl/plugins/flash.fnl by https://github.com/Olical/nfnl, do not edit.
-do
-  local flash = require("flash")
-  flash.setup({})
-end
-local function _1_()
-  local flash = require("flash")
-  return flash.jump()
-end
-vim.keymap.set({"n", "x", "o"}, "s", _1_, {desc = "Flash"})
-local function _2_()
-  local flash = require("flash")
-  return flash.treesitter()
-end
-vim.keymap.set({"n", "o", "x"}, "S", _2_, {desc = "Flash Treesitter"})
-local function _3_()
-  local flash = require("flash")
-  return flash.remote()
-end
-vim.keymap.set("o", "r", _3_, {desc = "Remote Flash"})
-local function _4_()
-  local flash = require("flash")
-  return flash.treesitter_search()
-end
-vim.keymap.set({"o", "x"}, "R", _4_, {desc = "Treesitter Search"})
-local function _5_()
-  local flash = require("flash")
-  return flash.toggle()
-end
-return vim.keymap.set("c", "<c-s>", _5_, {desc = "Toggle Flash Search"})
+require("flash").setup({})
+
+vim.keymap.set({ "n", "x", "o" }, "s", function()
+	require("flash").jump()
+end, { desc = "Flash" })
+
+vim.keymap.set({ "n", "o", "x" }, "S", function()
+	require("flash").treesitter()
+end, { desc = "Flash Treesitter" })
+
+vim.keymap.set("o", "r", function()
+	require("flash").remote()
+end, { desc = "Remote Flash" })
+
+vim.keymap.set({ "o", "x" }, "R", function()
+	require("flash").treesitter_search()
+end, { desc = "Treesitter Search" })
+
+vim.keymap.set("c", "<c-s>", function()
+	require("flash").toggle()
+end, { desc = "Toggle Flash Search" })
