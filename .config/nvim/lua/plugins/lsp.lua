@@ -65,29 +65,26 @@ return mason_lspconfig.setup({
 	},
 	handlers = {
 		function(server_name)
-			local server = (require("lspconfig"))[server_name]
+			local server = require("lspconfig")[server_name]
 			return server.setup({})
 		end,
 		harper_ls = function()
-			local _local_16_ = require("lspconfig")
-			local harper_ls = _local_16_["harper_ls"]
-			return harper_ls.setup({
+			local server = require("lspconfig")["harper_ls"]
+			return server.setup({
 				filetypes = { "norg", "markdown" },
 				settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
 			})
 		end,
 		rust_analyzer = function()
-			local _local_18_ = require("lspconfig")
-			local rust_analyzer = _local_18_["rust_analyzer"]
-			return rust_analyzer.setup({
+			local server = require("lspconfig")["rust_analyzer"]
+			return server.setup({
 				cargo = { features = { "ssr" } },
 				procMacro = { ignored = { leptos_macro = { "server" } } },
 			})
 		end,
 		lua_ls = function()
-			local _local_20_ = require("lspconfig")
-			local lua_ls = _local_20_["lua_ls"]
-			return lua_ls.setup({
+			local server = require("lspconfig")["lua_ls"]
+			return server.setup({
 				Lua = {
 					diagnostics = { globals = { "vim" } },
 					workspace = { checkThirdParty = false },
