@@ -48,7 +48,7 @@ tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.30"
 tree-sitter-markdown = "0.0.35"
 tree-sitter-markdown_inline = "0.0.35"
-tree-sitter-nix = "0.0.45"
+tree-sitter-nix = "0.0.46"
 tree-sitter-lua = "0.0.31"
 tree-sitter-python = "0.0.30"
 tree-sitter-query = "0.0.29"
@@ -75,7 +75,7 @@ rev = "v1.8.0"
 
 [plugins."care.nvim"]
 git = "max397574/care.nvim"
-rev = "dd4cdf836215411c7105bfde19eb68c14e7ae9e4"
+rev = "394d71f2543d9e2ca4f87ad43fa2ff0b8efc29a5"
 
 [plugins."care-cmp"]
 git = "max397574/care-cmp"
