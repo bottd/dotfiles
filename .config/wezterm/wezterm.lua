@@ -43,7 +43,6 @@ return {
   keys = {
     { key = "/", mods = "LEADER",    action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
     { key = "-", mods = "LEADER",    action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-    { key = "t", mods = "SHIFT|ALT", action = wezterm.action.SpawnTab("CurrentPaneDomain") }
   },
   window_decorations = "RESIZE",
   use_fancy_tab_bar = false
