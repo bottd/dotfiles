@@ -3,7 +3,7 @@
     ./discord.nix
     ./starship.nix
     ./shell.nix
-    ./terminal.nix
+    ./wezterm/default.nix
     ./neovim/default.nix
   ];
 }
