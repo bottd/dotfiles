@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   home.file.".config/nvim" = {
-    source = ./config;
+    source = ../neovim;
     target = "link";
   };
   programs.neovim.enable = true;
