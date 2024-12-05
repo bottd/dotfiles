@@ -1,9 +1,11 @@
 {
   imports = [
-    ./discord.nix
-    ./starship.nix
-    ./shell.nix
-    ./wezterm
     ./neovim
+    ./nushell
+    ./starship
+    ./wezterm
+
+    ./discord.nix
+    ./zsh.nix
   ];
 }
