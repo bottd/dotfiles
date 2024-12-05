@@ -28,7 +28,7 @@
 
           extraSpecialArgs = {
             username = "drakebott";
-            root = ../../.;
+            root = ./.;
           };
 
           modules = [
