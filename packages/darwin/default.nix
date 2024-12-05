@@ -1,3 +1,5 @@
 {
-  imports = [];
+  imports = [
+    ./karabiner
+  ];
 }
