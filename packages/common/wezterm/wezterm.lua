@@ -53,6 +53,7 @@ local options = {
 
 if is_darwin then
   options.set_environment_variables.XDG_CONFIG_HOME = os.getenv("HOME") .. "/.config"
+  -- options.default_prog = { "/Users/drakebott/.nix-profile/bin/nu" }
 end
 
 if is_linux then
