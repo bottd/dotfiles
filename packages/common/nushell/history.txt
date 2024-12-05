@@ -1,0 +1,2815 @@
+cd /Library
+cd `Application Support/`
+ls
+yadm status
+zsh
+cd
+exit
+nvim ~/.config/nushell
+nvim
+zsh
+exit
+nvim
+cd Library/ApplicationSupport/
+ls
+cd nushell
+ls
+ls -a
+mv local.env.nu ~/.config/nushell
+cd
+cd .config/nushell
+nvim
+yadm status
+cd
+cd .config/nushell
+yadm status
+ls
+nvim local.env.nu
+yadm status
+ls
+yadm add config.nu
+yadm add env.nu
+yadm add git.nu
+yadm status
+cd
+yadm add fnl/
+ls
+yadm status
+cd .config/nvim
+nvim
+env
+$env
+$nu.WORKSPACE_PATH
+$nu.env
+$env
+clear
+nvim
+cd ../nushell
+nvim env.nu
+exit
+nvim
+yadm status
+yadm checkout ~/.config/nvim/lua/plugins/conjure
+yadm status
+yadm diff .config/starship.toml
+clear
+ls
+yadm status
+yadm diff ~/.config/nvim/rocks.toml
+yadm add ~/.config/nvim/rocks.toml
+yadm status
+ls
+cd .config/nvim
+nvim
+yadm status
+cd
+nvim
+nvim ~/.config/nushell
+cd ~/.config/nushell
+cd ~/.config
+ls
+mkdir starship
+mv starship.toml starship/
+cd starship
+ls
+mv starship.toml starship.dark.toml
+cp starship.dark.toml starship.light.toml
+nvim
+vim 
+ls
+neovim
+brew
+vim starship.light.toml
+exit
+nvim
+exit
+cd .config/nvim
+../nushell
+ls
+vim env.nu
+exit
+cd .config/nushell
+nvim
+exit
+clear
+ls
+clear
+ls
+$env
+$env.STARSHIP_PATH
+cd .config/nushell
+nvim
+clear
+exit
+clear
+starship
+starship toggle
+starship toggle --help
+starship toggle palette light
+starship print-config
+exit
+starship print-config
+clear
+cd .config/starship
+ls
+nvim
+yadm status
+yadm add ../starship.toml
+yadm add ./
+yadm status
+cd ./nushell
+cd ../nushell
+ls
+yadm status
+yadm add config.nu
+yadm add env.nu
+cd /Library/
+cd `Application Support/`
+ls
+..
+ls
+cd ApplicationSupport
+cd
+yadm status
+yadm rm /Library
+cd
+yadm rm Library/
+yadm rm Library/ -r
+yadm status
+yadm commit -m "Update, move nushell to .config"
+yadm push
+clear
+yadm rm .tmux.conf
+yadm status
+yadm commit -m "Remove tmux"
+yadm push
+cd
+cd fnl
+chsh -s /bin/zsh
+clear
+exit
+cd fnl
+nu compile.nu
+clear
+which nu
+nu compile.nu
+clear
+yadm status
+yadm add wezterm
+yadm commit -m "Nushell default wezterm shell"
+yadm push
+nvim
+exit
+nvim
+exit
+clear
+cd fnl
+ls
+nu compile.nu
+exit
+$env.XDG_CONFIG_HOME
+clear
+exit
+brew upgrade nushell
+exit
+cd .config
+cd nushell
+nvim local.env.nu
+cd
+clear
+cd .config/starship
+cd workspace/drake-dot-dev/
+clear
+gst
+ls
+rm eslint.config.js
+gst
+clear
+earlear
+clear
+exit
+$env.WINDOW_APPEARANCE
+clear
+alsdkjfas
+clear
+nvim
+clear
+nvim ~/fnl
+exit
+exit
+exit
+clear
+a
+exit
+eixt
+starship print-config
+qclear
+clear
+a
+clear
+clear
+cd ~/.config/nushell
+clear
+exit
+ls
+exit
+ls
+yadm status
+clear
+exit
+clear
+ls
+clear
+exit
+exit
+clear
+ls
+exit
+clear
+ls
+clear
+exit
+exit
+cl
+exit
+clear
+cd ~/workspace/drake-dot-dev/
+ear
+clear
+ls
+clear
+ear
+clear
+exit
+clear
+exit
+nvim
+clear
+brew upgrade
+cd workspace/drake-dot-dev/
+cd ~/workspace/drake-dot-dev/
+clear
+gst
+git stash
+clear
+exit
+nvim
+exit
+cd ~/.config/starship
+cd workspace/drake-dot-dev/
+cd ~/workspace/drake-dot-dev/
+gst
+git stash drop
+gst
+git stash clear
+gst
+clear
+exit
+neofetch
+brew install fastfetch
+fastfetch
+ls
+cd
+ls
+cd workspace
+ls
+cd dotfiles-private/
+ls
+cd fonts
+ls
+cd MonoLisa-NF/ls
+cd MonoLisa-NF/
+ls
+cd ttf
+ls
+cd ~/fnl
+ls
+cd ~/Downloads/
+ls
+cd `MonoLisa Complete 2.015/`
+ls
+vim README.md
+nvim wezterm/
+nu compile.nu
+clear
+nvim README.md
+ls
+cd ~/workspace/dotfiles-private
+ls
+rm -rf FontPatcher/
+ls
+rm patch-fonts.nu
+cd fonts
+ls
+rm -rf MonoLisa/
+rm -rf MonoLisa-NF/
+mv `~/Downloads/MonoLisa Complete 2.015/ttf/` .
+ls
+cd ttf
+ls
+..
+ls
+mv ttf/* .
+ls
+rm -rf ttf
+ls
+gst
+gitroot
+gst
+..
+ls
+gst
+gaa
+gst
+git commit -m "Remove patcher and patched font, use variable MonoLisa with fancy italics"
+git push
+ls
+yadm status
+clear
+cd 
+cd fnl
+nvim
+gst
+clear
+exit
+exit
+exit
+t
+exit
+exit
+clear
+exit
+exit
+clear
+cd ~/.config/starship
+exit
+nvim
+gst
+cd ~/workspace/drake-dot-dev/
+nvim
+gst
+gco tsconfig
+gst
+git checkout tsconfig.json
+gst
+npm run check
+npm run format
+npm run lint
+nvim
+npm run check
+npm run format
+nvim
+npm i zod
+npm run check
+npm run format
+npm run build
+npm run dev
+gst
+git diff
+gst
+ga package-lock.json
+ga package.json
+gst
+git diff
+gaa
+gst
+git commit -m "Add zod parsing for posts!"
+git push
+nvim
+npm run lint
+nvim
+npm run check
+npm i -D @types/eslint__js
+npm i -D @types/eslint-config-prettier
+nvim eslint.config.js
+npm run check
+nvim
+npm run check
+npm run lint
+clear
+npm run format
+npm run check
+npm run build
+nvim
+nvim
+ear
+clear
+exit
+npm run build
+npm run check
+npm run lint
+nvim
+volta use 20
+volta
+volta install 20
+volta install node@20
+nvim
+volta pin node@20
+npm i
+npm run check
+nvim
+npm run check
+rm -rf node_modules/
+rm package-lock.json
+npm i
+npm run check
+nvim package.json
+npm i -D @types/node
+npm run check
+gst
+npm run lint
+nvim
+npm run lint
+npm run check
+npm run format
+gst
+git diff
+gaa
+git commit -m "Fix type errors"
+git push
+exit
+t
+exit
+fastfetch
+clear
+fastfetch
+cd
+cd workspace/drake-dot-dev/
+nvim
+clear
+fastfetch
+lear
+clear
+cd
+fastfetch
+clear
+fastfetch
+nvim
+yadm status
+yadm diff
+yadm status
+clear
+cd
+yadm status
+yadm add .config/nushell
+yadm status
+yadm add .config/starship
+yadm add fnl/wezterm
+yadm status
+yadm rm .config/nushell/history.txt
+yadm rm .config/nushell/local.env.nu
+yadm status
+yadm reset
+yadm status
+yadm add .config/nushell/config.nu
+yadm add .config/nushell/theme/
+yadm add .config/starship/
+yadm add fnl/
+yadm status
+yadm diff
+yadm commit -m "Update"
+yadm push
+exit
+exit
+exit
+clear
+cd ~/.config/nvim
+cd ~/workspace/drake-dot-dev
+ls
+nvim
+gst
+git diff
+gst
+gaa
+git commit -m "Color h1 elements mauve"
+git push
+exit
+npm run dev
+exit
+nvim
+gst
+yadm status
+yadm diff
+nvim
+nvim
+exit
+nvim
+yadm status
+yadm diff
+cd
+cd .config/nushell
+nvim
+yadm diff
+nvim
+brew install prettierd prettier
+nvim
+brew install neovim --HEAD
+brew unlink neovim
+brew install neovim --HEAD
+nvim
+rm -rf ~/.local/share/nvim/
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+wget
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+brew install wget
+zsh
+clear
+brew unlink neovim
+brew install neovim
+brew link neovim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+exit
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+nvim -v
+brew uninstall neovim
+brew install neovim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+brew upgrade wget
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+nvim
+npm i -g neovim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+nvim
+cd ~/workspace/drake-dot-dev
+nvim
+nvim -v
+brew unlink neovim
+brew link neovim --HEAD
+neovim -v
+nvim -v
+nvim
+brew unlink neovim
+brew link neovim
+nvim
+exit
+nvim
+cd ~/workspace/drake-dot-dev
+nvim
+cd ~/.local/share
+rg 
+ls
+cd nvim
+ls
+cd rocks
+ls
+cd share
+ls
+cd lua
+ls
+cd 5.1
+ls
+cd rocks-git/
+ls
+..
+ls
+..
+ls
+..
+ls
+..
+ls
+cd rocks_rtp/
+ls
+cd lua
+ls
+..
+ls
+..
+ls
+cd bin
+ls
+..
+ls
+rg -w "nvim-treesitter"
+cd
+rm -rf ~/.local/share/nvim/
+nvim
+cd ~/.config/nvim
+nvim rocks.toml
+nvim
+exit
+cd ~/workspace/drake-dot-dev
+nvim
+clear
+nvim
+clear
+yadm status
+yadm add fnl
+yadm add lua
+yadm diff
+yadm add rocks.toml
+yadm commit -m "Update"
+exit
+clear
+exit
+cd ~/.config/nvim
+nvim
+nvim
+cd chalet
+nvim
+nvim
+gst
+gaa
+git commit -m "Update"
+git push
+clear
+ls
+ls zettel | length
+exit
+exit
+nvim
+clear
+cd ~/.local/share/nvim/
+ls
+cd rocks/
+ls
+cd rocks_rtp/
+nvim
+cd workspace/neorg-worklog/
+ls
+nvim testing.norg
+nvim
+nvim
+nvim
+nvim btesting.norg
+nvim
+ls
+rm atesting.norg
+rm btesting.norg
+rm ctesting.norg
+rm dtesting.norg
+gst
+git add README.md
+git add lua/
+gst
+git commit -m "feat: log entries with workspace relative link paths"
+git push
+nvim
+nvim
+cd
+cd ~/.config/nvim
+nvim
+yadm status
+nvim
+ls
+nvim
+gst
+git add lua/
+git commit -m "fix: correct workspace variable name, causing nil error"
+git push
+nvim
+nvim
+nvim
+yamd status
+yadm status
+yadm add fnl
+yadm add lua
+yadm add rocks.toml
+yadm commit -m "Update"
+yadm push
+exit
+exit
+exit
+cd
+nvim
+nvim ~/.config/nvim
+nvim
+cd ~/.config/nvim
+nvim
+exit
+cd .config/nvim
+nvim
+cd ~/workspace/neorg-worklog/
+nvim
+exit
+nvim
+cd ~/workspace/drake-dot-dev
+nvim
+npm run check
+npm run format
+gst
+npm run lint
+npm run check
+nvim
+npm run lint
+nvim
+npm run lint
+npm run format
+gst
+git diff
+gaa
+git commit -m "fix: correct tsconfig paths"
+npm run lint
+npm run check
+npm run lint
+npm run lint --fix
+npm run format
+gst
+git diff
+npm run lint
+nvim
+npm run format
+npm run lint
+npm run check
+nvim
+npm run build
+npm run lint
+npm run build
+npm run lint
+npm run check
+npm run lint
+nvim
+nim
+nvim
+nvim lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+nvim
+rm lua/plugins/lsp.lua
+nvim
+cd ../neorg-worklog
+nvim
+rm lua/plugins/lsp.lua
+nvim
+nvim
+rm lua/plugins/lsp.lua
+nvim
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+rm lua/plugins/lsp.lua
+rm lua/plugins/cmp.lua
+nvim
+rm lua/plugins/lsp.lua
+nvim
+yadm status
+yadm add dict.txt
+nvim
+nvim
+clear
+nvim
+yadm status
+nvim
+nvim rocks.toml
+nvim
+yadm status
+nvim
+yadm status
+yadm add fnl
+yadm status
+yadm add lua
+yadm add rocks
+yadm diff
+yadm commit -m "Update"
+yadm push
+nvim
+yadm status
+yadm diff
+yadm add rocks.toml
+yadm commit -m "Update"
+yadm status
+yadm push
+exit
+nvim
+exit
+cd ~/.config/nvim
+nvim
+nvim
+cd ~/workspace/neorg-worklog
+nvim
+gst
+git diff
+nvim
+gst
+git add lua
+git commit -m "fix: update duplicate link check to use relative file path"
+git push
+nvim
+cd chalet
+nvim
+nvim -v
+nvim
+nvim
+cd ~/.local/share/nvim
+nvim
+gst
+git diff
+gaa
+git commit -m "fix: escape relative file path"
+git push
+cd ~/.config/nvim
+nvim
+nvim
+cd ~/.local/state/nvim
+ls
+nvim log
+nvim
+nvi
+nvim
+nvim
+brew unlink neovim
+brew install neovim --HEAD
+nvim
+exit
+brew link neovim
+brew unlink neovim
+brew link neovim --HEAD
+brew reinstall neovim --HEAD
+brew install neovim --HEAD
+brew reinstall neovim --HEAD
+brew unlink neovim
+brew uninstall neovim --HEAD
+brew uninstall neovim
+brew install neovim --HEAD
+nvim -v
+nvim
+brew unlink neovim
+brew install neovim
+brew link neovim
+nvim -v
+cd ~/.local/share/nvim
+nvim
+cd
+cd chalet
+nvim
+nvim
+gst
+cd ~/workspace/neorg-worklog
+nvim
+gst
+nvim
+gst
+git diff
+gaa
+git commit -m "fix: cal nvim_buf_delete outside nvim_win_call to avoid internal Neovim error"
+git pull
+git push
+nvim
+yadm status
+yadm diff
+nvim
+cd
+cd .config/nvim
+cd ~/workspace/drake-dot-dev
+nvim
+gst
+git diff
+npm run lint
+npm run format
+gst
+npm run check
+npm run lint
+exit
+nvim
+npm run lint
+npx run tsc
+npx tsc
+exit
+npm run upgrade
+npm run update
+npm update
+gst
+git diff package.json
+npm run check
+npm i
+npm run check
+npx tsx
+npx tsc
+npm run lint
+npm run format
+npm run lint
+npm run check
+npm run format
+npm run lint
+npm run lint --debug
+npm run lint -- --debug
+npm run lint
+npm run check
+npm run format
+npm run lint
+npm run check
+npm run lint
+npm run check
+npm run lint
+npm run check
+npm run lint
+npx tsc
+npm run build
+npx run tsc
+npx tsc
+ls
+nvim
+nvim
+npm run lint
+gst
+npm run lint
+npm run format
+gst
+gaa
+git commit -m "feat: linting works!"
+git push
+npm run check
+exit
+clear
+cd ~/.config/nvim
+nvim
+nvim
+nvim
+exit
+exit
+exit
+nvim
+gst
+clear
+exit
+clear
+nvim
+cd chalet
+nvim
+nvim
+gst
+gaa
+git commit -m "update"
+git push
+nvim
+ls zettel | length
+gst
+clear
+clear
+yadm status
+cd
+cd .config/nvim
+nvim
+fennel 
+fennel fnl/plugins/neorg.fnl
+ls lua/plugins
+fennel fnl/plugins/neorg.fnl
+nvim
+nvim
+ls
+nvim
+cd
+cd workspace/github/neorg
+nvim
+git remote ls
+git remote
+git remote origin ls
+git remote origin
+git remote get-url origin
+gst
+git diff
+nvim
+gst
+git diff
+nvim
+gst
+gcb metagen-docs-example
+gst
+git diff
+gaa
+gst
+git commit -m "feat: add template example to metagen docs"
+git remote get-url origin
+git remote set-url origin https://github.com/bottd/neorg
+git remote get-url origin
+git push
+git commit --ammend -m "docs: add template example to metagen docs"
+git commit --ammend
+git commit --amend -m "docs: add template example to metagen docs"
+git push
+git push --force
+nvim
+exit
+cd ~/dotfiles/qmk/
+ls
+cd planck/
+ls
+rm testing.norg
+cd
+gst
+git diff
+gst
+gaa
+git commit -m "update"
+nvim
+clear
+exit
+cd ~/workspace/neorg-worklog/
+ls
+cd chalet
+cd
+cd chalet
+nvim
+nvim
+nvim
+cd ~/.config/nvim
+nvim
+exit
+cd ~/.config
+ls
+brew install sketchybar
+mkdir -p ~/.config/sketchybar/plugins<\n>cp $(brew --prefix)/share/sketchybar/examples/sketchybarrc ~/.config/sketchybar/sketchybarrc<\n>cp -r $(brew --prefix)/share/sketchybar/examples/plugins/ ~/.config/sketchybar/plugins/
+mkdir -p ~/.config/sketchybar/plugins
+mkdir --help
+mkdir ~/.config/sketchybar/plugins
+cd sketchybar/
+ls
+cd plugins
+ls
+..
+cd .config
+brew --prefix
+cp /opt/homebrew/share/sketchybar/examples/sketchybarrc sketchybar/
+cp -r /opt/homebrew/share/sketchybar/examples/plugins/ sketchybar/plugins/
+cd sketchybar/
+ls
+cd plugins/
+ls
+mv plugins/* ./
+ls
+rm -rf plugins
+brew services start sketchybar
+cd
+cd fnl
+nvim
+nu compile.nu
+exit
+exit
+cd fnl
+nvim
+nvim wezterm/wezterm.fnl
+nu compile.nu
+exit
+clear
+nvim ~/.aerospace.toml
+cd ~/.config/sketchybar/
+cd plugins/
+ls
+nvim aerospace.sh
+gst
+ls
+chmod +x aerospace.sh
+ls
+..
+nvim sketchybarrc
+exit
+brew services restart sketchybar
+aerospace --list-workspaces
+aerospace
+aearospace list-workspaces
+aerospace list-workspaces
+aerospace list-workspaces --focused
+aerospace list-workspaces --focused --all
+aerospace list-workspaces --all
+aerospace list-windows --all
+aerospace list-windows --all --workspaces
+aerospace list-windows --all --workspace
+aerospace list-windows --workspace
+aerospace list-workspaces --window
+aerospace list-workspaces --monitor
+aerospace list-workspaces --monitor=focused
+aerospace list-workspaces --monitor focused
+aerospace list-workspaces --visible
+aerospace list-workspaces --all
+nvim ~/.config/sketchybar/
+brew services restart sketchybar
+ls
+cd
+nvim .aerospace.toml
+exit
+exit
+yadm status
+yadm add ~/.config/nvim
+yamd status
+yadm status
+yadm diff
+yadm commit -m "Update"
+yadm push
+nvim .aerospace.toml
+exit
+aerospace list-workspaces --all
+brew services restart sketchybar
+aerospace
+aearospace workspace
+brew services restart sketchybar
+nvim
+brew services restart sketchybar
+clear
+brew services restart sketchybar
+brew install --cask sf-symbols
+brew install --cask background-music
+brew bundle dump
+nvim ~/Brewfile
+mv ~/Brewfile ~/Brewfile-old
+brew bundle dump
+nvim Brewfile
+brew install cava
+ln -s $(which sketchybar) $(dirname $(which sketchybar))/dynamic-island-sketchybar && git clone https://github.com/crissNb/Dynamic-Island-Sketchybar.git ~/.config/dynamic-island-sketchybar
+zsh
+cd ~/.config/sketchybar/
+nvim
+nvim
+cd ~/.config
+ls
+cd dynamic-island-sketchybar/
+dynamic-island-sketchybar
+cd
+mkdir dot-lit/
+cd dot-lit/
+ls
+cd ~/.config/nvim
+nvim
+nvim
+nvim
+brew services restart sketchybar
+dynamic-island-sketchybar
+clear
+exit
+exit
+nvim
+brew update
+nvim
+cd ~/.config
+ls
+cd karabiner/
+ls
+yadm add karabiner.json
+yadm commit -m "Track karabiner.json"
+..
+ls
+rm -rf dynamic-island-sketchybar/
+ls
+cd
+cd workspace
+ls
+cd dotfiles-private/
+ls
+ls ~/Downloads
+cp ~/Downloads/FluidNoti.zip .
+gst
+git add FluidNoti.zip
+git commit -m "Add fluidnoti private"
+git push
+yadm status
+yadm diff
+clear
+nvim
+clear
+(git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua && cd /tmp/SbarLua/ && make install && rm -rf /tmp/SbarLua/)
+zsh
+cd ~/.config/sketchybar
+ls
+nvim sketchybarrc
+mv sketchybarrc sketchybarrc.temp
+nvim sketchybarrc
+chmod +x sketchybarrc
+ls
+brew services restart sketchybar
+nvim
+cd ~/.local/share/sketchybar_lua/
+ls
+nvim
+brew services restart sketchybar
+brew services
+cd ~/workspace/github
+gh repo clone FelixKratz/SbarLua
+gh auth login
+gh repo clone FelixKratz/SbarLua
+cd SbarLua/
+ls
+exit
+exit
+cd ~/.config/sketchybar
+ls
+rm *.lua
+ls
+rm -rf items
+rm sketchybarrc
+ls
+cd example
+ls
+cp ./* ~/.config/sketchybar/
+cp -r ./* ~/.config/sketchybar/
+brew services restart sketchybar
+cd ../nushell/
+ls
+brew --prefix readline
+exit
+clear
+cd /tmp/SbarLua/
+make clean
+make install
+brew services restart sketchybar
+cd
+cd dots-lit
+ls
+dot-list
+cd dot-lit
+ls
+rm dynamic-island-sketchybar.norg
+nvim
+exit
+nvim env.nu
+zsh
+nvim dependencies.norg
+luarocks install --server=https://catppuccin.github.io/lua catppuccin
+../sketchybar/
+ls
+cd
+cd fnl
+ls
+cd ~/.config/nvim
+brew services restart sketchybar
+brew services restart sketchybar --watch
+brew services info
+brew services restart sketchybar --debug
+brew services restart sketchybar
+nvim
+cd /tmp/SbarLua/
+ls
+nvim wezterm/
+$env
+../fnl
+cd ~/fnl
+ls ./**/*.fnl
+ls
+nu compile.nu
+nvim
+nu compile.nu
+nvim example/
+exit
+brew services restart sketchybar
+nu compile.nu
+ls
+fennel sketchybar/items/battery.fnl
+fennel --compile sketchybar/items/battery.fnl
+ls
+fennel --compile sketchybar/colors.fnl
+fennel --compile sketchybar/bar.fnl
+fennel --compile sketchybar/items/battery.fnl
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nvim
+cd
+cd .config/karabiner/
+gst
+yadm status
+ls
+yadm add karabiner.json
+yadm status
+yadm push
+clear
+exit
+nvim
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+defaults read -g AppleInterfaceStyle
+brew services restart sketchybar
+defaults read -g AppleInterfaceStyle
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nvim
+sketchybar --trigger global_refresh
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+lua
+clear
+nu compile.nu
+brew services restart sketchybar
+nvim
+fennel --compile sketchybar/colors.fnl
+nu compile.nu
+brew services restart sketchybar
+defaults read -g AppleInterfaceStyle
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+sketchybar --trigger global_refresh
+sketchybar --update
+nu compile.nu
+sketchybar --update
+sketchybar --trigger theme_change
+sketchybar --update
+nvim
+nu compile.nu
+brew services restart sketchybar
+nushell
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+sketchybar --update
+brew upgrade sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nvim
+nu compile.nu
+ls
+mkdir ~/.config/sketchybar/macros
+nu compile.nu
+ls
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+brew services restart sketchybar
+nvim
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+fennel --compile --no-compiler-sandbox sketchybar/bar.fnl
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+nvim
+nu compile.nu
+brew services restart sketchybar
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+brew services restart sketchybar
+nvim
+exit
+nvim
+exit
+exit
+zsh
+exit
+cd .config/sketchybar/
+ls
+brew uninstall yabai
+brew uninstall --cask yabai
+nvim
+cd ~/workspace/github
+gh repo clone nvim-neorg/norg-fmt
+cd norg-fmt/
+ls
+nvim
+..
+cd rust-norg/
+ls
+git pull
+exit
+gst
+nvim
+clear
+exit
+exit
+nvim
+exit
+exit
+nvim
+cd ~/.config/nvim
+nvim
+clear
+cd
+cd .config/nvim
+nvim
+nvim
+cd ~/fnnl
+cd ~/fnl
+ls
+cd ~/fnl
+ls
+nu compile.nu
+exit
+cd ~/.config/sketchybar
+nvim
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+ls
+nu compile.nu
+nvim
+brew services restart sketchybar
+brew services restart sketchybar
+nvim
+brew services restart sketchybar
+clear
+ls
+gst
+yadm status
+cd sketchybar/
+..
+nu compile.nu
+brew services restart sketchybar
+clear
+exit
+ls
+brew services restart sketchybar
+nvim
+exit
+nvim
+nvim
+brew services restart sketchybar
+brew services restart sketchybar
+nvim
+nu compile.nu
+brew services restart sketchybar
+nvim
+nu compile.nu
+rm -rf ./
+..
+rm -rf sketchybar/
+mkdir sketchybar
+mkdir sketchybar/items
+nu compile.nu
+nvim sketchybar/
+brew services restart sketchybar
+nvim
+nvim sketchybar/
+nu compile.nu
+brew services restart sketchybar
+nvim
+ls
+nu compile.nu
+nvim
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+sketchybar --bar color=Red
+sketchybar --bar color=Black
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+sketchybar --bar color=0xffd20f39
+zsh
+sketchybar --bar color=0xffd20f39
+nu compile.nu
+fennel --compile sketchybar/bar.fnl
+nu compile.nu
+brew services restart sketchybar
+nvim
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+clear
+yadm status
+yadm add sketchybar/
+yadm add compile.nu
+yadm status
+yadm add ~/.config/nushell/env.nu
+yadm status
+yadm diff
+yadm status
+yadm add wezterm/wezterm.fnl
+yadm commit -m "Update wezterm/sketchybar"
+nvim
+cd ~/.config/nvim
+nvim
+gst
+yadm status
+yadm diff
+cd
+cd fnl
+nu compile.nu
+aerospace workspace
+aerospace --list-workspaces
+aerospace
+aerospace workspace
+aerospace workspace --all
+aerospace list-workspaces
+aerospace list-workspaces --all
+aerospace list-workspaces --all --format
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+brew services restart sketchybar
+nu compile.nu
+clear
+nvim
+nvim
+nu compile.nu
+brew services restart sketchybar
+exit
+exit
+yadm stat
+yadm status
+yadm push
+cd ~/chalet
+clear
+exit
+clear
+cd chalet
+nvim
+gst
+gaa
+gst
+git commit -m "ad"
+git push
+traceroute google.com
+nvim
+gst
+nvim
+cd ~/workspace/neorg-worklog/
+ls
+nvim
+gst
+gaa
+git commit -m "docs: update README"
+git push
+nvim
+nvim ~/.config/nvim
+nvim
+cd ~/.config/nvim
+nvim
+cd ~/.config/nvim
+nvim
+cd ../nushell/
+ls
+nvim local.env.nu
+exit
+exit
+exit
+cd chalet
+ls
+gst
+gaa
+git commit -m "Update"
+git push
+git pull
+exit
+cd chalet
+nvim
+xattr -c '/Applications/Zen Browser.app/'
+clear
+ls
+cd ~/workspace/drake-dot-dev/
+nvim
+gst
+gaa
+npm run dev
+gst
+nvim
+gst
+git commit -m "Update uses"
+npm run dev
+gst
+ga
+gaa
+git commit -m "Update uses"
+gst
+npm run upgrade
+npm upgrade
+gst
+npm check
+npm run check
+npm run format
+gst
+npm run lint
+gst
+git diff
+ga package-lock.json
+gst
+git diff
+gaa
+git commit -m "Upgrade and format"
+git push
+npm update
+gst
+npm upgrade latest
+gst
+nvim
+clear
+exit
+exit
+cd .config/nvim
+yadm status
+yadm diff
+yadm status
+yadm diff ~/fnl
+yadm add ~/fnl
+yadm status
+yadm diff rocks
+yadm add .
+yadm status
+yadm commit -m "Update"
+nvim
+cd ~/workspace/drake-dot-dev/
+nvim
+gst
+nvim
+nvim
+exit
+exit
+exit
+clear
+cd .config/nvim
+cd ~/workspace/drake-dot-dev/
+nvim
+nvim
+cd
+rm -rf ~/.local/share/nvim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+brew reinstall neovim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+brew upgrade
+nvim
+nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+sudo nvim -u NORC -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+gst
+nvim
+sudo chown ~/.local/share/nvim/
+whoami
+sudo chown -R drakebott ~/.local/share/nvim
+nvim
+cd .config/nvim
+nvim
+cd src
+ls
+cd lib
+ls
+nvim post.ts
+nvim
+clear
+nvim
+clear
+nvim
+yadm status
+yadm stash
+yadm pull
+yadm stash pop
+yadm stash
+yadm pull origin main
+yadm pull origin main --rebase
+nvim
+nvim rocks.toml
+yadm status
+yadm add rocks.toml
+yadm rebase --continue
+yadm push
+yadm status
+yadm stash pop
+nvim
+nvim rocks.toml
+nvim
+nvim rocks.toml
+nvim
+nvim fnl/plugins/catppuccin.fnl
+rm lua/plugins/catppuccin.lua
+nvim
+yadm status
+yadm add fnl/
+yadm add lua/
+yadm status
+yadm add rocks.toml
+yadm merge --continue
+yadm rebase --continue
+yadm commit -m "Care"
+nvim
+ls
+nvim rocks.toml
+yadm status
+yadm checkout rocks.toml
+nvim
+yadm status
+nvim
+nvim
+yadm status
+yadm add fnl/
+yadm status
+yadm add rocks.toml
+yadm add lua/
+yadm status
+yadm commit -m "update"
+yadm push
+nvim
+clear
+gst
+yadm status
+nvim
+yadm status
+yadm add fnl
+yadm add lua
+yadm add rocks.toml
+yadm commit -m "care"
+yadm push
+nvim
+yadm status
+yadm add fnl
+yadm add lua
+yadm commit -m "update"
+yadm push
+nvim
+cd 
+cd chalet
+gst
+git stash
+git pull
+git pull --rebase
+nvim journals/daily/2024-09-12.norg
+gst
+git pull
+nvim
+cd ~?workspace/github
+cd ~/workspace/github
+git clone https://github.com/max397574/care.nvim
+nvim
+cd care.nvim/
+nvim
+exit
+nvim
+nvim
+git pull
+..
+ls
+..
+cd drake-dot-dev/
+nvim
+gst
+gaa
+git reset
+gst
+rm journals/daily/2024-09-12-t.norg
+gst
+gaa
+git commit -m "Update"
+git push
+nvim
+gst
+git diff
+gst
+gco src
+gst
+clear
+exit
+exit
+yadm status
+yadm add fnl
+yadm add lua
+yadm status
+yadm add rocks.toml
+yadm status
+yadm commit -m "Update"
+yadm push
+exit
+ls
+nvim
+ls
+exit
+cd .config/nvim
+ls
+nvim
+exit
+nvim
+exit
+ls
+yadm status
+yadm pull
+nvim
+cd ~/.config/nvim
+nvim
+cd workspace/drake-dot-dev
+nvim
+npm i -g neovim
+nvim
+yadm status
+exit
+yadm status
+yadm diff
+yadm status
+yadm add fnl
+yadm add lua
+yadm add rocks
+yadm add rocks.toml
+yadm commit -m "Update"
+yadm push
+nvim
+nvim
+cd ~/workspace/drake-dot-dev
+nvim
+cd src/lib
+nvim
+cargo install tree-sitter-cli
+clear
+nvim
+nvim
+nvom
+nvim
+yadm status
+yadm diff
+nvim
+nivm
+nvim
+yadm status:
+yadm status
+nvim
+yadm status
+exit
+cd ~/.config
+cd nvim
+nvim
+yadm status
+nvim
+yadm status
+yadm diff
+yadm status
+nvim
+exit
+exit
+cd .config/nvim
+nvim
+yadm pull
+yadm status
+yadm diff
+yadm stash
+yadm pull
+yadm stash pop
+nvim rocks.toml
+nvim
+yadm status
+nvim rocks.toml
+nvim
+cd ~/workspace/drake-dot-dev
+nix-darwin
+zsh
+ls ~/.nix
+ls -a
+cd
+ls -a
+nix
+nix-channel --update darwin
+darwin-rebuild changelog
+ls ~/.config/nix/
+ls
+cd .config
+ls
+cd nix
+ls
+..
+rm -rf zed
+ls
+cd yadm
+ls
+..
+mkdir -p ~/.config/nix-darwin<\n>cd ~/.config/nix-darwin<\n>nix flake init -t nix-darwin<\n>sed -i '' "s/simple/$(scutil --get LocalHostName)/" flake.nix
+zsh
+cd nix-darwin
+ls
+nvim flake.nix
+nvim
+nvim ~/.config/nix-darwin/
+cd ~/workspace/github
+git clone https://github.com/nvim-neorocks/rocks.git
+cd rocks
+ls
+nvim todo.md
+clear
+cd
+cd .config/nix-darwin/
+ls
+cd ~/workspace/drake-dot-dev
+cd src/lib
+nvim
+nix run nix-darwin -- switch --flake ~/.config/nix-darwin
+curl --proto '=https' --tlsv1.2 -sSf -L https://github.com/NixOS/nix/raw/master/scripts/sequoia-nixbld-user-migration.sh | bash -
+nix run nix-darwin -- switch --flake ~/.config/nix-darwin
+nix-channel --update darwin
+darwin-rebuild changelog
+nix run nix-darwin -- switch --flake ~/.config/nix-darwin
+exit
+nvim
+exit
+nvim
+..
+cd nix
+ls
+nvim nix.conf
+..
+cd nix-darwin
+ls
+darwin-rebuild switch --flake ~/.config/nix-darwin
+nix run nix-darwin -- switch --flake ~/.config/nix-darwin
+nvim flake.nix
+cd ../nvim
+nvim
+yadm status
+yadm diff
+cd ~/workspace/drake-dot-dev
+cd src/lib
+nvim
+nvim
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+nix-channel --update
+exit
+nvim
+nvim
+exit
+eiit
+exit
+exit
+nvim
+exit
+cd dot-lit/ls
+cd dot-lit
+ls
+nvim
+clear
+nix-channel --list
+nix-channel --update
+exit
+nvim
+exit
+cd dot-lit
+ls
+nvim
+nix build .#personal
+nix build .#homeConfigurations.personal
+nix build .
+whoami
+nix build .
+whoami
+hostname
+nix build .
+nix build .#homeConfigurations.default
+nix flake build
+nix flake
+nix flake check
+home-manager build --flake
+zsh
+nix-channel --list
+darwin-rebuild
+darwin
+nix flake check
+ls
+..
+ls -a
+mv dot-lit nix-conf
+cd nix-conf
+ls
+gst
+git init
+gst
+git add flake.lock
+git add flake.nix
+git add hosts
+git add packages
+gst
+git add home.nix
+gst
+git commit -m "Init"
+nix flake check
+nix channel --update
+nix-channel --update
+nix channel --list
+nix-channel --list
+nix flake check
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-channel --list
+nix build
+nvim
+exit
+cd nix-conf/
+ls
+nix build .#homeConfigurations.personal
+nix build .#personal
+nix build .#homeConfigurations.personal
+nix check
+nix flake build
+nix flake check
+gst
+git add flake.nix
+git commit -m "Init"
+nix flake check
+nix flake build
+nix flake
+nix flake info
+nix flake
+nix flake update
+gst
+git add flake.lock
+git commit -m "Init"
+nix flake update
+nix run . -- switch
+nix flake update
+gst
+git add flake.lock
+git commit -m "Init"
+gst
+git add flake.nix
+git commit -m "Init"
+nix run . -- switch
+nix check
+nix flake check
+clear
+nix build .#homeConfigurations.personal
+nix build .#personal
+nvim flake.nix
+exit
+exit
+nvim
+exit
+clear
+cd nix-conf/
+nix check
+nix flake build
+nix flake check
+nix build
+nix
+nix --help
+nix upgrade-nix
+sudo nix upgrade-nix
+nix upgrade-nix
+sudo chown -R /nix
+nix-channel --update; nix-env -iA nixpkgs.nix
+nix upgrade-nix
+nix-channel --update; nix-env -iA nixpkgs.nix
+exit
+nvim
+cd nix-conf/
+ls
+nix upgrade-nix
+$ nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable<\n>
+nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
+nx upgrade-nix
+nix upgrade-nix
+sudo nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
+sudo launchctl remove org.nixos.nix-daemon
+sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+nix upgrade-nix
+sudo nix upgrade-nix
+exit
+exit
+cd nix-conf/
+nix flake check
+whoami
+exit
+nvim
+exit
+exit
+cd .config/nvim
+cd ~/nix-conf/
+nix flake check
+nvim
+cd ~/workspace/drake-dot-dev
+gst
+git pull
+npm upgrade latest
+npm i
+nvim
+nix flake build
+nix flake
+nix build
+nix flake check
+nvim
+clear
+yadm status
+clear
+exit
+exit
+nvim
+exit
+cd
+exit
+clear
+cd .config/nvim
+yadm status
+nvim
+yadm status
+yadm add fnl
+yadm status
+yadm add lua
+yadm add rocks.toml
+yadm commit -m "Update"
+nvim
+yadm status
+yadm diff
+nvim
+cd ~/workspace/drake-dot-dev
+nvim
+yadm status
+yadm add rocks.toml
+yadm commit -m "Update"
+yadm push
+nvim
+cd ~/workspace/drake-dot-dev
+exit
+exit
+nvim
+yadm status
+nvi
+nvim
+cd ~?workspace/github
+cd ~/workspace/github
+gh repo clone nvim-neorocks/rocks
+cd rocks
+git pull
+nvim
+cd
+pip install obs
+pip3
+pip3 install obs
+pip3 install obspython
+brew install obspython
+gst
+yadm status
+yadm checkout ~/.config/nvim/fnl/plugins/care.fnl
+yadm checkout ~/.config/nvim/lua/plugins/care.lua
+nvim
+nvim
+exit
+exit
+nvim destiny.py
+nvim
+nvim destiny.fnl
+nvim
+exit
+cd
+cd
+nvim destiny.fnl
+exit
+nvim destiny.py
+exit
+nvim destiny.pyexit
+exit
+exit
+nvim
+nvim destiny.py
+ls
+cd .config/nvim
+ls
+nvim
+ls -a
+gst
+yadm status
+yadm add .
+yadm status
+yadm commit -m "RIP fennel"
+yadm push
+yadm push --force
+nvim
+yadm pull
+cd
+cd chalet
+git status
+git stash
+git pull
+cd
+cd .config/nvim
+yamd status
+yadm status
+yadm diff
+nvim
+cd workspace/drake-dot-dev
+nvim
+nvim
+cd ~/workspace/drake-dot-dev/
+nvim
+clear
+yadm status
+yadm diff
+yadm status
+yadm rm .ignore
+yadm add rocks.toml
+yadm add lua/
+yadm commit -m ""
+yadm commit -m "update"
+yadm push
+cd
+cd workspace/geosmash
+cd workspace/
+ls
+gh repo clone bottd/geosmash
+..
+cd github
+ls
+brew upgrade
+gh repo clone destinygg/chat-gui
+cd chat-gui
+nvim
+exit
+npm i
+nvim
+ls
+..
+npx sv create svelte-chat
+cd svelte-chat
+gst
+git remote add origin https://github.com/bottd/svelte-chat.git<\n>git branch -M main<\n>git push -u origin main
+git init
+gst
+gaa
+git commit -m "Init"
+git remote add origin https://github.com/bottd/svelte-chat.git<\n>git branch -M main<\n>git push -u origin main
+exit
+exit
+exit
+exit
+ls
+../svelte-chat
+nvim
+..
+rm -rf svelte-chat
+npx sv create svelte-chat
+ls
+rm -rf svelte-chat/
+npx sv create svelte-chat
+cd svelte-chat
+nvim
+npm run dev
+..
+cd svelte-chat/
+ls
+gst
+git init
+gst
+gaa
+git commit -m "Init"
+git remote add origin https://github.com/bottd/svelte-chat.git<\n>git branch -M main<\n>git push -u origin main
+npm run dev
+exit
+npm run storybook
+cd 
+cd chalet
+gst
+git stash
+git pull
+gst
+cat journals/daily/2024-10-29.norg
+rm journals/daily/2024-10-29.norg
+yadm pull
+git pull
+git stash pop
+nvim
+gst
+gaa
+git commit -m "update"
+git push
+gst
+git diff
+gaa
+git commit -m "update"
+git push
+exit
+nvim
+exit
+gst
+exit
+nvim
+exit
+gst
+gaa
+git commit -m "update"
+git push
+nvim
+exit
+exit
+npm start
+exit
+yadm status
+yadm pull
+rm .config/wezterm/wezterm.lua
+clear
+nvim
+clear
+exit
+nvim .config/wezterm/wezterm.lua
+gst
+yadm status
+exit
+nvim
+yadm status
+yadm add .config/wezterm/wezterm.lua
+yadm commit -m "cross platform wezterm config"
+git push
+yadm push
+clear
+cd .config/nvim
+yadm status
+..
+cd
+cd workspace/svelte-chat
+cd workspace
+ls
+cd github
+ls
+cd svlete-chat
+cd svelte-chat/
+ls
+gst
+git pull
+npm i
+npm test
+..
+cd chat-gui
+npm run check
+npm test
+nvim
+exit
+nvim
+exit
+exit
+clear
+exit
+cd .config/nvim
+nvim
+cd
+cd workspace/svelte-chat
+cd workspace/
+cd github
+ls
+mv svelte-chat/ ..
+..
+cd svelte-chat/
+../github/
+cd chat-gui/
+nvim
+clear
+exit
+nvim
+exit
+cd .config/nushell/
+ls
+nvim config.nu
+exit
+emacs
+zsh
+eixt
+exit
+nvim
+exit
+clear
+cd .config/nvim
+yadm status
+brew upgrade
+nvim
+exit
+exi
+exit
+exit
+cd
+cd workspace/drake-dot-dev
+..
+ls
+..
+cd .config
+ls
+cd nix-darwin/
+..
+cd
+cd workspace/drake-dot-dev
+...
+nvim
+ls
+cd
+cd dot-lit
+ls
+cd workspace/dot-lit
+ls
+nvim
+exit
+exit
+ls
+..
+cd
+ls
+cd nix-conf
+ls
+nvim
+cd nix-conf
+cd ~/nix-conf
+home-manager build --flake
+nix flake check
+nvim
+gst
+git init
+gst
+git add ./
+gst
+git commit -m "init"
+nix flake check
+nix run home-manager/master -- init --switch
+nix info
+nix
+sudo systemctl stop nix-daemon.service<\n>sudo systemctl disable nix-daemon.socket nix-daemon.service<\n>sudo systemctl daemon-reload<\n>
+sudo rm -rf /etc/nix /etc/profile.d/nix.sh /etc/tmpfiles.d/nix-daemon.conf /nix ~root/.nix-channels ~root/.nix-defexpr ~root/.nix-profile ~root/.cache/nix<\n>
+sudo systemctl stop nix-daemon.service<\n>sudo systemctl disable nix-daemon.socket nix-daemon.service<\n>sudo systemctl daemon-reload<\n>
+sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist<\n>sudo rm /Library/LaunchDaemons/org.nixos.nix-daemon.plist<\n>sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist<\n>sudo rm /Library/LaunchDaemons/org.nixos.darwin-store.plist<\n>
+sudo dscl . -delete /Groups/nixbld<\n>for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete /Users/$u; done<\n>
+bash
+nvim /etc/synthetic.conf
+sudo rm -rf /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels<\n>
+sudo diskutil apfs deleteVolume /nix<\n>
+diskutil list<\n>
+cd ~/nix-conf
+ls
+nix flake check
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \<\n>  sh -s -- install
+nix run home-manager/release-24.05 -- init --switch
+ls
+cd /etc/ssl/certs/ca-certificates.crt
+cd /etc/ssl/certs
+la
+ls -a
+cat ca-certificates.crt
+nvim ca-certificates.crt
+la
+ls -a
+unlink
+ls -a
+cd ../
+ls -a
+cd certs/
+ls -a
+cat ca-certificates.crt
+nvim ca-certificates.crt
+ll ca-certificates.crt
+ll
+ls -l
+ls -l /etc/static/ssl/certs/ca-certificates.crt
+ls -l /etc/static
+cat /etc/static
+nvim /etc/static
+ls
+ls -l /etc/static
+ls -l
+rm ca-certificates.crt
+ls -a
+la
+ls -l /etc/static
+ls -l
+ls -a
+cd /nix/store
+ls -
+ls 0a
+ls -a
+sudo rm ca-certificates.crt
+clear
+ls -l
+ls -l /etc/static
+sudo rm /etc/ssl/certs/ca-certificates.crt<\n>sudo ln -s /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+ls -l /etc/static
+ls -l
+ls
+ls -l
+nvim .
+ls -l
+nix flake update
+nix flake check
+nvim .
+ls -a
+lazygit
+nix flake update
+lazygit
+nix flake update
+clear
+nix flake check
+nvim .
+nix flake check
+gst
+gaa
+git commit -m "init"
+nix flake check
+gst
+nix flake switch
+nix flake build
+nix flake check
+nix flake --switch
+nix flake rebuild --switch
+nix flake check
+exit
+exi
+exit
+nix flake check personal
+nix flake check --personal
+nix flake --help
+nix flake lock
+gst
+git diff
+git stash
+nix flake lock
+gst
+nix flake --help
+nix flake init
+gst
+git status
+gco main
+gst
+nix flake init
+gst
+git diff
+nix flake --help
+nix flake show
+ls
+ls -a
+rm -rf .git
+gst
+ls -a
+gst
+git init
+gst
+git add .
+gst
+git commit -m "init"
+nix flake check
+git push --force
+gst
+..
+mv nix-conf/ nix-conf2
+gst
+cd nix-conf2
+rm -rf .git
+git init
+gaa
+gst
+git commit -m "init"
+nix flake check
+ls
+nvim
+gst
+cd
+exit
+gst
+gaa
+git commit -m "init"
+nix flake chekc
+nix flake check
+gst
+smilew for the crowd!
+ls -a
+rm flake.lock
+ls -a
+nix flake check
+nix flake update
+nix flake check
+nvim .
+ls -a
+nix flake check
+nix run home-manager/release-24.05 -- init --switch
+home-manager switch
+nvim .
+ls -a
+home-manager switch
+ls
+nvim home.nix
+nix run home-manager/release-24.05 -- init --switch
+home-manager
+nvim .
+lazygit
+home-manager
+nix run home-manager/release-24.05 -- init --switch
+home-manager switch
+home-manager
+zsh
+nix run home-manager/release-24.05 -- init --switch
+home-manager
+man home-configuration.nix
+cat .nix-profile/etc/profile.d/hm-session-vars.sh
+cat ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+bash
+cd ~/.config/nvim
+nvim
+nvim
+nix run home-manager/release-24.05 -- init --switch
+where nushell
+which nu
+exit
+which nu
+cd
+cd .config/wezterm/
+ls /bin
+ls ~/.nix-profile/
+ls ~/.nix-profile/bin
+ls
+gst
+nix flake check
+gst
+gaa
+whoami
+nix flake check
+gst
+gaa
+git commit -m "init"
+nix flake check
+nix run home-manager/release-24.05 -- --switch
+nix run nixpkgs#home-manager
+nix run nixpkgs#home-manager switch
+nix run nixpkgs#home-manager switch --flake .#personal
+nix run nixpkgs#home-manager switch flake .#personal
+nix run nixpkgs#home-manager switch --flake
+home-manager
+brew uninstall nushell
+nvim
+exit
+bash
+exit
+nvim
+exit
+nvim
+exit
+exit
