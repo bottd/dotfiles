@@ -2,7 +2,7 @@
 "rocks.nvim" = "2.42.2"
 "rocks-config.nvim" = "3.1.0"
 "rocks-dev.nvim" = "1.7.0"
-"rocks-git.nvim" = "2.5.1"
+"rocks-git.nvim" = "2.5.2"
 "rocks-treesitter.nvim" = "1.2.0"
 "rocks-edit.nvim" = "scm"
 "luasnip" = "2.3.0"
@@ -12,7 +12,7 @@
 "neorg" = "9.1.1"
 "neorg-worklog" = "1.3.4"
 "neorg-telescope" = "1.2.2"
-"neorg-interim-ls" = "1.3.0"
+"neorg-interim-ls" = "2.0.0"
 
 "oil.nvim" = "2.13.0"
 "conjure" = "4.53.0"
@@ -22,7 +22,7 @@
 "catppuccin" = { git = "catppuccin/nvim", rev = "v1.9.0" }
 "headlines.nvim" = "scm"
 "which-key.nvim" = "3.14.1"
-"indent-blankline.nvim" = "3.8.5"
+"indent-blankline.nvim" = "3.8.6"
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "nvim-web-devicons" = { version = "0.100", config = false }
@@ -46,11 +46,11 @@ tree-sitter-fennel = "0.0.29"
 tree-sitter-gitignore = "0.0.29"
 tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.33"
-tree-sitter-markdown = "0.0.36"
+tree-sitter-markdown = "0.0.37"
 tree-sitter-markdown_inline = "0.0.36"
 tree-sitter-nix = "0.0.51"
 tree-sitter-lua = "0.0.31"
-tree-sitter-python = "0.0.33"
+tree-sitter-python = "0.0.34"
 tree-sitter-query = "0.0.30"
 tree-sitter-rust = "0.0.37"
 tree-sitter-sql = "0.0.37"
@@ -60,7 +60,7 @@ tree-sitter-typescript = "0.0.31"
 tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
-tree-sitter-yaml = "0.0.29"
+tree-sitter-yaml = "0.0.30"
 "conform.nvim" = "8.2.0"
 "trouble.nvim" = "3.6.0"
 "helpview.nvim" = "1.1.0"
@@ -73,30 +73,9 @@ nvim-treesitter-context = "scm"
 git = "folke/lazydev.nvim"
 rev = "v1.9.0"
 
-[plugins."care.nvim"]
-git = "max397574/care.nvim"
-rev = "db6990436daa6720e2ac932f5848ccafa6357ca2"
-
-[plugins."care-cmp"]
-git = "max397574/care-cmp"
-rev = "72cbb457e2ff246fd672d524270effe46f92ce4f"
-
-
-[plugins."cmp-buffer"]
-git = "hrsh7th/cmp-buffer"
-rev = "3022dbc9166796b644a841a02de8dd1cc1d311fa"
-
-[plugins."cmp-path"]
-git = "hrsh7th/cmp-path"
-rev = "91ff86cd9c29299a64f968ebb45846c485725f23"
-
-[plugins."cmp-cmdline"]
-git = "hrsh7th/cmp-cmdline"
-rev = "d250c63aa13ead745e3a40f61fdd3470efde3923"
-
-[plugins."cmp-conjure"]
-git = "PaterJason/cmp-conjure"
-rev = "8c9a88efedc0e5bf3165baa6af8a407afe29daf6"
+[plugins."blink.cmp"]
+git = "Saghen/blink.cmp"
+rev = "v0.8.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
@@ -147,16 +126,11 @@ rev = "v0.9.0"
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
 
-[bundles.care]
+[bundles.blink]
 items = [
-  "care.nvim",
-  "care-cmp",
-  "cmp-buffer",
-  "cmp-path",
-  "cmp-cmdline",
-  "cmp-conjure",
+  "blink.cmp",
   "luasnip",
-  "nvim-autopairs",
+  # "nvim-autopairs",
 ]
 
 
