@@ -1,6 +1,7 @@
 {pkgs, config, lib, inputs, ...}: {
   lib.meta = {
-    createSymLink = path: lib.file.mkOutOfStoreSymlink (
-    "${config.home.homeDirectory}/workspace/dotfiles/${path}"
+    createSymlink = path: config.lib.file.mkOutOfStoreSymlink (
+      "${config.home.homeDirectory}/workspace/dotfiles/${path}"
+    );
   };
 }

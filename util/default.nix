@@ -1,5 +1,5 @@
 {
   imports = [
-    ./createSymlink
+    ./createSymlink.nix
   ];
 }
