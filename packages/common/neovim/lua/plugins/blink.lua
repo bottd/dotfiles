@@ -1,7 +1,7 @@
 local blink = require('blink.cmp')
 
 blink.setup({
-  keymap = { preset = "enter" },
+  keymap = { preset = "super-tab" },
   snippets = {
     expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
     active = function(filter)
