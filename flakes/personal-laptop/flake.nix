@@ -33,6 +33,7 @@
 
           modules = [
             mac-app-util.homeManagerModules.default
+            ../../util/default.nix
             ../../home.nix 
             ../../hosts/personal/macbook.nix
           ];
