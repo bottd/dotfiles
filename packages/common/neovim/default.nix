@@ -19,7 +19,7 @@
     };
 
     ".config/nvim/rocks.toml" = {
-      source = ./rocks.toml;
+      source = config.lib.file.mkOutOfStoreSymlink("${config.home.homeDirectory}/.config/home-manager/packages/common/neovim/rocks.toml");
     };
   };
 
