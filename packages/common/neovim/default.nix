@@ -11,15 +11,15 @@
     };
 
     ".config/nvim/dict.txt" = {
-      source = ./dict.txt;
+      source = config.lib.meta.createSymlink(./dict.txt);
     };
 
     ".config/nvim/init.lua" = {
-      source = ./init.lua;
+      source = config.lib.meta.createSymlink(./init.lua);
     };
 
     ".config/nvim/rocks.toml" = {
-      source = config.lib.meta.createSymLink(packages/common/neovim/rocks.toml);
+      source = config.lib.meta.createSymlink(./rocks.toml);
     };
   };
 
