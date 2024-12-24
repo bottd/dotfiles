@@ -50,7 +50,7 @@ tree-sitter-markdown = "0.0.37"
 tree-sitter-markdown_inline = "0.0.36"
 tree-sitter-nix = "0.0.51"
 tree-sitter-lua = "0.0.32"
-tree-sitter-python = "0.0.35"
+tree-sitter-python = "0.0.36"
 tree-sitter-query = "0.0.30"
 tree-sitter-rust = "0.0.38"
 tree-sitter-sql = "0.0.38"
@@ -75,7 +75,7 @@ rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v0.8.1"
+rev = "v0.8.2"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
