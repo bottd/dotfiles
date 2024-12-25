@@ -1,6 +1,4 @@
-local blink = require('blink.cmp')
-
-blink.setup({
+require("blink.cmp").setup({
   keymap = { preset = "super-tab" },
   snippets = {
     expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
@@ -13,7 +11,14 @@ blink.setup({
     jump = function(direction) require('luasnip').jump(direction) end,
   },
   sources = {
-    default = { 'lsp', 'path', 'luasnip', 'buffer' },
+    default = { 'lsp', 'path', 'luasnip', 'buffer', 'codecompanion' },
+    providers = {
+      codecompanion = {
+        name = "CodeCompanion",
+        module = "codecompanion.providers.completion.blink",
+        enabled = true,
+      },
+    },
   },
   completion = {
     keyword = {

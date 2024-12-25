@@ -68,6 +68,7 @@ tree-sitter-yaml = "0.0.30"
 "otter.nvim" = "2.5.1"
 nvim-treesitter-legacy-api = "0.9.2"
 nvim-treesitter-context = "scm"
+#"windows.nvim" = "scm"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -77,6 +78,10 @@ rev = "v1.9.0"
 git = "Saghen/blink.cmp"
 rev = "v0.8.2"
 
+[plugins."codecompanion.nvim"]
+git = "olimorris/codecompanion.nvim"
+rev = "v10.10.0"
+
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
 rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
@@ -84,10 +89,6 @@ rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
 [plugins."neorg-templates"]
 git = "pysan3/neorg-templates"
 rev = "v2.0.3"
-
-[plugins."nfnl"]
-git = "Olical/nfnl"
-rev = "v1.0.0"
 
 [plugins."telescope-fzf-native.nvim"]
 git = "nvim-telescope/telescope-fzf-native.nvim"
@@ -106,18 +107,6 @@ rev = "0671e0eabc6842676d3310370e8fae4e1c51d7f9"
 git = "folke/ts-comments.nvim"
 rev = "v1.5.0"
 
-[plugins."middleclass"]
-git = "anuvyklack/middleclass"
-rev = "9fab4d5bca67262614960960ca35c4740eb2be2c"
-
-[plugins."animation.nvim"]
-git = "anuvyklack/animation.nvim"
-rev = "fb77091ab72ec9971aee0562e7081182527aaa6a"
-
-[plugins."windows.nvim"]
-git = "anuvyklack/windows.nvim"
-rev = "c7492552b23d0ab30325e90b56066ec51242adc8"
-
 [plugins."gitsigns.nvim"]
 git = "lewis6991/gitsigns.nvim"
 rev = "v0.9.0"
@@ -126,12 +115,12 @@ rev = "v0.9.0"
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
 
+[plugins."plenary.nvim"]
+git = "nvim-lua/plenary.nvim"
+rev = "2d9b06177a975543726ce5c73fca176cedbffe9d"
+
 [bundles.blink]
-items = [
-  "blink.cmp",
-  "luasnip",
-  # "nvim-autopairs",
-]
+items = ["blink.cmp", "luasnip"]
 
 
 [bundles.lsp]
