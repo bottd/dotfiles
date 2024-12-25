@@ -8,8 +8,8 @@ require('codecompanion').setup({
     anthropic = function()
       return require("codecompanion.adapters").extend("anthropic", {
         env = {
-          api_key =
-          "REMOVED"
+          -- TODO: Set api key in env, I just leaked my last api key :o
+          api_key = os.getenv("ANTHROPIC_API_KEY")
         },
       })
     end,
