@@ -132,9 +132,6 @@ items = [
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
 
-[bundles.indent-lines]
-items = ["mini.nvim", "indent-blankline.nvim"]
-
 [treesitter]
 auto_highlight = "all"
 auto_install = "prompt"
