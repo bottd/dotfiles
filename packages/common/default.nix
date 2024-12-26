@@ -5,6 +5,7 @@
     ./starship
     ./wezterm
     ./discord.nix
+    ./git.nix
     ./zsh.nix
   ];
 }
