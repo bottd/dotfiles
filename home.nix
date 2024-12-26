@@ -23,6 +23,7 @@ in {
 
   fonts.fontconfig.enable = true; # Enable fonts
 
+  xdg.enable = true;
   nix = {
     # Configure the Nix package manager itself
     package = pkgs.nix;
