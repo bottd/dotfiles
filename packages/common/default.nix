@@ -1,5 +1,6 @@
 {
   imports = [
+    ./ghostty
     ./neovim
     ./nushell
     ./starship
