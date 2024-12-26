@@ -4,8 +4,14 @@
 
   home.packages = with pkgs; [
     (discord.override {
-      withOpenASAR = true;
-      withVencord = true;
+      # withOpenASAR = true;
+      # withVencord = true;
     })
   ];
+  programs.discocss.enable = true;
+  home.file = {
+    ".config/discocss/custom.css" = {
+      source = "./custom.css";
+    };
+  }
 }
