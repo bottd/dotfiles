@@ -4,7 +4,7 @@
     ./nushell
     ./starship
     ./wezterm
-    ./discord.nix
+    ./discord
     ./git.nix
     ./zsh.nix
   ];
