@@ -5,13 +5,8 @@
   home.packages = with pkgs; [
     (discord.override {
       # withOpenASAR = true;
+      # Vencord produces an unopenable discord client on mac for me
       # withVencord = true;
     })
   ];
-  programs.discocss.enable = true;
-  home.file = {
-    ".config/discocss/custom.css" = {
-      source = "./custom.css";
-    };
-  }
 }
