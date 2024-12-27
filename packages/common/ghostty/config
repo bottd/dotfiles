@@ -5,10 +5,6 @@ font-family-bold = MonoLisa Variable Regular Bold
 font-family-italic = MonoLisa Variable Italic Italic
 font-family-bold-italic = MonoLisa Variable Italic Bold Italic
 
-macos-icon = custom-style
-macos-icon-frame = chrome
-macos-icon-ghost-color = #7287fd
-macos-icon-screen-color = #1e66f5
 macos-non-native-fullscreen = true
 
 mouse-hide-while-typing = true
