@@ -16,6 +16,7 @@ require("neorg").setup({
       config = {
         workspaces = {
           [workspace] = workspace_path,
+          Archive = (workspace_path .. "/archive"),
           Inbox = (workspace_path .. "/inbox"),
           Journals = (workspace_path .. "/journals"),
           Meta = (workspace_path .. "/meta"),
@@ -65,6 +66,11 @@ require("neorg").setup({
     },
     ["core.summary"] = {},
     ["core.tangle"] = {},
+    ["external.archive"] = {
+      config = {
+        workspace = "Archive"
+      }
+    },
     ["external.context"] = {},
     ["external.templates"] = {
       config = {
