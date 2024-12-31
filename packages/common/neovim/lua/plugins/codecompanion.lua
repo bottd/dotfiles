@@ -16,9 +16,9 @@ require('codecompanion').setup({
   },
 })
 
-vim.keymap.set("n", "<leader>ac", ":CodeCompanionChat", { desc = "Chat" })
-vim.keymap.set("n", "<leader>ad", ":CodeCompanionCommand", { desc = "Command" })
-vim.keymap.set("n", "<leader>aa", ":CodeCompanionActions", { desc = "Actions" })
+vim.keymap.set("n", "<leader>ac", ":CodeCompanionChat<CR>", { desc = "Chat" })
+vim.keymap.set("n", "<leader>ad", ":CodeCompanionCommand<CR>", { desc = "Command" })
+vim.keymap.set("n", "<leader>aa", ":CodeCompanionActions<CR>", { desc = "Actions" })
 
 local which_key = require("which-key")
 

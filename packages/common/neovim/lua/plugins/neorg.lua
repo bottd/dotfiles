@@ -1,3 +1,4 @@
+local which_key = require("which-key")
 local workspace = os.getenv("NEORG_WORKSPACE")
 local workspace_path = os.getenv("NEORG_WORKSPACE_PATH")
 require("neorg").setup({
@@ -16,15 +17,15 @@ require("neorg").setup({
       config = {
         workspaces = {
           [workspace] = workspace_path,
-          Archive = (workspace_path .. "/archive"),
-          Inbox = (workspace_path .. "/inbox"),
-          Journals = (workspace_path .. "/journals"),
-          Meta = (workspace_path .. "/meta"),
-          Notes = (workspace_path .. "/notes"),
-          Public = (workspace_path .. "/public"),
-          Resources = (workspace_path .. "/resources"),
-          Scripts = (workspace_path .. "/scripts"),
-          Zettel = (workspace_path .. "/zettel"),
+          archive = (workspace_path .. "/archive"),
+          inbox = (workspace_path .. "/inbox"),
+          journals = (workspace_path .. "/journals"),
+          meta = (workspace_path .. "/meta"),
+          notes = (workspace_path .. "/notes"),
+          public = (workspace_path .. "/public"),
+          resources = (workspace_path .. "/resources"),
+          scripts = (workspace_path .. "/scripts"),
+          zettel = (workspace_path .. "/zettel"),
         },
         default_workspace = workspace,
       },
@@ -61,16 +62,12 @@ require("neorg").setup({
         journal_folder = "daily",
         template_name = "meta/templates/journal.norg",
         strategy = "flat",
-        workspace = "Journals",
+        workspace = "journals",
       },
     },
     ["core.summary"] = {},
     ["core.tangle"] = {},
-    ["external.archive"] = {
-      config = {
-        workspace = "Archive"
-      }
-    },
+    ["external.archive"] = {},
     ["external.context"] = {},
     ["external.templates"] = {
       config = {
@@ -86,7 +83,7 @@ require("neorg").setup({
       },
     },
     ["external.worklog"] = {
-      config = { default_workspace_title = "External" },
+      config = { default_workspace_title = "external" },
     },
   },
 })
@@ -108,10 +105,17 @@ vim.keymap.set("n", "<leader>j", function()
 end, { desc = "Journal" })
 vim.keymap.set("n", "<leader>nj", ":Neorg journal<Cr>", { desc = "Journal" })
 vim.keymap.set("n", "<leader>n<space>", ":Neorg index<Cr>", { desc = "Index" })
+
+which_key.add({ { "<leader>na", desc = "Insert" } })
 vim.keymap.set("n", "<leader>nif", "<Plug>(neorg.telescope.insert_file_link)", { desc = "Insert file link" })
-vim.keymap.set("n", "<leader>nim", ":Neorg inject-metadata<Cr>", { desc = "Inject Metadata" })
+vim.keymap.set("n", "<leader>nim", ":Neorg inject-metadata<Cr>", { desc = "Inject metadata" })
+
+which_key.add({ { "<leader>na", desc = "Archive" } })
+vim.keymap.set("n", "<leader>naf", ":Neorg archive current-file<Cr>", { desc = "Archive file" })
 vim.keymap.set("n", "<leader>nf", ":Telescope neorg find_norg_files<Cr>", { desc = "Find Norg" })
 vim.keymap.set("n", "<leader>nt", ":Neorg tangle<Cr>", { desc = ":Neorg tangle" })
+
+which_key.add({ { "<leader>na", desc = "Export" } })
 vim.keymap.set("n", "<leader>nef", ":Neorg export to-file", { desc = "Export file" })
 vim.keymap.set("n", "<leader>ned", ":Neorg export directory", { desc = "Export directory" })
 vim.keymap.set(
@@ -122,4 +126,4 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>nr", ":Neorg return<Cr>", { desc = "Neorg" })
 
-require("which-key").add({ { "<leader>n", desc = "Neorg" } })
+which_key.add({ { "<leader>n", desc = "Neorg" } })
