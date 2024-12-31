@@ -10,10 +10,12 @@
 
 # Neorg
 "neorg" = "9.1.1"
-"neorg-archive" = { git = "bottd/neorg-archive" }
+"neorg-archive" = "1.0.0"
 "neorg-worklog" = "1.3.4"
 "neorg-telescope" = "1.2.2"
-"neorg-interim-ls" = "2.0.1"
+# "neorg-interim-ls" = "2.0.1"
+"neorg-interim-ls" = { git = "benlubas/neorg-interim-ls" }
+
 
 "oil.nvim" = "2.14.0"
 "conjure" = "4.53.0"
@@ -26,7 +28,7 @@
 "indent-blankline.nvim" = "3.8.6"
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
-"nvim-web-devicons" = { version = "0.100", config = false }
+# "nvim-web-devicons" = { version = "0.100", config = false }
 "lualine.nvim" = "scm"
 "alpha-nvim" = "scm"
 "bufdelete.nvim" = "scm"
