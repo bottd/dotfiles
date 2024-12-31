@@ -106,7 +106,7 @@ end, { desc = "Journal" })
 vim.keymap.set("n", "<leader>nj", ":Neorg journal<Cr>", { desc = "Journal" })
 vim.keymap.set("n", "<leader>n<space>", ":Neorg index<Cr>", { desc = "Index" })
 
-which_key.add({ { "<leader>na", desc = "Insert" } })
+which_key.add({ { "<leader>ni", desc = "Insert" } })
 vim.keymap.set("n", "<leader>nif", "<Plug>(neorg.telescope.insert_file_link)", { desc = "Insert file link" })
 vim.keymap.set("n", "<leader>nim", ":Neorg inject-metadata<Cr>", { desc = "Inject metadata" })
 
@@ -115,7 +115,7 @@ vim.keymap.set("n", "<leader>naf", ":Neorg archive current-file<Cr>", { desc = "
 vim.keymap.set("n", "<leader>nf", ":Telescope neorg find_norg_files<Cr>", { desc = "Find Norg" })
 vim.keymap.set("n", "<leader>nt", ":Neorg tangle<Cr>", { desc = ":Neorg tangle" })
 
-which_key.add({ { "<leader>na", desc = "Export" } })
+which_key.add({ { "<leader>ne", desc = "Export" } })
 vim.keymap.set("n", "<leader>nef", ":Neorg export to-file", { desc = "Export file" })
 vim.keymap.set("n", "<leader>ned", ":Neorg export directory", { desc = "Export directory" })
 vim.keymap.set(
