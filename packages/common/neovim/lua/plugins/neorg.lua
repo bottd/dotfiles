@@ -69,6 +69,7 @@ require("neorg").setup({
     ["core.tangle"] = {},
     ["external.archive"] = {},
     ["external.context"] = {},
+    -- ["external.query"] = {},
     ["external.templates"] = {
       config = {
         templates_dir = (workspace_path .. "/meta/templates"),
