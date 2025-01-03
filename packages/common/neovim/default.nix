@@ -28,5 +28,7 @@
     };
   };
 
+  home.packages = with pkgs; [ luajit ];
+
   programs.neovim.enable = true;
 }
