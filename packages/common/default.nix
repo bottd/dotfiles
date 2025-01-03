@@ -7,6 +7,7 @@
     ./wezterm
     ./discord
     ./git.nix
+    ./rust.nix
     ./zsh.nix
   ];
 }
