@@ -24,11 +24,9 @@
 "indent-blankline.nvim" = "3.8.6"
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
-"nvim-web-devicons" = { version = "0.100", config = false }
 "lualine.nvim" = "scm"
 "nvim-lspconfig" = "1.2.0"
 "nvim-ts-autotag" = "scm"
-"lazygit.nvim" = "scm"
 tree-sitter-json = "0.0.33"
 tree-sitter-javascript = "0.0.33"
 tree-sitter-toml = "0.0.31"
