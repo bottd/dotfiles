@@ -1,4 +1,4 @@
-local which_key = require("which-key")
+local wk = require("which-key")
 local workspace = os.getenv("NEORG_WORKSPACE")
 local workspace_path = os.getenv("NEORG_WORKSPACE_PATH")
 require("neorg").setup({
@@ -104,27 +104,23 @@ vim.keymap.set("n", "<leader>j", function()
   })
   vim.api.nvim_command(":Neorg journal today")
 end, { desc = "Journal" })
-vim.keymap.set("n", "<leader>nj", ":Neorg journal<Cr>", { desc = "Journal" })
-vim.keymap.set("n", "<leader>n<space>", ":Neorg index<Cr>", { desc = "Index" })
 
-which_key.add({ { "<leader>ni", desc = "Insert" } })
-vim.keymap.set("n", "<leader>nif", "<Plug>(neorg.telescope.insert_file_link)", { desc = "Insert file link" })
-vim.keymap.set("n", "<leader>nim", ":Neorg inject-metadata<Cr>", { desc = "Inject metadata" })
+wk.add({
+  { "<leader>nj", ":Neorg journal<Cr>", desc = "Journal", icon = " " },
+  { "<leader>n<space>", ":Neorg index<Cr>", desc = "Index", icon = " " },
+  { "<leader>na", desc = "Archive", icon = " " },
+  { "<leader>naf", ":Neorg archive current-file<Cr>", desc = "Archive file", icon = " " },
+  { "<leader>nf", ":Telescope neorg find_norg_files<Cr>", desc = "Find Norg" },
+  { "<leader>nt", ":Neorg tangle<Cr>", desc = "tangle" },
 
-which_key.add({ { "<leader>na", desc = "Archive" } })
-vim.keymap.set("n", "<leader>naf", ":Neorg archive current-file<Cr>", { desc = "Archive file" })
-vim.keymap.set("n", "<leader>nf", ":Telescope neorg find_norg_files<Cr>", { desc = "Find Norg" })
-vim.keymap.set("n", "<leader>nt", ":Neorg tangle<Cr>", { desc = ":Neorg tangle" })
-
-which_key.add({ { "<leader>ne", desc = "Export" } })
-vim.keymap.set("n", "<leader>nef", ":Neorg export to-file", { desc = "Export file" })
-vim.keymap.set("n", "<leader>ned", ":Neorg export directory", { desc = "Export directory" })
-vim.keymap.set(
-  "n",
-  "<leader>nep",
-  (":Neorg export directory " .. workspace_path .. "/public md<Cr>"),
-  { desc = "Export posts" }
-)
-vim.keymap.set("n", "<leader>nr", ":Neorg return<Cr>", { desc = "Neorg" })
-
-which_key.add({ { "<leader>n", desc = "Neorg" } })
+  { "<leader>ne", desc = "Export" },
+  { "<leader>nef", ":Neorg export to-file", desc = "Export file" },
+  { "<leader>ned", ":Neorg export directory", desc = "Export directory" },
+  {
+    "<leader>nep",
+    ":Neorg export directory " .. workspace_path .. "/public md<Cr>",
+    desc = "Export posts"
+  },
+  -- TODO: This icon will be neorg once my nerdfont (provided by ghostty) is updated
+  { "<leader>n", desc = "Neorg", icon = " " }
+})
