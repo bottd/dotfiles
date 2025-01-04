@@ -11,7 +11,7 @@ snacks.setup({
         section = "terminal",
         cmd = "fortune | cowsay -f stegosaurus",
         hl = "header",
-        height = 20,
+        height = 24,
         width = 68
       },
       { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
