@@ -28,7 +28,13 @@
     };
   };
 
-  home.packages = with pkgs; [ luajit ];
+  home.packages = with pkgs; [ 
+    lua5_1
+
+    # Used for startup dashboard
+    fortune
+    cowsay
+  ];
 
   programs.neovim.enable = true;
 }
