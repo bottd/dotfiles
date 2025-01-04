@@ -18,4 +18,37 @@ snacks.setup({
       { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
     }
   },
+  gitbrowse = { enabled = true },
+  lazygit = { enabled = true },
+  scroll = { enabled = true },
+  styles = { zen = { backdrop = { transparent = false } } },
+  zen = { enabled = true }
+})
+
+local wk = require("which-key")
+wk.add({
+  {
+    "<leader>gg",
+    function()
+      Snacks.lazygit()
+    end,
+    desc = "Lazygit",
+  },
+
+  {
+    "<leader>gw",
+    function()
+      Snacks.gitbrowse()
+    end,
+    desc = "Open in browser",
+    icon = " "
+  },
+  {
+    "<leader>wz",
+    function()
+      Snacks.zen()
+    end,
+    desc = "Zen mode",
+    icon = "󱅻 "
+  }
 })
