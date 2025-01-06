@@ -10,11 +10,6 @@
       recursive = true;
     };
 
-    ".config/nvim/lua/plugins" = {
-      source = config.lib.meta.createSymlink("packages/common/neovim/lua/plugins");
-      recursive = true;
-    };
-
     ".config/nvim/dict.txt" = {
       source = config.lib.meta.createSymlink("packages/common/neovim/dict.txt");
     };
