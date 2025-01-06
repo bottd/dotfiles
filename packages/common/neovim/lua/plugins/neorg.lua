@@ -121,6 +121,7 @@ wk.add({
     ":Neorg export directory " .. workspace_path .. "/public md<Cr>",
     desc = "Export posts"
   },
+  { "<leader>nq", ":Neorg query run", desc = "Run Queries" },
   -- TODO: This icon will be neorg once my nerdfont (provided by ghostty) is updated
   { "<leader>n", desc = "Neorg", icon = " " }
 })
