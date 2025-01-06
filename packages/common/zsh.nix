@@ -6,6 +6,6 @@
     initExtra = ''
             export NEORG_WORKSPACE=${neorgWorkspace}
             export NEORG_WORKSPACE_PATH=~/${neorgWorkspace}
-    ''
+    '';
   };
 }
