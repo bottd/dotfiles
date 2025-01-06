@@ -20,13 +20,15 @@
           extraSpecialArgs = {
             username = "DBott";
             root = ../../.;
+            neorgWorkspace = "notes";
           };
 
           modules = [
             mac-app-util.homeManagerModules.default
             ../../util/default.nix
             ../../home.nix 
-            ../../hosts/personal/macbook.nix
+            ../../packages/darwin/default.nix
+            ../../packages/common/default.nix
           ];
         };
       };
