@@ -9,7 +9,8 @@
 "luasnip" = "2.3.0"
 
 # Neorg
-"neorg" = { version = "9.1.1" }
+# "neorg" = { version = "9.1.1" }
+"neorg" = { git = "nvim-neorg/neorg" }
 "neorg-archive" = "1.0.0"
 "neorg-query" = "1.1.1"
 "neorg-telescope" = "1.2.2"

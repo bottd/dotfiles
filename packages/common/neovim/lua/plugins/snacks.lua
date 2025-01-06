@@ -20,7 +20,6 @@ snacks.setup({
   },
   gitbrowse = { enabled = true },
   lazygit = { enabled = true },
-  scroll = { enabled = true },
   styles = { zen = { backdrop = { transparent = false } } },
   zen = { enabled = true }
 })
