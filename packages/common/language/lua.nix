@@ -3,8 +3,7 @@
     # Needed for building rocks
     lua5_1
 
-    lua5.1-lua-lsp
-
+    lua-language-server
     stylua
   ];
 }

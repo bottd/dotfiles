@@ -1,7 +1,7 @@
 {
   imports = [
     ./lua.nix
-    ./node.nix
+    ./javascript.nix
     ./rust.nix
     ./toml.nix
   ];
