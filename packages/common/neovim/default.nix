@@ -24,7 +24,8 @@
   };
 
   home.packages = with pkgs; [ 
-    lua5_1
+    # grammar/spellcheck lsp
+    harper
 
     # Used for startup dashboard
     fortune

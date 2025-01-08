@@ -9,7 +9,7 @@ snacks.setup({
     sections = {
       {
         section = "terminal",
-        cmd = "fortune | cowsay -f stegosaurus",
+        cmd = "fortune -s | cowsay -f stegosaurus",
         hl = "header",
         height = 24,
         width = 68
