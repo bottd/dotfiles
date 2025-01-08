@@ -1,17 +1,10 @@
 require("blink.cmp").setup({
   keymap = { preset = "super-tab" },
   snippets = {
-    expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
-    active = function(filter)
-      if filter and filter.direction then
-        return require('luasnip').jumpable(filter.direction)
-      end
-      return require('luasnip').in_snippet()
-    end,
-    jump = function(direction) require('luasnip').jump(direction) end,
+    preset = 'luasinp',
   },
   sources = {
-    default = { 'lsp', 'path', 'luasnip', 'buffer', 'codecompanion' },
+    default = { 'lsp', 'path', 'snippets', 'buffer', 'codecompanion' },
     providers = {
       codecompanion = {
         name = "CodeCompanion",
