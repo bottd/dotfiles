@@ -17,8 +17,6 @@
 "neorg-worklog" = "1.3.4"
 
 "oil.nvim" = "2.14.0"
-"mason.nvim" = "1.10.0"
-"mason-lspconfig.nvim" = "1.31.0"
 "catppuccin" = { git = "catppuccin/nvim", rev = "v1.9.0" }
 "headlines.nvim" = "scm"
 "which-key.nvim" = "3.15.0"
@@ -109,8 +107,6 @@ items = ["blink.cmp", "luasnip"]
 
 [bundles.lsp]
 items = [
-  "mason.nvim",
-  "mason-lspconfig.nvim",
   "nvim-lspconfig",
   # "lsp_lines.nvim",
 ]
