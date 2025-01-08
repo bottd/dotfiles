@@ -24,6 +24,8 @@
   };
 
   home.packages = with pkgs; [ 
+    ripgrep
+    tree-sitter
     # grammar/spellcheck lsp
     harper
 
