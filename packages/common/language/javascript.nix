@@ -7,8 +7,7 @@
     nodePackages_latest.svelte-language-server
     nodePackages_latest.typescript-language-server
     nodePackages_latest.prettier
-    # prettier daemon
-    fsouza-prettierd
+    prettierd
 
     stylelint-lsp
     tailwindcss-language-server
