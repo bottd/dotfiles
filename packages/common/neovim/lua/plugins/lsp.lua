@@ -1,6 +1,3 @@
-local mason = require("mason")
-local mason_lspconfig = require("mason-lspconfig")
-
 vim.keymap.set("n", "gl", function()
   return vim.diagnostic.open_float()
 end)
@@ -47,46 +44,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-local capabilities = require('blink.cmp').get_lsp_capabilities()
-mason.setup({})
-return mason_lspconfig.setup({
-  ensure_installed = {
-    "cssls",
-    "eslint",
-    "graphql",
-    "html",
-    "jsonnet_ls",
-    "rust_analyzer",
-    "sqlls",
-    "lua_ls",
-    "svelte",
-    "tailwindcss",
-    "ts_ls",
-    "harper_ls",
-  },
-  handlers = {
-    function(server_name)
-      local server = require("lspconfig")[server_name]
-      return server.setup({})
-    end,
-    harper_ls = function()
-      local server = require("lspconfig")["harper_ls"]
-      return server.setup({
+local servers = {
+      cssls = {},
+    eslint = {},
+    graphql = {},
+    html = {},
+    -- sqlls = {},
+    svelte = {},
+    tailwindcss = {},
+    ts_ls = {},
+  harper_ls = {
         filetypes = { "norg", "markdown" },
         settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
-      })
-    end,
-    rust_analyzer = function()
-      local server = require("lspconfig")["rust_analyzer"]
-      return server.setup({
-        cargo = { features = { "ssr" } },
+      },
+    rust_analyzer = { cargo = { features = { "ssr" } },
         procMacro = { ignored = { leptos_macro = { "server" } } },
-      })
-    end,
-    lua_ls = function()
-      local server = require("lspconfig")["lua_ls"]
-      return server.setup({
-        capabilities = capabilities,
+      },
+    lua_ls = {
         Lua = {
           diagnostics = { globals = { "vim" } },
           workspace = { checkThirdParty = false },
@@ -94,7 +68,13 @@ return mason_lspconfig.setup({
             enable = false,
           },
         },
-      })
-    end,
-  },
-})
+      }
+  }
+
+    local lspconfig = require('lspconfig')
+    for server, config in pairs(servers) do
+      -- passing config.capabilities to blink.cmp merges with the capabilities in your
+      -- `opts[server].capabilities, if you've defined it
+      config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
+      lspconfig[server].setup(config)
+    end

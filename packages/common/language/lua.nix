@@ -4,5 +4,7 @@
     lua5_1
 
     lua5.1-lua-lsp
+
+    stylua
   ];
 }
