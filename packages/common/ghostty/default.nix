@@ -6,4 +6,8 @@
       source = config.lib.meta.createSymlink("packages/common/ghostty/config");
     };
   };
+
+  # home.packages = with pkgs; [ 
+    # ghostty
+  # ];
 }
