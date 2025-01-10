@@ -12,7 +12,6 @@ in {
   #WARNING: Don't change this without reading docs
   home.stateVersion = "23.11";
   programs.home-manager.enable = true; # Let home manager manage itself
-  home.packages = [ pkgs.hello ];
 
   home.homeDirectory =
     if isLinux
