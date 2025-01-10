@@ -9,6 +9,7 @@
     ./wezterm
 
     ./git.nix
+    ./make.nix
     ./zsh.nix
   ];
 }
