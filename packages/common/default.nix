@@ -10,6 +10,7 @@
 
     ./git.nix
     ./make.nix
+    ./unzip.nix
     ./zsh.nix
   ];
 }

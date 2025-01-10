@@ -63,8 +63,13 @@
   environment.systemPackages = with pkgs; [
     firefox
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    kitty
     wget
     git
+    grim
+    slurp
+    wl-clipboard
+    mako
   ];
 
   # This value determines the NixOS release from which the default
@@ -79,5 +84,18 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+  };
+
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+  };
+
+  boot.initrd.kernelModules = ["amdgpu"];
+  # programs.hyprland.enable = true;
+  # programs.hyprland.systemd.setPath.enable = true;
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
   };
 }

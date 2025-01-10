@@ -2,6 +2,7 @@
 {
   # requried for default Hyprland config
   programs.kitty.enable = true;
+  programs.hyprland.enable = true;
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland;
