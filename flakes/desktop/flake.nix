@@ -39,6 +39,7 @@
           ../../util/default.nix
           ../../home.nix
           ../../packages/common/default.nix
+          ../../packages/linux/default.nix
         ];
       };
     };
