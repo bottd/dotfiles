@@ -1,5 +1,6 @@
 {
   imports = [
-    # ./hyprland.nix
+    ./audio.nix
+    ./hyprland.nix
   ];
 }
