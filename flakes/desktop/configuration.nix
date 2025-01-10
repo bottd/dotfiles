@@ -80,11 +80,4 @@
       experimental-features = nix-command flakes
     '';
   };
-  
-  services.xserver.desktopManager.plasma5.enable = true;
-  services.displayManager = {
-    sddm.enable = true;
-    sddm.wayland.enable = true;
-    defaultSession = "plasmawayland";
-  };
 }
