@@ -8,39 +8,39 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }: {
+  outputs = { 
+    self, 
+    nixpkgs,
+    home-manager, 
+    ... 
+  } @ inputs: let 
+    inherit (self) outputs;
+  in {
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs;
+          inherit inputs outputs;
         };
         modules = [
           ./configuration.nix
         ];
       };
     };
-    packages.x86_64-linux = {
-      homeConfigurations = {
-        drakeb = home-manager.nixosModules.home-manager {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.drakeb = import ../../home.nix;
-
-            extraSpecialArgs = {
-              username = "drakeb";
-              root = ../../.;
-              neorgWorkspace = "chalet";
-            };
-          };
-          modules = [
-            ../../util/default.nix
-              ../../home.nix
-              ../../packages/common/default.nix
-          ];
-        }
-      }
+    homeConfigurations = {
+      "drakeb@nixos" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {
+          username = "drakeb";
+          root = ../../.;
+          neorgWorkspace = "chalet";
+        };
+        modules = [
+          ../../util/default.nix
+          ../../home.nix
+          ../../packages/common/default.nix
+        ];
+      };
     };
   };
 }
