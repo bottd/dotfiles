@@ -98,4 +98,10 @@
     enable = true;
     wrapperFeatures.gtk = true;
   };
+  programs.steam.enable = true;
+ 
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+  };
 }
