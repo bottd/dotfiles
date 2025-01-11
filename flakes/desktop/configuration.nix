@@ -70,6 +70,10 @@
     slurp
     wl-clipboard
     mako
+    pavucontrol
+    helvum
+    ghostty
+    spotify
   ];
 
   # This value determines the NixOS release from which the default
@@ -86,10 +90,18 @@
     '';
   };
 
+  # hardware.pulseaudio.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    wireplumber = {
+      enable = true;
+    };
   };
+
 
   boot.initrd.kernelModules = ["amdgpu"];
   # programs.hyprland.enable = true;
@@ -99,9 +111,4 @@
     wrapperFeatures.gtk = true;
   };
   programs.steam.enable = true;
- 
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-  };
 }
