@@ -8,9 +8,7 @@
     ./starship
     ./wezterm
 
-    ./git.nix
-    ./make.nix
-    ./unzip.nix
+    ./cli.nix
     ./zsh.nix
   ];
 }
