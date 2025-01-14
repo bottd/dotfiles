@@ -7,7 +7,7 @@ nixpkgs.lib.nixosSystem {
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.drakebott = {...} {
+        home-manager.users.drakeb = {...}: {
           imports = [
             ../../home.nix
             ../../util/default.nix
@@ -17,7 +17,7 @@ nixpkgs.lib.nixosSystem {
         };
 
         home-manager.extraSpecialArgs = {
-          username = "drakebott";
+          username = "drakeb";
           root = ./../..;
           neorgWorkspace = "chalet";
         };

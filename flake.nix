@@ -15,11 +15,12 @@
   outputs = inputs@{ self, home-manager, mac-app-util, nixos-hardware, nixpkgs, ... }: {
     # sudo nixos-rebuild switch --flake .#desktop
     nixosConfigurations = {
-      desktop = import ./nixOS/desktop {inherit inputs;};
+      desktop = import ./nixOS/desktop {inherit home-manager inputs nixpkgs;};
     };
     # home-manager switch --flake .#drakebott
     packages.aarch64-darwin.homeConfigurations = {
-      drakebott = import ./darwin/personal.nix {inherit home-manager inputs mac-app-util nixpkgs;};
+      personal = import ./darwin/personal.nix {inherit home-manager inputs mac-app-util nixpkgs;};
+      iris = import ./darwin/iris.nix {inherit home-manager inputs mac-app-util nixpkgs;};
     };
   };
 }
