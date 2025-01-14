@@ -19,7 +19,7 @@
     };
     # home-manager switch --flake .#drakebott
     packages.aarch64-darwin.homeConfigurations = {
-      personal = import ./darwin/personal.nix {inherit home-manager inputs mac-app-util nixpkgs;};
+      drakebott = import ./darwin/personal.nix {inherit home-manager inputs mac-app-util nixpkgs;};
     };
   };
 }
