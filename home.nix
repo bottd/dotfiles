@@ -11,7 +11,7 @@ in {
   home.username = username;
 
   #WARNING: Don't change this without reading docs
-  home.stateVersion = "23.11";
+  home.stateVersion = "25.05";
   programs.home-manager.enable = true; # Let home manager manage itself
 
   home.homeDirectory =
