@@ -33,7 +33,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.drakeb = import ../../home.nix;
-
             home-manager.extraSpecialArgs = {
               username = "drakeb";
               root = ../../.;
