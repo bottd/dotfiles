@@ -15,7 +15,7 @@
   outputs = inputs@{ self, home-manager, mac-app-util, nixos-hardware, nixpkgs, ... }: {
     # sudo nixos-rebuild switch --flake .#desktop
     nixosConfigurations = {
-      desktop = import ./nixOS/desktop.nix {inherit inputs;};
+      desktop = import ./nixOS/desktop {inherit inputs;};
     };
     # home-manager switch --flake .#drakebott
     packages.aarch64-darwin.homeConfigurations = {
