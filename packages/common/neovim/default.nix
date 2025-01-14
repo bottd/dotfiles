@@ -24,6 +24,7 @@
   };
 
   home.packages = with pkgs; [ 
+    luarocks
     ripgrep
     tree-sitter
     # grammar/spellcheck lsp

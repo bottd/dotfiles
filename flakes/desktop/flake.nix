@@ -25,22 +25,21 @@
         };
         modules = [
           ./configuration.nix
-        ];
-      };
-    };
-    homeConfigurations = {
-      "drakeb@nixos" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          username = "drakeb";
-          root = ../../.;
-          neorgWorkspace = "chalet";
-        };
-        modules = [
           ../../util/default.nix
-          ../../home.nix
           ../../packages/common/default.nix
           ../../packages/linux/default.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.drakeb = import ../../home.nix;
+
+            home-manager.extraSpecialArgs = {
+              username = "drakeb";
+              root = ../../.;
+              neorgWorkspace = "chalet";
+            };
+          }
         ];
       };
     };
