@@ -18,8 +18,8 @@
       desktop = import ./nixOS/desktop {inherit home-manager inputs nixpkgs;};
     };
     # home-manager switch --flake .#drakebott
-    packages.aarch64-darwin.homeConfigurations = {
-      personal = import ./darwin/personal.nix {inherit home-manager inputs mac-app-util nixpkgs;};
+    homeConfigurations = {
+      macbook = import ./darwin/macbook.nix {inherit home-manager inputs mac-app-util nixpkgs;};
       iris = import ./darwin/iris.nix {inherit home-manager inputs mac-app-util nixpkgs;};
     };
   };
