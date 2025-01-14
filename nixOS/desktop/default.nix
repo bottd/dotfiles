@@ -3,11 +3,18 @@ nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   modules = [
     ./configuration.nix
-      home-manager.nixosModules.home-manager
+    home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.drakebott = import ../../home.nix;
+        home-manager.users.drakebott = {...} {
+          imports = [
+            ../../home.nix
+            ../../util/default.nix
+            ../../packages/linux/default.nix
+            ../../packages/common/default.nix
+          ];
+        };
 
         home-manager.extraSpecialArgs = {
           username = "drakebott";
@@ -15,8 +22,5 @@ nixpkgs.lib.nixosSystem {
           neorgWorkspace = "chalet";
         };
       }
-    ../../util/default.nix
-    ../../packages/darwin/default.nix
-    ../../packages/common/default.nix
   ];
 }
