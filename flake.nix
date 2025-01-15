@@ -17,7 +17,7 @@
     nixosConfigurations = {
       desktop = import ./nixOS/desktop {inherit home-manager inputs nixpkgs;};
     };
-    # home-manager switch --flake .#drakebott
+    # home-manager switch --flake .#macbook
     homeConfigurations = {
       macbook = import ./darwin/macbook.nix {inherit home-manager inputs mac-app-util nixpkgs;};
       iris = import ./darwin/iris.nix {inherit home-manager inputs mac-app-util nixpkgs;};
