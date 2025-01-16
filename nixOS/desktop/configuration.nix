@@ -79,6 +79,18 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   boot.initrd.kernelModules = ["amdgpu"];
+
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    wireplumber = {
+      enable = true;
+    };
+  };
+
   # programs.sway = {
     # enable = true;
     # wrapperFeatures.gtk = true;
