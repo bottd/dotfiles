@@ -11,8 +11,12 @@ nixpkgs.lib.nixosSystem {
           imports = [
             ../../home.nix
             ../../util/default.nix
+<<<<<<< HEAD
             ../../home/linux/default.nix
             ../../home/common/default.nix
+=======
+            ../../packages/common/default.nix
+>>>>>>> d8fab94 (Update)
             ../../packages/gaming.nix
           ];
         };
@@ -23,5 +27,6 @@ nixpkgs.lib.nixosSystem {
           neorgWorkspace = "chalet";
         };
       }
+  ../../packages/linux/default.nix
   ];
 }
