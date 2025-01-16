@@ -11,8 +11,8 @@ nixpkgs.lib.nixosSystem {
           imports = [
             ../../home.nix
             ../../util/default.nix
-            ../../packages/linux/default.nix
-            ../../packages/common/default.nix
+            ../../home/linux/default.nix
+            ../../home/common/default.nix
           ];
         };
 
