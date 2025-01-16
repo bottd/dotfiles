@@ -61,9 +61,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    firefox
-    wget
-    git
     grim
     slurp
     wl-clipboard
@@ -81,13 +78,9 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-
   boot.initrd.kernelModules = ["amdgpu"];
-  # programs.hyprland.enable = true;
-  # programs.hyprland.systemd.setPath.enable = true;
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-  };
-  programs.steam.enable = true;
+  # programs.sway = {
+    # enable = true;
+    # wrapperFeatures.gtk = true;
+  # };
 }
