@@ -1,8 +1,7 @@
-{pkgs, ... }:
+{config, pkgs, ... }:
 {
   # requried for default Hyprland config
   programs.kitty.enable = true;
-  programs.hyprland.enable = true;
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -30,14 +29,15 @@
 
   # software needed for hyprland
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
+    hyprland
     # notification daemon
     swaynotificationcenter
   ];
 
   home.file = {
     ".config/hypr/hyprland.conf" = {
-      source = config.lib.meta.createSymlink("packages/linux/hyprland/hyprland.conf")
-    }
-  }
+      source = ./hyprland.conf;
+    };
+  };
 }
