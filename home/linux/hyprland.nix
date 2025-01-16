@@ -30,14 +30,7 @@
   # software needed for hyprland
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
-    hyprland
     # notification daemon
     swaynotificationcenter
   ];
-
-  home.file = {
-    ".config/hypr/hyprland.conf" = {
-      source = ./hyprland.conf;
-    };
-  };
 }
