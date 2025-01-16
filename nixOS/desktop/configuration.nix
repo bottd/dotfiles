@@ -62,8 +62,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     firefox
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    kitty
     wget
     git
     grim
@@ -73,7 +71,6 @@
     pavucontrol
     helvum
     ghostty
-    spotify
   ];
 
   # This value determines the NixOS release from which the default
@@ -83,18 +80,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
-  # hardware.pulseaudio.enable = true;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    wireplumber = {
-      enable = true;
-    };
-  };
 
 
   boot.initrd.kernelModules = ["amdgpu"];
