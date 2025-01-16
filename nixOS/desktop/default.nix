@@ -13,6 +13,7 @@ nixpkgs.lib.nixosSystem {
             ../../util/default.nix
             ../../home/linux/default.nix
             ../../home/common/default.nix
+            ../../packages/gaming.nix
           ];
         };
 

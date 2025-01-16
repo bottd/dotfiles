@@ -9,6 +9,7 @@
     ./wezterm
 
     ./cli.nix
+    ./spotify.nix
     ./zsh.nix
   ];
 }
