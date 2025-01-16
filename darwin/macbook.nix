@@ -10,7 +10,7 @@
       mac-app-util.homeManagerModules.default
       ../util/default.nix
       ../home.nix
-      ../packages/darwin/default.nix
-      ../packages/common/default.nix
+      ../home/darwin/default.nix
+      ../home/common/default.nix
     ];
   }
