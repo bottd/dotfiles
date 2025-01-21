@@ -21,7 +21,8 @@ in {
     then "/Users/${username}"
     else unsupported;
 
-  fonts.fontconfig.enable = true; # Enable fonts
+  fonts.fontconfig.enable = isLinux;
+  # fonts.fontconfig.enable = true; # Enable fonts
 
   xdg.enable = true;
   nix = {

@@ -9,7 +9,7 @@
     ./wezterm
 
     ./cli.nix
-    ./firefox.nix
+    # ./firefox.nix
     ./spotify.nix
     ./zsh.nix
   ];
