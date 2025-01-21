@@ -12,15 +12,15 @@
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
   };
 
-  outputs = {...} @ inputs: rec {
+  outputs = {home-manager, mac-app-util, nixpkgs, ...} @ inputs: rec {
     # sudo nixos-rebuild switch --flake .#desktop
     nixosConfigurations = {
       desktop = import ./nixOS/desktop inputs;
     };
     # home-manager switch --flake .#macbook
     homeConfigurations = {
-      macbook = import ./darwin/macbook.nix inputs;
-      iris = import ./darwin/iris.nix {inherit inputs;};
+      macbook = import ./darwin/macbook.nix {inherit inputs home-manager mac-app-util nixpkgs;};
+      iris = import ./darwin/iris.nix inputs;
     };
   };
 }
