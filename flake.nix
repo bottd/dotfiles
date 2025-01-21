@@ -19,7 +19,7 @@
     };
     # home-manager switch --flake .#macbook
     homeConfigurations = {
-      macbook = import ./darwin/macbook.nix {inherit inputs;};
+      macbook = import ./darwin/macbook.nix inputs;
       iris = import ./darwin/iris.nix {inherit inputs;};
     };
   };
