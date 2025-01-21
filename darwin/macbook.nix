@@ -1,4 +1,4 @@
-{inputs, home-manager, mac-app-util, nixpkgs, ...}:
+{home-manager, mac-app-util, nixpkgs, ...}:
   home-manager.lib.homeManagerConfiguration {
     pkgs = nixpkgs.legacyPackages.aarch64-darwin;
     extraSpecialArgs = {
