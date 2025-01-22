@@ -1,5 +1,11 @@
 {config, pkgs, ... }:
 {
+  wayland.windowManager.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    systemd.enable = true;
+  };
+
   # hint Electron apps to use Wayland
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -13,6 +19,6 @@
     ".config/hyprland/hyprland.conf" = {
       source = config.lib.meta.createSymlink("home/linux/hyprland/hyprland.conf");
       recursive = true;
-    }
-  }
+    };
+  };
 }
