@@ -10,6 +10,8 @@
 
     gnumake
 
+    typst
+
     unzip
     wget
   ];
