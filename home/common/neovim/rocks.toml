@@ -9,10 +9,10 @@
 "luasnip" = "2.3.0"
 
 # Neorg
-# "neorg" = { version = "9.1.1" }
-"neorg" = "9.1.1"
+"neorg" = "9.2.0"
 "neorg-archive" = "1.0.0"
-"neorg-query" = "1.1.1"
+# "neorg-query" = "1.2.0"
+"neorg-query" = { git = "benlubas/neorg-query" }
 "neorg-telescope" = "1.2.2"
 "neorg-worklog" = "1.3.4"
 
@@ -48,6 +48,7 @@ tree-sitter-sql = "0.0.39"
 tree-sitter-svelte = "0.0.32"
 tree-sitter-tsx = "0.0.34"
 tree-sitter-typescript = "0.0.34"
+tree-sitter-typst = "0.0.32"
 tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
