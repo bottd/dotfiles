@@ -53,6 +53,7 @@ tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.31"
+"treewalker.nvim" = { git = "aaronik/treewalker.nvim" }
 "conform.nvim" = "8.4.0"
 "helpview.nvim" = "1.1.0"
 "mini.nvim" = "scm"
