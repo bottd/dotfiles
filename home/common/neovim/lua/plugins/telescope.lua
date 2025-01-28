@@ -1,18 +1,18 @@
 local telescope = require("telescope")
 telescope.setup({
-  pickers = {
-    find_files = { layout_strategy = "vertical" },
-    live_grep = { layout_strategy = "vertical" },
-  },
-  extensions = {
-    fzf = {
-      fuzzy = true,
-      override_generic_sorter = true,
-      override_file_sorter = true,
-      case_mode = "smart_case",
-    },
-    undo = { use_delta = true },
-  },
+	pickers = {
+		find_files = { layout_strategy = "vertical" },
+		live_grep = { layout_strategy = "vertical" },
+	},
+	extensions = {
+		fzf = {
+			fuzzy = true,
+			override_generic_sorter = true,
+			override_file_sorter = true,
+			case_mode = "smart_case",
+		},
+		undo = { use_delta = true },
+	},
 })
 
 telescope.load_extension("fzf")
