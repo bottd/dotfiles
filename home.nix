@@ -8,6 +8,7 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
 in {
+  nixpkgs.config.allowUnfree = true;
   home.username = username;
 
   #WARNING: Don't change this without reading docs
