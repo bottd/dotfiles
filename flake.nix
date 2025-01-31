@@ -8,18 +8,25 @@
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
+    nix-darwin.url = "github:LnL7/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
   };
 
-  outputs = {home-manager, mac-app-util, nixpkgs, ...} @ inputs: rec {
+  outputs = {home-manager, mac-app-util, nix-darwin, nixpkgs, ...} @ inputs: rec {
+    darwinConfigurations = {
+      macbook = import ./darwin/macbook {
+        inherit inputs home-manager mac-app-util nix-darwin nixpkgs;
+      };
+    };
     # sudo nixos-rebuild switch --flake .#desktop
     nixosConfigurations = {
       desktop = import ./nixOS/desktop inputs;
     };
     # home-manager switch --flake .#macbook
     homeConfigurations = {
-      macbook = import ./darwin/macbook.nix {inherit inputs home-manager mac-app-util nixpkgs;};
       iris = import ./darwin/iris.nix inputs;
     };
   };
