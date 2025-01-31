@@ -4,22 +4,27 @@
     system = "aarch64-darwin";
     modules = [
       mac-app-util.darwinModules.default
-      ../util/default.nix
-      ./configuration.nix
-      home-manager.darwinModules.home-manager {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.users.drakebott.imports = [
-          mac-app-util.homeManagerModules.default
-          ../../home.nix
-          ../../home/darwin/default.nix
-          ../../home/common/default.nix
-        ];
-        extraSpecialArgs = {
-          username = "drakebott";
-          root = ./../..;
-          neorgWorkspace = "chalet";
-        };
-      }
+        ./configuration.nix
+        home-manager.darwinModules.home-manager {
+          users.users.drakebott.home = "/Users/drakebott";
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = {
+              username = "drakebott";
+              root = ./../..;
+              neorgWorkspace = "chalet";
+            };
+            users.drakebott = {
+              imports = [
+                mac-app-util.homeManagerModules.default
+                  ../../util/default.nix
+                  ../../home.nix
+                  ../../home/darwin/default.nix
+                  ../../home/common/default.nix
+              ];
+            };
+          };
+        }
     ];
   }
