@@ -8,12 +8,12 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
 in {
-  nixpkgs.config.allowUnfree = true;
   home.username = username;
 
   #WARNING: Don't change this without reading docs
-  home.stateVersion = "25.05";
-  programs.home-manager.enable = true; # Let home manager manage itself
+  home.stateVersion = "24.11"; 
+  # Let home manager manage itself
+  programs.home-manager.enable = true; 
 
   home.homeDirectory =
     if isLinux
