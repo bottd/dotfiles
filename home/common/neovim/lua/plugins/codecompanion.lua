@@ -1,19 +1,18 @@
-require('codecompanion').setup({
-  strategies = {
-    chat = {
-      adapter = "anthropic"
-    }
-  },
-  adapters = {
-    anthropic = function()
-      return require("codecompanion.adapters").extend("anthropic", {
-        env = {
-          -- TODO: Set api key in env, I just leaked my last api key :o
-          api_key = os.getenv("ANTHROPIC_API_KEY")
-        },
-      })
-    end,
-  },
+require("codecompanion").setup({
+	strategies = {
+		-- chat = { adapter = "anthropic" },
+		chat = { adapter = "copilot" },
+		inline = { adapter = "copilot" },
+	},
+	adapters = {
+		anthropic = function()
+			return require("codecompanion.adapters").extend("anthropic", {
+				env = {
+					api_key = os.getenv("ANTHROPIC_API_KEY"),
+				},
+			})
+		end,
+	},
 })
 
 vim.keymap.set("n", "<leader>ac", ":CodeCompanionChat<CR>", { desc = "Chat" })
