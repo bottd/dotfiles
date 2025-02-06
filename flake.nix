@@ -16,6 +16,7 @@
   };
 
   outputs = {home-manager, mac-app-util, nix-darwin, nixpkgs, ...} @ inputs: rec {
+    # darwin-rebuild switch --flake .#iris
     darwinConfigurations = {
       macbook = import ./darwin/macbook {
         inherit inputs home-manager mac-app-util nix-darwin nixpkgs;
@@ -25,9 +26,9 @@
     nixosConfigurations = {
       desktop = import ./nixOS/desktop inputs;
     };
-    # home-manager switch --flake .#macbook
+    # home-manager switch --flake .#iris
     homeConfigurations = {
-      iris = import ./darwin/iris.nix inputs;
+      iris = import ./darwin/iris.nix {inherit inputs home-manager mac-app-util nixpkgs;};
     };
   };
 }
