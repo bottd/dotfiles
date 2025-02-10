@@ -1,14 +1,22 @@
+require("copilot").setup({
+	suggestion = { enabled = false },
+	panel = { enabled = false },
+})
+
 require("blink.cmp").setup({
 	keymap = { preset = "super-tab" },
 	snippets = { preset = "luasnip" },
 	sources = {
-		-- default = { "lsp", "path", "snippets", "buffer", "codecompanion" },
-		default = { "codecompanion" },
+		default = { "lsp", "path", "snippets", "buffer", "codecompanion", "copilot" },
 		providers = {
 			codecompanion = {
 				name = "CodeCompanion",
 				module = "codecompanion.providers.completion.blink",
 				enabled = true,
+			},
+			copilot = {
+				name = "copilot",
+				module = "blink-copilot",
 			},
 		},
 	},
@@ -52,17 +60,21 @@ require("blink.cmp").setup({
 				},
 			},
 		},
-
 		documentation = {
 			auto_show = true,
+			auto_show_delay_ms = 500,
 			window = {
 				border = "padded",
 				scrollbar = true,
 			},
 		},
-
 		ghost_text = {
-			enabled = false,
+			enabled = true,
+		},
+	},
+	appearance = {
+		kind_icons = {
+			Copilot = "",
 		},
 	},
 })
