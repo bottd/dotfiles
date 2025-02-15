@@ -10,8 +10,9 @@
 
 # Neorg
 "neorg" = "9.2.0"
+"neorg-archive" = { dir = "~/workspace/neorg-archive" }
+"neorg-interim-ls" = "2.1.0"
 "neorg-query" = "1.3.1"
-"neorg-archive" = "1.0.0"
 "neorg-telescope" = "1.2.2"
 "neorg-worklog" = "1.3.4"
 
@@ -66,9 +67,6 @@ nvim-treesitter-context = "scm"
 git = "aaronik/treewalker.nvim"
 rev = "da50eacff9b482593ad09bd83835339558ac1dac"
 
-[plugins."neorg-interim-ls"]
-git = "benlubas/neorg-interim-ls"
-rev = "v2.1.0"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
