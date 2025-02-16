@@ -11,9 +11,9 @@ in {
   home.username = username;
 
   #WARNING: Don't change this without reading docs
-  home.stateVersion = "24.11"; 
+  home.stateVersion = "24.11";
   # Let home manager manage itself
-  programs.home-manager.enable = true; 
+  programs.home-manager.enable = true;
 
   home.homeDirectory =
     if isLinux
