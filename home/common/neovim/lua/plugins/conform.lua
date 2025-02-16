@@ -6,6 +6,7 @@ require("conform").setup({
 		javascript = { "prettierd", "prettier" },
 		json = { "prettierd", "prettier" },
 		lua = { "stylua" },
+		nix = { "alejandra" },
 		rust = { "rustfmt" },
 		svelte = { "prettierd", "prettier" },
 		toml = { "taplo" },
