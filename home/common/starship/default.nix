@@ -3,7 +3,7 @@
     source = ../starship;
   };
 
-  programs.starship = { 
+  programs.starship = {
     enable = true;
     enableBashIntegration = true;
     enableNushellIntegration = true;

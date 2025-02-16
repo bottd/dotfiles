@@ -1,29 +1,35 @@
-{pkgs, config, lib, inputs, ...}: {
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  ...
+}: {
   home.file = {
     ".config/nvim/after" = {
-      source = config.lib.meta.createSymlink("home/common/neovim/after");
+      source = config.lib.meta.createSymlink "home/common/neovim/after";
       recursive = true;
     };
 
     ".config/nvim/lua" = {
-      source = config.lib.meta.createSymlink("home/common/neovim/lua");
+      source = config.lib.meta.createSymlink "home/common/neovim/lua";
       recursive = true;
     };
 
     ".config/nvim/dict.txt" = {
-      source = config.lib.meta.createSymlink("home/common/neovim/dict.txt");
+      source = config.lib.meta.createSymlink "home/common/neovim/dict.txt";
     };
 
     ".config/nvim/init.lua" = {
-      source = config.lib.meta.createSymlink("home/common/neovim/init.lua");
+      source = config.lib.meta.createSymlink "home/common/neovim/init.lua";
     };
 
     ".config/nvim/rocks.toml" = {
-      source = config.lib.meta.createSymlink("home/common/neovim/rocks.toml");
+      source = config.lib.meta.createSymlink "home/common/neovim/rocks.toml";
     };
   };
 
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
     ripgrep
     tree-sitter
     # grammar/spellcheck lsp
