@@ -1,8 +1,14 @@
-{home-manager, mac-app-util, nix-darwin, nixpkgs, ...}@inputs:
+{
+  home-manager,
+  mac-app-util,
+  nix-darwin,
+  nixpkgs,
+  ...
+} @ inputs:
 nix-darwin.lib.darwinSystem {
-  pkgs = import nixpkgs { 
-    system = "aarch64-darwin"; 
-    config.allowUnfree = true; 
+  pkgs = import nixpkgs {
+    system = "aarch64-darwin";
+    config.allowUnfree = true;
   };
   specialArgs = {
     inherit inputs;
@@ -10,27 +16,28 @@ nix-darwin.lib.darwinSystem {
   system = "aarch64-darwin";
   modules = [
     mac-app-util.darwinModules.default
-      ./configuration.nix
-      home-manager.darwinModules.home-manager {
-        users.users.drakebott.home = "/Users/drakebott";
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          extraSpecialArgs = {
-            username = "drakebott";
-            root = ./../..;
-            neorgWorkspace = "chalet";
-          };
-          users.drakebott = {...}: {
-            imports = [
-              mac-app-util.homeManagerModules.default
-                ../../util/default.nix
-                ../../home.nix
-                ../../home/darwin/default.nix
-                ../../home/common/default.nix
-            ];
-          };
+    ./configuration.nix
+    home-manager.darwinModules.home-manager
+    {
+      users.users.drakebott.home = "/Users/drakebott";
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        extraSpecialArgs = {
+          username = "drakebott";
+          root = ./../..;
+          neorgWorkspace = "chalet";
         };
-      }
+        users.drakebott = {...}: {
+          imports = [
+            mac-app-util.homeManagerModules.default
+            ../../util/default.nix
+            ../../home.nix
+            ../../home/darwin/default.nix
+            ../../home/common/default.nix
+          ];
+        };
+      };
+    }
   ];
 }

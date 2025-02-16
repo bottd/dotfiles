@@ -15,7 +15,13 @@
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
   };
 
-  outputs = {home-manager, mac-app-util, nix-darwin, nixpkgs, ...} @ inputs: rec {
+  outputs = {
+    home-manager,
+    mac-app-util,
+    nix-darwin,
+    nixpkgs,
+    ...
+  } @ inputs: rec {
     # darwin-rebuild switch --flake .#iris
     darwinConfigurations = {
       macbook = import ./darwin/macbook {
