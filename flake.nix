@@ -31,6 +31,7 @@
     # sudo nixos-rebuild switch --flake .#desktop
     nixosConfigurations = {
       desktop = import ./nixOS/desktop inputs;
+      pocket = import ./nixOS/pocket inputs;
     };
     # home-manager switch --flake .#iris
     homeConfigurations = {
