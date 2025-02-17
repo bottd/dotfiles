@@ -40,5 +40,8 @@
     cowsay
   ];
 
-  programs.neovim.enable = true;
+  programs.neovim = {
+    defaultEditor = true;
+    enable = true;
+  };
 }
