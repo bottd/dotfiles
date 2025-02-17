@@ -81,10 +81,9 @@
 
   boot.initrd.kernelModules = ["amdgpu"];
 
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-  };
+  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
 
   hardware.graphics = {
     enable = true;
