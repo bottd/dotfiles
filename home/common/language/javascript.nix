@@ -1,7 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    eslint
-
     nodejs
     # nodePackages_latest.graphql-language-service-cli
     nodePackages_latest.svelte-language-server
@@ -11,5 +9,6 @@
 
     stylelint-lsp
     tailwindcss-language-server
+    vscode-langservers-extracted
   ];
 }
