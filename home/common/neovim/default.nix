@@ -41,7 +41,11 @@
           variables = {
             LUA_INCDIR = "${pkgs.lua5_1}/include"
           }
-          arch = "macosx-aarch64"
+          arch = ${
+            if pkgs.stdenv.hostPlatform.isDarwin
+            then "macosx-aarch64"
+            else "linux-x86_64"
+          }
         '';
     };
   };
