@@ -27,6 +27,23 @@
     ".config/nvim/rocks.toml" = {
       source = config.lib.meta.createSymlink "home/common/neovim/rocks.toml";
     };
+    ".local/share/nvim/rocks/luarocks-config.lua" = {
+      enable = true;
+      text =
+        #lua
+        ''
+          lua_version = "5.1"
+          rocks_trees = { {
+            name = "rocks.nvim",
+            root = "${config.xdg.configHome}/.local/share/nvim/rocks"
+          } }
+
+          variables = {
+            LUA_INCDIR = "${pkgs.lua5_1}/include"
+          }
+          arch = "macosx-aarch64"
+        '';
+    };
   };
 
   home.packages = with pkgs; [
@@ -43,5 +60,11 @@
   programs.neovim = {
     defaultEditor = true;
     enable = true;
+  };
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    SUDO_EDITOR = "nvim";
   };
 }
