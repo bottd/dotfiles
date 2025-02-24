@@ -1,11 +1,5 @@
-local rocks_config = { 
+local rocks_config = {
 	rocks_path = vim.env.HOME .. "/.local/share/nvim/rocks",
-	luarocks_config = {
-		-- arch = "macosx-aarch64",
-		  variables = {
-			  LUA_INCDIR = "~/lua-headers",
-    }
-	},
 }
 
 vim.g.rocks_nvim = rocks_config
