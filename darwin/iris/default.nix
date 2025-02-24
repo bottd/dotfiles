@@ -14,9 +14,10 @@ home-manager.lib.homeManagerConfiguration {
   };
   modules = [
     mac-app-util.homeManagerModules.default
-    ../util/default.nix
-    ../home.nix
-    ../home/darwin/default.nix
-    ../home/common/default.nix
+    ./configuration.nix
+    ../../util/default.nix
+    ../../home.nix
+    ../../home/darwin/default.nix
+    ../../home/common/default.nix
   ];
 }
