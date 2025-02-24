@@ -1,8 +1,21 @@
 {
+  lib,
   pkgs,
   nixpkgs,
   ...
 }: {
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "discord"
+      "spotify"
+    ];
+
+  # nixpkgs.config.allowUnfreePredicate = pkg:
+  #   builtins.elem (lib.getName pkg) (map lib.getName [
+  #     pkgs.discord
+  #     pkgs.spotify
+  #   ]);
+
   home.packages = with pkgs; [
     (discord.override {
       # withOpenASAR = true;
@@ -12,10 +25,4 @@
 
     spotify
   ];
-
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (pkgs.lib.getName pkg) [
-      "spotify"
-      "discord"
-    ];
 }

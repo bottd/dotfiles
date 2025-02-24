@@ -35,7 +35,7 @@
     };
     # home-manager switch --flake .#iris
     homeConfigurations = {
-      iris = import ./darwin/iris.nix {inherit inputs home-manager mac-app-util nixpkgs;};
+      iris = import ./darwin/iris {inherit inputs home-manager mac-app-util nixpkgs;};
     };
   };
 }
