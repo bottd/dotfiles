@@ -10,12 +10,6 @@
       "spotify"
     ];
 
-  # nixpkgs.config.allowUnfreePredicate = pkg:
-  #   builtins.elem (lib.getName pkg) (map lib.getName [
-  #     pkgs.discord
-  #     pkgs.spotify
-  #   ]);
-
   home.packages = with pkgs; [
     (discord.override {
       # withOpenASAR = true;
