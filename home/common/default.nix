@@ -1,6 +1,5 @@
 {
   imports = [
-    ./discord
     ./ghostty
     ./language
     ./neovim
@@ -9,7 +8,7 @@
     ./wezterm
 
     ./cli.nix
-    ./spotify.nix
+    ./unfree.nix
     ./zsh.nix
   ];
 }
