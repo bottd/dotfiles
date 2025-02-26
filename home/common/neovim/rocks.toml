@@ -24,7 +24,7 @@
 "telescope.nvim" = "scm"
 "telescope-undo.nvim" = "scm"
 "lualine.nvim" = "scm"
-"nvim-lspconfig" = "1.6.0"
+"nvim-lspconfig" = "1.7.0"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.36"
 tree-sitter-javascript = "0.0.36"
@@ -48,7 +48,7 @@ tree-sitter-sql = "0.0.39"
 tree-sitter-svelte = "0.0.32"
 tree-sitter-tsx = "0.0.35"
 tree-sitter-typescript = "0.0.36"
-tree-sitter-typst = "0.0.35"
+tree-sitter-typst = "0.0.36"
 tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
@@ -68,7 +68,7 @@ rev = "30321e33b03cb924fdcd6a806a0dc6fa0b0eafb9"
 
 [plugins."treewalker.nvim"]
 git = "aaronik/treewalker.nvim"
-rev = "ff81e46601d4808833683e65d7d9c4c427f7f645"
+rev = "bc9e6555aafd2489eed653bc8a098e5ddd5c83d4"
 
 
 [plugins."lazydev.nvim"]
@@ -77,7 +77,7 @@ rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v0.12.4"
+rev = "v0.13.0"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
@@ -85,7 +85,7 @@ rev = "v1.3.3"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v12.7.1"
+rev = "v12.13.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
