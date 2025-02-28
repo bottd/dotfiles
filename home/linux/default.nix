@@ -1,6 +1,6 @@
 {
   imports = [
-    ./browser.nix
+    ./desktop.nix
     # ./hyprland.nix
     ./unfree.nix
   ];
