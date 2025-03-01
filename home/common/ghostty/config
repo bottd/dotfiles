@@ -17,3 +17,4 @@ theme = dark:catppuccin-mocha,light:catppuccin-latte
 
 # window-decoration = false
 
+keybind = super+t=new_tab
