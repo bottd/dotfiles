@@ -115,14 +115,14 @@ wk.add({
 	{ "<leader>nt", ":Neorg tangle<Cr>", desc = "tangle" },
 
 	{ "<leader>ne", desc = "Export" },
-	{ "<leader>nef", ":Neorg export to-file", desc = "Export file" },
-	{ "<leader>ned", ":Neorg export directory", desc = "Export directory" },
+	{ "<leader>nef", ":Neorg export to-file<Cr>", desc = "Export file" },
+	{ "<leader>ned", ":Neorg export directory<Cr>", desc = "Export directory" },
 	{
 		"<leader>nep",
 		":Neorg export directory " .. workspace_path .. "/public md<Cr>",
 		desc = "Export posts",
 	},
-	{ "<leader>nq", ":Neorg query run", desc = "Run Queries" },
+	{ "<leader>nq", ":Neorg query run<Cr>", desc = "Run Queries" },
 	-- TODO: This icon will be neorg once my nerdfont (provided by ghostty) is updated
 	{ "<leader>n", desc = "Neorg", icon = " " },
 })
