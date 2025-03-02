@@ -22,7 +22,6 @@
 "which-key.nvim" = "3.17.0"
 "indent-blankline.nvim" = "3.8.7"
 "telescope.nvim" = "scm"
-"telescope-undo.nvim" = "scm"
 "lualine.nvim" = "scm"
 "nvim-lspconfig" = "1.7.0"
 "nvim-ts-autotag" = "scm"
@@ -37,17 +36,17 @@ tree-sitter-fennel = "0.0.29"
 tree-sitter-gitignore = "0.0.29"
 tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.36"
-tree-sitter-markdown = "0.0.37"
+tree-sitter-markdown = "0.0.38"
 tree-sitter-markdown_inline = "0.0.37"
-tree-sitter-nix = "0.0.57"
+tree-sitter-nix = "0.0.58"
 tree-sitter-lua = "0.0.33"
 tree-sitter-python = "0.0.40"
 tree-sitter-query = "0.0.34"
-tree-sitter-rust = "0.0.41"
-tree-sitter-sql = "0.0.39"
+tree-sitter-rust = "0.0.43"
+tree-sitter-sql = "0.0.40"
 tree-sitter-svelte = "0.0.32"
 tree-sitter-tsx = "0.0.35"
-tree-sitter-typescript = "0.0.36"
+tree-sitter-typescript = "0.0.37"
 tree-sitter-typst = "0.0.36"
 tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
@@ -56,7 +55,6 @@ tree-sitter-yaml = "0.0.32"
 "conform.nvim" = "9.0.0"
 "helpview.nvim" = "2.1.0"
 "mini.nvim" = "scm"
-"otter.nvim" = "2.6.1"
 nvim-treesitter-legacy-api = "0.9.2"
 nvim-treesitter-context = "scm"
 "plenary.nvim" = "scm"
@@ -66,26 +64,21 @@ nvim-treesitter-context = "scm"
 git = "zbirenbaum/copilot.lua"
 rev = "30321e33b03cb924fdcd6a806a0dc6fa0b0eafb9"
 
-[plugins."treewalker.nvim"]
-git = "aaronik/treewalker.nvim"
-rev = "bc9e6555aafd2489eed653bc8a098e5ddd5c83d4"
-
-
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
 rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v0.13.0"
+rev = "v0.13.1"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
-rev = "v1.3.3"
+rev = "v1.3.4"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v12.13.0"
+rev = "v12.15.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
