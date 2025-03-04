@@ -18,6 +18,7 @@ nixpkgs.lib.nixosSystem {
           ../../util/default.nix
           ../../home/linux/default.nix
           ../../home/common/default.nix
+          ../../home/opt/finance.nix
         ];
       };
 
