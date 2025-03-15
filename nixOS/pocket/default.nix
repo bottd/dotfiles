@@ -18,6 +18,7 @@ nixpkgs.lib.nixosSystem {
           ../../home.nix
           ../../util/default.nix
           ../../home/linux/default.nix
+          ../../home/linux/hyprland.nix
           ../../home/common/default.nix
           ../../home/opt/finance.nix
         ];
