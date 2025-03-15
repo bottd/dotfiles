@@ -8,7 +8,7 @@ nixpkgs.lib.nixosSystem {
   modules = [
     ./configuration.nix
     ../modules
-    ../modules/hyprland
+    # ../modules/hyprland
     home-manager.nixosModules.home-manager
     {
       home-manager.useGlobalPkgs = true;
