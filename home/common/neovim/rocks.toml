@@ -1,5 +1,5 @@
 [plugins]
-"rocks.nvim" = "2.43.1"
+"rocks.nvim" = "2.44.0"
 "rocks-config.nvim" = "3.1.0"
 "rocks-dev.nvim" = "1.7.0"
 "rocks-git.nvim" = "2.5.3"
@@ -20,7 +20,7 @@
 "catppuccin" = { git = "catppuccin/nvim", rev = "v1.9.0" }
 "headlines.nvim" = "scm"
 "which-key.nvim" = "3.17.0"
-"indent-blankline.nvim" = "3.8.7"
+"indent-blankline.nvim" = "3.9.0"
 "telescope.nvim" = "scm"
 "lualine.nvim" = "scm"
 "nvim-lspconfig" = "1.7.0"
@@ -38,16 +38,16 @@ tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.36"
 tree-sitter-markdown = "0.0.39"
 tree-sitter-markdown_inline = "0.0.37"
-tree-sitter-nix = "0.0.58"
+tree-sitter-nix = "0.0.59"
 tree-sitter-lua = "0.0.33"
-tree-sitter-python = "0.0.41"
+tree-sitter-python = "0.0.44"
 tree-sitter-query = "0.0.34"
 tree-sitter-rust = "0.0.47"
 tree-sitter-sql = "0.0.40"
 tree-sitter-svelte = "0.0.32"
 tree-sitter-tsx = "0.0.35"
 tree-sitter-typescript = "0.0.37"
-tree-sitter-typst = "0.0.36"
+tree-sitter-typst = "0.0.37"
 tree-sitter-vimdoc = "0.0.31"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
@@ -78,7 +78,7 @@ rev = "v1.3.7"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v13.2.4"
+rev = "v14.1.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
@@ -99,7 +99,7 @@ rev = "v1.5.0"
 
 [plugins."gitsigns.nvim"]
 git = "lewis6991/gitsigns.nvim"
-rev = "v1.0.1"
+rev = "v1.0.2"
 
 [bundles.blink]
 items = ["blink.cmp", "blink-copilot", "copilot.lua", "luasnip"]
