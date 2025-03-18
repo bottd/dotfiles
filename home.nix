@@ -4,8 +4,6 @@
   username,
   ...
 }: let
-  isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
 in {
   home.username = username;
@@ -15,20 +13,11 @@ in {
   # Let home manager manage itself
   programs.home-manager.enable = true;
 
-  home.homeDirectory =
-    if isLinux
-    then "/home/${username}"
-    else if isDarwin
-    then "/Users/${username}"
-    else unsupported;
+  home.homeDirectory = then "/home/${username}";
 
-  fonts.fontconfig.enable = isLinux;
-  # fonts.fontconfig.enable = true; # Enable fonts
-
+  fonts.fontconfig.enable = true;
   xdg.enable = true;
   nix = {
-    # Configure the Nix package manager itself
-    # TODO: Remove use of lib.mkForce
     package = lib.mkForce pkgs.nix;
     settings.experimental-features = ["nix-command" "flakes"];
   };
