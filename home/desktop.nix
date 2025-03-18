@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    hledger
-    hledger-web
-    puffin
+    google-chrome
+    geary
+    vlc
+    vscode
   ];
 }
