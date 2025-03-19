@@ -41,14 +41,14 @@ tree-sitter-markdown_inline = "0.0.37"
 tree-sitter-nix = "0.0.59"
 tree-sitter-lua = "0.0.33"
 tree-sitter-python = "0.0.44"
-tree-sitter-query = "0.0.34"
+tree-sitter-query = "0.0.35"
 tree-sitter-rust = "0.0.47"
 tree-sitter-sql = "0.0.40"
 tree-sitter-svelte = "0.0.32"
 tree-sitter-tsx = "0.0.35"
 tree-sitter-typescript = "0.0.37"
 tree-sitter-typst = "0.0.37"
-tree-sitter-vimdoc = "0.0.31"
+tree-sitter-vimdoc = "0.0.32"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.32"
@@ -70,7 +70,7 @@ rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v0.13.1"
+rev = "v0.14.0"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
@@ -78,7 +78,7 @@ rev = "v1.3.7"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.1.1"
+rev = "v14.2.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
@@ -90,7 +90,7 @@ rev = "v2.0.3"
 
 [plugins."telescope-fzf-native.nvim"]
 git = "nvim-telescope/telescope-fzf-native.nvim"
-rev = "2a5ceff981501cff8f46871d5402cd3378a8ab6a"
+rev = "1f08ed60cafc8f6168b72b80be2b2ea149813e55"
 build = "make"
 
 [plugins."ts-comments.nvim"]
