@@ -5,6 +5,19 @@
 }: {
   # requried for default Hyprland config
   programs.kitty.enable = true;
+
+  # hint Electron apps to use Wayland
+  home.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  # software needed for hyprland
+  # https://wiki.hyprland.org/Useful-Utilities/Must-have/
+  home.packages = with pkgs; [
+    # Manage password/auth request popups
+    hyprpolkitagent
+    # Notification manager
+    swaynotificationcenter
+  ];
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -55,13 +68,4 @@
         );
     };
   };
-  # hint Electron apps to use Wayland
-  home.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  # software needed for hyprland
-  # https://wiki.hyprland.org/Useful-Utilities/Must-have/
-  home.packages = with pkgs; [
-    # notification daemon
-    swaynotificationcenter
-  ];
 }
