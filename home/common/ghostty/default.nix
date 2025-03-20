@@ -1,13 +1,15 @@
-{config, ...}: {
-  # TODO: Install ghostty with nix
-  # https://github.com/NixOS/nixpkgs/pull/368404
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}: {
   home.file = {
     ".config/ghostty/config" = {
       source = config.lib.meta.createSymlink "home/common/ghostty/config";
     };
   };
-
-  # home.packages = with pkgs; [
-  # ghostty
-  # ];
+  home.packages = [
+    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 }
