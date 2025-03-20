@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   home.file.".config/starship" = {
     source = ../starship;
   };

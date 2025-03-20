@@ -1,9 +1,11 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: {
+{inputs}: let
+  inherit
+    (inputs)
+    config
+    pkgs
+    inputs
+    ;
+in {
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
 
