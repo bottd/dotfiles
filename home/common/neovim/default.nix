@@ -10,7 +10,6 @@
       source = config.lib.meta.createSymlink "home/common/neovim/after";
       recursive = true;
     };
-
     ".config/nvim/lua" = {
       source = config.lib.meta.createSymlink "home/common/neovim/lua";
       recursive = true;
@@ -88,6 +87,7 @@
   programs.neovim = {
     defaultEditor = true;
     enable = true;
+    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
   };
 
   home.sessionVariables = {

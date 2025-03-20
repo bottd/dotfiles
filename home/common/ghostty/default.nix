@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{config, ...}: {
   # TODO: Install ghostty with nix
   # https://github.com/NixOS/nixpkgs/pull/368404
   home.file = {
