@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }: {
@@ -9,7 +10,8 @@
       source = config.lib.meta.createSymlink "home/common/ghostty/config";
     };
   };
-  home.packages = [
+
+  home.packages = lib.optionals pkgs.stdenv.isLinux [
     inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
