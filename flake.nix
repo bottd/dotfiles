@@ -8,6 +8,7 @@
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nix-darwin.url = "github:LnL7/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -15,17 +16,11 @@
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
   };
 
-  outputs = {
-    home-manager,
-    mac-app-util,
-    nix-darwin,
-    nixpkgs,
-    ...
-  } @ inputs: rec {
+  outputs = {...} @ inputs: rec {
     # darwin-rebuild switch --flake .#iris
     darwinConfigurations = {
       macbook = import ./darwin/macbook {
-        inherit inputs home-manager mac-app-util nix-darwin nixpkgs;
+        inherit inputs;
       };
     };
     # sudo nixos-rebuild switch --flake .#desktop
@@ -35,7 +30,7 @@
     };
     # home-manager switch --flake .#iris
     homeConfigurations = {
-      iris = import ./darwin/iris {inherit inputs home-manager mac-app-util nixpkgs;};
+      iris = import ./darwin/iris {inherit inputs;};
     };
   };
 }
