@@ -1,8 +1,4 @@
 {
-  pkgs,
-  neorgWorkspace,
-  ...
-}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;

@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
   # TODO: Install ghostty with nix
@@ -11,7 +12,7 @@
     };
   };
 
-  # home.packages = with pkgs; [
-  # ghostty
-  # ];
+  home.packages = [
+    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 }
