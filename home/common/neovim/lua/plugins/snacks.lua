@@ -9,7 +9,7 @@ snacks.setup({
 		sections = {
 			{
 				section = "terminal",
-				cmd = "fortune -s | cowsay -f stegosaurus",
+				cmd = "chafa ~/.config/nvim/dashboard.png --format symbols --symbols vhalf --size 68x24 --stretch; sleep .1",
 				hl = "header",
 				height = 24,
 				width = 68,

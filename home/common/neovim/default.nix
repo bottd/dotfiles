@@ -81,6 +81,7 @@
     lazygit
 
     # Used for startup dashboard
+    chafa
     fortune
     cowsay
   ];
