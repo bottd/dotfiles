@@ -36,11 +36,11 @@ tree-sitter-fennel = "0.0.29"
 tree-sitter-gitignore = "0.0.29"
 tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.36"
-tree-sitter-markdown = "0.0.39"
-tree-sitter-markdown_inline = "0.0.37"
+tree-sitter-markdown = "0.0.40"
+tree-sitter-markdown_inline = "0.0.38"
 tree-sitter-nix = "0.0.59"
-tree-sitter-lua = "0.0.33"
-tree-sitter-python = "0.0.44"
+tree-sitter-lua = "0.0.34"
+tree-sitter-python = "0.0.45"
 tree-sitter-query = "0.0.35"
 tree-sitter-rust = "0.0.47"
 tree-sitter-sql = "0.0.40"
@@ -62,7 +62,7 @@ nvim-treesitter-context = "scm"
 
 [plugins."copilot.lua"]
 git = "zbirenbaum/copilot.lua"
-rev = "30321e33b03cb924fdcd6a806a0dc6fa0b0eafb9"
+rev = "d296017e588215df3f7b5796d1172f0d690fa13c"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -70,7 +70,7 @@ rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v0.14.0"
+rev = "v1.0.0"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
