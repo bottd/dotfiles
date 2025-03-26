@@ -130,5 +130,6 @@ tabstop = 2
 timeout = true
 timeoutlen = 300
 equalalways = false
+winborder = "rounded"
 winwidth = 10
 winminwidth = 10
