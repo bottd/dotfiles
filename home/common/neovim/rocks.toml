@@ -32,7 +32,6 @@ tree-sitter-bash = "0.0.40"
 tree-sitter-css = "0.0.37"
 tree-sitter-comment = "0.0.29"
 tree-sitter-diff = "0.0.32"
-tree-sitter-fennel = "0.0.29"
 tree-sitter-gitignore = "0.0.29"
 tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.36"
@@ -78,7 +77,7 @@ rev = "v1.3.7"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.2.2"
+rev = "v14.4.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
