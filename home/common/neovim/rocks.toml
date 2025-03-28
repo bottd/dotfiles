@@ -23,6 +23,8 @@
 "indent-blankline.nvim" = "3.9.0"
 "telescope.nvim" = "scm"
 "lualine.nvim" = "scm"
+"nvim-dap" = "0.10.0"
+"nvim-jdtls" = "scm"
 "nvim-lspconfig" = "1.7.0"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.36"
