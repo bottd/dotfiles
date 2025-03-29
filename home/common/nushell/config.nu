@@ -3,9 +3,9 @@
 # version = 0.82.0
 
 if $env.WINDOW_APPEARANCE == "dark" {
-  source ./theme/catppuccin-mocha.nu
+  source ./themes/dark.nu
 } else {
-  source ./theme/catppuccin-latte.nu
+  source ./themes/light.nu
 }
 
 $env.PROMPT_COMMAND_RIGHT = ""
@@ -374,4 +374,4 @@ $env.config = {
   ]
 }
 
-source git.nu
+source scripts/git.nu
