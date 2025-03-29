@@ -371,3 +371,4 @@ $env.config = {
 }
 
 source scripts/git.nu
+neofetch
