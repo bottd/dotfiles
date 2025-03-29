@@ -7,14 +7,16 @@
 $env.PATH = (
   $env.PATH
   | split row (char esep)
-  | prepend '/opt/homebrew/bin'
   | prepend '~/.cargo/bin'
-#  | prepend '/Applications/calibre.app/Contents/MacOS'
   | prepend '~/platform-tool'
   | prepend $"/Users/(whoami | str trim)/.local/bin"
-  | prepend '~/.volta/bin'
   | prepend '/nix/var/nix/profiles/default/bin'
 )
+
+$env.WINDOW_APPEARANCE = match (term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode) {
+  "1" => "dark"
+  _ => "light"
+}
 
 let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
@@ -93,8 +95,8 @@ $env.NU_PLUGIN_DIRS = [
 ]
 
 # Source local.env.nu for untracked, per-machine env variables
-const some_path = $nu.default-config-dir
-source-env $"($some_path)/local.env.nu"
+# const some_path = $nu.default-config-dir
+# source-env $"($some_path)/local.env.nu"
 
 # CXXFLAGS needed to avoid Treesitter parser compilation errors
 $env.CXXFLAGS = "-std=c++11"
