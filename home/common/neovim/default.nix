@@ -87,7 +87,7 @@
   programs.neovim = {
     defaultEditor = true;
     enable = true;
-    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+    # package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
   };
 
   home.sessionVariables = {
