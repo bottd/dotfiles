@@ -9,7 +9,7 @@
 "luasnip" = "2.3.0"
 
 # Neorg
-"neorg" = "9.2.0"
+"neorg" = "9.3.0"
 "neorg-archive" = "1.1.0"
 "neorg-interim-ls" = "2.1.1"
 "neorg-query" = "1.3.1"
@@ -75,11 +75,11 @@ rev = "v1.0.0"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
-rev = "v1.3.7"
+rev = "v1.3.8"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.4.0"
+rev = "v14.5.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
