@@ -58,12 +58,12 @@ tree-sitter-yaml = "0.0.32"
 "mini.nvim" = "scm"
 nvim-treesitter-legacy-api = "0.9.2"
 nvim-treesitter-context = "scm"
-"plenary.nvim" = { git = "nvim-lua/plenary.nvim" }
+"plenary.nvim" = "scm"
 "snacks.nvim" = "scm"
 
 [plugins."copilot.lua"]
 git = "zbirenbaum/copilot.lua"
-rev = "d296017e588215df3f7b5796d1172f0d690fa13c"
+rev = "d661d65b4cab20a5c164f6d9081d91ed324fe4d8"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
