@@ -48,7 +48,6 @@
     isNormalUser = true;
     description = "Drake Bott";
     extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.nushell;
     packages = with pkgs; [];
   };
 

@@ -1,4 +1,5 @@
 desktop-notifications = false
+command = nu
 
 font-family = MonoLisa Variable
 font-family-bold = MonoLisa Variable Regular Bold
