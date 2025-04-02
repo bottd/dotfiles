@@ -3,7 +3,6 @@
   lib,
   nixpkgs,
   pkgs,
-  system,
   ...
 }: {
   home.packages = with pkgs; [
