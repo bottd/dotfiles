@@ -1,5 +1,6 @@
 {
   imports = [
+    ./desktop
     ./ghostty
     ./language
     ./neovim
