@@ -1,6 +1,5 @@
 {
   imports = [
-    ./desktop
     ./ghostty
     ./language
     ./neovim
@@ -8,6 +7,7 @@
     ./starship
 
     ./cli.nix
+    ./desktop.nix
     ./unfree.nix
     ./zsh.nix
   ];
