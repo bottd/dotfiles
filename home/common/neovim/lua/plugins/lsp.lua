@@ -44,16 +44,20 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+require("spring_boot").init_lsp_commands()
 local servers = {
 	cssls = {},
 	eslint = {},
 	graphql = {},
 	html = {},
-	-- sqlls = {},
 	svelte = {},
 	tailwindcss = {},
 	ts_ls = {},
-	jdtls = {},
+	jdtls = {
+		init_options = {
+			bundles = require("spring_boot").java_extensions(),
+		},
+	},
 	harper_ls = {
 		filetypes = { "norg", "markdown" },
 		settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
@@ -73,7 +77,6 @@ local servers = {
 	},
 }
 
-require("java").setup()
 local lspconfig = require("lspconfig")
 for server, config in pairs(servers) do
 	-- passing config.capabilities to blink.cmp merges with the capabilities in your
