@@ -53,6 +53,7 @@ local servers = {
 	svelte = {},
 	tailwindcss = {},
 	ts_ls = {},
+	jdtls = {},
 	harper_ls = {
 		filetypes = { "norg", "markdown" },
 		settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
@@ -72,6 +73,7 @@ local servers = {
 	},
 }
 
+require("java").setup()
 local lspconfig = require("lspconfig")
 for server, config in pairs(servers) do
 	-- passing config.capabilities to blink.cmp merges with the capabilities in your
