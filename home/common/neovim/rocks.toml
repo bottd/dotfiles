@@ -24,7 +24,8 @@
 "telescope.nvim" = "scm"
 "lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
-"nvim-jdtls" = "scm"
+"nvim-dap-ui" = "scm"
+"nvim-java" = { git = "nvim-java/nvim-java" }
 "nvim-lspconfig" = "1.7.0"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.36"
@@ -106,7 +107,7 @@ rev = "v1.0.2"
 items = ["blink.cmp", "blink-copilot", "copilot.lua", "luasnip"]
 
 [bundles.lsp]
-items = ["nvim-lspconfig"]
+items = ["nvim-lspconfig", "nvim-java"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
