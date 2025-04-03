@@ -7,7 +7,6 @@
     ./starship
 
     ./cli.nix
-    ./desktop.nix
     ./unfree.nix
     ./zsh.nix
   ];
