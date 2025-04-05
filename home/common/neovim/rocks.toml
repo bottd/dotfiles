@@ -45,7 +45,7 @@ tree-sitter-python = "0.0.46"
 tree-sitter-query = "0.0.35"
 tree-sitter-rust = "0.0.49"
 tree-sitter-sql = "0.0.40"
-tree-sitter-svelte = "0.0.32"
+tree-sitter-svelte = "0.0.33"
 tree-sitter-tsx = "0.0.35"
 tree-sitter-typescript = "0.0.37"
 tree-sitter-typst = "0.0.37"
@@ -68,7 +68,7 @@ rev = "fc474dfd4bbe78188fdd5b2984e7013e124c46fe"
 
 [plugins."copilot.lua"]
 git = "zbirenbaum/copilot.lua"
-rev = "13ae71875457d25b92cb13cb43aae5a43972dd36"
+rev = "c2afa3a4bc7702160bdb5f0d478a840277afc8ec"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -76,7 +76,7 @@ rev = "v1.9.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v1.0.0"
+rev = "v1.1.1"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
@@ -84,7 +84,7 @@ rev = "v1.3.8"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.6.0"
+rev = "v14.6.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
