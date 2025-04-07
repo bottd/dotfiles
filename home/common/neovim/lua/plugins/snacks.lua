@@ -3,9 +3,6 @@ snacks.setup({
 	bigfile = { enabled = true },
 	dashboard = {
 		enabled = true,
-		preset = {
-			pick = "telsecope.nvim",
-		},
 		sections = {
 			{
 				section = "terminal",
@@ -20,7 +17,14 @@ snacks.setup({
 	},
 	gitbrowse = { enabled = true },
 	lazygit = { enabled = true },
-	styles = { zen = { backdrop = { transparent = false } } },
+	picker = {
+		layout = {
+			preset = "ivy_split",
+		},
+	},
+	styles = {
+		zen = { backdrop = { transparent = false } },
+	},
 	zen = { enabled = true },
 })
 
@@ -49,5 +53,51 @@ wk.add({
 		end,
 		desc = "Zen mode",
 		icon = "󱅻 ",
+	},
+	{
+		"<leader>f",
+		group = "Find",
+	},
+	{
+		"<leader>ff",
+		function()
+			Snacks.picker.files()
+		end,
+		desc = "Files",
+	},
+	{
+		"<leader>fs",
+		function()
+			Snacks.picker.grep()
+		end,
+		desc = "String",
+	},
+	{
+		"<leader>fb",
+		function()
+			Snacks.picker.buffers()
+		end,
+		desc = "Buffer",
+	},
+	{
+		"<leader>fk",
+		function()
+			Snacks.picker.keymaps()
+		end,
+		desc = "Keymap",
+	},
+	{
+		"<leader>fh",
+		function()
+			Snacks.picker.help()
+		end,
+		desc = "Help Pages",
+	},
+	{
+		"<leader>fm",
+		function()
+			Snacks.picker.man()
+		end,
+		desc = "Man Pages",
 	},
 })
