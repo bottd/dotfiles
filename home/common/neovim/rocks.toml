@@ -82,7 +82,7 @@ rev = "v1.3.8"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.7.1"
+rev = "v14.8.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
