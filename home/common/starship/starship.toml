@@ -26,7 +26,7 @@ disabled = true
 disabled = false
 style = "italic sky"
 format = "[$time]($style)"
-time_format = "%A, %b%e at %I:%M%p"
+time_format = "%A, %B %e at %I:%M%P"
 
 [palettes.light]
 rosewater = "#dc8a78"
