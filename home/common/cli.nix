@@ -1,4 +1,13 @@
 {pkgs, ...}: {
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableNushellIntegration = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+  };
+
   home.packages = with pkgs; [
     gcc
     gh
