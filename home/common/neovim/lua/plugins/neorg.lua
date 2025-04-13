@@ -55,7 +55,6 @@ require("neorg").setup({
 		},
 		["core.export"] = {},
 		["core.export.markdown"] = { config = { extensions = "all" } },
-		["core.integrations.telescope"] = {},
 		["core.integrations.treesitter"] = {},
 		["core.itero"] = {},
 		["core.journal"] = {
