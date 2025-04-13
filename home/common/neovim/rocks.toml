@@ -23,7 +23,7 @@
 "lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
-"nvim-lspconfig" = "1.8.0"
+"nvim-lspconfig" = "2.0.0"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.36"
 tree-sitter-javascript = "0.0.36"
@@ -82,7 +82,7 @@ rev = "v1.3.8"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.8.0"
+rev = "v14.8.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
