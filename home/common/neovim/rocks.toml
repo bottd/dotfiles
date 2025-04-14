@@ -50,7 +50,7 @@ tree-sitter-typst = "0.0.37"
 tree-sitter-vimdoc = "0.0.32"
 tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
-tree-sitter-yaml = "0.0.32"
+tree-sitter-yaml = "0.0.34"
 "conform.nvim" = "9.0.0"
 "helpview.nvim" = "2.1.1"
 "mini.nvim" = "scm"
@@ -82,7 +82,7 @@ rev = "v1.3.8"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.8.1"
+rev = "v14.9.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
