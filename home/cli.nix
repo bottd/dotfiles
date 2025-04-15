@@ -16,12 +16,7 @@
     git-filter-repo
     gnumake
 
-    himalaya
-    jujutsu
-
     neofetch
-    readline
-    typst
 
     unzip
     wget

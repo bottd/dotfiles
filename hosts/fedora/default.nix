@@ -4,9 +4,8 @@ in
   home-manager.lib.homeManagerConfiguration {
     pkgs = nixpkgs.legacyPackages.aarch64-darwin;
     extraSpecialArgs = {
-      username = "DBott";
+      username = "Mko";
       root = ../../.;
-      neorgWorkspace = "notes";
       inherit inputs;
     };
     modules = [
@@ -14,7 +13,6 @@ in
       ./configuration.nix
       ../../util/default.nix
       ../../home.nix
-      ../../home/darwin/default.nix
-      ../../home/common/default.nix
+      ../../home/default.nix
     ];
   }

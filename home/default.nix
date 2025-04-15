@@ -3,7 +3,6 @@
     ./ghostty
     ./language
     ./neovim
-    ./nushell
     ./starship
 
     ./cli.nix
