@@ -3,6 +3,12 @@
   pkgs,
   ...
 }: {
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "vscode"
+      "code-cursor"
+    ];
+
   programs.vscode = {
     enable = true;
     profiles.default = {
