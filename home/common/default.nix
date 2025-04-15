@@ -7,8 +7,8 @@
     ./starship
 
     ./cli.nix
-    ./desktop.nix
     ./unfree.nix
+    ./vscode.nix
     ./zsh.nix
   ];
 }
