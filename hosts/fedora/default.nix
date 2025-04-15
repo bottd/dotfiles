@@ -1,15 +1,14 @@
 {inputs, ...}: let
-  inherit (inputs) home-manager mac-app-util nixpkgs;
+  inherit (inputs) home-manager nixpkgs;
 in
   home-manager.lib.homeManagerConfiguration {
-    pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
     extraSpecialArgs = {
       username = "Mko";
       root = ../../.;
       inherit inputs;
     };
     modules = [
-      mac-app-util.homeManagerModules.default
       ./configuration.nix
       ../../util/default.nix
       ../../home.nix
