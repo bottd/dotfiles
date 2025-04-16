@@ -1,6 +1,5 @@
 {
   imports = [
-    ./ghostty
     ./language
     ./neovim
     ./nushell
@@ -8,6 +7,7 @@
 
     ./cli.nix
     ./desktop.nix
+    ./ghostty.nix
     ./vscode.nix
     ./zsh.nix
   ];
