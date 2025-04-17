@@ -62,10 +62,7 @@ local servers = {
 		filetypes = { "norg", "markdown" },
 		settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
 	},
-	rust_analyzer = {
-		cargo = { features = { "ssr" } },
-		procMacro = { ignored = { leptos_macro = { "server" } } },
-	},
+	rust_analyzer = {},
 	lua_ls = {
 		Lua = {
 			diagnostics = { globals = { "vim" } },
