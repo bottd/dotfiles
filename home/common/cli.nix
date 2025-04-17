@@ -9,6 +9,7 @@
   };
 
   home.packages = with pkgs; [
+    claude-code
     gcc
     gh
     git
