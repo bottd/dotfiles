@@ -18,6 +18,7 @@
     profiles.default = {
       extensions = with pkgs.vscode-extensions; [
         catppuccin.catppuccin-vsc
+        rust-lang.rust-analyzer
         tamasfe.even-better-toml
         vscodevim.vim
       ];
