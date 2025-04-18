@@ -12,7 +12,7 @@
 "neorg" = "9.3.0"
 "neorg-archive" = "1.1.0"
 "neorg-interim-ls" = "2.1.1"
-"neorg-query" = "1.3.1"
+"neorg-query" = "1.4.0"
 "neorg-worklog" = "1.3.4"
 
 "oil.nvim" = "2.15.0"
@@ -30,7 +30,7 @@ tree-sitter-javascript = "0.0.36"
 tree-sitter-toml = "0.0.31"
 tree-sitter-bash = "0.0.40"
 tree-sitter-css = "0.0.37"
-tree-sitter-comment = "0.0.29"
+tree-sitter-comment = "0.0.30"
 tree-sitter-diff = "0.0.32"
 tree-sitter-gitignore = "0.0.29"
 tree-sitter-graphql = "0.0.29"
@@ -41,8 +41,8 @@ tree-sitter-nix = "0.0.59"
 tree-sitter-lua = "0.0.34"
 tree-sitter-python = "0.0.46"
 tree-sitter-query = "0.0.35"
-tree-sitter-rust = "0.0.49"
-tree-sitter-sql = "0.0.40"
+tree-sitter-rust = "0.0.50"
+tree-sitter-sql = "0.0.41"
 tree-sitter-svelte = "0.0.33"
 tree-sitter-tsx = "0.0.35"
 tree-sitter-typescript = "0.0.37"
@@ -67,7 +67,7 @@ rev = "fc474dfd4bbe78188fdd5b2984e7013e124c46fe"
 
 [plugins."copilot.lua"]
 git = "zbirenbaum/copilot.lua"
-rev = "353853ce83259ab5a26951f1976243fe85e17630"
+rev = "b3988bb51e87a057fee79192c3cc0932a0360bf6"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -109,6 +109,10 @@ rev = "v1.5.0"
 git = "lewis6991/gitsigns.nvim"
 rev = "v1.0.2"
 
+[plugins."lsp_lines.nvim"]
+git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+rev = "v3.0.0"
+
 [bundles.blink]
 items = [
   "blink.cmp",
@@ -120,7 +124,7 @@ items = [
 ]
 
 [bundles.lsp]
-items = ["nvim-lspconfig", "nvim-jdtls", "spring-boot.nvim"]
+items = ["lsp_lines.nvim", "nvim-lspconfig", "nvim-jdtls", "spring-boot.nvim"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
