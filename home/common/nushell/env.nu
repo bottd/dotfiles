@@ -22,6 +22,9 @@ let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
 
+# make claude match window appearance
+claude config set --global theme $env.WINDOW_APPEARANCE
+
 let starship_dir = ($env.HOME | path join ".config/starship/")
 if $env.WINDOW_APPEARANCE == "dark" {
     $env.STARSHIP_CONFIG = ($starship_dir | path join "starship.dark.toml")
