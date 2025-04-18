@@ -1,13 +1,19 @@
+local wk = require("which-key")
+wk.add({
+	{ "<leader>m", desc = "Meta" },
+	{ "<leader>ml", require("lsp_lines").toggle, desc = "Toggle Lsp Info" },
+})
+
 vim.keymap.set("n", "gl", function()
 	return vim.diagnostic.open_float()
 end)
 
 vim.keymap.set("n", "[d", function()
-	return vim.diagnostic.goto_prev()
+	return vim.diagnostic.jump({ count = -1, float = true })
 end)
 
 vim.keymap.set("n", "]d", function()
-	return vim.diagnostic.goto_next()
+	return vim.diagnostic.jump({ count = 1, float = true })
 end)
 
 vim.api.nvim_create_autocmd("LspAttach", {
