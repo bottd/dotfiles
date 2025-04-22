@@ -1,21 +1,49 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   # requried for default Hyprland config
   programs.kitty.enable = true;
 
-  # hint Electron apps to use Wayland
-  home.sessionVariables.NIXOS_OZONE_WL = "1";
+  home.sessionVariables = {
+    # If cursor becomes invisible
+    # WLR_NO_HARDWARE_CURSORS = "1";
+
+    # hint Electron apps to use Wayland
+    NIXOS_OZONE_WL = "1";
+  };
 
   # software needed for hyprland
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
+    # bar
+    # TODO: try eww for custom bar
+    # simple
+    # pkgs.waybar
+    # TODO: try removing and see if still works
+    (pkgs.waybar.overrideAttrs (oldAttrs: {
+      mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
+    }))
+
+    # notifications
+    pkgs.dunst
+    libnotify
+
     # Manage password/auth request popups
     hyprpolkitagent
-    # Notification manager
-    swaynotificationcenter
+
+    # wallpaper
+    swww
+
+    # complex but custom, want to try out espeically with the lisp syntax
+    # Look into: end an nc that is built for eww
+    # https://github.com/lucalabs-de/end
+    # pkgs.eww
+
+    # launcher
+    rofi-wayland
   ];
 
   wayland.windowManager.hyprland = {
@@ -25,7 +53,10 @@
       enable = true;
       variables = ["--all"];
     };
-    plugins = [];
+    plugins = [
+      inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus
+    ];
+
     # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
     package = null;
     portalPackage = null;
@@ -54,6 +85,8 @@
       bind =
         [
           "$mod, F, exec, firefox"
+          "$mod, T, exec, ghostty"
+          "$mod, S, exec, rofi -show drun -show-icons"
         ]
         ++ (
           builtins.concatLists (builtins.genList (
@@ -66,6 +99,15 @@
             )
             9)
         );
+      "plugin:borders-plus-plus" = {
+        add_borders = 1;
+        "col.border_1" = "rgb(ffffff)";
+        "col.border_2" = "rgb(2222ff)";
+        border_size_1 = 10;
+        border_size_2 = -1;
+
+        natural_rounding = "yes";
+      };
     };
   };
 }
