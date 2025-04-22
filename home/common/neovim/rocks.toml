@@ -52,7 +52,7 @@ tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.34"
 "conform.nvim" = "9.0.0"
-"helpview.nvim" = "2.1.1"
+"helpview.nvim" = "2.1.2"
 "mini.nvim" = "scm"
 nvim-treesitter-legacy-api = "0.9.2"
 nvim-treesitter-context = "scm"
@@ -67,7 +67,7 @@ rev = "fc474dfd4bbe78188fdd5b2984e7013e124c46fe"
 
 [plugins."copilot.lua"]
 git = "zbirenbaum/copilot.lua"
-rev = "b3988bb51e87a057fee79192c3cc0932a0360bf6"
+rev = "089ec63c91e66368dbe1026bf2eb70fd7dc52884"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -91,7 +91,7 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.9.1"
+rev = "v14.11.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
