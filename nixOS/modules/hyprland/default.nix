@@ -21,8 +21,4 @@
     enable = true;
     extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
-
-  hardware = {
-    opengl.enable = true;
-  };
 }
