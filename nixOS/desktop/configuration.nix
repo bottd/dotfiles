@@ -13,6 +13,22 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # https://discourse.nixos.org/t/nix-build-ate-my-ram/35752
+  # OOM configuration:
+  systemd = {
+    # Create a separate slice for nix-daemon that is
+    # memory-managed by the userspace systemd-oomd killer
+    slices."nix-daemon".sliceConfig = {
+      ManagedOOMMemoryPressure = "kill";
+      ManagedOOMMemoryPressureLimit = "50%";
+    };
+    services."nix-daemon".serviceConfig.Slice = "nix-daemon.slice";
+
+    # If a kernel-level OOM event does occur anyway,
+    # strongly prefer killing nix-daemon child processes
+    services."nix-daemon".serviceConfig.OOMScoreAdjust = 1000;
+  };
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
