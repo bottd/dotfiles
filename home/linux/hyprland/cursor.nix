@@ -5,6 +5,7 @@
   ...
 }: {
   home.packages = with pkgs; [
+    pkgs.hyprlandPlugins.hypr-dynamic-cursors
     catppuccin-cursors
   ];
 
@@ -16,15 +17,10 @@
       env = XCURSOR_SIZE,24
     '';
     settings = {
+      "plugin:dynamic-cursors" = {
+        enabled = true;
+        mode = "tilt";
+      };
     };
   };
-
-  # home.pointerCursor = {
-  #   name = "catppuccin-mocha-blue-cursors";
-  #   package = pkgs.catppuccin-cursors.mochaBlue;
-  #   size = 24;
-  #   hyprcursor.enable = true;
-  #   gtk.enable = true;
-  #   x11.enable = true;
-  # };
 }

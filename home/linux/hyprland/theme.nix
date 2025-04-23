@@ -55,7 +55,6 @@
       variables = ["--all"];
     };
     plugins = [
-      pkgs.hyprlandPlugins.hypr-dynamic-cursors
       # inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus
     ];
 
@@ -65,7 +64,6 @@
 
     # Added to end of .config file
     extraConfig = ''
-      exec-once=hyprctl setcursor catppuccin-mocha-blue-cursors 24
       exec-once = waybar
     '';
     settings = {
@@ -83,28 +81,6 @@
       misc = {
         disable_hyprland_logo = true;
       };
-      "$mod" = "SUPER";
-      bind =
-        [
-          "$mod, F, exec, zen"
-          "$mod, T, exec, ghostty"
-          "$mod, S, exec, rofi -show drun -show-icons"
-        ]
-        ++ (
-          builtins.concatLists (builtins.genList (
-              i: let
-                ws = i + 1;
-              in [
-                "$mod, code:1${toString i}, workspace, ${toString ws}"
-                "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-              ]
-            )
-            9)
-        );
-      "plugin:dynamic-cursors" = {
-        enabled = true;
-        mode = "tilt";
-      };
       # "plugin:borders-plus-plus" = {
       # add_borders = 1;
       # "col.border_1" = "rgb(ffffff)";
@@ -115,14 +91,5 @@
       # natural_rounding = "yes";
       # };
     };
-  };
-
-  home.pointerCursor = {
-    name = "catppuccin-mocha-blue-cursors";
-    package = pkgs.catppuccin-cursors.mochaBlue;
-    size = 24;
-    hyprcursor.enable = true;
-    gtk.enable = true;
-    x11.enable = true;
   };
 }
