@@ -18,6 +18,7 @@
   # software needed for hyprland
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
+    catppuccin-cursors
     # bar
     # TODO: try eww for custom bar
     # simple
@@ -54,7 +55,8 @@
       variables = ["--all"];
     };
     plugins = [
-      inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus
+      pkgs.hyprlandPlugins.hypr-dynamic-cursors
+      # inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus
     ];
 
     # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
@@ -62,11 +64,11 @@
     portalPackage = null;
 
     # Added to end of .config file
-    extraConfig = "";
+    extraConfig = ''
+      exec-once=hyprctl setcursor catppuccin-mocha-blue-cursors 24
+      exec-once = waybar
+    '';
     settings = {
-      general = {
-        borderSize = "4";
-      };
       decoration = {
         blur = {
           popups = true;
@@ -84,7 +86,7 @@
       "$mod" = "SUPER";
       bind =
         [
-          "$mod, F, exec, firefox"
+          "$mod, F, exec, zen"
           "$mod, T, exec, ghostty"
           "$mod, S, exec, rofi -show drun -show-icons"
         ]
@@ -99,15 +101,28 @@
             )
             9)
         );
-      "plugin:borders-plus-plus" = {
-        add_borders = 1;
-        "col.border_1" = "rgb(ffffff)";
-        "col.border_2" = "rgb(2222ff)";
-        border_size_1 = 10;
-        border_size_2 = -1;
-
-        natural_rounding = "yes";
+      "plugin:dynamic-cursors" = {
+        enabled = true;
+        mode = "tilt";
       };
+      # "plugin:borders-plus-plus" = {
+      # add_borders = 1;
+      # "col.border_1" = "rgb(ffffff)";
+      # "col.border_2" = "rgb(2222ff)";
+      # border_size_1 = 10;
+      # border_size_2 = -1;
+
+      # natural_rounding = "yes";
+      # };
     };
+  };
+
+  home.pointerCursor = {
+    name = "catppuccin-mocha-blue-cursors";
+    package = pkgs.catppuccin-cursors.mochaBlue;
+    size = 24;
+    hyprcursor.enable = true;
+    gtk.enable = true;
+    x11.enable = true;
   };
 }

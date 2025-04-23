@@ -20,7 +20,7 @@ in
             ../../home.nix
             ../../util/default.nix
             ../../home/linux/default.nix
-            ../../home/linux/hyprland.nix
+            ../../home/linux/hyprland/host/desktop.nix
             ../../home/common/default.nix
             ../../home/opt/gaming.nix
           ];
