@@ -23,4 +23,11 @@
       };
     };
   };
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.catppuccin-cursors.mochaBlue;
+    name = "Catppuccin Mocha Blue";
+    size = 24;
+  };
 }

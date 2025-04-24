@@ -3,7 +3,7 @@
     enable = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
-    initExtra = ''
+    initContent = ''
       export NEORG_WORKSPACE=${neorgWorkspace}
       export NEORG_WORKSPACE_PATH=~/${neorgWorkspace}
     '';
