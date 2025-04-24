@@ -6,7 +6,7 @@ in
     modules = [
       ./configuration.nix
       ../modules
-      # ../modules/hyprland
+      ../modules/hyprland
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
@@ -16,7 +16,7 @@ in
             ../../home.nix
             ../../util/default.nix
             ../../home/linux/default.nix
-            ../../home/linux/hyprland.nix
+            ../../home/linux/hyprland/host/pocket.nix
             ../../home/common/default.nix
             ../../home/opt/finance.nix
           ];
