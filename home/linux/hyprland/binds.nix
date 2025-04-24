@@ -4,11 +4,6 @@
   inputs,
   ...
 }: {
-  home.packages = with pkgs; [
-    pkgs.hyprlandPlugins.hypr-dynamic-cursors
-    catppuccin-cursors
-  ];
-
   wayland.windowManager.hyprland = {
     settings = {
       "$mod" = "SUPER";

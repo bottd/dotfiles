@@ -6,10 +6,18 @@
 }: {
   home.packages = with pkgs; [
     hyprlandPlugins.borders-plus-plus
+    hyprlandPlugins.hyprbars
   ];
 
   wayland.windowManager.hyprland = {
+    plugins = [
+      pkgs.hyprlandPlugins.borders-plus-plus
+      pkgs.hyprlandPlugins.hyprbars
+    ];
     settings = {
+      "plugin:hyprbars" = {
+        bar_height = 20;
+      };
       "plugin:borders-plus-plus" = {
         add_borders = 1;
         "col.border_1" = "rgb(ffffff)";
