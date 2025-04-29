@@ -23,7 +23,7 @@
 "lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
-"nvim-lspconfig" = "2.0.0"
+"nvim-lspconfig" = "2.1.0"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.36"
 tree-sitter-javascript = "0.0.36"
@@ -83,7 +83,7 @@ rev = "v2.5.0"
 
 [plugins."blink-copilot"]
 git = "fang2hou/blink-copilot"
-rev = "v1.3.8"
+rev = "v1.4.0"
 
 [plugins."cmp-npm"]
 git = "David-Kunz/cmp-npm"
@@ -91,7 +91,7 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v14.11.0"
+rev = "v14.13.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
