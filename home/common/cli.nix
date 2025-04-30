@@ -9,6 +9,7 @@
   };
 
   home.packages = with pkgs; [
+    android-tools
     claude-code
     gcc
     gh
