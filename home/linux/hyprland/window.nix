@@ -27,6 +27,11 @@
 
         natural_rounding = "yes";
       };
+      windowrule = [
+        "immediate, class:^(gamescope)$"
+        "fullscreen, class:^(gamescope)$"
+        "noanim, class:^(gamescope)$"
+      ];
     };
   };
 }
