@@ -6,6 +6,8 @@
     extraPackages = with pkgs; [
       amdvlk
       rocmPackages.clr.icd
+      vulkan-loader
+      vulkan-validation-layers
     ];
 
     extraPackages32 = with pkgs; [
