@@ -4,9 +4,6 @@
   inputs,
   ...
 }: {
-  # requried for default Hyprland config
-  programs.kitty.enable = true;
-
   home.sessionVariables = {
     # If cursor becomes invisible
     # WLR_NO_HARDWARE_CURSORS = "1";
@@ -72,13 +69,29 @@
         };
       };
 
+      input = {
+        follow_mouse = 2;
+        # Mouse raw input
+        sensitivity = 0;
+      };
+
+      general = {
+        gaps_in = 0;
+        gaps_out = 0;
+        allow_tearing = true;
+      };
+
       gestures = {
         # defaults to 3 finger swipe
         workspace_swipe = true;
         workspace_swipe_touch = true;
       };
       misc = {
+        vfr = false;
+        vrr = 1;
+        disable_splash_rendering = true;
         disable_hyprland_logo = true;
+        force_default_wallpaper = false;
       };
     };
   };
