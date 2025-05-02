@@ -93,8 +93,6 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  boot.initrd.kernelModules = ["amdgpu"];
-
   # services.xserver.enable = true;
   # services.displayManager.sddm.enable = true;
   # services.displayManager.sddm.wayland.enable = true;
@@ -103,9 +101,4 @@
   # enable = true;
   # wrapperFeatures.gtk = true;
   # };
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
 }
