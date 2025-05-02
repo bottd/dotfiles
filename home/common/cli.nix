@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  pkgs-unstable,
+  ...
+}: {
   programs.direnv = {
     enable = true;
     enableBashIntegration = true;
@@ -10,7 +14,6 @@
 
   home.packages = with pkgs; [
     android-tools
-    claude-code
     gcc
     gh
     git
@@ -19,7 +22,6 @@
     gnumake
 
     himalaya
-    jujutsu
 
     neofetch
     readline
@@ -28,4 +30,9 @@
     unzip
     wget
   ];
+
+  # home.packages = with pkgs-unstable; [
+  # claude-code
+  # jujutsu
+  # ];
 }

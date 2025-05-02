@@ -26,6 +26,7 @@ in
           useGlobalPkgs = true;
           useUserPackages = true;
           extraSpecialArgs = {
+            pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.aarch64-darwin;
             username = "drakebott";
             root = ./../..;
             neorgWorkspace = "chalet";

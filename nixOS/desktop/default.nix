@@ -26,6 +26,7 @@ in
         };
 
         home-manager.extraSpecialArgs = {
+          pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.x86_64-linux;
           username = "drakeb";
           root = ./../..;
           neorgWorkspace = "chalet";

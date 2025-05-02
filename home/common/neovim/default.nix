@@ -1,5 +1,6 @@
 {
   pkgs,
+  pkgs-unstable,
   config,
   lib,
   inputs,
@@ -85,6 +86,7 @@
   ];
 
   programs.neovim = {
+    # package = pkgs-unstable.neovim;
     defaultEditor = true;
     enable = true;
     # package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;

@@ -4,6 +4,7 @@ in
   home-manager.lib.homeManagerConfiguration {
     pkgs = nixpkgs.legacyPackages.aarch64-darwin;
     extraSpecialArgs = {
+      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.aarch64-darwin;
       username = "DBott";
       root = ../../.;
       neorgWorkspace = "notes";
