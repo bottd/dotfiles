@@ -6,27 +6,27 @@
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
       "vscode"
-      "code-cursor"
+      # "code-cursor"
     ];
 
   home.packages = with pkgs; [
-    code-cursor
+    # code-cursor
   ];
 
   programs.vscode = {
     enable = true;
-    profiles.default = {
-      extensions = with pkgs.vscode-extensions; [
-        catppuccin.catppuccin-vsc
-        rust-lang.rust-analyzer
-        tamasfe.even-better-toml
-        vscodevim.vim
-      ];
-      userSettings = {
-        "window.autoDetectColorScheme" = true;
-        "workbench.preferredDarkColorTheme" = "Catppuccin Mocha";
-        "workbench.preferredLightColorTheme" = "Catppuccin Latte";
-      };
-    };
+    # profiles.default = {
+    #   extensions = with pkgs.vscode-extensions; [
+    #     catppuccin.catppuccin-vsc
+    #     rust-lang.rust-analyzer
+    #     tamasfe.even-better-toml
+    #     vscodevim.vim
+    #   ];
+    #   userSettings = {
+    #     "window.autoDetectColorScheme" = true;
+    #     "workbench.preferredDarkColorTheme" = "Catppuccin Mocha";
+    #     "workbench.preferredLightColorTheme" = "Catppuccin Latte";
+    #   };
+    # };
   };
 }
