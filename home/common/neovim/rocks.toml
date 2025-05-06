@@ -1,7 +1,7 @@
 [plugins]
 "rocks.nvim" = "2.44.0"
 "rocks-config.nvim" = "3.1.0"
-"rocks-dev.nvim" = "1.7.0"
+"rocks-dev.nvim" = "1.8.0"
 "rocks-git.nvim" = "2.5.3"
 "rocks-treesitter.nvim" = "1.3.0"
 "rocks-edit.nvim" = "scm"
@@ -94,7 +94,7 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v15.1.4"
+rev = "v15.2.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
