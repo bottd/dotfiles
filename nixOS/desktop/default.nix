@@ -10,7 +10,6 @@ in
     modules = [
       ./configuration.nix
       ../modules
-      ../modules/hyprland
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;

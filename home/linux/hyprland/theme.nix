@@ -4,6 +4,21 @@
   inputs,
   ...
 }: {
+  home.file = {
+    ".config/hypr/mocha.conf" = {
+      source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/catppuccin/hyprland/refs/tags/v1.3/themes/mocha.conf";
+        sha256 = "sha256-xYhmqYTHF+nlJVIlNDY4Fyd6moEv6Z8YISTKmpX/p6k=";
+      };
+    };
+    ".config/hypr/latte.conf" = {
+      source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/catppuccin/hyprland/refs/tags/v1.3/themes/latte.conf";
+        sha256 = "sha256-xYhmqYTHF+nlJVIlNDY4Fyd6moEv6Z8YISTKmpX/p6k=";
+      };
+    };
+  };
+
   home.sessionVariables = {
     # If cursor becomes invisible
     # WLR_NO_HARDWARE_CURSORS = "1";
