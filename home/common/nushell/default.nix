@@ -30,7 +30,7 @@
     };
     ".config/nushell/themes/dark.nu" = {
       source = pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/nushell/nu_scripts/refs/heads/main/themes/nu-themes/catppuccin-mocha.nu";
+        url = "https://raw.githubusercontent.com/catppuccin/hyprland/refs/tags/v1.3/themes/latte.conf";
         sha256 = "sha256-kdflq+y1F8jQI1oFtl6Of31VTW7YdLvSaulPuve7Rz0=";
       };
     };
