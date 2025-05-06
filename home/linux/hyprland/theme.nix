@@ -15,7 +15,6 @@
       source = pkgs.fetchurl {
         url = "https://raw.githubusercontent.com/catppuccin/hyprland/refs/tags/v1.3/themes/latte.conf";
         sha256 = "sha256-xYhmqYTHF+nlJVIlNDY4Fyd6moEv6Z8YISTKmpX/p6k=";
-        # sha256 = "sha256-kdflq+y1F8jQI1oFtl6Of31VTW7YdLvSaulPuve7Rz0=";
       };
     };
   };
