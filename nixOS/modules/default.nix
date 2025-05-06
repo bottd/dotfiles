@@ -4,5 +4,6 @@
     ./cli.nix
     ./gaming.nix
     ./graphics.nix
+    ./hyprland
   ];
 }
