@@ -12,6 +12,7 @@
       # withVencord = true;
     })
     geary
+    thunderbird
     nyxt
     obs-studio
     vlc
