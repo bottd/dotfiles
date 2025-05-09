@@ -1,12 +1,12 @@
 [plugins]
 "rocks.nvim" = "2.44.0"
-"rocks-config.nvim" = "3.1.0"
+"rocks-config.nvim" = "3.1.1"
 "rocks-dev.nvim" = "1.8.0"
 "rocks-git.nvim" = "2.5.3"
 "rocks-treesitter.nvim" = "1.3.0"
 "rocks-edit.nvim" = "scm"
 "rocks-lazy.nvim" = "scm"
-"luasnip" = "2.3.0"
+"luasnip" = "2.4.0"
 
 # Neorg
 "neorg" = "9.3.0"
