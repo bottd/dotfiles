@@ -23,5 +23,13 @@
   };
   environment.systemPackages = with pkgs; [
     mangohud
+    moonlight
   ];
+
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+    openFirewall = true;
+  };
 }
