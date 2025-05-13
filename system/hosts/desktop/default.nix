@@ -9,20 +9,18 @@
     # Local configuration using relative paths
     ./configuration.nix
 
-    # Try using inputs.self directly
-    (inputs.self + "/system/modules")
+    # Import only the specific modules we need
+    (paths.systemModules + "/base")
 
-    # Home manager configuration
-    {
-      home-manager.users.${username} = {
-        imports = [
-          # Use inputs.self directly for home modules
-          (inputs.self + "/home.nix")
-          (inputs.self + "/home/linux")
-          (inputs.self + "/home/linux/hyprland/host/desktop.nix")
-          (inputs.self + "/home/common")
-        ];
-      };
-    }
+    # Linux-specific common modules
+    (paths.systemModules + "/common/linux")
+
+    # User management
+    (paths.systemModules + "/users")
+
+    # Hyprland window manager - temporarily commented out until module can be properly added
+    # (paths.systemModules + "/hyprland")
+
+    # Home manager configuration is handled in flake.nix
   ];
 }

@@ -27,8 +27,8 @@
     services."nix-daemon".serviceConfig.OOMScoreAdjust = 1000;
   };
 
+  # Host-specific networking settings
   networking.hostName = "nixos";
-  networking.networkmanager.enable = true;
 
   # X11 keyboard configuration
   services.xserver.xkb = {
@@ -36,7 +36,7 @@
     variant = "";
   };
 
-  # System packages for desktop
+  # System packages for desktop - wayland tools
   environment.systemPackages = with pkgs; [
     grim
     slurp
