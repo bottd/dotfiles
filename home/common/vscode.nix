@@ -3,12 +3,6 @@
   pkgs,
   ...
 }: {
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "vscode"
-      "code-cursor"
-    ];
-
   home.packages = with pkgs; [
     code-cursor
   ];
