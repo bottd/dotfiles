@@ -1,2 +1,5 @@
 packages/common/nushell/history.txt
 packages/common/nushell/local.env.nu
+
+.claude
+.direnv
