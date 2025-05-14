@@ -1,10 +1,6 @@
-{
-  inputs,
-  host,
-  username,
-  lib,
-  config,
-  ...
+{ inputs
+, username
+, ...
 }: {
   imports = [
     ./configuration.nix

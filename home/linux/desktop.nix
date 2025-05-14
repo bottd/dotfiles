@@ -1,9 +1,6 @@
-{
-  inputs,
-  lib,
-  nixpkgs,
-  pkgs,
-  ...
+{ inputs
+, pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     (discord.override {

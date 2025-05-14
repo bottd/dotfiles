@@ -1,8 +1,5 @@
 # Linux-specific common settings
-{
-  lib,
-  pkgs,
-  ...
+{ ...
 }: {
   # Note: Locale settings are now defined in base/default.nix
   # Note: allowUnfree setting is now defined in base/default.nix

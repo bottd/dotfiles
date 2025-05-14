@@ -29,55 +29,49 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    flake-parts,
-    home-manager,
-    nix-darwin,
-    treefmt-nix,
-    ...
-  }: let
-    lib = import ./lib {inherit inputs;};
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux" "aarch64-darwin"];
+  outputs =
+    inputs @ { flake-parts
+    , home-manager
+    , treefmt-nix
+    , ...
+    }:
+    let
+      lib = import ./lib { inherit inputs; };
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
 
-      perSystem = {
-        config,
-        self',
-        inputs',
-        pkgs,
-        system,
-        ...
-      }: {
-        formatter =
-          treefmt-nix.lib.mkWrapper
-          pkgs
-          {
-            projectRootFile = "flake.nix";
-            programs = {
-              nixpkgs-fmt.enable = true;
-              stylua.enable = true;
-              shfmt.enable = true;
-              beautysh.enable = true;
-              deadnix.enable = true;
-              taplo.enable = true;
-            };
+      perSystem =
+        { self'
+        , pkgs
+        , ...
+        }: {
+          formatter =
+            treefmt-nix.lib.mkWrapper
+              pkgs
+              {
+                projectRootFile = "flake.nix";
+                programs = {
+                  nixpkgs-fmt.enable = true;
+                  stylua.enable = true;
+                  shfmt.enable = true;
+                  beautysh.enable = true;
+                  deadnix.enable = true;
+                  taplo.enable = true;
+                };
+              };
+
+          devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              git
+              self'.formatter
+            ];
+
+            shellHook = ''
+              echo "🚀 Welcome to Drake's dotfiles dev shell"
+            '';
           };
-
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            git
-            self'.formatter
-          ];
-
-          shellHook = ''
-            echo "🚀 Welcome to Drake's dotfiles dev shell"
-            echo "Use 'treefmt' to format the code, replacing alejandra"
-          '';
         };
-      };
 
       flake = {
         nixosConfigurations = {

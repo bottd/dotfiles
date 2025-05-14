@@ -3,40 +3,40 @@
 
 # Global excludes
 excludes = [
-    "LICENSE",
-    "flake.lock",
-    "*.png",
-    "*.jpg",
-    "*.md",
-    "*.lock",
-    "*.zip",
-    "*.css",
-    "*.json"
+  "LICENSE",
+  "flake.lock",
+  "*.png",
+  "*.jpg",
+  "*.md",
+  "*.lock",
+  "*.zip",
+  "*.css",
+  "*.json",
 ]
 
 [formatter.nix]
 command = "nixpkgs-fmt"
-includes = [ "*.nix" ]
+includes = ["*.nix"]
 
 [formatter.lua]
 command = "stylua"
-includes = [ "*.lua" ]
+includes = ["*.lua"]
 
 [formatter.shell]
 command = "shfmt"
 options = ["-i", "2", "-ci"]
-includes = [ "*.sh" ]
+includes = ["*.sh"]
 
 [formatter.bash]
 command = "beautysh"
-includes = [ "*.nu", "*.zsh" ]
+includes = ["*.nu", "*.zsh"]
 
 [formatter.deadnix]
 command = "deadnix"
 options = ["--edit"]
-includes = [ "*.nix" ]
+includes = ["*.nix"]
 
 [formatter.toml]
 command = "taplo"
 options = ["format"]
-includes = [ "*.toml" ]
+includes = ["*.toml"]
