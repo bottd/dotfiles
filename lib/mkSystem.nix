@@ -46,21 +46,25 @@ in
   systemBuilder {
     inherit system;
     specialArgs = commonSpecialArgs;
-    modules = [
-      path
-      homeManagerModule
-      {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          extraSpecialArgs = commonSpecialArgs // {
-            neorgWorkspace = "chalet";
-            root = ../.;
+    modules =
+      [
+        path
+        homeManagerModule
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs =
+              commonSpecialArgs
+              // {
+                neorgWorkspace = "chalet";
+                root = ../.;
+              };
+            users.${username} = {
+              imports = [../home.nix];
+            };
           };
-          users.${username} = {
-            imports = [ ../home.nix ];
-          };
-        };
-      }
-    ] ++ extraModules;
+        }
+      ]
+      ++ extraModules;
   }
