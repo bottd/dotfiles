@@ -4,6 +4,7 @@
     lua51Packages.luarocks
 
     lua-language-server
+    lux-cli
     stylua
   ];
 }
