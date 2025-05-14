@@ -20,12 +20,9 @@ The repository is organized in a clean, modular structure:
 │   ├── darwin-base/         # Base settings for Darwin systems
 │   ├── dev-tools/           # Development tools configuration
 │   ├── display-server/      # Display server configuration
-│   ├── features/            # Optional system features
-│   ├── hyprland/            # Hyprland compositor configuration
 │   ├── nixOS/               # NixOS-specific modules
 │   │   └── hyprland/        # Hyprland configuration for NixOS
 │   ├── users/               # User management
-│   ├── utils/               # Utility functions for system configs
 │   └── wayland/             # Wayland-specific configuration
 │
 ├── home/                    # Home-manager configurations
