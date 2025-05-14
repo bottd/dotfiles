@@ -38,7 +38,7 @@
     treefmt-nix,
     ...
   }: let
-    lib = import ./lib { inherit inputs; };
+    lib = import ./lib {inherit inputs;};
     paths = {
       root = ./.;
       system = ./system;
@@ -62,7 +62,6 @@
         inherit paths;
       };
 
-      # Per-system configuration (formatter, devShells)
       perSystem = {
         config,
         self',
@@ -99,58 +98,70 @@
         };
       };
 
-      # System configurations (NixOS, Darwin)
       flake = {
-        # NixOS configurations
         nixosConfigurations = {
-          # Desktop configuration
           desktop = lib.mkSystem {
             hostName = "desktop";
-            extraModules = [{
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  neorgWorkspace = "chalet";
-                  root = ./.;
+            extraModules = [
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    neorgWorkspace = "chalet";
+                    root = ./.;
+                  };
                 };
-              };
-            }];
+              }
+            ];
           };
 
-          # Pocket configuration
           pocket = lib.mkSystem {
             hostName = "pocket";
-            extraModules = [{
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  neorgWorkspace = "chalet";
-                  root = ./.;
+            extraModules = [
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    neorgWorkspace = "chalet";
+                    root = ./.;
+                  };
                 };
-              };
-            }];
+              }
+            ];
           };
         };
 
-        # Darwin configurations
         darwinConfigurations = {
-          # Macbook configuration
           macbook = lib.mkSystem {
             hostName = "macbook";
-            extraModules = [{
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  neorgWorkspace = "chalet";
-                  root = ./.;
+            extraModules = [
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    neorgWorkspace = "chalet";
+                    root = ./.;
+                  };
                 };
-              };
-            }];
+              }
+            ];
+          };
+        };
+
+        homeConfigurations = {
+          iris = lib.mkHome {
+            hostName = "iris";
+            extraModules = [
+              ./lib/createSymlink.nix
+              ./home/common
+              ./home/darwin
+            ];
           };
         };
       };
     };
 }
+

@@ -43,7 +43,7 @@ in
         path
         (
           if host.format == "nixos"
-          then inputs.home-manager.nixosModules.home-manager
+          then [inputs.home-manager.nixosModules.home-manager
           else inputs.home-manager.darwinModules.home-manager
         )
       ]

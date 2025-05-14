@@ -7,19 +7,25 @@
     ./hardware-configuration.nix
   ];
 
-  # Bootloader configuration
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-    # Explicitly set the device to install bootloader to
-    grub = {
-      devices = ["nodev"];
-      efiSupport = true;
-      enable = false;
-    };
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
   };
 
-  # Any host-specific settings can go here
+  environment.systemPackages = with pkgs; [
+    grim
+    slurp
+    wl-clipboard
+    mako
+    pavucontrol
+    helvum
+    ghostty
+  ];
 
   # Use this fixed version - do not change without reading docs
   system.stateVersion = "24.11";
