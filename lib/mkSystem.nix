@@ -19,32 +19,53 @@
     else if host.format == "darwin"
     then inputs.nix-darwin.lib.darwinSystem
     else throw "Unsupported system format: ${host.format}";
+
+  homeManagerModule =
+    if host.format == "nixos"
+    then inputs.home-manager.nixosModules.home-manager
+    else inputs.home-manager.darwinModules.home-manager;
+
+  commonSpecialArgs = {
+    inherit inputs host username system;
+    inherit (inputs) nixpkgs;
+    paths = {
+      root = ../.;
+      hosts = ../hosts;
+      system = ../system;
+      home = ../home;
+      homeCommon = ../home/common;
+      homeDarwin = ../home/darwin;
+      homeLinux = ../home/linux;
+      homeHosts = ../home/hosts;
+      lib = ../lib;
+    };
+  };
+
+  # Home-manager configuration
+  homeConfig = {
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      extraSpecialArgs =
+        commonSpecialArgs
+        // {
+          neorgWorkspace = "chalet";
+          root = ../.;
+        };
+      users.${username} = {
+        imports = [../home.nix ../lib ../home/linux ../home/linux/hyrpland/host/desktop.nix ../home/common];
+      };
+    };
+  };
 in
   systemBuilder {
     inherit system;
-    specialArgs = {
-      inherit inputs host username system;
-      inherit (inputs) nixpkgs;
-      paths = {
-        root = ../.;
-        hosts = ../hosts;
-        system = ../system;
-        home = ../home;
-        homeCommon = ../home/common;
-        homeDarwin = ../home/darwin;
-        homeLinux = ../home/linux;
-        homeHosts = ../home/hosts;
-        lib = ../lib;
-      };
-    };
+    specialArgs = commonSpecialArgs;
     modules =
       [
         path
-        (
-          if host.format == "nixos"
-          then inputs.home-manager.nixosModules.home-manager
-          else inputs.home-manager.darwinModules.home-manager
-        )
+        homeManagerModule
+        homeConfig
       ]
       ++ extraModules;
   }

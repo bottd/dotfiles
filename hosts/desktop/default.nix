@@ -13,5 +13,7 @@
     (paths.system + "/base")
     (paths.system + "/common/linux")
     (paths.system + "/users")
+    (paths.home + "/common")
+    (paths.home + "/linux")
   ];
 }
