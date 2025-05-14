@@ -13,29 +13,29 @@ in {
   # Use a module only if a feature is enabled
   imports = [
     # Basic modules that are always loaded
-    (paths.systemModules + "/base")
+    (paths.system + "/base")
 
     # Conditional module loading based on features
     (conditional.withFeature config.features.desktop.hyprland
-      (paths.systemModules + "/hyprland"))
+      (paths.system + "/hyprland"))
 
     (conditional.withFeature config.features.hardware.nvidia
-      (paths.systemModules + "/nvidia"))
+      (paths.system + "/nvidia"))
 
     # Load modules only for specific systems
-    (conditional.onlyNixOS (paths.systemModules + "/wayland") config.nixpkgs.system)
+    (conditional.onlyNixOS (paths.system + "/wayland") config.nixpkgs.system)
 
     # Load modules only for specific hosts
     (conditional.onlyForHost "desktop"
-      (paths.systemModules + "/oom-protection")
+      (paths.system + "/oom-protection")
       host)
 
     # Merge several conditional modules
     (conditional.merge [
       (conditional.withFeature config.features.security.yubikey
-        (paths.systemModules + "/yubikey"))
+        (paths.system + "/yubikey"))
       (conditional.withFeature config.features.security.ssh
-        (paths.systemModules + "/ssh"))
+        (paths.system + "/ssh"))
     ])
   ];
 }

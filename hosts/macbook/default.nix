@@ -10,9 +10,9 @@
   imports = [
     ./configuration.nix
 
-    (paths.systemModules + "/base")
-    (paths.systemModules + "/common/darwin")
-    (paths.systemModules + "/users")
+    (paths.system + "/base")
+    (paths.system + "/common/darwin")
+    (paths.system + "/users")
 
     inputs.mac-app-util.darwinModules.default
     # {

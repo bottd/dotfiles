@@ -11,7 +11,7 @@
   path =
     if hostPath != null
     then hostPath
-    else ../system/hosts/${hostName};
+    else ../hosts/${hostName};
 
   systemBuilder =
     if host.format == "nixos"

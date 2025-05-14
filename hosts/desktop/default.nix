@@ -10,8 +10,8 @@
   imports = [
     ./configuration.nix
 
-    (paths.systemModules + "/base")
-    (paths.systemModules + "/common/linux")
-    (paths.systemModules + "/users")
+    (paths.system + "/base")
+    (paths.system + "/common/linux")
+    (paths.system + "/users")
   ];
 }

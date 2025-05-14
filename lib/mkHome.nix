@@ -11,7 +11,7 @@
   path =
     if hostPath != null
     then hostPath
-    else ../home/hosts/${hostName};
+    else ../hosts/${hostName};
 in
   inputs.home-manager.lib.homeManagerConfiguration {
     pkgs = import inputs.nixpkgs {
