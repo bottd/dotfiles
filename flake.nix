@@ -94,7 +94,6 @@
                   };
                 };
               }
-              ./system/gaming.nix
             ];
           };
 
