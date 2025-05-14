@@ -1,7 +1,3 @@
-# Configures treefmt for the dotfiles repo
-# One CLI to format the code tree - https://github.com/numtide/treefmt
-
-# Global excludes
 excludes = [
   "LICENSE",
   "flake.lock",
