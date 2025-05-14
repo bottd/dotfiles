@@ -41,7 +41,7 @@
         imports =
           [
             ../home.nix
-            ../lib
+            ../lib/createSymlink.nix
             ../home/common
           ]
           ++ (
