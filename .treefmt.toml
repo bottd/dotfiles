@@ -1,0 +1,42 @@
+# Configures treefmt for the dotfiles repo
+# One CLI to format the code tree - https://github.com/numtide/treefmt
+
+# Global excludes
+excludes = [
+    "LICENSE",
+    "flake.lock",
+    "*.png",
+    "*.jpg",
+    "*.md",
+    "*.lock",
+    "*.zip",
+    "*.css",
+    "*.json"
+]
+
+[formatter.nix]
+command = "nixpkgs-fmt"
+includes = [ "*.nix" ]
+
+[formatter.lua]
+command = "stylua"
+includes = [ "*.lua" ]
+
+[formatter.shell]
+command = "shfmt"
+options = ["-i", "2", "-ci"]
+includes = [ "*.sh" ]
+
+[formatter.bash]
+command = "beautysh"
+includes = [ "*.nu", "*.zsh" ]
+
+[formatter.deadnix]
+command = "deadnix"
+options = ["--edit"]
+includes = [ "*.nix" ]
+
+[formatter.toml]
+command = "taplo"
+options = ["format"]
+includes = [ "*.toml" ]

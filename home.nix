@@ -8,6 +8,8 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
 in {
+  imports = [];
+
   home.username = username;
 
   #WARNING: Don't change this without reading docs
@@ -23,12 +25,10 @@ in {
     else unsupported;
 
   fonts.fontconfig.enable = isLinux;
-  # fonts.fontconfig.enable = true; # Enable fonts
 
   xdg.enable = true;
   nix = {
     # Configure the Nix package manager itself
-    # TODO: Remove use of lib.mkForce
     package = lib.mkForce pkgs.nix;
     settings.experimental-features = ["nix-command" "flakes"];
   };
