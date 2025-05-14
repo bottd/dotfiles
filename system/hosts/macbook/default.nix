@@ -3,22 +3,27 @@
   host,
   username,
   paths,
+  lib,
+  config,
   ...
 }: {
   imports = [
+    # Local configuration using relative paths
     ./configuration.nix
-    paths.systemModules
+
+    # Base system configuration
+    (paths.systemModules + "/base")
+    (paths.systemModules + "/common/darwin")
+    (paths.systemModules + "/users")
+
+    # macOS-specific utilities
     inputs.mac-app-util.darwinModules.default
+
+    # Set home directory for macOS
     {
       users.users.${username}.home = "/Users/${username}";
-      home-manager.users.${username} = {
-        imports = [
-          inputs.mac-app-util.homeManagerModules.default
-          (paths.root + "/home.nix")
-          (paths.homeDarwin)
-          (paths.homeCommon)
-        ];
-      };
     }
+
+    # Home manager configuration is handled in flake.nix
   ];
 }

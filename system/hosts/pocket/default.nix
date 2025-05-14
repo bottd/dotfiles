@@ -3,41 +3,19 @@
   host,
   username,
   paths,
+  lib,
+  config,
   ...
 }: {
   imports = [
-    # Local configuration using relative paths
+    # Local hardware and host-specific configuration
     ./configuration.nix
 
-    # Try using builtins.path for system modules
-    (builtins.path {
-      path = ../../modules;
-      name = "system-modules";
-    })
+    # Base system configuration
+    (paths.systemModules + "/base")
+    (paths.systemModules + "/common/linux")
+    (paths.systemModules + "/users")
 
-    # Home manager configuration
-    {
-      home-manager.users.${username} = {
-        imports = [
-          # Use builtins.path for home modules too
-          (builtins.path {
-            path = ../../../home.nix;
-            name = "home-nix";
-          })
-          (builtins.path {
-            path = ../../../home/linux;
-            name = "home-linux";
-          })
-          (builtins.path {
-            path = ../../../home/linux/hyprland/host/pocket.nix;
-            name = "hyprland-pocket";
-          })
-          (builtins.path {
-            path = ../../../home/common;
-            name = "home-common";
-          })
-        ];
-      };
-    }
+    # Home manager configuration is handled in flake.nix
   ];
 }

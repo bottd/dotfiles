@@ -1,0 +1,125 @@
+@startuml
+!theme plain
+skinparam linetype ortho
+
+package "Module System" {
+  class "Module" {
+    +defaults: AttrSet
+    +overrides: AttrSet
+    +enable: bool
+  }
+  
+  note right of Module
+    Each configuration section is a module
+    with defaults, overrides, and an enable flag
+  end note
+  
+  class "ModuleSystem" {
+    +mkModule(defaults, overrides, enable): Module
+    +overrideModule(module, newOverrides): Module
+    +setDefaults(module, newDefaults): Module
+    +setEnabled(module, isEnabled): Module
+    +mergeModules(modules): Module
+    +getModuleConfig(module): AttrSet
+  }
+  
+  note right of ModuleSystem
+    Utility functions for manipulating
+    modules and their configurations
+  end note
+}
+
+package "Configuration System" {
+  class "SystemConfig" {
+    +user: Module
+    +system: Module
+    +hardware: Module
+    +desktop: Module
+    +development: Module
+    +security: Module
+    +networking: Module
+    +storage: Module
+    +applications: Module
+  }
+  
+  note right of SystemConfig
+    Central configuration organized
+    by functional areas
+  end note
+  
+  class "UserConfig" {
+    +name: string
+    +fullName: string
+    +email: string
+    +shell: package
+    +extraGroups: [string]
+  }
+  
+  class "HardwareConfig" {
+    +cpuType: string
+    +gpuType: string
+    +bluetooth: bool
+    +printing: bool
+    +sound: bool
+    +opengl: bool
+    +virtualization: bool
+  }
+  
+  class "DesktopConfig" {
+    +enable: bool
+    +useWayland: bool
+    +useX11: bool
+    +useHyprland: bool
+    +useGnome: bool
+    +useKDE: bool
+    +theme: {
+      name: string
+      dark: bool
+      accent: string
+    }
+  }
+}
+
+package "Host Configuration" {
+  class "HostConfig" {
+    +imports: [path]
+    +sysConfig: {
+      user.overrides: {}
+      hardware.overrides: {}
+      desktop.overrides: {}
+      ...
+    }
+  }
+  
+  note right of HostConfig
+    Each host sets overrides for
+    different configuration sections
+  end note
+}
+
+package "Module Implementation" {
+  class "HardwareModule" {
+    -cfg: getModuleConfig(config.sysConfig.hardware)
+    +config: mkMerge([
+      cpuSpecificConfig,
+      gpuSpecificConfig,
+      bluetoothConfig,
+      printingConfig,
+      ...
+    ])
+  }
+  
+  note right of HardwareModule
+    Implementation modules use getModuleConfig
+    to get the final configuration values
+  end note
+}
+
+' Relationships
+ModuleSystem --> Module : creates/manipulates
+SystemConfig --> Module : contains modules
+HostConfig --> SystemConfig : sets overrides
+HardwareModule --> ModuleSystem : uses
+Module --> HardwareConfig : contains as defaults/overrides
+
+@enduml

@@ -23,12 +23,10 @@ in {
     else unsupported;
 
   fonts.fontconfig.enable = isLinux;
-  # fonts.fontconfig.enable = true; # Enable fonts
 
   xdg.enable = true;
   nix = {
     # Configure the Nix package manager itself
-    # TODO: Remove use of lib.mkForce
     package = lib.mkForce pkgs.nix;
     settings.experimental-features = ["nix-command" "flakes"];
   };

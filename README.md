@@ -8,26 +8,44 @@ A comprehensive, cross-platform system configuration using Nix Flakes. This repo
 
 ## Structure
 
-Current structure (being migrated to new organization):
+The repository is organized in a clean, modular structure:
+
 ```
 .
-├── darwin/             # macOS system configurations
-├── flake.nix           # Main flake definition using flake-parts
-├── home.nix            # Base home-manager configuration
-├── home/               # Home-manager modules
-│   ├── common/         # Cross-platform configurations
-│   ├── darwin/         # macOS-specific home configurations
-│   └── linux/          # Linux-specific home configurations
-├── hosts.nix           # Host registry with machine configurations
-├── lib/                # Helper functions for building systems
-├── nixOS/              # NixOS system configurations
-├── system/             # New location for system configurations
-│   ├── modules/        # Shared system modules
-│   └── hosts/          # Host-specific configurations
-└── util/               # Helper utilities
+├── system/                  # System configurations (NixOS, Darwin)
+│   ├── modules/             # Shared system modules
+│   │   ├── base/            # Base system settings
+│   │   ├── common/          # Common modules for all platforms
+│   │   │   ├── linux/       # Linux-specific common settings
+│   │   │   └── darwin/      # Darwin-specific common settings
+│   │   └── users/           # User management
+│   └── hosts/               # Host-specific configurations
+│       ├── desktop/         # Desktop PC configuration (NixOS)
+│       ├── pocket/          # Portable PC configuration (NixOS)
+│       └── macbook/         # MacBook configuration (Darwin)
+│
+├── home/                    # Home-manager configurations
+│   ├── common/              # Common home-manager modules
+│   │   ├── language/        # Programming language support
+│   │   ├── neovim/          # Neovim configuration
+│   │   ├── nushell/         # Nushell configuration
+│   │   └── starship/        # Starship prompt configuration
+│   ├── linux/               # Linux-specific home settings
+│   │   └── hyprland/        # Hyprland desktop environment
+│   ├── darwin/              # Darwin-specific home settings
+│   │   ├── aerospace/       # Window manager for macOS
+│   │   └── karabiner/       # Keyboard customization for macOS
+│   └── hosts/               # Host-specific home-manager configurations
+│       └── iris/            # Standalone home-manager configuration
+│
+├── flake.nix               # Main flake configuration with helper functions
+├── home.nix                # Common home-manager configuration
+├── hosts.nix               # Host definitions and metadata
+├── lib/                    # Helper functions (deprecated, see flake.nix)
+└── util/                   # Helper utilities
 ```
 
-See REFACTOR.md for more details on the in-progress improvements.
+See REFACTOR.md for more details on the completed migration.
 
 ## Platforms Supported
 
@@ -67,6 +85,35 @@ home-manager switch --flake .#iris
 - **Desktop**: Hyprland compositor on Linux, Aerospace window manager on macOS
 - **Development**: Neovim with LSP, VSCode, language-specific tooling
 - **Dotfiles**: Managed by Home Manager for consistent experience across machines
+
+## Helper Functions
+
+The flake.nix includes several helper functions to make system configuration more maintainable:
+
+- **mkNixosSystem**: Creates standardized NixOS configurations
+  ```nix
+  desktop = mkNixosSystem {
+    host = "desktop";
+    username = "drakeb";
+  };
+  ```
+
+- **mkDarwinSystem**: Creates standardized Darwin configurations
+  ```nix
+  macbook = mkDarwinSystem {
+    host = "macbook";
+    username = "drakebott";
+  };
+  ```
+
+- **mkHomeConfig**: Creates standardized home-manager configurations
+  ```nix
+  (mkHomeConfig {
+    username = "drakeb";
+    host = "desktop";
+    isLinux = true;
+  })
+  ```
 
 ## Key Components
 
