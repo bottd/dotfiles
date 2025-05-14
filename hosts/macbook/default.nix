@@ -13,8 +13,8 @@
     ../../users
 
     inputs.mac-app-util.darwinModules.default
-    # {
-    #   users.users.${username}.home = "/Users/${username}";
-    # }
+    {
+      users.users.${username}.home = "/Users/${username}";
+    }
   ];
 }

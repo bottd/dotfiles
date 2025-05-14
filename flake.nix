@@ -83,6 +83,9 @@
         nixosConfigurations = {
           desktop = lib.mkSystem {
             hostName = "desktop";
+            system = "x86_64-linux";
+            username = "drakeb";
+            format = "nixos";
             extraModules = [
               {
                 home-manager = {
@@ -99,6 +102,9 @@
 
           pocket = lib.mkSystem {
             hostName = "pocket";
+            system = "x86_64-linux";
+            username = "drakeb";
+            format = "nixos";
             extraModules = [
               {
                 home-manager = {
@@ -117,6 +123,9 @@
         darwinConfigurations = {
           macbook = lib.mkSystem {
             hostName = "macbook";
+            system = "aarch64-darwin";
+            username = "drakebott";
+            format = "darwin";
             extraModules = [
               {
                 home-manager = {
@@ -135,6 +144,9 @@
         homeConfigurations = {
           iris = lib.mkHome {
             hostName = "iris";
+            system = "aarch64-darwin";
+            username = "drakebott";
+            format = "home-manager";
           };
         };
       };

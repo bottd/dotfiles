@@ -13,16 +13,20 @@ The repository is organized in a clean, modular structure:
 ```
 .
 ├── system/                  # System configurations (NixOS, Darwin)
-│   ├── modules/             # Shared system modules
-│   │   ├── base/            # Base system settings
-│   │   ├── common/          # Common modules for all platforms
-│   │   │   ├── linux/       # Linux-specific common settings
-│   │   │   └── darwin/      # Darwin-specific common settings
-│   │   └── users/           # User management
-│   └── hosts/               # Host-specific configurations
-│       ├── desktop/         # Desktop PC configuration (NixOS)
-│       ├── pocket/          # Portable PC configuration (NixOS)
-│       └── macbook/         # MacBook configuration (Darwin)
+│   ├── base/                # Base system settings
+│   ├── common/              # Common modules for all platforms
+│   │   ├── linux/           # Linux-specific common settings
+│   │   └── darwin/          # Darwin-specific common settings
+│   ├── darwin-base/         # Base settings for Darwin systems
+│   ├── dev-tools/           # Development tools configuration
+│   ├── display-server/      # Display server configuration
+│   ├── features/            # Optional system features
+│   ├── hyprland/            # Hyprland compositor configuration
+│   ├── nixOS/               # NixOS-specific modules
+│   │   └── hyprland/        # Hyprland configuration for NixOS
+│   ├── users/               # User management
+│   ├── utils/               # Utility functions for system configs
+│   └── wayland/             # Wayland-specific configuration
 │
 ├── home/                    # Home-manager configurations
 │   ├── common/              # Common home-manager modules
@@ -35,17 +39,22 @@ The repository is organized in a clean, modular structure:
 │   ├── darwin/              # Darwin-specific home settings
 │   │   ├── aerospace/       # Window manager for macOS
 │   │   └── karabiner/       # Keyboard customization for macOS
-│   └── hosts/               # Host-specific home-manager configurations
-│       └── iris/            # Standalone home-manager configuration
+│   └── opt/                 # Optional configurations
 │
-├── flake.nix               # Main flake configuration with helper functions
-├── home.nix                # Common home-manager configuration
-├── hosts.nix               # Host definitions and metadata
-├── lib/                    # Helper functions (deprecated, see flake.nix)
-└── util/                   # Helper utilities
+├── hosts/                   # Host-specific configurations
+│   ├── desktop/             # Desktop PC configuration (NixOS)
+│   ├── pocket/              # Portable PC configuration (NixOS)
+│   ├── macbook/             # MacBook configuration (Darwin)
+│   └── iris/                # Standalone home-manager configuration
+│
+├── lib/                     # Helper functions and modules
+│   ├── createSymlink.nix    # Utility for creating symlinks to dotfiles
+│   ├── mkHome.nix           # Function to create home-manager configurations
+│   └── mkSystem.nix         # Function to create system configurations
+│
+├── flake.nix                # Main flake configuration with host definitions
+└── home.nix                 # Common home-manager configuration
 ```
-
-See REFACTOR.md for more details on the completed migration.
 
 ## Platforms Supported
 
@@ -59,23 +68,23 @@ See REFACTOR.md for more details on the completed migration.
 #### NixOS (Linux)
 ```bash
 # Build and switch to the desktop configuration
-sudo nixos-rebuild switch --flake .#desktop
+sudo nixos-rebuild switch --flake .#nixosConfigurations.desktop
 
 # OR for the pocket device
-sudo nixos-rebuild switch --flake .#pocket
+sudo nixos-rebuild switch --flake .#nixosConfigurations.pocket
 ```
 
 #### macOS (via nix-darwin)
 ```bash
 # Build and switch to the macbook configuration
-darwin-rebuild switch --flake .#macbook
+darwin-rebuild switch --flake .#darwinConfigurations.macbook
 ```
 
 ### Home Manager Configuration (Standalone)
 
 ```bash
 # For the iris configuration
-home-manager switch --flake .#iris
+home-manager switch --flake .#homeConfigurations.iris
 ```
 
 ## Features
@@ -88,31 +97,43 @@ home-manager switch --flake .#iris
 
 ## Helper Functions
 
-The flake.nix includes several helper functions to make system configuration more maintainable:
+The lib directory includes several helper functions to make system configuration more maintainable:
 
-- **mkNixosSystem**: Creates standardized NixOS configurations
+- **mkSystem**: Creates standardized system configurations (NixOS or Darwin)
   ```nix
-  desktop = mkNixosSystem {
-    host = "desktop";
+  desktop = lib.mkSystem {
+    hostName = "desktop";
+    system = "x86_64-linux";
     username = "drakeb";
+    format = "nixos";
+    extraModules = [
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        };
+      }
+    ];
   };
   ```
 
-- **mkDarwinSystem**: Creates standardized Darwin configurations
+- **mkHome**: Creates standardized standalone home-manager configurations
   ```nix
-  macbook = mkDarwinSystem {
-    host = "macbook";
+  iris = lib.mkHome {
+    hostName = "iris";
+    system = "aarch64-darwin";
     username = "drakebott";
+    format = "home-manager";
   };
   ```
 
-- **mkHomeConfig**: Creates standardized home-manager configurations
+- **createSymlink**: Utility for creating symlinks to dotfiles
   ```nix
-  (mkHomeConfig {
-    username = "drakeb";
-    host = "desktop";
-    isLinux = true;
-  })
+  source = config.lib.meta.createSymlink "home/common/neovim/lua";
   ```
 
 ## Key Components

@@ -1,33 +1,31 @@
 {inputs, ...}: {
   hostName,
+  system,
+  username,
+  format,
   hostPath ? null,
   extraModules ? [],
 }: let
-  hosts = import ../hosts.nix;
-  host = hosts.hosts.${hostName};
-  system = host.system;
-  username = host.username;
-
   path =
     if hostPath != null
     then hostPath
     else ../hosts/${hostName};
 
   systemBuilder =
-    if host.format == "nixos"
+    if format == "nixos"
     then inputs.nixpkgs.lib.nixosSystem
-    else if host.format == "darwin"
+    else if format == "darwin"
     then inputs.nix-darwin.lib.darwinSystem
-    else throw "Unsupported system format: ${host.format}";
+    else throw "Unsupported system format: ${format}";
 
   homeManagerModule =
-    if host.format == "nixos"
+    if format == "nixos"
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
   # Simple special args to avoid recursion
   specialArgs = {
-    inherit inputs host username system;
+    inherit inputs username system;
     inherit (inputs) nixpkgs;
   };
 
@@ -45,7 +43,7 @@
             ../home/common
           ]
           ++ (
-            if host.format == "nixos"
+            if format == "nixos"
             then [../home/linux ../home/linux/hyprland/host/desktop.nix]
             else [../home/darwin]
           );
@@ -63,7 +61,7 @@ in
         homeConfig
       ]
       ++ (
-        if host.format == "nixos"
+        if format == "nixos"
         then [../system/nixOS]
         else [../system/darwin]
       )

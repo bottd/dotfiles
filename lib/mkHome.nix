@@ -1,13 +1,11 @@
 {inputs, ...}: {
   hostName,
+  system,
+  username,
+  format,
   hostPath ? null,
   extraModules ? [],
 }: let
-  hosts = import ../hosts.nix;
-  host = hosts.hosts.${hostName};
-  system = host.system;
-  username = host.username;
-
   path =
     if hostPath != null
     then hostPath
@@ -20,7 +18,7 @@ in
     };
 
     extraSpecialArgs = {
-      inherit inputs host username system;
+      inherit inputs username system;
       inherit (inputs) nixpkgs;
       neorgWorkspace = "chalet";
       root = ../.;
@@ -33,7 +31,7 @@ in
         path
       ]
       ++ (
-        if host.format == "nixos"
+        if format == "nixos"
         then [../home/linux ../home/linux/hyprland/host/desktop.nix]
         else [../home/darwin]
       )
