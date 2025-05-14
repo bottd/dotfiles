@@ -39,27 +39,9 @@
     ...
   }: let
     lib = import ./lib {inherit inputs;};
-    paths = {
-      root = ./.;
-      hosts = ./hosts;
-      system = ./system;
-
-      home = ./home;
-      homeCommon = ./home/common;
-      homeDarwin = ./home/darwin;
-      homeLinux = ./home/linux;
-      homeHosts = ./home/hosts;
-
-      lib = ./lib;
-    };
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-darwin"];
-
-      # Pass helper functions to modules
-      _module.args = {
-        inherit paths;
-      };
 
       perSystem = {
         config,

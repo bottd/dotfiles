@@ -22,17 +22,6 @@ in
     extraSpecialArgs = {
       inherit inputs host username system;
       inherit (inputs) nixpkgs;
-      paths = {
-        root = ../.;
-        hosts = ../hosts;
-        system = ../system;
-        home = ../home;
-        homeCommon = ../home/common;
-        homeDarwin = ../home/darwin;
-        homeLinux = ../home/linux;
-        homeHosts = ../home/hosts;
-        lib = ../lib;
-      };
       neorgWorkspace = "chalet";
       root = ../.;
     };

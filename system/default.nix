@@ -1,4 +1,4 @@
-{paths, ...}: {
+{...}: {
   imports = [
     # Common modules
     ./common
@@ -6,16 +6,10 @@
     ./users
 
     # Specialized modules
-    ./auto-hostname
-    ./bootloader
     ./darwin-base
     ./dev-tools
     ./display-server
     ./features
-    ./fonts
-    ./intel
-    ./nvidia
-    ./oom-protection
     ./wayland
     ./hyprland
 
@@ -31,13 +25,5 @@
     ./config/development.nix
     ./config/user.nix
     ./config/security.nix
-
-    # Testing modules
-    ./testing/validation.nix
-    ./testing/unit-tests.nix
-
-    # Profiles for different system types
-    ./profiles/desktop-linux.nix
-    ./profiles/darwin.nix
   ];
 }

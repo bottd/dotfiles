@@ -25,46 +25,30 @@
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
-  pathsArgs = {
-    root = ../.;
-    hosts = ../hosts;
-    system = ../system;
-    home = ../home;
-    homeCommon = ../home/common;
-    homeDarwin = ../home/darwin;
-    homeLinux = ../home/linux;
-    homeHosts = ../home/hosts;
-    lib = ../lib;
-  };
-
-  commonSpecialArgs = {
+  # Simple special args to avoid recursion
+  specialArgs = {
     inherit inputs host username system;
     inherit (inputs) nixpkgs;
-    paths = pathsArgs;
+  };
+
+  # Home-manager configuration module
+  homeConfig = {
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      extraSpecialArgs = specialArgs;
+      users.${username} = {
+        imports = [../home.nix];
+      };
+    };
   };
 in
   systemBuilder {
     inherit system;
-    specialArgs = commonSpecialArgs;
-    modules =
-      [
-        path
-        homeManagerModule
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs =
-              commonSpecialArgs
-              // {
-                neorgWorkspace = "chalet";
-                root = ../.;
-              };
-            users.${username} = {
-              imports = [../home.nix];
-            };
-          };
-        }
-      ]
-      ++ extraModules;
+    specialArgs = specialArgs;
+    modules = [
+      path
+      homeManagerModule
+      homeConfig
+    ] ++ extraModules;
   }

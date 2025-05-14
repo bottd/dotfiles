@@ -3,7 +3,6 @@
   pkgs,
   lib,
   username,
-  paths,
   inputs,
   host,
   ...
@@ -21,7 +20,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit username paths;
+      inherit username;
       inherit (config._module.args) inputs host;
     };
   };

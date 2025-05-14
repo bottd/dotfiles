@@ -2,9 +2,7 @@
   inputs,
   host,
   username,
-  paths,
   lib,
-  config,
   ...
 }: {
   imports = [
@@ -12,9 +10,9 @@
     ./configuration.nix
 
     # Base system configuration
-    (paths.system + "/base")
-    (paths.system + "/common/linux")
-    (paths.system + "/users")
+    ../../system/base
+    ../../system/common/linux
+    ../../system/users
 
     # Home manager configuration is handled in flake.nix
   ];

@@ -2,17 +2,15 @@
   inputs,
   host,
   username,
-  paths,
   lib,
   config,
   ...
 }: {
   imports = [
     ./configuration.nix
-
-    (paths.system + "/base")
-    (paths.system + "/common/darwin")
-    (paths.system + "/users")
+    ../../system/base
+    ../../common/darwin
+    ../../users
 
     inputs.mac-app-util.darwinModules.default
     # {
