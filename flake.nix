@@ -38,26 +38,22 @@
     treefmt-nix,
     ...
   }: let
-    # Define paths object
+    lib = import ./lib { inherit inputs; };
     paths = {
       root = ./.;
-      # System paths
       system = ./system;
       systemHosts = ./system/hosts;
       systemModules = ./system/modules;
-      # Home-manager paths
+
       home = ./home;
       homeCommon = ./home/common;
       homeDarwin = ./home/darwin;
       homeLinux = ./home/linux;
       homeHosts = ./home/hosts;
-      # Utility paths
-      util = ./util;
-      # Configuration for nixOS hosts
-      nixOS = ./nixOS;
+
+      lib = ./lib;
     };
 
-    # Standard home-manager config with consistent settings
     mkHomeConfig = {
       username,
       host,
@@ -220,7 +216,7 @@
                   users.drakeb = {
                     imports = [
                       ./home.nix
-                      ./util/createSymlink.nix
+                      ./lib/createSymlink.nix
                       ./home/linux
                       ./home/common
                     ];
@@ -254,7 +250,7 @@
                   users.drakeb = {
                     imports = [
                       ./home.nix
-                      ./util/createSymlink.nix
+                      ./lib/createSymlink.nix
                       ./home/linux
                       ./home/common
                     ];
@@ -291,7 +287,7 @@
                   users.drakebott = {
                     imports = [
                       ./home.nix
-                      ./util/createSymlink.nix
+                      ./lib/createSymlink.nix
                       ./home/darwin
                       ./home/common
                     ];

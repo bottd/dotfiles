@@ -1,16 +1,13 @@
-{inputs, ...}:
-# Helper function to build standalone home-manager configurations
-{
-  hostName, # Host identifier from hosts.nix
-  hostPath ? null, # Override path if default isn't used
-  extraModules ? [], # Additional modules specific to this host
+{inputs, ...}: {
+  hostName,
+  hostPath ? null,
+  extraModules ? [],
 }: let
   hosts = import ../hosts.nix;
   host = hosts.hosts.${hostName};
   system = host.system;
   username = host.username;
 
-  # Default path for host config, can be overridden
   path =
     if hostPath != null
     then hostPath
@@ -29,13 +26,8 @@ in
 
     modules =
       [
-        # Import basic home-manager configuration
         ../home.nix
-
-        # Host-specific configuration
         path
-
-        # Extra modules
       ]
       ++ extraModules;
   }
