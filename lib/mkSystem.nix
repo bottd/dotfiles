@@ -38,7 +38,17 @@
       useUserPackages = true;
       extraSpecialArgs = specialArgs;
       users.${username} = {
-        imports = [../home.nix];
+        imports =
+          [
+            ../home.nix
+            ../lib
+            ../home/common
+          ]
+          ++ (
+            if host.format == "nixos"
+            then [../home/linux ../home/linux/hyprland/host/desktop.nix]
+            else [../home/darwin]
+          );
       };
     };
   };
@@ -46,9 +56,11 @@ in
   systemBuilder {
     inherit system;
     specialArgs = specialArgs;
-    modules = [
-      path
-      homeManagerModule
-      homeConfig
-    ] ++ extraModules;
+    modules =
+      [
+        path
+        homeManagerModule
+        homeConfig
+      ]
+      ++ extraModules;
   }

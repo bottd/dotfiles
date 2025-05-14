@@ -29,7 +29,13 @@ in
     modules =
       [
         ../home.nix
+        ../home/common
         path
       ]
+      ++ (
+        if host.format == "nixos"
+        then [../home/linux ../home/linux/hyprland/host/desktop.nix]
+        else [../home/darwin]
+      )
       ++ extraModules;
   }

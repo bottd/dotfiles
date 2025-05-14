@@ -135,11 +135,6 @@
         homeConfigurations = {
           iris = lib.mkHome {
             hostName = "iris";
-            extraModules = [
-              ./lib/createSymlink.nix
-              ./home/common
-              ./home/darwin
-            ];
           };
         };
       };

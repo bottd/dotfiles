@@ -8,7 +8,7 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
 in {
-  imports = [ ];
+  imports = [];
 
   home.username = username;
 
