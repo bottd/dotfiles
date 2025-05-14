@@ -4,7 +4,7 @@
   ...
 }: {
   home.packages = with pkgs; [
-    code-cursor
+    # code-cursor
   ];
 
   programs.vscode = {
