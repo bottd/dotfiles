@@ -25,47 +25,42 @@
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
+  pathsArgs = {
+    root = ../.;
+    hosts = ../hosts;
+    system = ../system;
+    home = ../home;
+    homeCommon = ../home/common;
+    homeDarwin = ../home/darwin;
+    homeLinux = ../home/linux;
+    homeHosts = ../home/hosts;
+    lib = ../lib;
+  };
+
   commonSpecialArgs = {
     inherit inputs host username system;
     inherit (inputs) nixpkgs;
-    paths = {
-      root = ../.;
-      hosts = ../hosts;
-      system = ../system;
-      home = ../home;
-      homeCommon = ../home/common;
-      homeDarwin = ../home/darwin;
-      homeLinux = ../home/linux;
-      homeHosts = ../home/hosts;
-      lib = ../lib;
-    };
-  };
-
-  # Home-manager configuration
-  homeConfig = {
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      extraSpecialArgs =
-        commonSpecialArgs
-        // {
-          neorgWorkspace = "chalet";
-          root = ../.;
-        };
-      users.${username} = {
-        imports = [../home.nix ../lib ../home/linux ../home/linux/hyrpland/host/desktop.nix ../home/common];
-      };
-    };
+    paths = pathsArgs;
   };
 in
   systemBuilder {
     inherit system;
     specialArgs = commonSpecialArgs;
-    modules =
-      [
-        path
-        homeManagerModule
-        homeConfig
-      ]
-      ++ extraModules;
+    modules = [
+      path
+      homeManagerModule
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = commonSpecialArgs // {
+            neorgWorkspace = "chalet";
+            root = ../.;
+          };
+          users.${username} = {
+            imports = [ ../home.nix ];
+          };
+        };
+      }
+    ] ++ extraModules;
   }
