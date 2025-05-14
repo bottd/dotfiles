@@ -46,7 +46,7 @@
           ]
           ++ (
             if host.format == "nixos"
-            then [../home/linux ../home/linux/hyprland/host/desktop.nix]
+            then [../home/linux ../home/linux/hyprland/host/desktop.nix ../system/nixOS]
             else [../home/darwin]
           );
       };

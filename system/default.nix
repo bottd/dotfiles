@@ -11,6 +11,5 @@
     ./display-server
     ./features
     ./wayland
-    ./hyprland
   ];
 }

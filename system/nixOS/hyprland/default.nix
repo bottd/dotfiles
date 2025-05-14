@@ -20,7 +20,6 @@
   programs.uwsm.enable = true;
 
   environment.systemPackages = [
-    # Add any required packages for Hyprland
   ];
 
   xdg.portal = {
