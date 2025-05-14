@@ -53,95 +53,6 @@
 
       lib = ./lib;
     };
-
-    mkHomeConfig = {
-      username,
-      host,
-      isLinux ? false,
-      isDarwin ? false,
-      extraImports ? [],
-    }: {
-      home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        extraSpecialArgs = {
-          inherit inputs paths username;
-          root = paths.root;
-          neorgWorkspace = "chalet";
-        };
-        users.${username} = {
-          imports =
-            [
-              (paths.root + "/home.nix")
-              (paths.util + "/createSymlink.nix")
-              paths.homeCommon
-            ]
-            ++ (
-              if isLinux
-              then [
-                paths.homeLinux
-                (paths.homeLinux + "/hyprland/host/${host}.nix")
-              ]
-              else if isDarwin
-              then [
-                paths.homeDarwin
-              ]
-              else []
-            )
-            ++ extraImports;
-        };
-      };
-    };
-
-    # Create a NixOS configuration with standard settings
-    mkNixosSystem = {
-      host,
-      username,
-      system ? "x86_64-linux",
-      extraModules ? [],
-    }:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs paths username;
-          host = host;
-        };
-        modules =
-          [
-            (paths.systemHosts + "/${host}")
-            home-manager.nixosModules.home-manager
-            (mkHomeConfig {
-              inherit username host;
-              isLinux = true;
-            })
-          ]
-          ++ extraModules;
-      };
-
-    # Create a Darwin configuration with standard settings
-    mkDarwinSystem = {
-      host,
-      username,
-      system ? "aarch64-darwin",
-      extraModules ? [],
-    }:
-      nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs paths username;
-          host = host;
-        };
-        modules =
-          [
-            (paths.systemHosts + "/${host}")
-            home-manager.darwinModules.home-manager
-            (mkHomeConfig {
-              inherit username host;
-              isDarwin = true;
-            })
-          ]
-          ++ extraModules;
-      };
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-darwin"];
@@ -193,108 +104,51 @@
         # NixOS configurations
         nixosConfigurations = {
           # Desktop configuration
-          desktop = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs paths;
-              username = "drakeb";
-              host = "desktop";
-            };
-            modules = [
-              ./system/hosts/desktop
-              home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit inputs paths;
-                    username = "drakeb";
-                    root = ./.;
-                    neorgWorkspace = "chalet";
-                  };
-                  users.drakeb = {
-                    imports = [
-                      ./home.nix
-                      ./lib/createSymlink.nix
-                      ./home/linux
-                      ./home/common
-                    ];
-                  };
+          desktop = lib.mkSystem {
+            hostName = "desktop";
+            extraModules = [{
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  neorgWorkspace = "chalet";
+                  root = ./.;
                 };
-              }
-            ];
+              };
+            }];
           };
 
           # Pocket configuration
-          pocket = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs paths;
-              username = "drakeb";
-              host = "pocket";
-            };
-            modules = [
-              ./system/hosts/pocket
-              home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit inputs paths;
-                    username = "drakeb";
-                    root = ./.;
-                    neorgWorkspace = "chalet";
-                  };
-                  users.drakeb = {
-                    imports = [
-                      ./home.nix
-                      ./lib/createSymlink.nix
-                      ./home/linux
-                      ./home/common
-                    ];
-                  };
+          pocket = lib.mkSystem {
+            hostName = "pocket";
+            extraModules = [{
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  neorgWorkspace = "chalet";
+                  root = ./.;
                 };
-              }
-            ];
+              };
+            }];
           };
         };
 
         # Darwin configurations
         darwinConfigurations = {
           # Macbook configuration
-          macbook = nix-darwin.lib.darwinSystem {
-            system = "aarch64-darwin";
-            specialArgs = {
-              inherit inputs paths;
-              username = "drakebott";
-              host = "macbook";
-            };
-            modules = [
-              ./system/hosts/macbook
-              home-manager.darwinModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit inputs paths;
-                    username = "drakebott";
-                    root = ./.;
-                    neorgWorkspace = "chalet";
-                  };
-                  users.drakebott = {
-                    imports = [
-                      ./home.nix
-                      ./lib/createSymlink.nix
-                      ./home/darwin
-                      ./home/common
-                    ];
-                  };
+          macbook = lib.mkSystem {
+            hostName = "macbook";
+            extraModules = [{
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  neorgWorkspace = "chalet";
+                  root = ./.;
                 };
-              }
-            ];
+              };
+            }];
           };
         };
       };

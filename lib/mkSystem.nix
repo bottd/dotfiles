@@ -25,6 +25,18 @@ in
     specialArgs = {
       inherit inputs host username system;
       inherit (inputs) nixpkgs;
+      paths = {
+        root = ../.;
+        system = ../system;
+        systemHosts = ../system/hosts;
+        systemModules = ../system/modules;
+        home = ../home;
+        homeCommon = ../home/common;
+        homeDarwin = ../home/darwin;
+        homeLinux = ../home/linux;
+        homeHosts = ../home/hosts;
+        lib = ../lib;
+      };
     };
     modules =
       [
