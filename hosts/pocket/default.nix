@@ -12,9 +12,9 @@
     ./configuration.nix
 
     # Base system configuration
-    (paths.systemModules + "/base")
-    (paths.systemModules + "/common/linux")
-    (paths.systemModules + "/users")
+    (paths.system + "/base")
+    (paths.system + "/common/linux")
+    (paths.system + "/users")
 
     # Home manager configuration is handled in flake.nix
   ];

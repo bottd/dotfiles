@@ -24,9 +24,8 @@ in
       inherit (inputs) nixpkgs;
       paths = {
         root = ../.;
+        hosts = ../hosts;
         system = ../system;
-        systemHosts = ../system/hosts;
-        systemModules = ../system/modules;
         home = ../home;
         homeCommon = ../home/common;
         homeDarwin = ../home/darwin;
