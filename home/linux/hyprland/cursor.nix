@@ -1,8 +1,5 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     pkgs.hyprlandPlugins.hypr-dynamic-cursors

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     jdt-language-server
     vscode-extensions.vscjava.vscode-java-test

@@ -1,8 +1,5 @@
-{
-  lib,
-  nixpkgs,
-  pkgs,
-  ...
+{ pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     spotify

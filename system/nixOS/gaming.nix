@@ -1,8 +1,5 @@
-{
-  pkgs,
-  inputs,
-  system,
-  ...
+{ pkgs
+, ...
 }: {
   programs = {
     gamemode = {

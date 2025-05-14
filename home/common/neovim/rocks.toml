@@ -60,7 +60,7 @@ nvim-treesitter-context = "scm"
 nvim-jdtls = "0.2.0"
 "package-info.nvim" = "scm"
 
-[plugins."catppuccin" ]
+[plugins."catppuccin"]
 git = "catppuccin/nvim"
 rev = "v1.10.0"
 

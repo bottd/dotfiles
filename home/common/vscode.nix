@@ -1,7 +1,5 @@
-{
-  lib,
-  pkgs,
-  ...
+{ pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     # code-cursor

@@ -1,8 +1,5 @@
 # Darwin-specific common settings
-{
-  lib,
-  pkgs,
-  ...
+{ ...
 }: {
   # Darwin-specific settings
   system.defaults = {

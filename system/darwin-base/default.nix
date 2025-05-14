@@ -1,5 +1,5 @@
 # Basic settings specific to Darwin systems
-{inputs, ...}: {
+{ inputs, ... }: {
   # Track configuration revision
   system.configurationRevision = inputs.rev or inputs.dirtyRev or null;
 
