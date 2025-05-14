@@ -1,17 +1,14 @@
-{
-  config,
-  pkgs,
-  lib,
-  username,
-  inputs,
-  host,
-  ...
+{ config
+, username
+, inputs
+, host
+, ...
 }: {
   users.users.${username} = {
     isNormalUser = true;
     description = "Drake Bott";
-    extraGroups = ["networkmanager" "wheel"];
-    packages = [];
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = [ ];
   };
 
   services.getty.autologinUser = username;

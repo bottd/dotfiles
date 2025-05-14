@@ -1,14 +1,11 @@
 # Basic system settings that apply to all systems
-{
-  pkgs,
-  lib,
-  config,
-  ...
+{ config
+, ...
 }: {
   # Basic nix settings
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
       auto-optimise-store = true;
     };

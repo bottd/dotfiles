@@ -1,5 +1,5 @@
 # Common development tools for the system level
-{pkgs, ...}: {
+{ pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     # Version control
     git

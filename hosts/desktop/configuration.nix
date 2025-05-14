@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ ...
 }: {
   imports = [
     # Include the results of the hardware scan.
@@ -15,7 +11,7 @@
     efi.canTouchEfiVariables = true;
     # Explicitly set the device to install bootloader to
     grub = {
-      devices = ["nodev"];
+      devices = [ "nodev" ];
       efiSupport = true;
       enable = false;
     };

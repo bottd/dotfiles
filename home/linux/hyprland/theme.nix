@@ -1,8 +1,5 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ pkgs
+, ...
 }: {
   home.file = {
     ".config/hypr/mocha.conf" = {
@@ -38,7 +35,7 @@
     # pkgs.waybar
     # TODO: try removing and see if still works
     (pkgs.waybar.overrideAttrs (oldAttrs: {
-      mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
+      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
     }))
 
     # notifications
@@ -65,7 +62,7 @@
     xwayland.enable = true;
     systemd = {
       enable = true;
-      variables = ["--all"];
+      variables = [ "--all" ];
     };
     plugins = [
     ];

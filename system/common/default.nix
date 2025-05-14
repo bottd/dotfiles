@@ -1,15 +1,14 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, ...
+}:
+let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-in {
+in
+{
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
       auto-optimise-store = true;
     };
@@ -42,7 +41,7 @@ in {
     then [
       ./darwin
     ]
-    else [];
+    else [ ];
 
   environment.systemPackages = with pkgs; [
     git

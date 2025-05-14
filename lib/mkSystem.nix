@@ -1,11 +1,12 @@
-{inputs, ...}: {
-  hostName,
-  system,
-  username,
-  format,
-  hostPath ? null,
-  extraModules ? [],
-}: let
+{ inputs, ... }: { hostName
+                 , system
+                 , username
+                 , format
+                 , hostPath ? null
+                 , extraModules ? [ ]
+                 ,
+                 }:
+let
   path =
     if hostPath != null
     then hostPath
@@ -44,26 +45,26 @@
           ]
           ++ (
             if format == "nixos"
-            then [../home/linux ../home/linux/hyprland/host/desktop.nix]
-            else [../home/darwin]
+            then [ ../home/linux ../home/linux/hyprland/host/desktop.nix ]
+            else [ ../home/darwin ]
           );
       };
     };
   };
 in
-  systemBuilder {
-    inherit system;
-    specialArgs = specialArgs;
-    modules =
-      [
-        path
-        homeManagerModule
-        homeConfig
-      ]
-      ++ (
-        if format == "nixos"
-        then [../system/nixOS]
-        else [../system/darwin]
-      )
-      ++ extraModules;
-  }
+systemBuilder {
+  inherit system;
+  specialArgs = specialArgs;
+  modules =
+    [
+      path
+      homeManagerModule
+      homeConfig
+    ]
+    ++ (
+      if format == "nixos"
+      then [ ../system/nixOS ]
+      else [ ../system/darwin ]
+    )
+    ++ extraModules;
+}

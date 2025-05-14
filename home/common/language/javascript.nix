@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     nodejs
     # nodePackages_latest.graphql-language-service-cli

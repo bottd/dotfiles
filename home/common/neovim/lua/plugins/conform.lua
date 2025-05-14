@@ -6,7 +6,8 @@ require("conform").setup({
 		javascript = { "prettierd", "prettier" },
 		json = { "prettierd", "prettier" },
 		lua = { "stylua" },
-		nix = { "alejandra" },
+		-- TODO: treefmt in conform
+		-- nix = { "treefmt" },
 		rust = { "rustfmt" },
 		svelte = { "prettierd", "prettier" },
 		toml = { "taplo" },

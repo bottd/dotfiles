@@ -1,8 +1,5 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     hyprlandPlugins.borders-plus-plus

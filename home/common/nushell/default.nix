@@ -1,8 +1,6 @@
-{
-  config,
-  pkgs,
-  neorgWorkspace,
-  ...
+{ pkgs
+, neorgWorkspace
+, ...
 }: {
   programs.nushell = {
     enable = true;

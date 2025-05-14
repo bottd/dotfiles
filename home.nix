@@ -1,14 +1,15 @@
-{
-  lib,
-  pkgs,
-  username,
-  ...
-}: let
+{ lib
+, pkgs
+, username
+, ...
+}:
+let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   unsupported = builtins.abort "Unsupported platform";
-in {
-  imports = [];
+in
+{
+  imports = [ ];
 
   home.username = username;
 
@@ -30,6 +31,6 @@ in {
   nix = {
     # Configure the Nix package manager itself
     package = lib.mkForce pkgs.nix;
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings.experimental-features = [ "nix-command" "flakes" ];
   };
 }

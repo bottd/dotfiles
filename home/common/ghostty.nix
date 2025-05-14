@@ -1,9 +1,7 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  ...
+{ inputs
+, lib
+, pkgs
+, ...
 }: {
   home.file = {
     ".config/ghostty/config" = {
