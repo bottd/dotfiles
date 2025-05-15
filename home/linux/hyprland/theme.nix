@@ -55,6 +55,8 @@
 
     # launcher
     rofi-wayland
+
+    hyprshot
   ];
 
   wayland.windowManager.hyprland = {
