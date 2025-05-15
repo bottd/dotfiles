@@ -70,8 +70,8 @@ in
     };
 
     homeConfigurations = {
-      iris = mkHome {
-        hostName = "iris";
+      work = mkHome {
+        hostName = "work";
         system = "aarch64-darwin";
         username = "drakebott";
         format = "home-manager";
