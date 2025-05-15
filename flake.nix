@@ -29,120 +29,12 @@
     };
   };
 
-  outputs =
-    inputs @ { flake-parts
-    , home-manager
-    , treefmt-nix
-    , ...
-    }:
-    let
-      lib = import ./lib { inherit inputs; };
-    in
+  outputs = inputs @ { flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-darwin" ];
 
-      perSystem =
-        { self'
-        , pkgs
-        , ...
-        }: {
-          formatter =
-            treefmt-nix.lib.mkWrapper
-              pkgs
-              {
-                projectRootFile = "flake.nix";
-                programs = {
-                  nixpkgs-fmt.enable = true;
-                  stylua.enable = true;
-                  shfmt.enable = true;
-                  beautysh.enable = true;
-                  deadnix.enable = true;
-                  taplo.enable = true;
-                };
-              };
-
-          devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              git
-              self'.formatter
-            ];
-
-            shellHook = ''
-              echo "🚀 Welcome to Drake's dotfiles dev shell"
-            '';
-          };
-        };
-
-      flake = {
-        nixosConfigurations = {
-          desktop = lib.mkSystem {
-            hostName = "desktop";
-            system = "x86_64-linux";
-            username = "drakeb";
-            format = "nixos";
-            extraModules = [
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    neorgWorkspace = "chalet";
-                    root = ./.;
-                  };
-                };
-              }
-            ];
-          };
-
-          pocket = lib.mkSystem {
-            hostName = "pocket";
-            system = "x86_64-linux";
-            username = "drakeb";
-            format = "nixos";
-            extraModules = [
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    neorgWorkspace = "chalet";
-                    root = ./.;
-                  };
-                };
-              }
-            ];
-          };
-        };
-
-        darwinConfigurations = {
-          macbook = lib.mkSystem {
-            hostName = "macbook";
-            system = "aarch64-darwin";
-            username = "drakebott";
-            format = "darwin";
-            extraModules = [
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    neorgWorkspace = "chalet";
-                    root = ./.;
-                  };
-                };
-              }
-            ];
-          };
-        };
-
-        homeConfigurations = {
-          iris = lib.mkHome {
-            hostName = "iris";
-            system = "aarch64-darwin";
-            username = "drakebott";
-            format = "home-manager";
-          };
-        };
-      };
+      imports = [
+        ./outputs
+      ];
     };
 }
