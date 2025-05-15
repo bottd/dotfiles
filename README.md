@@ -41,4 +41,3 @@ And I have a work/external machine home-manager standalone setup for Mac:
 ```bash
 home-manager switch --flake .#work
 ```
-
