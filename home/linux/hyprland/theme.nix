@@ -48,6 +48,9 @@
     # wallpaper
     swww
 
+    # Control sound devices
+    pavucontrol
+
     # complex but custom, want to try out espeically with the lisp syntax
     # Look into: end an nc that is built for eww
     # https://github.com/lucalabs-de/end

@@ -20,7 +20,6 @@
     slurp
     wl-clipboard
     mako
-    pavucontrol
     helvum
     ghostty
   ];
