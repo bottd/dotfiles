@@ -3,7 +3,8 @@
                  , username
                  , format
                  , hostPath ? null
-                 , extraModules ? [ ]
+                 , extraSystemModules ? [ ]
+                 , extraHomeModules ? [ ]
                  ,
                  }:
 let
@@ -45,9 +46,10 @@ let
           ]
           ++ (
             if format == "nixos"
-            then [ ../home/linux ../home/linux/hyprland/host/desktop.nix ]
+            then [ ../home/linux ]
             else [ ../home/darwin ]
-          );
+          )
+          ++ extraHomeModules;
       };
     };
   };
@@ -66,5 +68,5 @@ systemBuilder {
       then [ ../system/nixOS ]
       else [ ../system/darwin ]
     )
-    ++ extraModules;
+    ++ extraSystemModules;
 }
