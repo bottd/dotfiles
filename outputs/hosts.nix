@@ -14,7 +14,7 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
-        extraModules = [
+        extraSystemModules = [
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -25,6 +25,9 @@ in
               };
             };
           }
+        ];
+        extraHomeModules = [
+          ../home/linux/hyprland/host/desktop.nix
         ];
       };
 
@@ -33,7 +36,7 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
-        extraModules = [
+        extraSystemModules = [
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -45,6 +48,10 @@ in
             };
           }
         ];
+        extraHomeModules = [
+          ../home/linux/hyprland/host/pocket.nix
+        ];
+
       };
     };
 
@@ -54,7 +61,7 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        extraModules = [
+        extraSystemModules = [
           {
             home-manager = {
               useGlobalPkgs = true;
