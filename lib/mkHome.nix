@@ -3,7 +3,7 @@
                  , username
                  , format
                  , hostPath ? null
-                 , extraModules ? [ ]
+                 , extraHomeModules ? [ ]
                  ,
                  }:
 let
@@ -36,5 +36,5 @@ inputs.home-manager.lib.homeManagerConfiguration {
       then [ ../home/linux ../home/linux/hyprland/host/desktop.nix ]
       else [ ../home/darwin ]
     )
-    ++ extraModules;
+    ++ extraHomeModules;
 }
