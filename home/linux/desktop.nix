@@ -8,6 +8,7 @@
       # Vencord produces an unopenable discord client on mac for me
       # withVencord = true;
     })
+    flashprint
     geary
     thunderbird
     nyxt

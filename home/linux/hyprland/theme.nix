@@ -60,6 +60,13 @@
     rofi-wayland
 
     hyprshot
+
+    kdePackages.ark
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kio-admin
+    kdePackages.spectacle
   ];
 
   wayland.windowManager.hyprland = {
