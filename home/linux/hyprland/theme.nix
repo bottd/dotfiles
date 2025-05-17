@@ -54,7 +54,7 @@
     # complex but custom, want to try out espeically with the lisp syntax
     # Look into: end an nc that is built for eww
     # https://github.com/lucalabs-de/end
-    # pkgs.eww
+    pkgs.eww
 
     # launcher
     rofi-wayland
@@ -67,6 +67,11 @@
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kio-admin
     kdePackages.spectacle
+
+    catppuccin-gtk
+    gnome.gnome-themes-extra
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland
   ];
 
   wayland.windowManager.hyprland = {
@@ -85,8 +90,15 @@
 
     # Added to end of .config file
     extraConfig = ''
+      source = ~/.config/hypr/current-theme.conf
+
       exec-once = waybar
       exec-once = nm-applet --indicator
+
+      exec-once = eww daemon
+      exec-once = eww open theme-daemon
+
+      exec-once = ~/.config/eww/scripts/auto-theme.nu
     '';
     settings = {
       decoration = {
