@@ -59,6 +59,8 @@ nvim-treesitter-context = "scm"
 "snacks.nvim" = "scm"
 nvim-jdtls = "0.2.0"
 "package-info.nvim" = "scm"
+tree-sitter-yuck = "0.0.29"
+tree-sitter-scss = "0.0.29"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
