@@ -69,7 +69,7 @@
     kdePackages.spectacle
 
     catppuccin-gtk
-    gnome.gnome-themes-extra
+    # gnome-themes-extra
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
   ];
@@ -94,11 +94,6 @@
 
       exec-once = waybar
       exec-once = nm-applet --indicator
-
-      exec-once = eww daemon
-      exec-once = eww open theme-daemon
-
-      exec-once = ~/.config/eww/scripts/auto-theme.nu
     '';
     settings = {
       decoration = {
