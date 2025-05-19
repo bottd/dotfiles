@@ -51,11 +51,6 @@
     # Control sound devices
     pavucontrol
 
-    # complex but custom, want to try out espeically with the lisp syntax
-    # Look into: end an nc that is built for eww
-    # https://github.com/lucalabs-de/end
-    pkgs.eww
-
     # launcher
     rofi-wayland
 
@@ -90,8 +85,6 @@
 
     # Added to end of .config file
     extraConfig = ''
-      source = ~/.config/hypr/current-theme.conf
-
       exec-once = waybar
       exec-once = nm-applet --indicator
     '';
