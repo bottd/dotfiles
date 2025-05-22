@@ -18,9 +18,9 @@ require("conform").setup({
 			command = "treefmt",
 			args = { "--stdin", "$FILENAME" },
 			stdin = true,
-			cwd = require("conform.util").root_file({ "treefmt.toml" }),
+			cwd = require("conform.util").root_file({ "flake.nix" }),
 			condition = function(self, ctx)
-				return vim.fs.find({ "treefmt.toml", "flake.nix" }, {
+				return vim.fs.find({ "flake.nix" }, {
 					path = ctx.filename,
 					upward = true,
 				})[1] ~= nil
