@@ -1,10 +1,6 @@
-{ inputs
+{ self
 , ...
 }: {
-  imports = [
-    inputs.treefmt-nix.flakeModule
-  ];
-
   perSystem = { pkgs, config, ... }: {
     treefmt = {
       projectRootFile = "flake.nix";
@@ -26,15 +22,16 @@
       };
     };
 
+    checks.formatting = config.treefmt.build.check self;
+
+    pre-commit.settings.hooks.treefmt.enable = true;
+
     devShells.default = pkgs.mkShell {
+      inherit (config.pre-commit.devShell) shellHook;
       buildInputs = with pkgs; [
         git
         config.treefmt.build.wrapper
-      ];
-
-      shellHook = ''
-        echo "🚀 Welcome to Drake's dotfiles dev shell"
-      '';
+      ] ++ config.pre-commit.settings.enabledPackages;
     };
   };
 }
