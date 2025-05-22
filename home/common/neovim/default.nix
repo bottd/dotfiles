@@ -75,7 +75,6 @@
     tree-sitter
     # grammar/spellcheck lsp
     harper
-    lazygit
 
     # Used for startup dashboard
     fortune
