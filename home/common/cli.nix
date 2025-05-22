@@ -11,15 +11,9 @@
     android-tools
     claude-code
     gcc
-    gh
-    git
-    # Utility for filtering git repo history, useful for cleaning accidentally committed secrets
-    git-filter-repo
     gnumake
 
     himalaya
-    jujutsu
-    lazyjj
 
     neofetch
     readline
