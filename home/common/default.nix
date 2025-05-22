@@ -5,6 +5,7 @@
     ./nushell
     ./starship
 
+    ./claude.nix
     ./cli.nix
     ./desktop.nix
     # ./eww/default.nix

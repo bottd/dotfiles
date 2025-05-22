@@ -1,14 +1,4 @@
-excludes = [
-  "LICENSE",
-  "flake.lock",
-  "*.png",
-  "*.jpg",
-  "*.md",
-  "*.lock",
-  "*.zip",
-  "*.css",
-  "*.json",
-]
+excludes = ["LICENSE", "flake.lock", "*.png", "*.jpg", "*.lock", "*.zip"]
 
 [formatter.nix]
 command = "nixpkgs-fmt"
@@ -36,3 +26,8 @@ includes = ["*.nix"]
 command = "taplo"
 options = ["format"]
 includes = ["*.toml"]
+
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = ["*.json", "*.js", "*.ts", "*.yaml", "*.yml"]
