@@ -19,6 +19,7 @@
 
     himalaya
     jujutsu
+    lazyjj
 
     neofetch
     readline
