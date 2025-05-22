@@ -1,6 +1,8 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
     cargo-binstall
-    rustup
+    (rustup.overrideAttrs (_oldAttrs: {
+      doCheck = false;
+    }))
   ];
 }
