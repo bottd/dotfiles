@@ -1,6 +1,10 @@
-{ ...
+{ inputs
+, ...
 }: {
   imports = [
+    inputs.treefmt-nix.flakeModule
+    inputs.pre-commit-hooks.flakeModule
+
     ./lib.nix
     ./formatter.nix
     ./hosts.nix

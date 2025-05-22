@@ -22,7 +22,7 @@ require("conform").setup({
 			condition = function(self, ctx)
 				return vim.fs.find({ "treefmt.toml", "flake.nix" }, {
 					path = ctx.filename,
-					upward = true
+					upward = true,
 				})[1] ~= nil
 			end,
 		},

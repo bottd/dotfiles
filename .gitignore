@@ -3,3 +3,4 @@ packages/common/nushell/local.env.nu
 
 .claude
 .direnv
+.pre-commit-config.yaml
