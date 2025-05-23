@@ -96,7 +96,7 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
 [plugins."codecompanion.nvim"]
 git = "olimorris/codecompanion.nvim"
-rev = "v15.6.0"
+rev = "v15.6.1"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
