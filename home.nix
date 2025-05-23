@@ -14,7 +14,7 @@ in
   home.username = username;
 
   #WARNING: Don't change this without reading docs
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.05";
   # Let home manager manage itself
   programs.home-manager.enable = true;
 

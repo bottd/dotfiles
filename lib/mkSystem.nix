@@ -29,6 +29,10 @@ let
   specialArgs = {
     inherit inputs username system;
     inherit (inputs) nixpkgs;
+    nixpkgs-unstable = import inputs.nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
   };
 
   # Home-manager configuration module
