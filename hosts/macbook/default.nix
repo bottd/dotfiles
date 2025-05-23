@@ -5,8 +5,7 @@
   imports = [
     ./configuration.nix
     ../../system/base
-    ../../common/darwin
-    ../../users
+    ../../system/users
 
     inputs.mac-app-util.darwinModules.default
     {

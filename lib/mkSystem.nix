@@ -66,7 +66,7 @@ systemBuilder {
     ++ (
       if format == "nixos"
       then [ ../system/nixOS ]
-      else [ ../system/darwin ]
+      else [ ]
     )
     ++ extraSystemModules;
 }
