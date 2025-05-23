@@ -21,6 +21,10 @@ inputs.home-manager.lib.homeManagerConfiguration {
   extraSpecialArgs = {
     inherit inputs username system;
     inherit (inputs) nixpkgs;
+    nixpkgs-unstable = import inputs.nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
     neorgWorkspace = "chalet";
     root = ../.;
   };
