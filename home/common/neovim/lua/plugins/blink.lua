@@ -1,25 +1,11 @@
-require("copilot").setup({
-	suggestion = { enabled = false },
-	panel = { enabled = false },
-})
-
 require("cmp-npm").setup()
 
 require("blink.cmp").setup({
 	keymap = { preset = "super-tab" },
 	snippets = { preset = "luasnip" },
 	sources = {
-		default = { "lsp", "path", "snippets", "buffer", "codecompanion", "copilot", "omni", "cmdline", "npm" },
+		default = { "lsp", "path", "snippets", "buffer", "omni", "cmdline", "npm" },
 		providers = {
-			codecompanion = {
-				name = "CodeCompanion",
-				module = "codecompanion.providers.completion.blink",
-				enabled = true,
-			},
-			copilot = {
-				name = "copilot",
-				module = "blink-copilot",
-			},
 			npm = {
 				name = "npm",
 				module = "blink.compat.source",
@@ -58,9 +44,7 @@ require("blink.cmp").setup({
 		},
 	},
 	appearance = {
-		kind_icons = {
-			Copilot = "",
-		},
+		kind_icons = {},
 	},
 	fuzzy = {
 		sorts = {
