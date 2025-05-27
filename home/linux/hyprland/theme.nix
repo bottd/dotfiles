@@ -61,7 +61,6 @@
     kdePackages.dolphin-plugins
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kio-admin
-    kdePackages.spectacle
 
     catppuccin-gtk
     # gnome-themes-extra
@@ -85,6 +84,17 @@
 
     # Added to end of .config file
     extraConfig = ''
+      # Source Catppuccin theme
+      source = ~/.config/hypr/mocha.conf
+      
+      general {
+        border_size = 8
+        gaps_in = 8
+        gaps_out = 16
+        col.active_border = $mauve
+        col.inactive_border = $crust
+      }
+      
       exec-once = waybar
       exec-once = nm-applet --indicator
     '';
@@ -102,8 +112,6 @@
       };
 
       general = {
-        gaps_in = 0;
-        gaps_out = 0;
         allow_tearing = true;
       };
 
@@ -119,6 +127,12 @@
         disable_hyprland_logo = true;
         force_default_wallpaper = false;
       };
+
+      windowrule = [
+        "immediate, class:^(gamescope)$"
+        "fullscreen, class:^(gamescope)$"
+        "noanim, class:^(gamescope)$"
+      ];
     };
   };
 }
