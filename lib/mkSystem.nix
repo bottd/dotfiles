@@ -44,6 +44,7 @@ let
       users.${username} = {
         imports =
           [
+            inputs.catppuccin.homeManagerModules.catppuccin
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
@@ -69,7 +70,7 @@ systemBuilder {
     ]
     ++ (
       if format == "nixos"
-      then [ ../system/nixOS ]
+      then [ inputs.catppuccin.nixosModules.catppuccin ../system/nixOS ]
       else [ ]
     )
     ++ extraSystemModules;

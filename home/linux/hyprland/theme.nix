@@ -32,7 +32,6 @@
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
     networkmanagerapplet
-    catppuccin-cursors
     # bar
     # TODO: try eww for custom bar
     # simple
@@ -66,8 +65,6 @@
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kio-admin
 
-    catppuccin-gtk
-    # gnome-themes-extra
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
   ];

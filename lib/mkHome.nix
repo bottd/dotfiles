@@ -31,6 +31,7 @@ inputs.home-manager.lib.homeManagerConfiguration {
 
   modules =
     [
+      inputs.catppuccin.homeManagerModules.catppuccin
       ../home.nix
       ../home/common
       path
