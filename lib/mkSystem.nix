@@ -44,7 +44,7 @@ let
       users.${username} = {
         imports =
           [
-            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.catppuccin.homeModules.catppuccin
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
