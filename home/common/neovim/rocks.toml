@@ -61,6 +61,7 @@ nvim-jdtls = "0.2.0"
 "package-info.nvim" = "scm"
 tree-sitter-yuck = "0.0.29"
 tree-sitter-scss = "0.0.29"
+"flash.nvim" = "2.1.0"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
@@ -69,10 +70,6 @@ rev = "v1.10.0"
 [plugins."spring-boot.nvim"]
 git = "JavaHello/spring-boot.nvim"
 rev = "fc474dfd4bbe78188fdd5b2984e7013e124c46fe"
-
-[plugins."copilot.lua"]
-git = "zbirenbaum/copilot.lua"
-rev = "089ec63c91e66368dbe1026bf2eb70fd7dc52884"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -86,17 +83,9 @@ rev = "v1.3.1"
 git = "Saghen/blink.compat"
 rev = "v2.5.0"
 
-[plugins."blink-copilot"]
-git = "fang2hou/blink-copilot"
-rev = "v1.4.0"
-
 [plugins."cmp-npm"]
 git = "David-Kunz/cmp-npm"
 rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
-
-[plugins."codecompanion.nvim"]
-git = "olimorris/codecompanion.nvim"
-rev = "v15.8.0"
 
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
@@ -119,14 +108,7 @@ git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
 
 [bundles.blink]
-items = [
-  "blink.cmp",
-  "blink.compat",
-  "blink-copilot",
-  "cmp-npm",
-  "copilot.lua",
-  "luasnip",
-]
+items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 
 [bundles.lsp]
 items = ["lsp_lines.nvim", "nvim-lspconfig", "nvim-jdtls", "spring-boot.nvim"]
