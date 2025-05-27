@@ -14,6 +14,10 @@
         sha256 = "sha256-xYhmqYTHF+nlJVIlNDY4Fyd6moEv6Z8YISTKmpX/p6k=";
       };
     };
+    ".config/wallpapers" = {
+      source = ../../../assets/wallpapers;
+      recursive = true;
+    };
   };
 
   home.sessionVariables = {
@@ -91,12 +95,14 @@
         border_size = 8
         gaps_in = 8
         gaps_out = 16
-        col.active_border = $mauve
-        col.inactive_border = $crust
+        col.active_border = rgba($mauveAlpha99)
+        col.inactive_border = $base
       }
       
       exec-once = waybar
       exec-once = nm-applet --indicator
+      exec-once = swww-daemon
+      exec-once = swww img ~/.config/wallpapers/lighthouse.png
     '';
     settings = {
       decoration = {
