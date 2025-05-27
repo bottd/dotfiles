@@ -5,5 +5,6 @@
     ./gaming.nix
     ./graphics.nix
     ./hyprland
+    ./printing.nix
   ];
 }
