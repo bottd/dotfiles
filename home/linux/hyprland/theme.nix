@@ -21,10 +21,6 @@
   };
 
   home.sessionVariables = {
-    # If cursor becomes invisible
-    # WLR_NO_HARDWARE_CURSORS = "1";
-
-    # hint Electron apps to use Wayland
     NIXOS_OZONE_WL = "1";
   };
 
@@ -32,29 +28,16 @@
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
     networkmanagerapplet
-    # bar
-    # TODO: try eww for custom bar
-    # simple
-    # pkgs.waybar
-    # TODO: try removing and see if still works
     (pkgs.waybar.overrideAttrs (oldAttrs: {
       mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
     }))
 
-    # notifications
     pkgs.dunst
     libnotify
-
-    # Manage password/auth request popups
     hyprpolkitagent
-
-    # wallpaper
     swww
-
-    # Control sound devices
     pavucontrol
-
-    # launcher
+    wlsunset
     rofi-wayland
 
     hyprshot
@@ -100,6 +83,7 @@
       exec-once = nm-applet --indicator
       exec-once = swww-daemon
       exec-once = swww img ~/.config/wallpapers/lighthouse.png
+      exec-once = wlsunset -l 41.9 -L -87.6
     '';
     settings = {
       decoration = {
