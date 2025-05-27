@@ -3,12 +3,22 @@
   wayland.windowManager.hyprland = {
     settings = {
       "$mod" = "SUPER";
+
+      # Mouse bindings
+      bindm = [
+        # Move window by dragging the border
+        "$mod, mouse:272, movewindow"
+        # Resize window by right-clicking and dragging
+        "$mod, mouse:273, resizewindow"
+      ];
+
       bind =
         [
           "$mod, F, exec, zen"
           # "$mod, T, exec, ghostty"
           "$mod, S, exec, rofi -show drun -show-icons"
           "$mod, Q, killactive"
+          "$mod, P, exec, hyprshot -m region"
         ]
         ++ (
           builtins.concatLists (builtins.genList

@@ -96,7 +96,7 @@
         gaps_in = 8
         gaps_out = 16
         col.active_border = rgba($mauveAlpha99)
-        col.inactive_border = $base
+        col.inactive_border = rgba($baseAlpha99)
       }
       
       exec-once = waybar
