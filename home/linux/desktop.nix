@@ -3,11 +3,7 @@
 , ...
 }: {
   home.packages = with pkgs; [
-    (discord.override {
-      # withOpenASAR = true;
-      # Vencord produces an unopenable discord client on mac for me
-      # withVencord = true;
-    })
+    vesktop
     flashprint
     geary
     thunderbird
@@ -16,4 +12,16 @@
     vlc
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
+
+  xdg.configFile."vesktop/settings/settings.json".text = builtins.toJSON {
+    autostart = false;
+    minimizeToTray = false;
+    discordBranch = "stable";
+    arRPC = true;
+    vencordDir = "$HOME/.config/vesktop/vencordDist";
+  };
+
+  xdg.configFile."vesktop/settings/quickCss.css".text = ''
+    @import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
+  '';
 }

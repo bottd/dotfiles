@@ -5,6 +5,7 @@
     ./nushell
     ./starship
 
+    ./catppuccin.nix
     ./claude.nix
     ./cli.nix
     ./desktop.nix

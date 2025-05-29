@@ -3,12 +3,14 @@
   wayland.windowManager.hyprland = {
     settings = {
       "$mod" = "SUPER";
+
       bind =
         [
           "$mod, F, exec, zen"
           # "$mod, T, exec, ghostty"
           "$mod, S, exec, rofi -show drun -show-icons"
           "$mod, Q, killactive"
+          "$mod, P, exec, hyprshot -m region"
         ]
         ++ (
           builtins.concatLists (builtins.genList
