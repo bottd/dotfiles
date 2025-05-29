@@ -20,6 +20,8 @@
     cursors.enable = true;
     cursors.flavor = "mocha";
     gtk.enable = true;
-    hyprland.enable = true;
+    hyprland.enable = false;
+
+    thunderbird.enable = true;
   };
 }

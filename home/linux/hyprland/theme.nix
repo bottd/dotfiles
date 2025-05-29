@@ -60,6 +60,7 @@
       variables = [ "--all" ];
     };
     plugins = [
+      pkgs.hyprlandPlugins.hyprbars
     ];
 
     # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
@@ -67,24 +68,50 @@
     portalPackage = null;
 
     # Added to end of .config file
-    extraConfig = ''
-      # Source Catppuccin theme
-      source = ~/.config/hypr/mocha.conf
-      
-      general {
-        border_size = 8
-        gaps_in = 8
-        gaps_out = 16
-        col.active_border = rgba($mauveAlpha99)
-        col.inactive_border = rgba($baseAlpha99)
-      }
-      
-      exec-once = waybar
-      exec-once = nm-applet --indicator
-      exec-once = swww-daemon
-      exec-once = swww img ~/.config/wallpapers/lighthouse.png
-      exec-once = wlsunset -l 41.9 -L -87.6
-    '';
+    extraConfig =
+      ''
+        # Source Catppuccin theme
+              source = ~/.config/hypr/mocha.conf
+
+              general {
+                border_size = 0
+                  gaps_in = 8
+                  gaps_out = 16
+                  col.active_border = rgba($mauveAlpha99)
+                  col.inactive_border = rgba($baseAlpha99)
+              }
+
+            exec-once = waybar
+              exec-once = nm-applet --indicator
+              exec-once = swww-daemon
+              exec-once = swww img ~/.config/wallpapers/lighthouse.png
+              exec-once = wlsunset -l 41.9 -L -87.6
+
+        # Hyprbars configuration with Catppuccin colors
+              plugin {
+                hyprbars {
+                  bar_height = 20
+                    col.text = $text
+                    bar_text_size = 12
+                    bar_text_font = Sans
+                    bar_text_align = center
+                    bar_part_of_window = true
+                    bar_precedence_over_border = true
+                    bar_buttons_alignment = right
+                    bar_padding = 16
+                    bar_button_padding = 4
+
+        # Window buttons
+                    hyprbars-button = $red, 12, , hyprctl dispatch killactive
+                    hyprbars-button = $yellow, 12, , hyprctl dispatch fullscreen 1
+                    hyprbars-button = $green, 12, , hyprctl dispatch togglefloating
+                }
+
+              }
+
+              windowrulev2 = plugin:hyprbars:bar_color rgba($mauveAlpha99),focus:1
+              windowrulev2 = plugin:hyprbars:bar_color rgba($crustAlpha99),focus:0
+      '';
     settings = {
       decoration = {
         blur = {
