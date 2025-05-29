@@ -110,6 +110,7 @@
               }
 
               windowrulev2 = plugin:hyprbars:bar_color rgba($mauveAlpha99),focus:1
+              windowrulev2 = plugin:hyprbars:title_color $crust,focus:1
               windowrulev2 = plugin:hyprbars:bar_color rgba($crustAlpha99),focus:0
       '';
     settings = {
