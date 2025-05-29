@@ -6,6 +6,7 @@
     ./gaming.nix
     ./graphics.nix
     ./hyprland
+    ./keyring.nix
     ./printing.nix
   ];
 }
