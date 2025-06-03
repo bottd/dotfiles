@@ -33,10 +33,6 @@
 
           background-opacity = 0.8
           background-blur-radius = 20
-
-          # window-decoration = false
-
-          keybind = super+t=new_tab
         '';
     };
   };
