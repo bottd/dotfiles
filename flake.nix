@@ -2,7 +2,7 @@
   description = "Drake Flake";
   inputs = {
     claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
+      url = "github:bottd/claude-desktop-linux-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -29,10 +29,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ghostty.url = "github:ghostty-org/ghostty";
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     mac-app-util = {
       url = "github:hraban/mac-app-util";
       inputs.nixpkgs.follows = "nixpkgs";
