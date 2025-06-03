@@ -22,6 +22,9 @@
     gtk.enable = true;
     hyprland.enable = false;
 
-    thunderbird.enable = true;
+    thunderbird = {
+      enable = true;
+      profile = "drake";
+    };
   };
 }
