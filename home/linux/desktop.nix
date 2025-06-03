@@ -6,7 +6,6 @@
     vesktop
     flashprint
     geary
-    thunderbird
     nyxt
     obs-studio
     vlc
@@ -14,8 +13,12 @@
     # TODO: figure out why with-fhs does not create a launchable like regular claude-desktop
     # inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
     inputs.claude-desktop.packages.${pkgs.system}.claude-desktop
-    inputs.zen-browser.packages.${pkgs.system}.default
   ];
+
+  programs.thunderbird = {
+    enable = true;
+    profiles.drake.isDefault = true;
+  };
 
   xdg.configFile."vesktop/settings/settings.json".text = builtins.toJSON {
     autostart = false;
@@ -35,4 +38,7 @@
       "x-scheme-handler/claude" = "claude-desktop.desktop";
     };
   };
+
+  # Force overwrite mimeapps.list to prevent conflicts
+  xdg.configFile."mimeapps.list".force = true;
 }
