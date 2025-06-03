@@ -14,6 +14,7 @@
     ./ghostty.nix
     ./jujutsu.nix
     ./vscode.nix
+    ./zelij.nix
     ./zsh.nix
   ];
 }
