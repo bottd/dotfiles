@@ -1,4 +1,6 @@
-{ ... }:
+{ pkgs
+, ...
+}:
 {
   catppuccin = {
     flavor = "mocha";
@@ -17,7 +19,7 @@
     yazi.enable = true;
     zellij.enable = true;
 
-    cursors.enable = true;
+    cursors.enable = pkgs.stdenv.isLinux;
     cursors.flavor = "mocha";
     gtk.enable = true;
     hyprland.enable = false;
