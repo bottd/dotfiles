@@ -10,9 +10,7 @@
     obs-studio
     vlc
     firefox
-    # TODO: figure out why with-fhs does not create a launchable like regular claude-desktop
-    # inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop
+    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   programs.thunderbird = {
