@@ -1,9 +1,7 @@
 { ...
 }: {
-  home.file = {
-    ".config/eww" = {
-      source = config.lib.meta.createSymlink "home/linux/eww";
-      recursive = true;
-    };
+  programs.eww = {
+    enable = true;
+    configDir = ./eww-bar;
   };
 }

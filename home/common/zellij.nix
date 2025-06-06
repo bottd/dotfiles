@@ -9,7 +9,6 @@
       default_mode = "locked";
 
       keybinds = {
-        "unbind \"Ctrl g\"" = true;
         "locked" = {
           "bind \"Ctrl a\"" = {
             SwitchToMode = "tmux";

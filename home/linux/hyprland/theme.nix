@@ -28,7 +28,6 @@
   # https://wiki.hyprland.org/Useful-Utilities/Must-have/
   home.packages = with pkgs; [
     networkmanagerapplet
-    eww
 
     pkgs.dunst
     libnotify
@@ -79,7 +78,7 @@
                   col.inactive_border = rgba($baseAlpha99)
               }
 
-            exec-once = eww daemon && eww open eww-bar
+              exec-once = eww daemon && eww open-many bar_1 bar_2
               exec-once = nm-applet --indicator
               exec-once = swww-daemon
               exec-once = swww img ~/.config/wallpapers/lighthouse.png

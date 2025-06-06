@@ -13,7 +13,7 @@
     ./jujutsu.nix
     ./spicetify.nix
     ./vscode.nix
-    ./zelij.nix
+    ./zellij.nix
     ./zsh.nix
   ];
 }
