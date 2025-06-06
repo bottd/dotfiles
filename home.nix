@@ -3,11 +3,6 @@
 , username
 , ...
 }:
-let
-  isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  unsupported = builtins.abort "Unsupported platform";
-in
 {
   imports = [ ];
 
@@ -18,14 +13,7 @@ in
   # Let home manager manage itself
   programs.home-manager.enable = true;
 
-  home.homeDirectory =
-    if isLinux
-    then "/home/${username}"
-    else if isDarwin
-    then "/Users/${username}"
-    else unsupported;
-
-  fonts.fontconfig.enable = isLinux;
+  home.homeDirectory = "/Users/${username}";
 
   xdg.enable = true;
   nix = {

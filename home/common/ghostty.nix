@@ -1,19 +1,10 @@
-{ inputs
-, lib
-, pkgs
-, ...
+{ ...
 }: {
   home.file = {
     ".config/ghostty/config" = {
       text =
         #ghostty
         ''
-          ${
-            if pkgs.stdenv.isLinux
-            then "command = nu"
-            else ""
-          }
-
           desktop-notifications = false
 
           font-family = MonoLisa Variable
@@ -40,8 +31,4 @@
         '';
     };
   };
-
-  home.packages = lib.optionals pkgs.stdenv.isLinux [
-    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
 }

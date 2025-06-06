@@ -1,7 +1,6 @@
 { inputs, ... }: { hostName
                  , system
                  , username
-                 , format
                  , hostPath ? null
                  , extraHomeModules ? [ ]
                  ,
@@ -34,12 +33,8 @@ inputs.home-manager.lib.homeManagerConfiguration {
       inputs.catppuccin.homeModules.catppuccin
       ../home.nix
       ../home/common
+      ../home/darwin
       path
     ]
-    ++ (
-      if format == "nixos"
-      then [ ../home/linux ../home/linux/hyprland/host/desktop.nix ]
-      else [ ../home/darwin ]
-    )
     ++ extraHomeModules;
 }

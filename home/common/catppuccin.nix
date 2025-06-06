@@ -1,5 +1,4 @@
-{ pkgs
-, ...
+{ ...
 }:
 {
   catppuccin = {
@@ -18,11 +17,6 @@
     micro.enable = true;
     yazi.enable = true;
     zellij.enable = true;
-
-    cursors.enable = pkgs.stdenv.isLinux;
-    cursors.flavor = "mocha";
-    gtk.enable = true;
-    hyprland.enable = false;
 
     thunderbird = {
       enable = true;

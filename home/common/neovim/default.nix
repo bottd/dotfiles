@@ -25,11 +25,7 @@
                         rocks_path = vim.fn.stdpath("data") .. "/rocks",
                         luarocks_binary = "${pkgs.lua51Packages.luarocks}/bin/luarocks",
                         luarocks_config = {
-                          arch = "${
-            if pkgs.stdenv.hostPlatform.isDarwin
-            then "macosx-aarch64"
-            else "linux-x86_64"
-          }"
+                          arch = "macosx-aarch64"
                         }
                       }
 

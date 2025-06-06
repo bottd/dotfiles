@@ -5,6 +5,5 @@
     ./users
 
     ./darwin-base
-    ./dev-tools
   ];
 }

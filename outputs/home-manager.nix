@@ -21,13 +21,6 @@
       xdg.enable = true;
     };
 
-    linuxHome = { username, ... }: {
-      imports = [ config.flake.flakeModules.commonHome ];
-
-      home.homeDirectory = "/home/${username}";
-      fonts.fontconfig.enable = true;
-    };
-
     darwinHome = { username, ... }: {
       imports = [ config.flake.flakeModules.commonHome ];
 

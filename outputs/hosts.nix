@@ -8,53 +8,6 @@ in
   imports = [ ];
 
   flake = {
-    nixosConfigurations = {
-      desktop = mkSystem {
-        hostName = "desktop";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        extraSystemModules = [
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                neorgWorkspace = "chalet";
-                root = ./.;
-              };
-            };
-          }
-        ];
-        extraHomeModules = [
-          ../home/linux/hyprland/host/desktop.nix
-        ];
-      };
-
-      pocket = mkSystem {
-        hostName = "pocket";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        extraSystemModules = [
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                neorgWorkspace = "chalet";
-                root = ./.;
-              };
-            };
-          }
-        ];
-        extraHomeModules = [
-          ../home/linux/hyprland/host/pocket.nix
-        ];
-
-      };
-    };
-
     darwinConfigurations = {
       macbook = mkSystem {
         hostName = "macbook";
