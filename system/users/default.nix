@@ -5,13 +5,13 @@
 , ...
 }: {
   users.users.${username} = {
-    isNormalUser = true;
+    # isNormalUser = true;
     description = "Drake Bott";
-    extraGroups = [ "networkmanager" "wheel" ];
+    # extraGroups = [ "networkmanager" "wheel" ];
     packages = [ ];
   };
 
-  services.getty.autologinUser = username;
+  # services.getty.autologinUser = username;
 
   home-manager = {
     useGlobalPkgs = true;

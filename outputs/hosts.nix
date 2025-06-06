@@ -77,8 +77,8 @@ in
     };
 
     homeConfigurations = {
-      work = mkHome {
-        hostName = "work";
+      standalone = mkHome {
+        hostName = "standalone";
         system = "aarch64-darwin";
         username = "drakebott";
         format = "home-manager";
