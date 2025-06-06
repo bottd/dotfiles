@@ -45,6 +45,7 @@ let
         imports =
           [
             inputs.catppuccin.homeModules.catppuccin
+            inputs.spicetify-nix.homeManagerModules.default
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
