@@ -8,12 +8,12 @@
     ./catppuccin.nix
     ./claude.nix
     ./cli.nix
-    ./desktop.nix
-    # ./eww/default.nix
     ./git.nix
     ./ghostty.nix
     ./jujutsu.nix
+    ./spicetify.nix
     ./vscode.nix
+    ./zellij.nix
     ./zsh.nix
   ];
 }

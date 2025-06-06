@@ -57,19 +57,16 @@ nvim-treesitter-legacy-api = "0.9.2"
 nvim-treesitter-context = "scm"
 "plenary.nvim" = "scm"
 "snacks.nvim" = "scm"
-nvim-jdtls = "0.2.0"
 "package-info.nvim" = "scm"
 tree-sitter-yuck = "0.0.29"
 tree-sitter-scss = "0.0.29"
 "flash.nvim" = "2.1.0"
+tree-sitter-norg = "0.2.6"
+tree-sitter-norg-meta = "0.1.0"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
 rev = "v1.10.0"
-
-[plugins."spring-boot.nvim"]
-git = "JavaHello/spring-boot.nvim"
-rev = "fc474dfd4bbe78188fdd5b2984e7013e124c46fe"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -111,7 +108,7 @@ rev = "v3.0.0"
 items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 
 [bundles.lsp]
-items = ["lsp_lines.nvim", "nvim-lspconfig", "nvim-jdtls", "spring-boot.nvim"]
+items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
