@@ -76,9 +76,12 @@
     # grammar/spellcheck lsp
     harper
 
-    # Used for startup dashboard
+    # for startup dashboard
     fortune
     cowsay
+
+    # GUI
+    neovide
   ];
 
   programs.neovim = {
