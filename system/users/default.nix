@@ -2,14 +2,21 @@
 , username
 , inputs
 , host
+, lib
+, pkgs
 , ...
 }: {
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Drake Bott";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = [ ];
-  };
+  users.users.${username} = lib.mkMerge [
+    {
+      description = "Drake Bott";
+      packages = [ ];
+    }
+    (lib.mkIf pkgs.stdenv.isLinux {
+      isNormalUser = true;
+      extraGroups = [ "networkmanager" "wheel" ];
+    })
+    (lib.mkIf pkgs.stdenv.isDarwin { })
+  ];
 
   # services.getty.autologinUser = username;
 
