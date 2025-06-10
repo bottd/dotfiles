@@ -71,8 +71,15 @@ systemBuilder {
     ]
     ++ (
       if format == "nixos"
-      then [ inputs.catppuccin.nixosModules.catppuccin ../system/nixOS ]
-      else [ ]
+      then [
+        inputs.catppuccin.nixosModules.catppuccin
+        ../system/nixOS
+      ]
+      else [
+        # Maybe supported in the future
+        # https://github.com/catppuccin/nix/pull/477
+        # inputs.catppuccin.darwinModules.catppuccin
+      ]
     )
     ++ extraSystemModules;
 }
