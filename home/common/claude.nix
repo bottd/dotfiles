@@ -10,7 +10,22 @@
         ''
           {
               "permissions": {
-                "allow": [],
+                "allow": [
+                  "mcp__context7__resolve-library-id",
+                  "mcp__context7__get-library-docs",
+                  "mcp__context7__search-libraries",
+                  "mcp__context7__get-code-examples",
+                  "mcp__context7__get-api-reference",
+                  "mcp__filesystem__create_directory",
+                  "mcp__filesystem__move_file",
+                  "mcp__filesystem__copy_file",
+                  "mcp__filesystem__list_directory",
+                  "mcp__filesystem__get_file_info",
+                  "mcp__filesystem__search_files",
+                  "mcp__sequential-thinking__start_session",
+                  "mcp__sequential-thinking__add_step",
+                  "mcp__sequential-thinking__review_progress"
+                ],
                 "deny": [
                   "rm"
                 ]
