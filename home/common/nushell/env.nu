@@ -18,6 +18,11 @@ $env.WINDOW_APPEARANCE = match (term query "\e[?996n" --prefix "\e[?997;" --term
   _ => "light"
 }
 
+$env.CATPPUCCIN_FLAVOR = match $env.WINDOW_APPEARANCE {
+  "dark" => "mocha"
+  "light" => "latte"
+}
+
 let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
