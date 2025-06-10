@@ -8,11 +8,7 @@
       text =
         #ghostty
         ''
-          ${
-            if pkgs.stdenv.isLinux
-            then "command = nu"
-            else ""
-          }
+          command = nu
 
           desktop-notifications = false
 

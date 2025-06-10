@@ -2,12 +2,19 @@
 {
   programs.zellij = {
     enable = true;
+
     settings = {
+      default_shell = "nu";
+      mouse_mode = true; # defaults to true
+      rounded_corners = true;
+      show_startup_tips = false;
+      show_release_notes = false;
       theme = "catppuccin-mocha";
+      # TODO:
+      # - Auto dark/light mode
+      # - Rounded tab borders instead of arrow
 
-      # Start in locked mode to prevent keybind conflicts with Neovim
-      default_mode = "locked";
-
+      # keybinds_clear_defaults = true;
       keybinds = {
         "locked" = {
           "bind \"Ctrl a\"" = {
@@ -27,7 +34,6 @@
   };
 
   home.shellAliases = {
-    # TODO: fix alias, theme arg does not exist
-    # zellij = ''zellij --theme "catppuccin-$([[ "$WINDOW_APPEARANCE" == "light" ]] && echo "latte" || echo "mocha")"'';
+    zellij = ''zellij --theme catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}'';
   };
 }
