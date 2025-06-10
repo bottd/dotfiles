@@ -8,7 +8,7 @@
       text =
         #ghostty
         ''
-          command = nu
+          ${lib.optionalString pkgs.stdenv.isLinux "command = nu"}
 
           desktop-notifications = false
 
@@ -23,7 +23,7 @@
 
           quit-after-last-window-closed = true
 
-          shell-integration = detect
+          shell-integration = none
 
           theme = dark:catppuccin-mocha,light:catppuccin-latte
 
