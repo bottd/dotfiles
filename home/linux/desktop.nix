@@ -1,5 +1,4 @@
-{ inputs
-, pkgs
+{ pkgs
 , ...
 }: {
   home.packages = with pkgs; [
@@ -10,7 +9,6 @@
     obs-studio
     vlc
     firefox
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   programs.thunderbird = {

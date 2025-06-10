@@ -372,3 +372,8 @@ $env.config = {
 
 source scripts/git.nu
 neofetch
+
+# Auto-start Zellij if not already in a session
+if not ("ZELLIJ" in $env) {
+    zellij
+}
