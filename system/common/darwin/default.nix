@@ -1,6 +1,10 @@
 # Darwin-specific common settings
 { ...
 }: {
+  imports = [
+    ../../darwin/aerospace.nix
+  ];
+
   # Darwin-specific settings
   system.defaults = {
     # Dock settings

@@ -39,7 +39,10 @@ inputs.home-manager.lib.homeManagerConfiguration {
     ]
     ++ (
       if format == "nixos"
-      then [ ../home/linux ../home/linux/hyprland/host/desktop.nix ]
+      then [
+        ../home/linux
+        ../home/linux/hyprland/host/desktop.nix
+      ]
       else [ ../home/darwin ]
     )
     ++ extraHomeModules;
