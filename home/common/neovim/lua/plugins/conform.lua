@@ -12,6 +12,8 @@ require("conform").setup({
 		toml = { "taplo" },
 		typescript = { "prettierd", "prettier" },
 		typescriptreact = { "prettierd", "prettier" },
+		clojure = { "cljfmt" },
+		babashka = { "cljfmt" },
 	},
 	formatters = {
 		treefmt = {
