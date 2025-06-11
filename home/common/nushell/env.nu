@@ -13,9 +13,18 @@ $env.PATH = (
   | prepend '/nix/var/nix/profiles/default/bin'
 )
 
-$env.WINDOW_APPEARANCE = match (term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode) {
-  "1" => "dark"
-  _ => "light"
+$env.WINDOW_APPEARANCE = try {
+  match (term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode) {
+    "1" => "dark"
+    _ => "light"
+  }
+} catch {
+  # Fall back to THEME_PREFERENCE env var if set, otherwise default to dark
+  if ("THEME_PREFERENCE" in $env) {
+    $env.THEME_PREFERENCE
+  } else {
+    "dark"
+  }
 }
 
 $env.CATPPUCCIN_FLAVOR = match $env.WINDOW_APPEARANCE {
