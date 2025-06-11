@@ -6,5 +6,6 @@
     ./rust.nix
     ./sbcl.nix
     ./toml.nix
+    ./clojure.nix
   ];
 }
