@@ -6,6 +6,7 @@
     ./gaming.nix
     ./graphics.nix
     ./hyprland
+    ./jellyfin.nix
     ./keyring.nix
     ./printing.nix
   ];
