@@ -3,6 +3,6 @@
     ./desktop.nix
     ./hyprland
     ./eww
-    ./darkman
+    ./darkman.nix
   ];
 }
