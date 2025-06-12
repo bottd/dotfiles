@@ -2,17 +2,23 @@
 }: {
   wayland.windowManager.hyprland = {
     settings = {
-      # Window rules for journal scratchpad
+      # Window rules for special workspaces
       windowrulev2 = [
+        # Journal workspace rules
         "float, class:^(neovide-journal)$"
         "size 80% 80%, class:^(neovide-journal)$"
         "center, class:^(neovide-journal)$"
         "workspace special:journal silent, class:^(neovide-journal)$"
+
+        # Overlay workspace rules
+        "workspace special:overlay silent, class:^(discord)$"
+        "workspace special:overlay silent, class:^(com.mitchellh.ghostty)$"
       ];
 
       # Special workspace configuration
       workspace = [
-        "special:journal, on-created-empty:neovide --wayland-app-id neovide-journal -- -c 'Neorg journal today'"
+        "special:journal"
+        "special:overlay"
       ];
       "$mod" = "SUPER";
 
@@ -24,6 +30,7 @@
           "$mod, Q, killactive"
           "$mod, P, exec, hyprshot -m region"
           "$mod, J, togglespecialworkspace, journal"
+          "$mod, Tab, togglespecialworkspace, overlay"
         ]
         ++ (
           builtins.concatLists (builtins.genList
