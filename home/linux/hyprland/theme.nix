@@ -21,6 +21,7 @@
   };
 
   home.sessionVariables = {
+    # Wayland support for Chromium-based applications
     NIXOS_OZONE_WL = "1";
   };
 
@@ -29,7 +30,7 @@
   home.packages = with pkgs; [
     networkmanagerapplet
 
-    pkgs.dunst
+    dunst
     libnotify
     hyprpolkitagent
     swww
@@ -49,6 +50,7 @@
     xdg-desktop-portal-hyprland
   ];
 
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -67,8 +69,8 @@
     # Added to end of .config file
     extraConfig =
       ''
-        # Source Catppuccin theme
-              source = ~/.config/hypr/mocha.conf
+        # Source current theme (will be managed by darkman)
+              source = ~/.config/hypr/current-theme.conf
 
               general {
                 border_size = 0
@@ -83,6 +85,15 @@
               exec-once = swww-daemon
               exec-once = swww img ~/.config/wallpapers/lighthouse.png
               exec-once = wlsunset -l 41.9 -L -87.6
+
+              # Essential environment variables for portal functionality
+              env = XDG_CURRENT_DESKTOP,Hyprland
+              env = XDG_SESSION_DESKTOP,Hyprland
+
+              # Auto-start applications in overlay workspace
+              exec-once = [workspace special:overlay silent] discord
+              exec-once = [workspace special:overlay silent] ghostty
+              exec-once = [workspace special:journal silent] neovide
 
         # Hyprbars configuration with Catppuccin colors
               plugin {
