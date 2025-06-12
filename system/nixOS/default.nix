@@ -8,6 +8,8 @@
     ./hyprland
     ./jellyfin.nix
     ./keyring.nix
+    ./mullvad.nix
     ./printing.nix
+    ./torrent.nix
   ];
 }
