@@ -1,9 +1,4 @@
-# Nushell Environment Config File
-#
 # version = 0.82.0
-
-# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-# let-env PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
 $env.PATH = (
   $env.PATH
   | split row (char esep)
@@ -19,7 +14,6 @@ $env.WINDOW_APPEARANCE = try {
     _ => "light"
   }
 } catch {
-  # Fall back to THEME_PREFERENCE env var if set, otherwise default to dark
   if ("THEME_PREFERENCE" in $env) {
     $env.THEME_PREFERENCE
   } else {
@@ -36,7 +30,6 @@ let MACHINE_ENV = $"env.(whoami | str trim).nu"
 
 $env.STARSHIP_SHELL = "nu"
 
-# make claude match window appearance
 claude config set --global theme $env.WINDOW_APPEARANCE
 
 let starship_dir = ($env.HOME | path join ".config/starship/")
@@ -50,11 +43,7 @@ def create_left_prompt [] {
     starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)'
 }
 
-# Use nushell functions to define your right and left prompt
 $env.PROMPT_COMMAND = { || create_left_prompt }
-
-# The prompt indicators are environmental variables that represent
-# the state of the prompt
 $env.PROMPT_INDICATOR = ""
 $env.PROMPT_INDICATOR_VI_INSERT = ": "
 $env.PROMPT_INDICATOR_VI_NORMAL = "〉"
@@ -79,13 +68,8 @@ def create_right_prompt [] {
     ([$last_exit_code, (char space), $time_segment] | str join)
 }
 
-# Use nushell functions to define your right and left prompt
 $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
 
-# Specifies how environment variables are:
-# - converted from a string to a value on Nushell startup (from_string)
-# - converted from a value back to a string when running external commands (to_string)
-# Note: The conversions happen *after* config.nu is loaded
 $env.ENV_CONVERSIONS = {
   "PATH": {
     from_string: { |s| $s | split row (char esep) | path expand --no-symlink }
@@ -97,23 +81,13 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-# Directories to search for scripts when calling source or use
-#
-# By default, <nushell-config-dir>/scripts is added
 $env.NU_LIB_DIRS = [
     ($nu.default-config-dir | path join 'scripts')
 ]
 
-# Directories to search for plugin binaries when calling register
-#
-# By default, <nushell-config-dir>/plugins is added
 $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins')
 ]
 
-# Source local.env.nu for untracked, per-machine env variables
-# const some_path = $nu.default-config-dir
-# source-env $"($some_path)/local.env.nu"
-
-# CXXFLAGS needed to avoid Treesitter parser compilation errors
+# Prevents Treesitter parser compilation errors
 $env.CXXFLAGS = "-std=c++11"

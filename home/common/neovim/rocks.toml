@@ -8,7 +8,6 @@
 "rocks-lazy.nvim" = "scm"
 "luasnip" = "2.4.0"
 
-# Neorg
 "neorg" = "9.3.0"
 "neorg-archive" = "1.1.0"
 "neorg-interim-ls" = "2.1.1"
