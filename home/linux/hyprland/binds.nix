@@ -9,10 +9,6 @@
         "size 80% 80%, class:^(neovide-journal)$"
         "center, class:^(neovide-journal)$"
         "workspace special:journal silent, class:^(neovide-journal)$"
-
-        # Overlay workspace rules
-        "workspace special:overlay silent, class:^(discord)$"
-        "workspace special:overlay silent, class:^(com.mitchellh.ghostty)$"
       ];
 
       # Special workspace configuration
@@ -25,7 +21,7 @@
       bind =
         [
           "$mod, F, exec, zen"
-          # "$mod, T, exec, ghostty"
+          "$mod, T, exec, ghostty"
           "$mod, S, exec, rofi -show drun -show-icons"
           "$mod, Q, killactive"
           "$mod, P, exec, hyprshot -m region"
