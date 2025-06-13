@@ -66,7 +66,6 @@
     package = null;
     portalPackage = null;
 
-    # Added to end of .config file
     extraConfig =
       ''
         # Source current theme (will be managed by darkman)
@@ -91,9 +90,9 @@
               env = XDG_SESSION_DESKTOP,Hyprland
 
               # Auto-start applications in overlay workspace
-              exec-once = [workspace special:overlay silent] discord
+              exec-once = [workspace special:overlay silent] vesktop
               exec-once = [workspace special:overlay silent] ghostty
-              exec-once = [workspace special:journal silent] neovide
+              exec-once = [workspace special:journal silent] neovide -- -c 'Neorg journal today'
 
         # Hyprbars configuration with Catppuccin colors
               plugin {
