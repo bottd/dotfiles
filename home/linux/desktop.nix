@@ -26,7 +26,13 @@
   };
 
   xdg.configFile."vesktop/settings/quickCss.css".text = ''
-    @import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
+    @media (prefers-color-scheme: light) {
+      @import url("https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css");
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      @import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
+    }
   '';
 
   xdg.mimeApps = {
