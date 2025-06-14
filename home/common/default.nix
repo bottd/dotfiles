@@ -8,6 +8,7 @@
     ./catppuccin.nix
     ./claude.nix
     ./cli.nix
+    ./desktop.nix
     ./git.nix
     ./ghostty.nix
     ./jujutsu.nix
