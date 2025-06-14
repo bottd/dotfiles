@@ -1,7 +1,6 @@
-{ nixpkgs-unstable, inputs, ... }: {
+{ nixpkgs-unstable, ... }: {
   home.packages = with nixpkgs-unstable; [
     claude-code
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   home.file =
