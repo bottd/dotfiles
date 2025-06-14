@@ -8,7 +8,6 @@
     nyxt
     obs-studio
     vlc
-    firefox
   ];
 
   programs.thunderbird = {
