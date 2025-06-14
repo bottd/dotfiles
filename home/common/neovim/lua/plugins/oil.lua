@@ -9,11 +9,3 @@ vim.keymap.set("n", "<C-m>", function()
 	local current_dir = string.gsub(buf_name, "/[^/]+$", "")
 	require("oil").toggle_float(current_dir)
 end, { desc = "Oil - current directory" })
-
--- (vim.keymap.set
--- ;  :n
--- ;  "<C-v>"
--- ;  (fn []
--- ;    (let [oil (require :oil)]
--- ;      (oil.select { :vertical true })))
--- ;  { :desc "Oil - select vsplit" :buffer "oil" }))

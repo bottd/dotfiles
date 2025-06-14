@@ -50,7 +50,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-require("spring_boot").init_lsp_commands()
 local servers = {
 	cssls = {},
 	eslint = {},
@@ -59,11 +58,6 @@ local servers = {
 	svelte = {},
 	tailwindcss = {},
 	ts_ls = {},
-	jdtls = {
-		init_options = {
-			bundles = require("spring_boot").java_extensions(),
-		},
-	},
 	harper_ls = {
 		filetypes = { "norg", "markdown" },
 		settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },

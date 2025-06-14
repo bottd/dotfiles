@@ -20,6 +20,14 @@
           };
         };
       };
+
+      settings.formatter = {
+        cljfmt = {
+          command = "${pkgs.cljfmt}/bin/cljfmt";
+          options = [ "fix" ];
+          includes = [ "*.clj" "*.bb" ];
+        };
+      };
     };
 
     checks.formatting = config.treefmt.build.check self;
