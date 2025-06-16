@@ -18,7 +18,7 @@
   };
 
   xdg.configFile."vesktop/settings/settings.json".text = builtins.toJSON {
-    autostart = false;
+    autostart = true;
     minimizeToTray = false;
     discordBranch = "stable";
     arRPC = true;
