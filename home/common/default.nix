@@ -15,6 +15,7 @@
     ./spicetify.nix
     ./vscode.nix
     ./zellij.nix
+    ./zoxide.nix
     ./zsh.nix
   ];
 }
