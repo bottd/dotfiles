@@ -84,6 +84,12 @@ rev = "v2.5.0"
 git = "David-Kunz/cmp-npm"
 rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
+[plugins."floaterm"]
+git = "nvzone/floaterm"
+
+[plugins."volt"]
+git = "nvzone/volt"
+
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
 rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
@@ -112,6 +118,9 @@ items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
+
+[bundles.floaterm]
+items = ["floaterm", "volt"]
 
 [treesitter]
 auto_highlight = "all"
