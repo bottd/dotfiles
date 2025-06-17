@@ -4,9 +4,12 @@ $env.PATH = (
   | split row (char esep)
   | prepend '~/.cargo/bin'
   | prepend '~/platform-tool'
+  | prepend '~/.npm-packages/bin'
   | prepend $"/Users/(whoami | str trim)/.local/bin"
   | prepend '/nix/var/nix/profiles/default/bin'
 )
+
+$env.NODE_PATH = '~/.npm-packages/lib/node_modules'
 
 $env.WINDOW_APPEARANCE = try {
   match (term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode) {

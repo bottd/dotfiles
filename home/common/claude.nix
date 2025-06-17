@@ -1,6 +1,8 @@
 { nixpkgs-unstable, ... }: {
   home.packages = with nixpkgs-unstable; [
-    claude-code
+    # temp: install globally with npm to get latest
+    # nixpkgs unstable too slow for multiple updates/week
+    # claude-code
   ];
 
   home.file =
