@@ -11,4 +11,12 @@
     tailwindcss-language-server
     vscode-langservers-extracted
   ];
+
+  home.file = {
+    ".npmrc" = {
+      text = ''
+        prefix = ~/.npm-packages
+      '';
+    };
+  };
 }
