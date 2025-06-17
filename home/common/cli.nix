@@ -21,5 +21,7 @@
     unzip
     wget
     zellij
+
+    fd
   ];
 }

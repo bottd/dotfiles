@@ -1,6 +1,6 @@
 {
   imports = [
-    ./language
+    ./language.nix
     ./neovim
     ./nushell
     ./starship
