@@ -1,4 +1,4 @@
-{ nixpkgs-unstable, ... }: {
+{ nixpkgs-unstable, config, ... }: {
   home.packages = with nixpkgs-unstable; [
     # temp: install globally with npm to get latest
     # nixpkgs unstable too slow for multiple updates/week
@@ -38,7 +38,7 @@
               },
               "filesystem": {
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/drakeb"]
+                "args": ["-y", "@modelcontextprotocol/server-filesystem", "${config.home.homeDirectory}"]
               },
               "sequential-thinking": {
                 "command": "npx",
