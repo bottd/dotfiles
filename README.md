@@ -36,8 +36,8 @@ My personal MacBook uses [nix-darwin]():
 darwin-rebuild switch --flake .#macbook
 ```
 
-And I have a work/external machine home-manager standalone setup for Mac:
+Standalone home-manager configuration for external Macs:
 
 ```bash
-home-manager switch --flake .#work
+home-manager switch --flake .#standalone
 ```
