@@ -5,7 +5,7 @@ let
     owner = "catppuccin";
     repo = "starship";
     rev = "main";
-    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    sha256 = "sha256-1w0TJdQP5lb9jCrCmhPlSexf0PkAlcz8GBDEsRjPRns=";
   };
 
   makeStarshipTheme = palette: ''
@@ -52,7 +52,6 @@ in
   };
 
   xdg.configFile = {
-    "starship.toml".text = makeStarshipTheme "dark";
     "starship/starship.dark.toml".text = makeStarshipTheme "dark";
     "starship/starship.light.toml".text = makeStarshipTheme "light";
   };
