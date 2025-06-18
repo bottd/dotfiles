@@ -21,6 +21,7 @@
   environment.systemPackages = with pkgs; [
     mangohud
     moonlight
+    steam-run
   ];
 
   services.sunshine = {
