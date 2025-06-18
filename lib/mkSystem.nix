@@ -35,8 +35,7 @@ let
             inputs.spicetify-nix.homeManagerModules.default
             ../home.nix
             ../lib/createSymlink.nix
-            ../home/common
-            ../home/darwin
+            ../home
           ]
           ++ extraHomeModules;
       };

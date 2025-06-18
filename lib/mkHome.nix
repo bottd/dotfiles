@@ -33,8 +33,7 @@ inputs.home-manager.lib.homeManagerConfiguration {
       inputs.catppuccin.homeModules.catppuccin
       inputs.spicetify-nix.homeManagerModules.default
       ../home.nix
-      ../home/common
-      ../home/darwin
+      ../home
       path
     ]
     ++ extraHomeModules;
