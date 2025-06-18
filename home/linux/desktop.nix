@@ -1,7 +1,18 @@
 { pkgs
 , inputs
 , ...
-}: {
+}:
+let
+  catppuccin-latte-css = pkgs.fetchurl {
+    url = "https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css";
+    sha256 = "0d3g69lvdqmv4v02ypnkgl1rrxrab9h2yakp6awd70fv8jmxpqvz";
+  };
+  catppuccin-mocha-css = pkgs.fetchurl {
+    url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css";
+    sha256 = "18c99y3pf6y93iq7fa31v7hhlwmzbwvzhar1wm8y0fj5c7164wa9";
+  };
+in
+{
   home.packages = with pkgs; [
     vesktop
     flashprint
@@ -26,12 +37,12 @@
   };
 
   xdg.configFile."vesktop/settings/quickCss.css".text = ''
-    @media (prefers-color-scheme: light) {
-      @import url("https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css");
-    }
+    /* Apply Catppuccin Mocha (dark) theme by default */
+    ${builtins.readFile catppuccin-mocha-css}
     
-    @media (prefers-color-scheme: dark) {
-      @import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
+    /* Override with Catppuccin Latte (light) theme when system prefers light mode */
+    @media (prefers-color-scheme: light) {
+      ${builtins.readFile catppuccin-latte-css}
     }
   '';
 
