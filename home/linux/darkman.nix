@@ -1,4 +1,5 @@
-{ pkgs, ...
+{ pkgs
+, ...
 }: {
   xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
     [preferred]
