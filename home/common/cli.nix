@@ -7,6 +7,12 @@
     nix-direnv.enable = true;
   };
 
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+    enableNushellIntegration = true;
+  };
+
   home.packages = with pkgs; [
     android-tools
     gcc
