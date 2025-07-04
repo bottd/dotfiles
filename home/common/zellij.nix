@@ -10,6 +10,8 @@
       show_startup_tips = false;
       show_release_notes = false;
       theme = "catppuccin-mocha";
+      copy_command = "wl-copy";
+      copy_clipboard = "system";
       # TODO:
       # - Auto dark/light mode
       # - Rounded tab borders instead of arrow
