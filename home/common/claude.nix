@@ -5,6 +5,11 @@
     # claude-code
   ];
 
+  programs.git.ignores = [
+    ".claude"
+    "CLAUDE.md"
+  ];
+
   home.file =
     let
       claudeConfig = #json
