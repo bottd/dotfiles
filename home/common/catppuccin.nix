@@ -1,7 +1,15 @@
 { pkgs
+, inputs
 , ...
 }:
 {
+  imports = [
+    inputs.nix-colors.homeManagerModules.default
+  ];
+
+  # Set Catppuccin color scheme from nix-colors
+  colorScheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+
   catppuccin = {
     flavor = "mocha";
 

@@ -4,5 +4,6 @@
     ./hyprland
     ./eww
     ./darkman.nix
+    ./gaming.nix
   ];
 }
