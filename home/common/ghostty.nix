@@ -1,5 +1,4 @@
-{ inputs
-, lib
+{ lib
 , pkgs
 , ...
 }: {
@@ -29,11 +28,13 @@
 
           background-opacity = 0.8
           background-blur-radius = 20
+
+          gtk-titlebar = false
         '';
     };
   };
 
   home.packages = lib.optionals pkgs.stdenv.isLinux [
-    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.ghostty
   ];
 }
