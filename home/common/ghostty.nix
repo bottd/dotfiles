@@ -1,5 +1,7 @@
 { lib
 , pkgs
+, inputs
+, system
 , ...
 }: {
   home.file = {
@@ -35,6 +37,6 @@
   };
 
   home.packages = lib.optionals pkgs.stdenv.isLinux [
-    pkgs.ghostty
+    inputs.ghostty.packages.${system}.default
   ];
 }
