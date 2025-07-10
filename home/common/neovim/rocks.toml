@@ -63,6 +63,7 @@ tree-sitter-scss = "0.0.29"
 tree-sitter-norg = "0.2.6"
 tree-sitter-norg-meta = "0.1.0"
 tree-sitter-clojure = "0.0.31"
+tree-sitter-godot_resource = "0.0.35"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
