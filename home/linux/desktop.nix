@@ -17,6 +17,7 @@ in
     vesktop
     flashprint
     geary
+    godot
     inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
     nyxt
     obs-studio
