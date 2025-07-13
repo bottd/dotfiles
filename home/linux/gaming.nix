@@ -5,11 +5,12 @@
 {
   home.packages = with pkgs; [
     prismlauncher
+    gamescope
   ];
 
   programs.mangohud = {
     enable = true;
-    enableSessionWide = true;
+    enableSessionWide = false;
     settings = {
       legacy_layout = false;
       gpu_stats = true;

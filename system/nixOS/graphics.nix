@@ -8,6 +8,8 @@
       rocmPackages.clr.icd
       vulkan-loader
       vulkan-validation-layers
+      vulkan-tools
+      vulkan-headers
     ];
 
     extraPackages32 = with pkgs; [
