@@ -5,7 +5,8 @@
     ./cli.nix
     ./gaming.nix
     ./graphics.nix
-    ./hyprland
+    # ./hyprland
+    ./kde-plasma
     ./jellyfin.nix
     ./keyring.nix
     ./mullvad.nix

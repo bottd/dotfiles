@@ -1,8 +1,9 @@
 {
   imports = [
     ./desktop.nix
-    ./hyprland
-    ./eww
+    # ./hyprland
+    # ./eww
+    ./kde-plasma
     ./darkman.nix
     ./gaming.nix
   ];
