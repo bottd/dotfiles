@@ -89,20 +89,15 @@ require("neorg").setup({
 	},
 })
 vim.keymap.set("n", "<leader>j", function()
-	local win_width = math.floor(vim.o.columns * 0.6)
-	local win_height = math.floor(vim.o.lines * 0.8)
-	local buf = vim.api.nvim_create_buf(true, false)
-	vim.api.nvim_open_win(buf, true, {
-		width = win_width,
-		height = win_height,
-		row = ((vim.o.lines - win_height) / 2),
-		col = ((vim.o.columns - win_width) / 2),
-		relative = "editor",
+	Snacks.win({
+		width = 0.6,
+		height = 0.8,
 		border = "rounded",
 		title = "Daily Journal",
 		title_pos = "center",
-	})
-	vim.api.nvim_command(":Neorg journal today")
+	}, function(win)
+		vim.api.nvim_command(":Neorg journal today")
+	end)
 end, { desc = "Journal" })
 
 wk.add({

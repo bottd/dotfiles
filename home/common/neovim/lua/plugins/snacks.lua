@@ -36,6 +36,7 @@ snacks.setup({
 		zen = { backdrop = { transparent = false } },
 	},
 	zen = { enabled = true },
+	win = { enabled = true },
 })
 
 local wk = require("which-key")
