@@ -1,3 +1,4 @@
+{ desktopEnvironment, ... }:
 {
   imports = [
     ./audio.nix
@@ -5,12 +6,14 @@
     ./cli.nix
     ./gaming.nix
     ./graphics.nix
-    # ./hyprland
-    ./kde-plasma
     ./jellyfin.nix
     ./keyring.nix
     ./mullvad.nix
     ./printing.nix
     ./torrent.nix
-  ];
+  ] ++ (
+    if desktopEnvironment == "hyprland"
+    then [ ./hyprland ]
+    else [ ./plasma ]
+  );
 }
