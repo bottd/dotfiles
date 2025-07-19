@@ -1,12 +1,8 @@
-{ inputs
-, ...
-}:
+{ inputs, ... }:
 let
   inherit (import ../lib { inherit inputs; }) mkSystem mkHome;
 in
 {
-  imports = [ ];
-
   flake = {
     nixosConfigurations = {
       desktop = mkSystem {
@@ -14,20 +10,14 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
+        desktopEnvironment = "plasma";
         extraSystemModules = [
           {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                neorgWorkspace = "chalet";
-                root = ./.;
-              };
+            home-manager.extraSpecialArgs = {
+              neorgWorkspace = "chalet";
+              root = ./.;
             };
           }
-        ];
-        extraHomeModules = [
-          ../home/linux/hyprland/host/desktop.nix
         ];
       };
 
@@ -36,22 +26,15 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
+        desktopEnvironment = "plasma";
         extraSystemModules = [
           {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                neorgWorkspace = "chalet";
-                root = ./.;
-              };
+            home-manager.extraSpecialArgs = {
+              neorgWorkspace = "chalet";
+              root = ./.;
             };
           }
         ];
-        extraHomeModules = [
-          ../home/linux/hyprland/host/pocket.nix
-        ];
-
       };
     };
 
@@ -63,13 +46,9 @@ in
         format = "darwin";
         extraSystemModules = [
           {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                neorgWorkspace = "chalet";
-                root = ./.;
-              };
+            home-manager.extraSpecialArgs = {
+              neorgWorkspace = "chalet";
+              root = ./.;
             };
           }
         ];
