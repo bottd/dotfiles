@@ -59,7 +59,7 @@ local servers = {
 	tailwindcss = {},
 	ts_ls = {},
 	harper_ls = {
-		filetypes = { "norg", "markdown" },
+		filetypes = { "markdown" },
 		settings = { ["harper-ls"] = { userDictPath = "~/.config/nvim/dict.txt" } },
 	},
 	rust_analyzer = {},

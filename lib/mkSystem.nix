@@ -2,10 +2,10 @@
                  , system
                  , username
                  , format
+                 , desktopEnvironment ? "plasma"
                  , hostPath ? null
                  , extraSystemModules ? [ ]
                  , extraHomeModules ? [ ]
-                 ,
                  }:
 let
   path =
@@ -25,9 +25,8 @@ let
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
-  # Simple special args to avoid recursion
   specialArgs = {
-    inherit inputs username system;
+    inherit inputs username system desktopEnvironment hostName;
     inherit (inputs) nixpkgs;
     nixpkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;
@@ -35,7 +34,6 @@ let
     };
   };
 
-  # Home-manager configuration module
   homeConfig = {
     home-manager = {
       useGlobalPkgs = true;
@@ -46,6 +44,7 @@ let
           [
             inputs.catppuccin.homeModules.catppuccin
             inputs.spicetify-nix.homeManagerModules.default
+            inputs.plasma-manager.homeManagerModules.plasma-manager
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
