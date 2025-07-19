@@ -1,9 +1,14 @@
+{ desktopEnvironment, hostName, ... }:
 {
   imports = [
     ./desktop.nix
-    ./hyprland
-    ./eww
     ./darkman.nix
     ./gaming.nix
+  ] ++ (
+    if desktopEnvironment == "hyprland"
+    then [ ./hyprland ]
+    else [ ./plasma ]
+  ) ++ [
+    ./${desktopEnvironment}/host/${hostName}.nix
   ];
 }

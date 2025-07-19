@@ -1,22 +1,17 @@
-{ ... }:
+{ desktopEnvironment, ... }:
 {
   programs.zellij = {
     enable = true;
 
     settings = {
       default_shell = "nu";
-      mouse_mode = true; # defaults to true
+      mouse_mode = true;
       rounded_corners = true;
       show_startup_tips = false;
       show_release_notes = false;
       theme = "catppuccin-mocha";
-      copy_command = "wl-copy";
+      copy_command = if desktopEnvironment == "hyprland" then "wl-copy" else "xclip -selection clipboard";
       copy_clipboard = "system";
-      # TODO:
-      # - Auto dark/light mode
-      # - Rounded tab borders instead of arrow
-
-      # keybinds_clear_defaults = true;
       keybinds = {
         "locked" = {
           "bind \"Ctrl a\"" = {
