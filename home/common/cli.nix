@@ -29,5 +29,6 @@
     zellij
 
     fd
+    devcontainer
   ];
 }
