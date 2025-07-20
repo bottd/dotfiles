@@ -89,15 +89,17 @@ require("neorg").setup({
 	},
 })
 vim.keymap.set("n", "<leader>j", function()
+	local journal_path = vim.fn.expand(workspace_path .. "/journals/daily/" .. os.date("%Y-%m-%d") .. ".norg")
+
 	Snacks.win({
 		width = 0.6,
 		height = 0.8,
 		border = "rounded",
 		title = "Daily Journal",
 		title_pos = "center",
-	}, function(win)
-		vim.api.nvim_command(":Neorg journal today")
-	end)
+		file = journal_path,
+		enter = true,
+	})
 end, { desc = "Journal" })
 
 wk.add({
