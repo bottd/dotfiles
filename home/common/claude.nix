@@ -30,7 +30,14 @@
                   "mcp__filesystem__search_files",
                   "mcp__sequential-thinking__start_session",
                   "mcp__sequential-thinking__add_step",
-                  "mcp__sequential-thinking__review_progress"
+                  "mcp__sequential-thinking__review_progress",
+                  "mcp__playwright__navigate",
+                  "mcp__playwright__screenshot",
+                  "mcp__playwright__click",
+                  "mcp__playwright__fill",
+                  "mcp__playwright__select",
+                  "mcp__playwright__hover",
+                  "mcp__playwright__evaluate"
                 ],
                 "deny": [
                   "rm"

@@ -27,7 +27,7 @@ let
 
   specialArgs = {
     inherit inputs username system desktopEnvironment hostName;
-    inherit (inputs) nixpkgs;
+    inherit (inputs) nixpkgs nixos-hardware;
     nixpkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
