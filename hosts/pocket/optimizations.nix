@@ -33,43 +33,43 @@
   services.thermald.enable = true;
 
   # TLP configuration - https://wiki.nixos.org/wiki/Laptop
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 60; # Keep 60% performance on battery
-
-      INTEL_GPU_MIN_FREQ_ON_AC = 100;
-      INTEL_GPU_MIN_FREQ_ON_BAT = 100;
-      INTEL_GPU_MAX_FREQ_ON_AC = 1300;
-      INTEL_GPU_MAX_FREQ_ON_BAT = 800;
-
-      # Battery charge thresholds for longevity
-      START_CHARGE_THRESH_BAT0 = 30;
-      STOP_CHARGE_THRESH_BAT0 = 80;
-
-      DISK_DEVICES = "mmcblk0 nvme0n1";
-
-      RUNTIME_PM_ON_AC = "on";
-      RUNTIME_PM_ON_BAT = "auto";
-
-      WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
-
-      USB_AUTOSUSPEND = 1;
-      USB_EXCLUDE_BTUSB = 1;
-    };
-  };
-
+  # services.tlp = {
+  #   enable = true;
+  #   settings = {
+  #     CPU_SCALING_GOVERNOR_ON_AC = "performance";
+  #     CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+  #     CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+  #     CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+  #     CPU_MIN_PERF_ON_AC = 0;
+  #     CPU_MAX_PERF_ON_AC = 100;
+  #     CPU_MIN_PERF_ON_BAT = 0;
+  #     CPU_MAX_PERF_ON_BAT = 60; # Keep 60% performance on battery
+  #
+  #     INTEL_GPU_MIN_FREQ_ON_AC = 100;
+  #     INTEL_GPU_MIN_FREQ_ON_BAT = 100;
+  #     INTEL_GPU_MAX_FREQ_ON_AC = 1300;
+  #     INTEL_GPU_MAX_FREQ_ON_BAT = 800;
+  #
+  #     # Battery charge thresholds for longevity
+  #     START_CHARGE_THRESH_BAT0 = 30;
+  #     STOP_CHARGE_THRESH_BAT0 = 80;
+  #
+  #     DISK_DEVICES = "mmcblk0 nvme0n1";
+  #
+  #     RUNTIME_PM_ON_AC = "on";
+  #     RUNTIME_PM_ON_BAT = "auto";
+  #
+  #     WIFI_PWR_ON_AC = "off";
+  #     WIFI_PWR_ON_BAT = "on";
+  #
+  #     USB_AUTOSUSPEND = 1;
+  #     USB_EXCLUDE_BTUSB = 1;
+  #   };
+  # };
+  #
   environment.systemPackages = with pkgs; [
     powertop
-    tlp
+    # tlp
     acpi
     lm_sensors
     intel-gpu-tools
