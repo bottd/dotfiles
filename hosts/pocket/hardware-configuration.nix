@@ -1,10 +1,12 @@
 { config
 , lib
 , modulesPath
+, nixos-hardware
 , ...
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    nixos-hardware.nixosModules.gpd-pocket-4
   ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
