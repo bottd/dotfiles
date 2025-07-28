@@ -86,6 +86,12 @@ require("neorg").setup({
 		["external.worklog"] = {
 			config = { default_workspace_title = "external" },
 		},
+		["external.neorg-dew"] = {},
+		["external.dew-transclude"] = {
+			config = {
+				block_end_marker = "===", -- Marks end of level 1 heading block
+			},
+		},
 	},
 })
 vim.keymap.set("n", "<leader>j", function()
