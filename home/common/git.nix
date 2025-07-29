@@ -14,4 +14,12 @@
     git-filter-repo
     lazygit
   ];
+
+  programs.bash.initExtra = ''
+    export GITHUB_TOKEN="$(gh auth token)"
+  '';
+
+  programs.zsh.initExtra = ''
+    export GITHUB_TOKEN="$(gh auth token)"
+  '';
 }
