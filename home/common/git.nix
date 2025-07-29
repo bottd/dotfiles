@@ -15,11 +15,4 @@
     lazygit
   ];
 
-  programs.bash.initExtra = ''
-    export GITHUB_TOKEN="$(gh auth token)"
-  '';
-
-  programs.zsh.initContent = ''
-    export GITHUB_TOKEN="$(gh auth token)"
-  '';
 }
