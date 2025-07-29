@@ -19,7 +19,7 @@
     export GITHUB_TOKEN="$(gh auth token)"
   '';
 
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     export GITHUB_TOKEN="$(gh auth token)"
   '';
 }
