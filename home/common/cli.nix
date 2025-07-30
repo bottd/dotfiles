@@ -30,5 +30,6 @@
 
     fd
     devcontainer
+    jq
   ];
 }
