@@ -29,7 +29,6 @@
 
     cursors.enable = pkgs.stdenv.isLinux;
     cursors.flavor = "mocha";
-    gtk.enable = true;
     hyprland.enable = false;
 
     thunderbird = {
