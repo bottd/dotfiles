@@ -1,5 +1,9 @@
-{ desktopEnvironment, ... }:
+{ pkgs, ... }:
 {
+  home.packages = with pkgs; [
+    wl-clipboard
+  ];
+
   programs.zellij = {
     enable = true;
 
@@ -10,7 +14,7 @@
       show_startup_tips = false;
       show_release_notes = false;
       theme = "catppuccin-mocha";
-      copy_command = if desktopEnvironment == "hyprland" then "wl-copy" else "xclip -selection clipboard";
+      copy_command = "wl-copy";
       copy_clipboard = "system";
       keybinds = {
         "locked" = {
