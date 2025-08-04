@@ -90,6 +90,7 @@ require("neorg").setup({
 		["external.dew-transclude"] = {
 			config = {
 				block_end_marker = "===", -- Marks end of level 1 heading block
+				no_title = false,
 			},
 		},
 	},
@@ -113,7 +114,6 @@ wk.add({
 	{ "<leader>n<space>", ":Neorg index<Cr>", desc = "Index", icon = " " },
 	{ "<leader>na", desc = "Archive", icon = " " },
 	{ "<leader>naf", ":Neorg archive current-file<Cr>", desc = "Archive file", icon = " " },
-	{ "<leader>nf", ":Telescope neorg find_norg_files<Cr>", desc = "Find Norg" },
 	{ "<leader>nt", ":Neorg tangle<Cr>", desc = "tangle" },
 
 	{ "<leader>ne", desc = "Export" },
