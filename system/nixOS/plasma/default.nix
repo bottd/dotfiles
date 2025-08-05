@@ -2,10 +2,11 @@
 {
   services.xserver = {
     enable = true;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = false;
-    };
+  };
+
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = false;
   };
 
   services.desktopManager.plasma6 = {
