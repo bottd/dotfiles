@@ -34,7 +34,7 @@
     };
   };
 
-  home.shellAliases = {
-    zellij = ''zellij --theme catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}'';
-  };
+  # home.shellAliases = {
+  # zellij = ''zellij --theme catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}'';
+  # };
 }
