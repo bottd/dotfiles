@@ -14,6 +14,8 @@
   ] ++ (
     if desktopEnvironment == "hyprland"
     then [ ./hyprland ]
+    else if desktopEnvironment == "niri"
+    then [ ./niri.nix ]
     else [ ./plasma ]
   );
 }
