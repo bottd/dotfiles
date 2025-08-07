@@ -1,38 +1,29 @@
-{ lib
-, pkgs
-, inputs
-, system
-, ...
-}: {
+{ lib, pkgs, inputs, system, ... }: {
   home.file = {
     ".config/ghostty/config" = {
-      text =
-        #ghostty
-        ''
-          ${lib.optionalString pkgs.stdenv.isLinux "command = nu"}
+      text = ''
+        desktop-notifications = false
 
-          desktop-notifications = false
+        font-family = MonoLisa Variable
+        font-family-bold = MonoLisa Variable Regular Bold
+        font-family-italic = MonoLisa Variable Italic Italic
+        font-family-bold-italic = MonoLisa Variable Italic Bold Italic
 
-          font-family = MonoLisa Variable
-          font-family-bold = MonoLisa Variable Regular Bold
-          font-family-italic = MonoLisa Variable Italic Italic
-          font-family-bold-italic = MonoLisa Variable Italic Bold Italic
+        macos-non-native-fullscreen = true
 
-          macos-non-native-fullscreen = true
+        mouse-hide-while-typing = true
 
-          mouse-hide-while-typing = true
+        quit-after-last-window-closed = true
 
-          quit-after-last-window-closed = true
+        shell-integration = none
 
-          shell-integration = none
+        theme = dark:catppuccin-mocha,light:catppuccin-latte
 
-          theme = dark:catppuccin-mocha,light:catppuccin-latte
+        background-opacity = 0.8
+        background-blur-radius = 20
 
-          background-opacity = 0.8
-          background-blur-radius = 20
-
-          gtk-titlebar = true
-        '';
+        gtk-titlebar = true
+      '';
     };
   };
 

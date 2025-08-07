@@ -1,11 +1,5 @@
-{ config
-, username
-, inputs
-, host
-, lib
-, pkgs
-, ...
-}: {
+{ config, username, inputs, host, lib, pkgs, ... }:
+{
   users.users.${username} = lib.mkMerge [
     {
       description = "Drake Bott";
@@ -17,8 +11,6 @@
     })
     (lib.mkIf pkgs.stdenv.isDarwin { })
   ];
-
-  # services.getty.autologinUser = username;
 
   home-manager = {
     useGlobalPkgs = true;
