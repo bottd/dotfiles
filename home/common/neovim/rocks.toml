@@ -139,6 +139,9 @@ items = ["floaterm", "volt"]
 auto_highlight = "all"
 auto_install = "prompt"
 
+[treesitter.parser_map]
+lisp = "fennel"
+
 [config]
 auto_setup = true
 colorscheme = "catppuccin"
