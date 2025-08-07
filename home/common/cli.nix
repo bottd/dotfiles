@@ -13,6 +13,10 @@
     enableNushellIntegration = true;
   };
 
+  programs.bat = {
+    enable = true;
+  };
+
   home.packages = with pkgs; [
     android-tools
     gcc
