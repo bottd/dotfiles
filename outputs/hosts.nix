@@ -11,14 +11,12 @@ in
         username = "drakeb";
         format = "nixos";
         desktopEnvironment = "plasma";
-        extraSystemModules = [
-          {
-            home-manager.extraSpecialArgs = {
-              neorgWorkspace = "chalet";
-              root = ./.;
-            };
-          }
-        ];
+        extraSystemModules = [{
+          home-manager.extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        }];
       };
 
       pocket = mkSystem {
@@ -27,14 +25,12 @@ in
         username = "drakeb";
         format = "nixos";
         desktopEnvironment = "plasma";
-        extraSystemModules = [
-          {
-            home-manager.extraSpecialArgs = {
-              neorgWorkspace = "chalet";
-              root = ./.;
-            };
-          }
-        ];
+        extraSystemModules = [{
+          home-manager.extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        }];
       };
     };
 
@@ -44,14 +40,12 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        extraSystemModules = [
-          {
-            home-manager.extraSpecialArgs = {
-              neorgWorkspace = "chalet";
-              root = ./.;
-            };
-          }
-        ];
+        extraSystemModules = [{
+          home-manager.extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        }];
       };
     };
 

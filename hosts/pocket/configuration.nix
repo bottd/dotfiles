@@ -1,15 +1,12 @@
-{ pkgs
-, ...
-}: {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+{ pkgs, ... }:
+{
+  imports = [ ./hardware-configuration.nix ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
 
-  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -23,6 +20,5 @@
     ghostty
   ];
 
-  # Use this fixed version - do not change without reading docs
   system.stateVersion = "24.11";
 }

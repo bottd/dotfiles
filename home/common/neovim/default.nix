@@ -1,8 +1,4 @@
-{ pkgs
-, config
-, lib
-, ...
-}: {
+{ pkgs, config, lib, ... }: {
   home.file = {
     ".config/nvim/after" = {
       source = ./after;

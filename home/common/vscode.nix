@@ -1,10 +1,4 @@
-{ pkgs
-, ...
-}: {
-  home.packages = with pkgs; [
-    # code-cursor
-  ];
-
+{ pkgs, ... }: {
   programs.vscode = {
     enable = true;
     profiles.default = {
@@ -18,6 +12,15 @@
         "window.autoDetectColorScheme" = true;
         "workbench.preferredDarkColorTheme" = "Catppuccin Mocha";
         "workbench.preferredLightColorTheme" = "Catppuccin Latte";
+        "workbench.iconTheme" = "catppuccin-mocha";
+        "workbench.productIconTheme" = "catppuccin-mocha";
+        "editor.fontFamily" = "'MonoLisa Variable'";
+        "editor.fontSize" = 14;
+        "editor.fontLigatures" = true;
+        "editor.smoothScrolling" = true;
+        "editor.cursorSmoothCaretAnimation" = "on";
+        "editor.bracketPairColorization.enabled" = true;
+        "editor.guides.bracketPairs" = true;
       };
     };
   };

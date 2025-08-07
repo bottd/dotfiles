@@ -1,12 +1,13 @@
-{ inputs, ... }: { hostName
-                 , system
-                 , username
-                 , format
-                 , desktopEnvironment ? "plasma"
-                 , hostPath ? null
-                 , extraSystemModules ? [ ]
-                 , extraHomeModules ? [ ]
-                 }:
+{ inputs, ... }:
+{ hostName
+, system
+, username
+, format
+, desktopEnvironment ? "plasma"
+, hostPath ? null
+, extraSystemModules ? [ ]
+, extraHomeModules ? [ ]
+}:
 let
   path =
     if hostPath != null
@@ -39,6 +40,7 @@ let
       useGlobalPkgs = true;
       useUserPackages = true;
       extraSpecialArgs = specialArgs;
+
       users.${username} = {
         imports =
           [
@@ -49,11 +51,7 @@ let
             ../lib/createSymlink.nix
             ../home/common
           ]
-          ++ (
-            if format == "nixos"
-            then [ ../home/linux ]
-            else [ ../home/darwin ]
-          )
+          ++ (if format == "nixos" then [ ../home/linux ] else [ ../home/darwin ])
           ++ extraHomeModules;
       };
     };
@@ -68,17 +66,13 @@ systemBuilder {
       homeManagerModule
       homeConfig
     ]
-    ++ (
-      if format == "nixos"
-      then [
-        inputs.catppuccin.nixosModules.catppuccin
-        ../system/nixOS
-      ]
-      else [
-        # Maybe supported in the future
-        # https://github.com/catppuccin/nix/pull/477
-        # inputs.catppuccin.darwinModules.catppuccin
-      ]
-    )
+    ++ (if format == "nixos" then [
+      inputs.catppuccin.nixosModules.catppuccin
+      ../system/nixOS
+    ] else [
+      # Maybe supported in the future
+      # https://github.com/catppuccin/nix/pull/477
+      # inputs.catppuccin.darwinModules.catppuccin
+    ])
     ++ extraSystemModules;
 }
