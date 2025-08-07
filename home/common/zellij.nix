@@ -8,7 +8,7 @@
     enable = true;
 
     settings = {
-      default_shell = "nu";
+      default_shell = "zsh";
       mouse_mode = true;
       rounded_corners = true;
       show_startup_tips = false;
