@@ -1,4 +1,4 @@
-{ pkgs, neorgWorkspace, ... }: {
+{ pkgs, neorgWorkspace, config, ... }: {
   home.packages = with pkgs; [
     neofetch
   ];
@@ -8,7 +8,7 @@
     enableCompletion = true;
     autosuggestion = {
       enable = true;
-      highlight = "fg=8"; # Gray ghost text color
+      highlight = "fg=#${config.colorScheme.palette.overlay0}";
     };
     syntaxHighlighting.enable = true;
     initContent = ''
