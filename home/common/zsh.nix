@@ -8,7 +8,7 @@
     enableCompletion = true;
     autosuggestion = {
       enable = true;
-      highlight = "fg=#${config.colorScheme.palette.overlay0}";
+      highlight = "fg=#${config.colorScheme.palette.base04}";
     };
     syntaxHighlighting.enable = true;
     initContent = ''
