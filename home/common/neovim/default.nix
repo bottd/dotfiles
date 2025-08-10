@@ -78,6 +78,12 @@
 
     # GUI
     neovide
+
+    # images
+    imagemagick
+    luajitPackages.magick
+    ghostscript
+    mermaid-cli
   ];
 
   programs.neovim = {
