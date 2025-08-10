@@ -2,6 +2,7 @@
   home.file = {
     ".config/ghostty/config" = {
       text = ''
+        command = zellij
         desktop-notifications = false
 
         font-family = MonoLisa Variable
