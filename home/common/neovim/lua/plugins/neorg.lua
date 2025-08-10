@@ -113,7 +113,8 @@ wk.add({
 	{ "<leader>nj", ":Neorg journal<Cr>", desc = "Journal", icon = " " },
 	{ "<leader>n<space>", ":Neorg index<Cr>", desc = "Index", icon = " " },
 	{ "<leader>na", desc = "Archive", icon = " " },
-	{ "<leader>naf", ":Neorg archive current-file<Cr>", desc = "Archive file", icon = " " },
+	{ "<leader>naf", ":Neorg archive archive-file<Cr>", desc = "Archive file", icon = " " },
+	{ "<leader>nar", ":Neorg archive restore-file<Cr>", desc = "Restore file", icon = " " },
 	{ "<leader>nt", ":Neorg tangle<Cr>", desc = "tangle" },
 
 	{ "<leader>ne", desc = "Export" },
