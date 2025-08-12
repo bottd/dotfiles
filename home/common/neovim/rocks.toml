@@ -35,7 +35,7 @@ tree-sitter-graphql = "0.0.29"
 tree-sitter-html = "0.0.36"
 tree-sitter-markdown = "0.0.44"
 tree-sitter-markdown_inline = "0.0.42"
-tree-sitter-nix = "0.0.62"
+tree-sitter-nix = "0.0.63"
 tree-sitter-lua = "0.0.36"
 tree-sitter-python = "0.0.46"
 tree-sitter-query = "0.0.42"
@@ -64,7 +64,7 @@ tree-sitter-norg = "0.2.6"
 tree-sitter-norg-meta = "0.1.0"
 tree-sitter-clojure = "0.0.31"
 tree-sitter-godot_resource = "0.0.35"
-tree-sitter-fennel = "0.0.31"
+tree-sitter-fennel = "0.0.33"
 "telescope.nvim" = "scm"
 
 [plugins."neorg-dew"]
@@ -122,6 +122,18 @@ rev = "v1.0.2"
 [plugins."lsp_lines.nvim"]
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
+
+[bundles.neorg]
+items = [
+  "dew-transclude",
+  "neorg",
+  "neorg-archive",
+  "neorg-contexts",
+  "neorg-dew",
+  "neorg-interim-ls",
+  "neorg-query",
+  "neorg-templates",
+]
 
 [bundles.blink]
 items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
