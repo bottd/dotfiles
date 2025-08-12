@@ -4,7 +4,7 @@ let
     owner = "catppuccin";
     repo = "starship";
     rev = "main";
-    sha256 = "sha256-1w0TJdQP5lb9jCrCmhPlSexf0PkAlcz8GBDEsRjPRns=";
+    sha256 = "sha256-FLHjbClpTqaK4n2qmepCPkb8rocaAo3qeV4Zp1hia0g=";
   };
 
   makeStarshipTheme = palette: {
