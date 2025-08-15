@@ -53,8 +53,6 @@ in
     exec = "vesktop %U";
     icon = "discord";
     categories = [ "Network" "InstantMessaging" "Chat" ];
-    keywords = [ "discord" "vencord" "electron" "chat" ];
-    startupWMClass = "Vesktop";
     type = "Application";
   };
 
