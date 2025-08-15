@@ -2,7 +2,6 @@
   programs.direnv = {
     enable = true;
     enableBashIntegration = true;
-    enableNushellIntegration = true;
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
@@ -10,7 +9,6 @@
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
-    enableNushellIntegration = true;
   };
 
   programs.bat = {

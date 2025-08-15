@@ -2,7 +2,6 @@
   imports = [
     ./language.nix
     ./neovim
-    ./nushell
     ./starship
 
     ./catppuccin.nix
