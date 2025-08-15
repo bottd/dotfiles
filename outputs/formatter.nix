@@ -25,7 +25,12 @@
         cljfmt = {
           command = "${pkgs.cljfmt}/bin/cljfmt";
           options = [ "fix" ];
-          includes = [ "*.clj" "*.bb" ];
+          includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
+        };
+        clj-kondo = {
+          command = "${pkgs.clj-kondo}/bin/clj-kondo";
+          options = [ "--lint" ];
+          includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
         };
       };
     };

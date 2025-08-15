@@ -72,6 +72,16 @@ local servers = {
 			},
 		},
 	},
+	clojure_lsp = {
+		filetypes = { "clojure", "edn", "clojurescript", "clojurec" },
+		settings = {
+			clojure_lsp = {
+				lint = {
+					level = "on",
+				},
+			},
+		},
+	},
 }
 
 local lspconfig = require("lspconfig")
