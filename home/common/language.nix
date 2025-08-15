@@ -23,6 +23,7 @@
 
     # Clojure
     clojure
+    clojure-lsp
     leiningen
     cljfmt
     clj-kondo
