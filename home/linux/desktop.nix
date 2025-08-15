@@ -47,6 +47,17 @@ in
     }
   '';
 
+  xdg.desktopEntries.discord = {
+    name = "Discord";
+    genericName = "Internet Messenger";
+    exec = "vesktop %U";
+    icon = "discord";
+    categories = [ "Network" "InstantMessaging" "Chat" ];
+    keywords = [ "discord" "vencord" "electron" "chat" ];
+    startupWMClass = "Vesktop";
+    type = "Application";
+  };
+
   xdg.mimeApps = {
     enable = true;
     associations.added = {
