@@ -19,7 +19,6 @@ in
     geary
     godot
     inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
-    nyxt
     obs-studio
     vlc
   ];
