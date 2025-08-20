@@ -15,7 +15,6 @@
 "neorg-worklog" = "1.3.4"
 
 "oil.nvim" = "2.15.0"
-"headlines.nvim" = "scm"
 "which-key.nvim" = "3.17.0"
 "indent-blankline.nvim" = "3.9.0"
 "lualine.nvim" = "scm"
