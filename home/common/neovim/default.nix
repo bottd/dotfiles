@@ -8,7 +8,10 @@
       source = ./lua;
       recursive = true;
     };
-
+    ".config/nvim/fnl" = {
+      source = ./fnl;
+      recursive = true;
+    };
     ".config/nvim/dict.txt" = {
       source = ./dict.txt;
     };
