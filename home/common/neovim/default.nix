@@ -57,8 +57,12 @@
 
                        vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
 
-                       require("hotpot")
-                       require("general-config")
+                       require("hotpot").setup({
+                         compiler = {
+                           modules = { correlate = true }
+                         }
+                       })
+                       require("general_config")
         '';
     };
 
