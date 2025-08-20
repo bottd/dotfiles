@@ -14,6 +14,7 @@ require("conform").setup({
 		typescriptreact = { "prettierd", "prettier" },
 		clojure = { "cljfmt" },
 		babashka = { "cljfmt" },
+		fennel = { "fnlfmt" },
 	},
 	formatters = {
 		treefmt = {

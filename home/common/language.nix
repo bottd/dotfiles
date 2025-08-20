@@ -34,6 +34,10 @@
     janet
     jpm
 
+    # Fennel
+    fennel
+    fnlfmt
+
     # Common Lisp
     sbcl
 
