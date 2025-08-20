@@ -1,33 +1,63 @@
 local wk = require("which-key")
 local workspace = os.getenv("NEORG_WORKSPACE")
 local workspace_path = os.getenv("NEORG_WORKSPACE_PATH")
+
+local workspaces = {
+	"archive",
+	"inbox",
+	"journals",
+	"meta",
+	"notes",
+	"public",
+	"resources",
+	"scripts",
+	"zettel",
+}
+
+local function setup_template_autoload()
+	for _, ws in ipairs(workspaces) do
+		vim.api.nvim_create_autocmd({ "BufNewFile", "BufReadPost" }, {
+			pattern = workspace_path .. "/" .. ws .. "/**/*.norg",
+			desc = "Autoload template for " .. ws,
+			callback = function()
+				vim.schedule(function()
+					local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+					local is_empty = #lines == 0 or (#lines == 1 and lines[1] == "")
+					if vim.bo.buftype == "" and is_empty then
+						local template_path = workspace_path .. "/meta/templates/" .. ws .. ".norg"
+						local fallback_template = workspace_path .. "/meta/templates/index.norg"
+
+						if vim.fn.filereadable(template_path) == 1 then
+							vim.cmd("Neorg templates fload " .. ws)
+						elseif vim.fn.filereadable(fallback_template) == 1 then
+							vim.cmd("Neorg templates fload index")
+						end
+					end
+				end)
+			end,
+		})
+	end
+end
+
 require("neorg").setup({
 	load = {
 		["core.defaults"] = {},
-		["core.concealer"] = { config = {} },
+		["core.concealer"] = {},
 		["core.completion"] = {
 			config = {
-				engine = {
-					module_name = "external.lsp-completion",
-				},
+				engine = { module_name = "external.lsp-completion" },
 				name = "[Norg]",
 			},
 		},
 		["core.dirman"] = {
 			config = {
-				workspaces = {
-					[workspace] = workspace_path,
-					archive = (workspace_path .. "/archive"),
-					inbox = (workspace_path .. "/inbox"),
-					journals = (workspace_path .. "/journals"),
-					manuscripts = (workspace_path .. "/manuscripts"),
-					meta = (workspace_path .. "/meta"),
-					notes = (workspace_path .. "/notes"),
-					public = (workspace_path .. "/public"),
-					resources = (workspace_path .. "/resources"),
-					scripts = (workspace_path .. "/scripts"),
-					zettel = (workspace_path .. "/zettel"),
-				},
+				workspaces = (function()
+					local config = { [workspace] = workspace_path }
+					for _, ws in ipairs(workspaces) do
+						config[ws] = workspace_path .. "/" .. ws
+					end
+					return config
+				end)(),
 				default_workspace = workspace,
 			},
 		},
@@ -38,12 +68,9 @@ require("neorg").setup({
 					{
 						"title",
 						function()
-							local filename = vim.fn.expand("%:p:t:r")
-							filename = filename:gsub("-", " ")
-							filename = filename:gsub("(%a)([%w_']*)", function(first, rest)
-								return (first:upper() .. rest:lower())
+							return vim.fn.expand("%:p:t:r"):gsub("-", " "):gsub("(%a)([%w_']*)", function(first, rest)
+								return first:upper() .. rest:lower()
 							end)
-							return filename
 						end,
 					},
 					{ "authors", "Drake Bott" },
@@ -60,7 +87,7 @@ require("neorg").setup({
 		["core.journal"] = {
 			config = {
 				journal_folder = "daily",
-				template_name = "meta/templates/journal.norg",
+				template_name = "meta/templates/journals.norg",
 				strategy = "flat",
 				workspace = "journals",
 			},
@@ -71,9 +98,7 @@ require("neorg").setup({
 		["external.context"] = {},
 		["external.query"] = {},
 		["external.templates"] = {
-			config = {
-				templates_dir = (workspace_path .. "/meta/templates"),
-			},
+			config = { templates_dir = workspace_path .. "/meta/templates" },
 		},
 		["external.interim-ls"] = {
 			config = {
@@ -89,14 +114,15 @@ require("neorg").setup({
 		["external.neorg-dew"] = {},
 		["external.dew-transclude"] = {
 			config = {
-				block_end_marker = "===", -- Marks end of level 1 heading block
+				block_end_marker = "===",
 				no_title = false,
 			},
 		},
 	},
 })
+
 vim.keymap.set("n", "<leader>j", function()
-	local journal_path = vim.fn.expand(workspace_path .. "/journals/daily/" .. os.date("%Y-%m-%d") .. ".norg")
+	local journal_path = workspace_path .. "/journals/daily/" .. os.date("%Y-%m-%d") .. ".norg"
 
 	Snacks.win({
 		width = 0.6,
@@ -106,6 +132,7 @@ vim.keymap.set("n", "<leader>j", function()
 		title_pos = "center",
 		file = journal_path,
 		enter = true,
+		bo = { modifiable = true, readonly = false },
 	})
 end, { desc = "Journal" })
 
@@ -116,16 +143,12 @@ wk.add({
 	{ "<leader>naf", ":Neorg archive archive-file<Cr>", desc = "Archive file", icon = " " },
 	{ "<leader>nar", ":Neorg archive restore-file<Cr>", desc = "Restore file", icon = " " },
 	{ "<leader>nt", ":Neorg tangle<Cr>", desc = "tangle" },
-
 	{ "<leader>ne", desc = "Export" },
 	{ "<leader>nef", ":Neorg export to-file<Cr>", desc = "Export file" },
 	{ "<leader>ned", ":Neorg export directory<Cr>", desc = "Export directory" },
-	{
-		"<leader>nep",
-		":Neorg export directory " .. workspace_path .. "/public md<Cr>",
-		desc = "Export posts",
-	},
+	{ "<leader>nep", ":Neorg export directory " .. workspace_path .. "/public md<Cr>", desc = "Export posts" },
 	{ "<leader>nq", ":Neorg query run<Cr>", desc = "Run Queries" },
-	-- TODO: This icon will be neorg once my nerdfont (provided by ghostty) is updated
 	{ "<leader>n", desc = "Neorg", icon = " " },
 })
+
+setup_template_autoload()

@@ -1,5 +1,5 @@
 [plugins]
-"rocks.nvim" = "2.45.2"
+"rocks.nvim" = "2.46.0"
 "rocks-config.nvim" = "3.1.2"
 "rocks-dev.nvim" = "1.8.1"
 "rocks-git.nvim" = "2.5.5"
@@ -14,6 +14,7 @@
 "neorg-query" = "1.4.0"
 "neorg-worklog" = "1.3.4"
 
+friendly-snippets = "scm"
 "oil.nvim" = "2.15.0"
 "which-key.nvim" = "3.17.0"
 "indent-blankline.nvim" = "3.9.0"
@@ -64,15 +65,38 @@ tree-sitter-clojure = "0.0.31"
 tree-sitter-godot_resource = "0.0.35"
 tree-sitter-fennel = "0.0.34"
 "telescope.nvim" = "scm"
-"catppuccin" = "v1.11.0"
-"lazydev.nvim" = "1.9.0"
-"blink.cmp" = "v1.6.0"
-"blink.compat" = "v2.5.0"
-"neorg-templates" = "v2.0.3"
-"ts-comments.nvim" = "1.5.0"
-"gitsigns.nvim" = "1.0.2"
-"lsp_lines.nvim" = "v3.0.0"
-friendly-snippets = "scm"
+
+[plugins."catppuccin"]
+git = "catppuccin/nvim"
+rev = "v1.11.0"
+
+[plugins."lazydev.nvim"]
+git = "folke/lazydev.nvim"
+rev = "v1.9.0"
+
+[plugins."blink.cmp"]
+git = "Saghen/blink.cmp"
+rev = "v1.6.0"
+
+[plugins."blink.compat"]
+git = "Saghen/blink.compat"
+rev = "v2.5.0"
+
+[plugins."neorg-templates"]
+git = "pysan3/neorg-templates"
+rev = "v2.0.3"
+
+[plugins."ts-comments.nvim"]
+git = "folke/ts-comments.nvim"
+rev = "v1.5.0"
+
+[plugins."gitsigns.nvim"]
+git = "lewis6991/gitsigns.nvim"
+rev = "v1.0.2"
+
+[plugins."lsp_lines.nvim"]
+git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+rev = "v3.0.0"
 
 [plugins."neorg-dew"]
 git = "setupyourskills/neorg-dew"
