@@ -111,10 +111,6 @@ rev = "172adf5f6cb898a506d86970601de65405f4a1d3"
 git = "David-Kunz/cmp-npm"
 rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
-[plugins."floaterm"]
-git = "nvzone/floaterm"
-rev = "402a9da67bf238350160d8358db5e483587043d6"
-
 [plugins."volt"]
 git = "nvzone/volt"
 rev = "7b8c5e790120d9f08c8487dcb80692db6d2087a1"
