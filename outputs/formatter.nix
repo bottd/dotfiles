@@ -32,6 +32,11 @@
           options = [ "--lint" ];
           includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
         };
+        fnlfmt = {
+          command = "${pkgs.fnlfmt}/bin/fnlfmt";
+          options = [ "--fix" ];
+          includes = [ "*.fnl" ];
+        };
       };
     };
 
@@ -44,6 +49,7 @@
       buildInputs = with pkgs; [
         git
         config.treefmt.build.wrapper
+        fnlfmt
       ] ++ config.pre-commit.settings.enabledPackages;
     };
   };

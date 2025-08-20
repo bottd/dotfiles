@@ -65,6 +65,7 @@ tree-sitter-clojure = "0.0.31"
 tree-sitter-godot_resource = "0.0.35"
 tree-sitter-fennel = "0.0.34"
 "telescope.nvim" = "scm"
+"hotpot.nvim" = "0.14.8"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
