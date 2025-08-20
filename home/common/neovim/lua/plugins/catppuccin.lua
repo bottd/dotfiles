@@ -7,7 +7,6 @@ require("catppuccin").setup({
 	integrations = {
 		blink_cmp = true,
 		cmp = false,
-		headlines = true,
 		indent_blankline = {
 			enabled = true,
 			colored_indent_levels = true,
