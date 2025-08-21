@@ -59,14 +59,12 @@
                                                 :name "[Norg]"}}
                      :core.dirman {:config {:workspaces ((fn []
                                                            (local config
-                                                                  {workspace workspace_path}
-                                                                  (each [_ ws (ipairs workspaces)]
-                                                                    (tset config
-                                                                          ws
-                                                                          (.. workspace_path
-                                                                              "/"
-                                                                              ws)))
-                                                                  config)))
+                                                                  {workspace workspace_path})
+                                                           (each [_ ws (ipairs workspaces)]
+                                                             (tset config ws
+                                                                   (.. workspace_path
+                                                                       "/" ws)))
+                                                           config))
                                             :default_workspace workspace}}
                      :core.esupports.metagen {:config {:type :auto
                                                        :template [[:title

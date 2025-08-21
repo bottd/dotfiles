@@ -3,8 +3,8 @@
 
 (cmp-npm.setup)
 
-(blink.setup {:keymap [:preset :super-tab]
-              :snippets [:preset :luasnip]
+(blink.setup {:keymap {:preset :super-tab}
+              :snippets {:preset :luasnip}
               :term {:enabled true}
               :signature {:enabled true}
               :appearance {:kind_icons {}}
