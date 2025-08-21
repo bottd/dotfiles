@@ -31,13 +31,16 @@
                                        :indent 2
                                        :padding 1}]}})
 
-(wk.add [{1 :<leader>gg 2 Snacks.lazygit :desc :Lazygit}
-         {1 :<leader>gw 2 Snacks.gitbrowse :desc "Open in browser" :icon " "}
-         {1 :<leader>wz 2 Snacks.zen :desc "Zen mode" :icon "󱅻 "}
+(wk.add [{1 :<leader>gg 2 #(Snacks.lazygit) :desc :Lazygit}
+         {1 :<leader>gw
+          2 #(Snacks.gitbrowse)
+          :desc "Open in browser"
+          :icon " "}
+         {1 :<leader>wz 2 #(Snacks.zen) :desc "Zen mode" :icon "󱅻 "}
          {1 :<leader>f :group :Find}
-         {1 :<leader>ff 2 Snacks.picker.files :desc :Files}
-         {1 :<leader>fs 2 Snacks.picker.grep :desc :String}
-         {1 :<leader>fb 2 Snacks.picker.buffers :desc :Buffer}
-         {1 :<leader>fk 2 Snacks.picker.keymaps :desc :Keymap}
-         {1 :<leader>fh 2 Snacks.picker.help :desc "Help Pages"}
-         {1 :<leader>fm 2 Snacks.picker.man :desc "Man Pages"}])
+         {1 :<leader>ff 2 #(Snacks.picker.files) :desc :Files}
+         {1 :<leader>fs 2 #(Snacks.picker.grep) :desc :String}
+         {1 :<leader>fb 2 #(Snacks.picker.buffers) :desc :Buffer}
+         {1 :<leader>fk 2 #(Snacks.picker.keymaps) :desc :Keymap}
+         {1 :<leader>fh 2 #(Snacks.picker.help) :desc "Help Pages"}
+         {1 :<leader>fm 2 #(Snacks.picker.man) :desc "Man Pages"}])
