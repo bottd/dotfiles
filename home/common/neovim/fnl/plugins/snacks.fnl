@@ -1,40 +1,38 @@
 (local snacks (require :snacks))
+(local wk (require :which-key))
+
 (snacks.setup {:bigfile {:enabled true}
-               :dashboard {:enabled true
-                           :sections [{:section :terminal
-                                       :cmd "fortune -s | cowsay -f stegosaurus"
-                                       :hl :header
-                                       :height 24
-                                       :width 68}
-                                      {:icon " "
-                                       :title :Projects
-                                       :section :projects
-                                       :indent 2
-                                       :padding 1}
-                                      {:icon " "
-                                       :title "Recent Files"
-                                       :section :recent_files
-                                       :indent 2
-                                       :padding 1}]}
                :gitbrowse {:enabled true}
+               :lazygit {:enabled true}
+               :zen {:enabled true}
+               :win {:enabled true}
+               :picker {:layout {:preset :ivy_split}}
+               :styles {:zen {:backdrop {:transparent false}}}
                :image {:enabled true
                        :doc {:enabled true
                              :inline true
                              :float true
                              :max_width 80
                              :max_height 40}}
-               :lazygit {:enabled true}
-               :picker {:layout {:preset :ivy_split}}
-               :styles {:zen {:backdrop {:transparent false}}}
-               :zen {:enabled true}
-               :win {:enabled true}})
+               :dashboard {:enabled true
+                           :sections [{:section :terminal
+                                       :cmd "fortune -s | cowsay -f stegosaurus"
+                                       :hl :header
+                                       :height 24
+                                       :width 68}
+                                      {:icon " "
+                                       :title :Projects
+                                       :section :projects
+                                       :indent 2
+                                       :padding 1}
+                                      {:icon " "
+                                       :title "Recent Files"
+                                       :section :recent_files
+                                       :indent 2
+                                       :padding 1}]}})
 
-(local wk (require :which-key))
 (wk.add [{1 :<leader>gg 2 Snacks.lazygit :desc :Lazygit}
-         {1 :<leader>gw
-          2 Snacks.gitbrowse
-          :desc "Open in browser"
-          :icon " "}
+         {1 :<leader>gw 2 Snacks.gitbrowse :desc "Open in browser" :icon " "}
          {1 :<leader>wz 2 Snacks.zen :desc "Zen mode" :icon "󱅻 "}
          {1 :<leader>f :group :Find}
          {1 :<leader>ff 2 Snacks.picker.files :desc :Files}
