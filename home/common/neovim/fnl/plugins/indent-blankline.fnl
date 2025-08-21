@@ -7,4 +7,6 @@
                                                                   :duration 20
                                                                   :unit :total})})
 
-(ibl.setup {:indent {:char "│"} :scope {:enabled false}})
+(ibl.setup {:indent {:char "│"}
+            :scope {:enabled false}
+            :exclude {:language [:fennel]}})
