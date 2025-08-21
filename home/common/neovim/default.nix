@@ -4,10 +4,6 @@
       source = ./after;
       recursive = true;
     };
-    ".config/nvim/lua" = {
-      source = ./lua;
-      recursive = true;
-    };
     ".config/nvim/fnl" = {
       source = ./fnl;
       recursive = true;
