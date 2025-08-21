@@ -4,6 +4,7 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
     nix-direnv.enable = true;
+    silent = true;
   };
 
   programs.atuin = {
