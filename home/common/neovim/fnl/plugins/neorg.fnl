@@ -20,33 +20,38 @@
                                                :/**/*.norg)
                                   ":desc" (.. "Autoload template for " ws)
                                   :callback (fn []
-                                              (vim.schedule (nil)
-                                                            (local lines
-                                                                   (vim.api.nvim_buf_get_lines 0
-                                                                                               0
-                                                                                               -1
-                                                                                               false)
-                                                                   (local is_empty
-                                                                          (or ((length lines
-                                                                                       0))
-                                                                              (and ((length lines) 1)
-                                                                                   ((. lines
-                                                                                       1) ""))))
-                                                                   (when (and is_empty
-                                                                              (vim.bo.buftype ""))
-                                                                     (local template_path
-                                                                            (.. workspace_path
-                                                                                :/meta/templates/
-                                                                                ws
-                                                                                :.norg))
-                                                                     (local fallback_template
-                                                                            (.. workspace_path
-                                                                                :/meta/templates/index.norg))
-                                                                     (cond ((vim.fn.filereadable template_path) 1)
-                                                                           (vim.cmd (.. "Neorg templates fload "
-                                                                                        ws))
-                                                                           ((vim.fn.filereadable fallback_template) 1)
-                                                                           (vim.cmd "Neorg templates fload index"))))))})))
+                                              (vim.schedule (fn []
+                                                              (local lines
+                                                                     (vim.api.nvim_buf_get_lines 0
+                                                                                                 0
+                                                                                                 -1
+                                                                                                 false))
+                                                              (local is_empty
+                                                                     (or (= (length lines)
+                                                                            0)
+                                                                         (and (= (length lines)
+                                                                                 1)
+                                                                              (= (. lines
+                                                                                    1)
+                                                                                 ""))))
+                                                              (when (and is_empty
+                                                                         (= vim.bo.buftype
+                                                                            ""))
+                                                                (local template_path
+                                                                       (.. workspace_path
+                                                                           :/meta/templates/
+                                                                           ws
+                                                                           :.norg))
+                                                                (local fallback_template
+                                                                       (.. workspace_path
+                                                                           :/meta/templates/index.norg))
+                                                                (cond (= (vim.fn.filereadable template_path)
+                                                                         1)
+                                                                      (vim.cmd (.. "Neorg templates fload "
+                                                                                   ws))
+                                                                      (= (vim.fn.filereadable fallback_template)
+                                                                         1)
+                                                                      (vim.cmd "Neorg templates fload index"))))))})))
 
 (neorg.setup {:load {:core.defaults {}
                      :core.concealer {}
