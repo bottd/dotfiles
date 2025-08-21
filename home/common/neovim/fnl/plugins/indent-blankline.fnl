@@ -8,5 +8,5 @@
                                                                   :unit :total})})
 
 (ibl.setup {:indent {:char "│"}
-            :scope {:enabled false}
+            :scope {:enabled true}
             :exclude {:language [:fennel]}})
