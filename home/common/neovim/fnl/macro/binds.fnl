@@ -1,4 +1,8 @@
-(macro binds [...]
+(fn group [name prefix binds]
+  "Helper macro for group syntax - just returns as-is for binds macro to process"
+  `(group ,name ,prefix ,binds))
+
+(fn binds [bindings]
   "Register key bindings with which-key in an ergonomic syntax.
 
   (binds [bind1 bind2 ...])
@@ -34,29 +38,36 @@
     { '<leader>hr', function() reset-hunk() end, desc = 'Reset' },
   })
   "
-  (let [all-binds (icollect [_ item (ipairs [...])]
-                    (if (and (list? item) (= (tostring (. item 1)) :group))
-                        ;; Process group
-                        (let [(_ group-name prefix binds) item
-                              group-entry `{1 ,prefix :group ,group-name}
-                              group-binds (icollect [_ bind (ipairs binds)]
-                                            (let [full-key `(.. ,prefix
-                                                                ,(. bind 1))]
-                                              (match bind
-                                                [suffix action desc] `{1 ,full-key
-                                                                       2 ,action
-                                                                       :desc ,desc}
-                                                [suffix action desc icon] `{1 ,full-key
-                                                                            2 ,action
-                                                                            :desc ,desc
-                                                                            :icon ,icon})))]
-                          (values group-entry (unpack group-binds)))
-                        ;; Process individual bind
-                        (match item
-                          [key action desc] `{1 ,key 2 ,action :desc ,desc}
-                          [key action desc icon] `{1 ,key
-                                                   2 ,action
-                                                   :desc ,desc
-                                                   :icon ,icon})))]
+  (var group-items [])
+  (var regular-items [])
+  (each [_ item (ipairs bindings)]
+    (if (and (list? item) (= (tostring (. item 1)) :group))
+        ;; Process group
+        (let [[_ group-name prefix binds] item]
+          (table.insert group-items `{1 ,prefix :group ,group-name})
+          (each [_ bind (ipairs binds)]
+            (let [[suffix action desc & rest] bind
+                  full-key `(.. ,prefix ,suffix)]
+              (if (= (length rest) 1)
+                  (table.insert group-items
+                                `{1 ,full-key
+                                  2 ,action
+                                  :desc ,desc
+                                  :icon ,(. rest 1)})
+                  (table.insert group-items
+                                `{1 ,full-key 2 ,action :desc ,desc})))))
+        ;; Process individual bind
+        (let [[key action desc & rest] item]
+          (if (= (length rest) 1)
+              (table.insert regular-items
+                            `{1 ,key 2 ,action :desc ,desc :icon ,(. rest 1)})
+              (table.insert regular-items `{1 ,key 2 ,action :desc ,desc})))))
+  (let [all-items []]
+    (each [_ item (ipairs regular-items)]
+      (table.insert all-items item))
+    (each [_ item (ipairs group-items)]
+      (table.insert all-items item))
     `(let [wk# (require :which-key)]
-       (wk#.add [,(unpack all-binds)]))))
+       (wk#.add [,(unpack all-items)]))))
+
+{: binds : group}

@@ -1,5 +1,5 @@
 (local gitsigns (require :gitsigns))
-(import-macros binds :macro.binds)
+(import-macros {: binds : group} :macro.binds)
 
 (gitsigns.setup {})
 
