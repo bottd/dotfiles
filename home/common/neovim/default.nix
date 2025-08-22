@@ -5,8 +5,7 @@
       recursive = true;
     };
     ".config/nvim/fnl" = {
-      source = ./fnl;
-      recursive = true;
+      source = config.lib.meta.createSymlink "home/common/neovim/fnl";
     };
     ".config/nvim/dict.txt" = {
       source = ./dict.txt;
