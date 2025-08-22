@@ -1,24 +1,26 @@
-(fn group [name prefix binds]
+(fn group [name prefix binds icon]
   "Helper macro for group syntax - just returns as-is for binds macro to process"
-  `(group ,name ,prefix ,binds))
+  (if icon
+      `(group ,name ,prefix ,binds ,icon)
+      `(group ,name ,prefix ,binds)))
 
-(fn binds [bindings]
+(fn binds [items]
   "Register key bindings with which-key in an ergonomic syntax.
 
   (binds [bind1 bind2 ...])
 
-  Bind: [key action desc icon]
-    - key: declare which key to bind to
-    - action: string for vim cmd or fennel function
-    - desc: shown in which-key menu
-    - icon: (optional) shown in which-key menu
+  Bind: [key action desc icon?]
+    - key: which key to bind to
+    - action: vim command string or fennel function
+    - desc: shown in which-key
+    - icon: (optional) shown in which-key
 
   Group bind:
-    (group name prefix binds)
-    
-    - name: Display name for the group (string)
-    - prefix: Key prefix like :<leader>h
-    - binds: List of [suffix action desc] or [suffix action desc icon]
+    (group name prefix binds icon?)
+    - name: group display name
+    - prefix: key prefix like :<leader>h
+    - binds: list of [bind]
+    - icon: (optional) shown in which-key
 
   Examples:
     (binds [[:jj #(vim.cmd.stopinsert) \"Exit insert\"]
@@ -38,36 +40,28 @@
     { '<leader>hr', function() reset-hunk() end, desc = 'Reset' },
   })
   "
-  (var group-items [])
-  (var regular-items [])
-  (each [_ item (ipairs bindings)]
-    (if (and (list? item) (= (tostring (. item 1)) :group))
-        ;; Process group
-        (let [[_ group-name prefix binds] item]
-          (table.insert group-items `{1 ,prefix :group ,group-name})
-          (each [_ bind (ipairs binds)]
-            (let [[suffix action desc & rest] bind
-                  full-key `(.. ,prefix ,suffix)]
-              (if (= (length rest) 1)
-                  (table.insert group-items
-                                `{1 ,full-key
-                                  2 ,action
-                                  :desc ,desc
-                                  :icon ,(. rest 1)})
-                  (table.insert group-items
-                                `{1 ,full-key 2 ,action :desc ,desc})))))
-        ;; Process individual bind
-        (let [[key action desc & rest] item]
-          (if (= (length rest) 1)
-              (table.insert regular-items
-                            `{1 ,key 2 ,action :desc ,desc :icon ,(. rest 1)})
-              (table.insert regular-items `{1 ,key 2 ,action :desc ,desc})))))
-  (let [all-items []]
-    (each [_ item (ipairs regular-items)]
-      (table.insert all-items item))
-    (each [_ item (ipairs group-items)]
-      (table.insert all-items item))
+  (let [specs []]
+    (each [_ item (ipairs items)]
+      (if (and (list? item) (= (tostring (. item 1)) :group))
+          ;; Process group - add group header then all group binds
+          (let [[_ name prefix group-binds icon] item
+                group-spec (if icon
+                               `{1 ,prefix :group ,name :icon ,icon}
+                               `{1 ,prefix :group ,name})]
+            (table.insert specs group-spec)
+            (each [_ [suffix action desc icon] (ipairs group-binds)]
+              (let [full-key `(.. ,prefix ,suffix)
+                    spec (if icon
+                             `{1 ,full-key 2 ,action :desc ,desc :icon ,icon}
+                             `{1 ,full-key 2 ,action :desc ,desc})]
+                (table.insert specs spec))))
+          ;; Process regular bind
+          (let [[key action desc icon] item
+                spec (if icon
+                         `{1 ,key 2 ,action :desc ,desc :icon ,icon}
+                         `{1 ,key 2 ,action :desc ,desc})]
+            (table.insert specs spec))))
     `(let [wk# (require :which-key)]
-       (wk#.add [,(unpack all-items)]))))
+       (wk#.add [,(unpack specs)]))))
 
 {: binds : group}
