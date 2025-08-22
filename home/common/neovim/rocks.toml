@@ -46,7 +46,6 @@ tree-sitter-tsx = "0.0.36"
 tree-sitter-typescript = "0.0.37"
 tree-sitter-typst = "0.0.37"
 tree-sitter-vimdoc = "0.0.35"
-tree-sitter-nu = "scm"
 tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.36"
 "conform.nvim" = "9.0.0"
@@ -103,11 +102,11 @@ rev = "v3.0.0"
 
 [plugins."neorg-dew"]
 git = "setupyourskills/neorg-dew"
-rev = "4e7bbd1ae8ee3aa744d0862c8335beee1c2d95fd"
+rev = "5d76c45926c016640e9d91c9da976e6580e2843b"
 
 [plugins."dew-transclude"]
 git = "setupyourskills/dew-transclude"
-rev = "172adf5f6cb898a506d86970601de65405f4a1d3"
+rev = "b0e45a686e85748fefc42411981fd73d1df36d9c"
 
 [plugins."cmp-npm"]
 git = "David-Kunz/cmp-npm"
