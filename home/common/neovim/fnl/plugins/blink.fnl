@@ -1,7 +1,7 @@
-(local cmp-npm (require :cmp-npm))
 (local blink (require :blink.cmp))
+(local compat (require :blink.compat))
 
-(cmp-npm.setup)
+(compat.setup {:sources {:npm {:module :cmp-npm}}})
 
 (blink.setup {:keymap {:preset :super-tab}
               :term {:enabled true}
