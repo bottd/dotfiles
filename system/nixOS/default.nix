@@ -11,6 +11,7 @@
     ./mullvad.nix
     ./printing.nix
     ./torrent.nix
+    ./udev.nix
   ] ++ (
     if desktopEnvironment == "hyprland"
     then [ ./hyprland ]
