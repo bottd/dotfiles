@@ -46,7 +46,7 @@ let
           [
             inputs.catppuccin.homeModules.catppuccin
             inputs.spicetify-nix.homeManagerModules.default
-            inputs.plasma-manager.homeManagerModules.plasma-manager
+            inputs.plasma-manager.homeModules.plasma-manager
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
