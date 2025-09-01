@@ -19,6 +19,21 @@ in
         }];
       };
 
+      eink = mkSystem {
+        hostName = "eink";
+        system = "x86_64-linux";
+        username = "drakeb";
+        format = "nixos";
+        desktopEnvironment = "plasma";
+        extraSystemModules = [{
+          home-manager.extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        }];
+      };
+
+
       pocket = mkSystem {
         hostName = "pocket";
         system = "x86_64-linux";
