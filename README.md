@@ -1,11 +1,5 @@
 # Drake's Flake
 
-This is my personal Nix flake. I use it to manage configurations for my
-
-- NixOS Desktop
-- NixOS Pocket Laptop
-- MacBook Pros
-
 ## Useful commands
 
 - Use [direnv](https://github.com/direnv/direnv) for development
@@ -15,14 +9,20 @@ This is my personal Nix flake. I use it to manage configurations for my
 
 #### NixOS (Linux)
 
-I have a configuration for desktop:
+I have a configuration for my gaming desktop:
 
 ```bash
 
 sudo nixos-rebuild switch --flake .#desktop
 ```
 
-and my [GPD Pocket 4](https://gpd.hk/gpdpocket4):
+e-ink desktop using [Dasung Paperlike](https://shop.dasung.com/)
+
+```sh
+sudo nixos-rebuild switch --flake .#eink
+```
+
+my [GPD Pocket 4](https://gpd.hk/gpdpocket4):
 
 ```sh
 sudo nixos-rebuild switch --flake .#pocket
@@ -30,13 +30,16 @@ sudo nixos-rebuild switch --flake .#pocket
 
 #### MacOS
 
-My personal MacBook uses [nix-darwin]():
+My personal MacBook uses [nix-darwin](https://github.com/nix-darwin/nix-darwin):
 
 ```bash
 darwin-rebuild switch --flake .#macbook
 ```
 
-Standalone home-manager configuration for external Macs:
+#### Standalone
+
+Standalone home-manager configuration for Linux distros that are not NixOS or a
+Mac not using darwin:
 
 ```bash
 home-manager switch --flake .#standalone
