@@ -21,7 +21,6 @@ in
     inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
     obs-studio
     vlc
-    google-chrome
   ];
 
   programs.thunderbird = {
