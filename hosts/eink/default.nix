@@ -3,7 +3,7 @@
   imports = [
     ./configuration.nix
     ../../system/base
-    ../../system/common/linux
+    ../../system/common
     ../../system/users
   ];
 }

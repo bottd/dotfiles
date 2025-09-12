@@ -13,4 +13,5 @@
 
   time.timeZone = "America/Chicago";
   nixpkgs.config.allowUnfree = true;
+  system.stateVersion = "25.05";
 }

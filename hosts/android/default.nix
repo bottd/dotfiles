@@ -1,5 +1,4 @@
-{ ...
-}: {
+{ ... }: {
   imports = [
     ./configuration.nix
     ../../system/base

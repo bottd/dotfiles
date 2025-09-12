@@ -47,6 +47,21 @@ in
           };
         }];
       };
+
+      android = mkSystem {
+        hostName = "android";
+        system = "aarch64-linux";
+        username = "drake";
+        format = "nixos";
+        enableAVF = true;
+        desktopEnvironment = "none";
+        extraSystemModules = [{
+          home-manager.extraSpecialArgs = {
+            neorgWorkspace = "chalet";
+            root = ./.;
+          };
+        }];
+      };
     };
 
     darwinConfigurations = {
