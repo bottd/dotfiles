@@ -67,10 +67,11 @@ systemBuilder {
       homeManagerModule
       homeConfig
     ]
-    ++ (if format == "nixos" then [
+    ++ (if enableAVF then [ inputs.nixos-avf.nixosModules.avf ]
+    else if format == "nixos" then [
       inputs.catppuccin.nixosModules.catppuccin
       ../system/nixOS
-    ] ++ (if enableAVF then [ inputs.nixos-avf.nixosModules.avf ] else [ ])
+    ]
     else [
       # Maybe supported in the future
       # https://github.com/catppuccin/nix/pull/477
