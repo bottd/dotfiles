@@ -44,6 +44,7 @@
       inputs.home-manager.follows = "home-manager";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-avf.url = "github:nix-community/nixos-avf";
   };
 
   outputs = inputs @ { flake-parts, ... }:

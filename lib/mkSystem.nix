@@ -7,6 +7,7 @@
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
+, enableAVF ? false
 }:
 let
   path =
@@ -69,7 +70,8 @@ systemBuilder {
     ++ (if format == "nixos" then [
       inputs.catppuccin.nixosModules.catppuccin
       ../system/nixOS
-    ] else [
+    ] ++ (if enableAVF then [ inputs.nixos-avf.nixosModules.avf ] else [ ])
+    else [
       # Maybe supported in the future
       # https://github.com/catppuccin/nix/pull/477
       # inputs.catppuccin.darwinModules.catppuccin
