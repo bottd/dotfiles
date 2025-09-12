@@ -3,7 +3,7 @@
 , system
 , username
 , format
-, desktopEnvironment
+, desktopEnvironment ? null
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
