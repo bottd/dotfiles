@@ -1,5 +1,4 @@
 { pkgs
-, inputs
 , ...
 }:
 let
@@ -18,7 +17,6 @@ in
     flashprint
     geary
     godot
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
     obs-studio
     vlc
   ];
@@ -57,9 +55,6 @@ in
 
   xdg.mimeApps = {
     enable = true;
-    associations.added = {
-      "x-scheme-handler/claude" = "claude-desktop.desktop";
-    };
   };
 
   # Force overwrite mimeapps.list to prevent conflicts
