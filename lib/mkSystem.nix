@@ -3,7 +3,7 @@
 , system
 , username
 , format
-, desktopEnvironment ? "plasma"
+, desktopEnvironment
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
