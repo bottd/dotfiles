@@ -54,7 +54,6 @@ in
         username = "drake";
         format = "nixos";
         enableAVF = true;
-        desktopEnvironment = "none";
         extraSystemModules = [{
           home-manager.extraSpecialArgs = {
             neorgWorkspace = "chalet";
