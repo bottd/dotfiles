@@ -36,7 +36,4 @@
 
   # Set platform
   nixpkgs.hostPlatform = "aarch64-darwin";
-
-  # Enable fonts
-  fonts.fontDir.enable = true;
 }
