@@ -1,6 +1,7 @@
 { desktopEnvironment ? null, lib, ... }:
 {
   imports = [
+    ./catppuccin.nix
     ./claude.nix
     ./cli.nix
     ./git.nix
@@ -14,7 +15,6 @@
 
     # import GUI modules when desktop environment is present
   ] ++ lib.optionals (desktopEnvironment != null) [
-    ./catppuccin.nix
     ./desktop.nix
     ./ghostty.nix
     ./spicetify.nix

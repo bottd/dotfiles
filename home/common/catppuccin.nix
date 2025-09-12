@@ -1,12 +1,6 @@
-{ pkgs, inputs, ... }:
-{
-  imports = [
-    inputs.nix-colors.homeManagerModules.default
-  ];
-
-  colorScheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
-
-  catppuccin = {
+{ pkgs, inputs, desktopEnvironment ? null, lib, ... }:
+let
+  baseConfig = {
     flavor = "mocha";
     accent = "blue";
 
@@ -24,7 +18,9 @@
     micro.enable = true;
     yazi.enable = true;
     zellij.enable = true;
+  };
 
+  guiConfig = {
     cursors = {
       enable = pkgs.stdenv.isLinux;
       flavor = "mocha";
@@ -38,4 +34,13 @@
       profile = "drake";
     };
   };
+in
+{
+  imports = [
+    inputs.nix-colors.homeManagerModules.default
+  ];
+
+  colorScheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+
+  catppuccin = baseConfig // lib.optionalAttrs (desktopEnvironment != null) guiConfig;
 }
