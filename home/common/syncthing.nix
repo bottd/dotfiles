@@ -4,6 +4,12 @@
     enable = true;
     tray.enable = pkgs.stdenv.hostPlatform.isLinux;
     settings = {
+      devices = {
+        "cellar-pi" = {
+          id = "XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX"; # Replace with actual device ID
+          autoAcceptFolders = true;
+        };
+      };
       folders = {
         "${neorgWorkspace}" = {
           path = "~/${neorgWorkspace}";
