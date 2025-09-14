@@ -59,7 +59,9 @@
                        :workspace {:checkThirdParty false}
                        :telemetry {:enable false}}}
         :clojure_lsp {:filetypes [:clojure :edn :clojurescript :clojurec]
-                      :settings {:clojure_lsp {:lint {:level :on}}}}})
+                      :settings {:clojure_lsp {:lint {:level :on}}}}
+        :nil_ls {:filetypes [:nix]
+                 :settings {:nil {:formatting {:command [:nixpkgs-fmt]}}}}})
 
 (each [server config (pairs servers)]
   (set config.capabilities (blink.get_lsp_capabilities config.capabilities))
