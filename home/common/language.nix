@@ -21,6 +21,9 @@
     lux-cli
     stylua
 
+    # Nix
+    nil
+
     # Clojure
     clojure
     clojure-lsp
