@@ -60,7 +60,7 @@ let
 in
 systemBuilder {
   inherit system;
-  specialArgs = specialArgs;
+  inherit specialArgs;
   modules =
     [
       path
@@ -71,11 +71,9 @@ systemBuilder {
     else if format == "nixos" then [
       inputs.catppuccin.nixosModules.catppuccin
       ../system/nixOS
+      (_: { system.stateVersion = "25.05"; })
     ]
     else [
-      # Maybe supported in the future
-      # https://github.com/catppuccin/nix/pull/477
-      # inputs.catppuccin.darwinModules.catppuccin
     ])
     ++ extraSystemModules;
 }

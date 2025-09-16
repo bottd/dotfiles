@@ -27,37 +27,38 @@ in
     profiles.drake.isDefault = true;
   };
 
-  xdg.configFile."vesktop/settings/settings.json".text = builtins.toJSON {
-    autostart = true;
-    minimizeToTray = false;
-    discordBranch = "stable";
-    arRPC = true;
-    vencordDir = "$HOME/.config/vesktop/vencordDist";
+  xdg = {
+    configFile = {
+      "vesktop/settings/settings.json".text = builtins.toJSON {
+        autostart = true;
+        minimizeToTray = false;
+        discordBranch = "stable";
+        arRPC = true;
+        vencordDir = "$HOME/.config/vesktop/vencordDist";
+      };
+
+      "vesktop/settings/quickCss.css".text = ''
+        /* Apply Catppuccin Mocha (dark) theme by default */
+        ${builtins.readFile catppuccin-mocha-css}
+
+        /* Override with Catppuccin Latte (light) theme when system prefers light mode */
+        @media (prefers-color-scheme: light) {
+          ${builtins.readFile catppuccin-latte-css}
+        }
+      '';
+
+      "mimeapps.list".force = true;
+    };
+
+    desktopEntries.discord = {
+      name = "Discord";
+      genericName = "Internet Messenger";
+      exec = "vesktop %U";
+      icon = "discord";
+      categories = [ "Network" "InstantMessaging" "Chat" ];
+      type = "Application";
+    };
+
+    mimeApps.enable = true;
   };
-
-  xdg.configFile."vesktop/settings/quickCss.css".text = ''
-    /* Apply Catppuccin Mocha (dark) theme by default */
-    ${builtins.readFile catppuccin-mocha-css}
-    
-    /* Override with Catppuccin Latte (light) theme when system prefers light mode */
-    @media (prefers-color-scheme: light) {
-      ${builtins.readFile catppuccin-latte-css}
-    }
-  '';
-
-  xdg.desktopEntries.discord = {
-    name = "Discord";
-    genericName = "Internet Messenger";
-    exec = "vesktop %U";
-    icon = "discord";
-    categories = [ "Network" "InstantMessaging" "Chat" ];
-    type = "Application";
-  };
-
-  xdg.mimeApps = {
-    enable = true;
-  };
-
-  # Force overwrite mimeapps.list to prevent conflicts
-  xdg.configFile."mimeapps.list".force = true;
 }

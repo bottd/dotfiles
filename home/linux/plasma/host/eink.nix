@@ -1,5 +1,4 @@
-{ ...
-}: {
+_: {
   # Host-specific Plasma configuration for desktop
   # Add desktop-specific Plasma settings here
   programs.plasma = {

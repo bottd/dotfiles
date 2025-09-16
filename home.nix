@@ -1,6 +1,6 @@
 { lib, pkgs, username, ... }:
 let
-  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
 in
 {
   home = {
