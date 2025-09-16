@@ -27,10 +27,14 @@
   };
 
   # Disable lid switch handling - https://codeberg.org/elloskelling/linux-gpd-pocket-4
-  services.logind.lidSwitch = "ignore";
-  services.logind.lidSwitchDocked = "ignore";
-  services.logind.lidSwitchExternalPower = "ignore";
-  services.thermald.enable = true;
+  services = {
+    logind = {
+      lidSwitch = "ignore";
+      lidSwitchDocked = "ignore";
+      lidSwitchExternalPower = "ignore";
+    };
+    thermald.enable = true;
+  };
 
   # TLP configuration - https://wiki.nixos.org/wiki/Laptop
   # services.tlp = {

@@ -1,19 +1,17 @@
 { pkgs, ... }: {
-  programs.direnv = {
-    enable = true;
-    enableBashIntegration = true;
-    enableZshIntegration = true;
-    nix-direnv.enable = true;
-    silent = true;
-  };
-
-  programs.atuin = {
-    enable = true;
-    enableZshIntegration = true;
-  };
-
-  programs.bat = {
-    enable = true;
+  programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+      silent = true;
+    };
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    bat.enable = true;
   };
 
   home.packages = with pkgs; [

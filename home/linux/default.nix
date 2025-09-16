@@ -5,8 +5,6 @@
     ./desktop.nix
     ./darkman.nix
     ./gaming.nix
-  ] ++ lib.optionals (desktopEnvironment == "hyprland") [
-    ./hyprland
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma
   ] ++ lib.optionals (desktopEnvironment != null) [
