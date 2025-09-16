@@ -19,6 +19,5 @@
     ./desktop.nix
     ./ghostty.nix
     ./spicetify.nix
-    ./vscode.nix
   ];
 }
