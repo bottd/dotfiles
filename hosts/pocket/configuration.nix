@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ../../system/common/linux
+  ];
 
   services.xserver.xkb = {
     layout = "us";

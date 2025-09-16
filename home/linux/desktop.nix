@@ -15,6 +15,7 @@ in
   home.packages = with pkgs; [
     vesktop
     flashprint
+    filezilla
     geary
     godot
     obs-studio
