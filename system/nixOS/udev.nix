@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   # Rule for VIA keyboard detection
   services.udev.extraRules = ''

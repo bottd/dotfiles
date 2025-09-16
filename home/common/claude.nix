@@ -1,9 +1,5 @@
 { nixpkgs-unstable, desktopEnvironment ? null, lib, inputs, pkgs, ... }: {
-  home.packages = with nixpkgs-unstable; [
-    # temp: install globally with npm to get latest
-    # nixpkgs unstable too slow for multiple updates/week
-    # claude-code
-  ] ++ lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
+  home.packages = with nixpkgs-unstable; lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
     inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 

@@ -1,52 +1,34 @@
 { inputs, ... }:
 let
   inherit (import ../lib { inherit inputs; }) mkSystem mkHome;
+
+  baseSystem = {
+    system = "x86_64-linux";
+    username = "drakeb";
+    format = "nixos";
+    desktopEnvironment = "plasma";
+    extraSystemModules = [{
+      home-manager.extraSpecialArgs = {
+        neorgWorkspace = "chalet";
+        root = ./.;
+      };
+    }];
+  };
 in
 {
   flake = {
     nixosConfigurations = {
-      desktop = mkSystem {
+      desktop = mkSystem (baseSystem // {
         hostName = "desktop";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        desktopEnvironment = "plasma";
-        extraSystemModules = [{
-          home-manager.extraSpecialArgs = {
-            neorgWorkspace = "chalet";
-            root = ./.;
-          };
-        }];
-      };
+      });
 
-      eink = mkSystem {
+      eink = mkSystem (baseSystem // {
         hostName = "eink";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        desktopEnvironment = "plasma";
-        extraSystemModules = [{
-          home-manager.extraSpecialArgs = {
-            neorgWorkspace = "chalet";
-            root = ./.;
-          };
-        }];
-      };
+      });
 
-
-      pocket = mkSystem {
+      pocket = mkSystem (baseSystem // {
         hostName = "pocket";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        desktopEnvironment = "plasma";
-        extraSystemModules = [{
-          home-manager.extraSpecialArgs = {
-            neorgWorkspace = "chalet";
-            root = ./.;
-          };
-        }];
-      };
+      });
 
       android = mkSystem {
         hostName = "android";

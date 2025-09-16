@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   services.aerospace = {
     enable = false;
     settings = {
@@ -23,10 +23,12 @@
       gaps = {
         inner.horizontal = 16;
         inner.vertical = 16;
-        outer.left = 16;
-        outer.bottom = 16;
-        outer.top = 16;
-        outer.right = 16;
+        outer = {
+          left = 16;
+          bottom = 16;
+          top = 16;
+          right = 16;
+        };
       };
 
       # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
