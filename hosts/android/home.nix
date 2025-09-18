@@ -19,7 +19,7 @@ _:
     '';
   };
 
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     # Force reload home-manager session vars for zsh
     if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
       unset __HM_SESS_VARS_SOURCED
