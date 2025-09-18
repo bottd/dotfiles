@@ -4,7 +4,7 @@
 
   programs.zsh = {
     enable = true;
-    initExtra =
+    initContent =
       #sh
       ''
         # Source Nix environment if it exists
