@@ -33,9 +33,10 @@ in
       android = mkSystem {
         hostName = "android";
         system = "aarch64-linux";
-        username = "drake";
+        username = "droid";
         format = "nixos";
         enableAVF = true;
+        extraHomeModules = [ ../hosts/android/home.nix ];
         extraSystemModules = [{
           home-manager.extraSpecialArgs = {
             neorgWorkspace = "chalet";

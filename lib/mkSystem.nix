@@ -67,11 +67,17 @@ systemBuilder {
       homeManagerModule
       homeConfig
     ]
-    ++ (if enableAVF then [ inputs.nixos-avf.nixosModules.avf ]
+    ++ (if enableAVF then [
+      inputs.nixos-avf.nixosModules.avf
+      (_: { system.stateVersion = "25.05"; })
+    ]
     else if format == "nixos" then [
       inputs.catppuccin.nixosModules.catppuccin
       ../system/nixOS
       (_: { system.stateVersion = "25.05"; })
+    ]
+    else if format == "darwin" then [
+      (_: { system.stateVersion = 6; })
     ]
     else [
     ])
