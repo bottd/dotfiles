@@ -18,7 +18,7 @@
 
         shell-integration = none
 
-        theme = dark:catppuccin-mocha,light:catppuccin-latte
+        theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 
         background-opacity = 0.8
         background-blur-radius = 20
