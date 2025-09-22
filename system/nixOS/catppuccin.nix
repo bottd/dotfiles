@@ -8,7 +8,6 @@
       enable = true;
       background = "${config.users.users.${username}.home}/.config/wallpapers/lighthouse.png";
 
-      # Additional SDDM customizations
       font = "MonoLisa Variable";
       fontSize = "11";
 
