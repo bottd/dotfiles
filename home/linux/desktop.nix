@@ -19,6 +19,7 @@ in
     geary
     godot
     obs-studio
+    openscad
     vlc
   ];
 
