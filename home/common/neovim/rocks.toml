@@ -21,6 +21,7 @@ friendly-snippets = "scm"
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
 "nvim-lspconfig" = "2.5.0"
+"nvim-parinfer" = "scm"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.37"
 tree-sitter-javascript = "0.0.39"
@@ -67,6 +68,7 @@ tree-sitter-fennel = "0.0.34"
 "hotpot.nvim" = "0.14.8"
 tree-sitter-git_config = "0.0.31"
 tree-sitter-cpp = "0.0.46"
+conjure = "4.56.0"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
@@ -115,6 +117,10 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 [plugins."neorg-contexts"]
 git = "max397574/neorg-contexts"
 rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
+
+[plugins."nvim-paredit"]
+git = "julienvincent/nvim-paredit"
+rev = "v1.1.1"
 
 [bundles.neorg]
 items = [
