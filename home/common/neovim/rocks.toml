@@ -122,6 +122,10 @@ rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
 git = "julienvincent/nvim-paredit"
 rev = "v1.1.1"
 
+[plugins."fyler.nvim"]
+git = "A7Lavinraj/fyler.nvim"
+rev = "v1.0.0"
+
 [bundles.neorg]
 items = [
   "dew-transclude",
