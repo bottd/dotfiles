@@ -123,7 +123,7 @@ rev = "v1.1.1"
 
 [plugins."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
-rev = "v1.0.0"
+rev = "v1.1.0"
 
 [bundles.neorg]
 items = [
