@@ -48,6 +48,7 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixos-avf.url = "github:nix-community/nixos-avf";
+    niri.url = "github:sodiboo/niri-flake";
   };
 
   outputs = inputs @ { flake-parts, ... }:

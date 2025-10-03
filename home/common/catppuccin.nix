@@ -26,7 +26,6 @@ let
       flavor = "mocha";
       accent = "blue";
     };
-    hyprland.enable = false;
     kvantum.enable = pkgs.stdenv.isLinux;
 
     thunderbird = {
