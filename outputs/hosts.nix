@@ -6,7 +6,7 @@ let
     system = "x86_64-linux";
     username = "drakeb";
     format = "nixos";
-    desktopEnvironment = "niri";
+    desktopEnvironment = "plasma";
     extraSystemModules = [{
       home-manager.extraSpecialArgs = {
         neorgWorkspace = "chalet";
