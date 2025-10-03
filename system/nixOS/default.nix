@@ -11,10 +11,8 @@
     ./mullvad.nix
     ./printing.nix
   ] ++ (
-    if desktopEnvironment == "hyprland"
-    then [ ./hyprland ]
-    else if desktopEnvironment == "niri"
-    then [ ./niri.nix ]
+    if desktopEnvironment == "niri"
+    then [ ./niri ]
     else if desktopEnvironment == "plasma"
     then [ ./plasma ]
     else [ ]
