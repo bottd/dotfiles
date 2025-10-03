@@ -3,7 +3,6 @@
   # import GUI modules when desktop environment is present
   imports = lib.optionals (desktopEnvironment != null) [
     ./desktop.nix
-    ./darkman.nix
     ./gaming.nix
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma

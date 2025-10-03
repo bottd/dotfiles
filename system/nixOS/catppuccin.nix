@@ -20,12 +20,6 @@
   # Additional SDDM settings through NixOS options
   services.displayManager.sddm = {
     settings = {
-      # Autologin (be careful with this!)
-      # Autologin = {
-      #   Session = "hyprland";
-      #   User = username;
-      # };
-
       Theme = {
         # Show user avatar
         EnableAvatars = true;
