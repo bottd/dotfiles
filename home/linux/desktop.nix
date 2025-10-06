@@ -18,7 +18,9 @@ in
     filezilla
     geary
     godot
+    losslesscut-bin
     obs-studio
+    helvum
     openscad
     vlc
   ];
