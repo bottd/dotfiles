@@ -8,17 +8,11 @@
     jack.enable = true;
     wireplumber.enable = true;
 
-    extraConfig.pipewire."92-game-audio-sink" = {
-      "context.objects" = [
+    extraConfig.pipewire-pulse."10-game-audio-sink" = {
+      "pulse.cmd" = [
         {
-          factory = "adapter";
-          args = {
-            "factory.name" = "support.null-audio-sink";
-            "node.name" = "GameAudio";
-            "node.description" = "Game Audio (Recording)";
-            "media.class" = "Audio/Sink";
-            "audio.position" = [ "FL" "FR" ];
-          };
+          cmd = "load-module";
+          args = "module-null-sink sink_name=game_audio_sink sink_properties=device.description=Game_Audio_Recording";
         }
       ];
     };
