@@ -1,11 +1,10 @@
-{ nixpkgs-unstable, desktopEnvironment ? null, lib, inputs, pkgs, ... }: {
+{ nixpkgs-unstable, desktopEnvironment ? null, lib, pkgs, ... }: {
   home.packages = with nixpkgs-unstable; lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
+    # inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   programs.git.ignores = [
-    ".claude"
-    "CLAUDE.md"
+    ".claude/settings.local.json"
   ];
 
   home.file =
