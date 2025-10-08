@@ -28,10 +28,10 @@
 
   # Disable lid switch handling - https://codeberg.org/elloskelling/linux-gpd-pocket-4
   services = {
-    logind = {
-      lidSwitch = "ignore";
-      lidSwitchDocked = "ignore";
-      lidSwitchExternalPower = "ignore";
+    logind.settings.Login = {
+      HandleLidSwitch = "ignore";
+      HandleLidSwitchDocked = "ignore";
+      HandleLidSwitchExternalPower = "ignore";
     };
     thermald.enable = true;
   };
