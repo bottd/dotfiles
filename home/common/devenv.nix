@@ -12,5 +12,4 @@
   home.packages = with pkgs; [
     devenv
   ];
-  nix.settings.trusted-users = [ "root" "drakeb" ];
 }
