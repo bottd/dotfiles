@@ -10,7 +10,6 @@
     ./language.nix
     ./neovim
     ./starship
-    ./syncthing.nix
     ./zellij.nix
     ./zoxide.nix
     ./zsh.nix
