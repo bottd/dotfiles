@@ -1,12 +1,5 @@
 { pkgs, ... }: {
   programs = {
-    direnv = {
-      enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-      nix-direnv.enable = true;
-      silent = true;
-    };
     atuin = {
       enable = true;
       enableZshIntegration = true;
