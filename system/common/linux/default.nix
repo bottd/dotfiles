@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, username, ... }:
 {
   imports = [
     ./boot.nix
@@ -7,6 +7,8 @@
 
   nixpkgs.config.allowUnfree = true;
   networking.networkmanager.enable = true;
+
+  nix.settings.trusted-users = [ "root" username ];
 
   virtualisation.docker.enable = true;
 
