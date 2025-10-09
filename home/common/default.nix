@@ -4,6 +4,7 @@
     ./catppuccin.nix
     ./claude.nix
     ./cli.nix
+    ./devenv.nix
     ./git.nix
     ./jujutsu.nix
     ./language.nix
