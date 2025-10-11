@@ -1,13 +1,10 @@
-# Drake's Flake
+# dotfiles
 
-## Useful commands
+My personal nix flake.
 
-- Use [direnv](https://github.com/direnv/direnv) for development
-- `nix fmt` to format
+## Targets
 
-### System Configuration
-
-#### NixOS (Linux)
+### NixOS (Linux)
 
 I have a configuration for my gaming desktop:
 
@@ -28,7 +25,7 @@ my [GPD Pocket 4](https://gpd.hk/gpdpocket4):
 sudo nixos-rebuild switch --flake .#pocket
 ```
 
-#### MacOS
+### MacOS
 
 My personal MacBook uses [nix-darwin](https://github.com/nix-darwin/nix-darwin):
 
@@ -36,10 +33,9 @@ My personal MacBook uses [nix-darwin](https://github.com/nix-darwin/nix-darwin):
 darwin-rebuild switch --flake .#macbook
 ```
 
-#### Standalone
+### Standalone
 
-Standalone home-manager configuration for Linux distros that are not NixOS or a
-Mac not using darwin:
+Standalone home-manager configuration:
 
 ```bash
 home-manager switch --flake .#standalone
