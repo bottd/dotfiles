@@ -19,7 +19,8 @@
                 "mcp__context7__resolve-library-id",
                 "mcp__context7__get-library-docs",
                 "mcp__playwright__*",
-                "mcp__sequential-thinking__*"
+                "mcp__sequential-thinking__*",
+                "mcp__svelte__*"
               ],
               "deny": [
                 "rm"
@@ -45,6 +46,13 @@
                 "args": [
                   "-y",
                   "@upstash/context7-mcp"
+                ]
+              },
+              "svelte": {
+                "command": "npx",
+                "args": [
+                  "-y",
+                  "@sveltejs/mcp"
                 ]
               }
             }
