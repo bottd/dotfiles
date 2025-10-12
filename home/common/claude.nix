@@ -26,6 +26,20 @@
                 "rm"
               ]
             },
+            "plugins": {
+              "marketplaces": [
+                {
+                  "name": "superpowers-marketplace",
+                  "url": "https://github.com/obra/superpowers-marketplace"
+                }
+              ],
+              "installed": [
+                {
+                  "name": "superpowers",
+                  "marketplace": "superpowers-marketplace"
+                }
+              ]
+            },
             "mcpServers": {
               "sequential-thinking": {
                 "command": "npx",
