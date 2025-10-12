@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
-  home.packages = with pkgs; [
+  home.packages = lib.optionals pkgs.stdenv.isLinux (with pkgs; [
     wl-clipboard
-  ];
+  ]);
 
   programs.zellij = {
     enable = true;
@@ -14,7 +14,7 @@
       show_startup_tips = false;
       show_release_notes = false;
       theme = "catppuccin-mocha";
-      copy_command = "wl-copy";
+      copy_command = if pkgs.stdenv.isLinux then "wl-copy" else "pbcopy";
       copy_clipboard = "system";
       keybinds = {
         "locked" = {
