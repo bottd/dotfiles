@@ -8,9 +8,9 @@
     };
 
     # TODO: Revert to stable again once 25.11 released
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-unstable = {
-      url = "github:nixos/nixpkgs/nixos-unstable";
+      url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -22,7 +22,7 @@
     };
     nix-colors.url = "github:misterio77/nix-colors";
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+      url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     treefmt-nix = {

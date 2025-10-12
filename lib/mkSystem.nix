@@ -47,12 +47,14 @@ let
           [
             inputs.catppuccin.homeModules.catppuccin
             inputs.spicetify-nix.homeManagerModules.default
-            inputs.plasma-manager.homeModules.plasma-manager
             ../home.nix
             ../lib/createSymlink.nix
             ../home/common
           ]
-          ++ (if format == "nixos" then [ ../home/linux ] else [ ../home/darwin ])
+          ++ (if format == "nixos" then [
+            inputs.plasma-manager.homeModules.plasma-manager
+            ../home/linux
+          ] else [ ../home/darwin ])
           ++ extraHomeModules;
       };
     };
