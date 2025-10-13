@@ -2,17 +2,19 @@
 let
   inherit (import ../lib { inherit inputs; }) mkSystem mkHome;
 
+  chaletArgs = [{
+    home-manager.extraSpecialArgs = {
+      neorgWorkspace = "chalet";
+      root = ./.;
+    };
+  }];
+
   baseSystem = {
     system = "x86_64-linux";
     username = "drakeb";
     format = "nixos";
     desktopEnvironment = "plasma";
-    extraSystemModules = [{
-      home-manager.extraSpecialArgs = {
-        neorgWorkspace = "chalet";
-        root = ./.;
-      };
-    }];
+    extraSystemModules = chaletArgs;
   };
 in
 {
@@ -37,12 +39,7 @@ in
         format = "nixos";
         enableAVF = true;
         extraHomeModules = [ ../hosts/android/home.nix ];
-        extraSystemModules = [{
-          home-manager.extraSpecialArgs = {
-            neorgWorkspace = "chalet";
-            root = ./.;
-          };
-        }];
+        extraSystemModules = chaletArgs;
       };
     };
 
@@ -52,12 +49,7 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        extraSystemModules = [{
-          home-manager.extraSpecialArgs = {
-            neorgWorkspace = "chalet";
-            root = ./.;
-          };
-        }];
+        extraSystemModules = chaletArgs;
       };
     };
 

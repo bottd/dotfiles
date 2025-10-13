@@ -1,12 +1,10 @@
 { config
 , lib
-, pkgs
 , ...
 }: {
-  imports = [ ];
 
   flake.systemModules = {
-    baseSystem = _: {
+    baseSystem = { pkgs, ... }: {
       nixpkgs.config.allowUnfree = true;
       nix = {
         settings = {
