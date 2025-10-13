@@ -2,11 +2,8 @@
 , lib
 , ...
 }: {
-  imports = [ ];
-
   flake.flakeModules = {
     commonHome = { pkgs, username, ... }: {
-      imports = [ ];
 
       home.username = username;
 
