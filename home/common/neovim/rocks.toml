@@ -64,7 +64,6 @@ tree-sitter-clojure = "0.0.32"
 tree-sitter-godot_resource = "0.0.35"
 tree-sitter-fennel = "0.0.34"
 "telescope.nvim" = "scm"
-"hotpot.nvim" = "0.14.8"
 tree-sitter-git_config = "0.0.31"
 tree-sitter-cpp = "0.0.46"
 conjure = "4.56.0"
@@ -88,6 +87,9 @@ rev = "v2.5.0"
 [plugins."neorg-templates"]
 git = "pysan3/neorg-templates"
 rev = "v2.0.3"
+
+[plugins."nvim-thyme"]
+git = "aileot/nvim-thyme"
 
 [plugins."ts-comments.nvim"]
 git = "folke/ts-comments.nvim"
