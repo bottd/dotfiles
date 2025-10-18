@@ -15,7 +15,7 @@
       };
 
       ".config/nvim/.nvim-thyme.fnl" = {
-        source = ./.nvim-thyme.fnl;
+        source = ./nvim-thyme.fnl;
       };
 
       ".config/nvim/init.lua" = {
