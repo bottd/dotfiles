@@ -1,6 +1,6 @@
-{ nixpkgs-unstable, desktopEnvironment ? null, lib, pkgs, ... }: {
+{ inputs, nixpkgs-unstable, desktopEnvironment ? null, lib, pkgs, ... }: {
   home.packages = with nixpkgs-unstable; lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
-    # inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
+    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   programs.git.ignores = [

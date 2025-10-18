@@ -19,7 +19,6 @@ in
     geary
     godot
     losslesscut-bin
-    chromium
     obs-studio
     helvum
     openscad
