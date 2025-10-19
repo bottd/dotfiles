@@ -66,7 +66,7 @@ tree-sitter-fennel = "0.0.34"
 "telescope.nvim" = "scm"
 tree-sitter-git_config = "0.0.31"
 tree-sitter-cpp = "0.0.46"
-conjure = "4.56.0"
+conjure = "4.57.0"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
@@ -90,6 +90,7 @@ rev = "v2.0.3"
 
 [plugins."nvim-thyme"]
 git = "aileot/nvim-thyme"
+rev = "v1.6.1"
 
 [plugins."ts-comments.nvim"]
 git = "folke/ts-comments.nvim"
