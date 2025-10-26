@@ -28,6 +28,16 @@
           options = [ "--fix" ];
           includes = [ "*.fnl" ];
         };
+        cljfmt = {
+          command = "${pkgs.cljfmt}/bin/cljfmt";
+          options = [ "fix" ];
+          includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
+        };
+        clj-kondo = {
+          command = "${pkgs.clj-kondo}/bin/clj-kondo";
+          options = [ "--lint" ];
+          includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
+        };
       };
     };
 
@@ -47,6 +57,8 @@
         git
         config.treefmt.build.wrapper
         fnlfmt
+        cljfmt
+        clj-kondo
         statix
       ] ++ config.pre-commit.settings.enabledPackages;
     };
