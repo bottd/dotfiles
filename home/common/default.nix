@@ -9,6 +9,7 @@
     ./jujutsu.nix
     ./language.nix
     ./neovim
+    ./scripts.nix
     ./starship
     ./zellij.nix
     ./zoxide.nix
