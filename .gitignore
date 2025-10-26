@@ -5,3 +5,4 @@ packages/common/nushell/local.env.nu
 CLAUDE.md
 .direnv
 .pre-commit-config.yaml
+.clj-kondo
