@@ -15,6 +15,8 @@
     then [ ./niri ]
     else if desktopEnvironment == "plasma"
     then [ ./plasma ]
+    else if desktopEnvironment == "cosmic"
+    then [ ./cosmic ]
     else [ ]
   );
 }
