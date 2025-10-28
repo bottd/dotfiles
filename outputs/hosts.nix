@@ -22,6 +22,7 @@ in
     nixosConfigurations = {
       desktop = mkSystem (baseSystem // {
         hostName = "desktop";
+        desktopEnvironment = "cosmic";
       });
 
       eink = mkSystem (baseSystem // {
