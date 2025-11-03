@@ -38,7 +38,7 @@
     jpm
 
     # Fennel
-    fennel
+    luaPackages.fennel
     fnlfmt
 
     # Common Lisp
