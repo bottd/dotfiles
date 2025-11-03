@@ -13,13 +13,8 @@
         # json
         ''
           {
-            "defaultModel": "claude-sonnet-4-20250514",
             "permissions": {
               "allow": [
-                "mcp__context7__resolve-library-id",
-                "mcp__context7__get-library-docs",
-                "mcp__playwright__*",
-                "mcp__sequential-thinking__*",
                 "mcp__svelte__*"
               ],
               "deny": [
@@ -41,27 +36,6 @@
               ]
             },
             "mcpServers": {
-              "sequential-thinking": {
-                "command": "npx",
-                "args": [
-                  "-y",
-                  "@modelcontextprotocol/server-sequential-thinking"
-                ]
-              },
-              "playwright": {
-                "command": "npx",
-                "args": [
-                  "-y",
-                  "@playwright/mcp@latest"
-                ]
-              },
-              "context7": {
-                "command": "npx",
-                "args": [
-                  "-y",
-                  "@upstash/context7-mcp"
-                ]
-              },
               "svelte": {
                 "command": "npx",
                 "args": [
@@ -82,6 +56,17 @@
       # claude desktop config
       ".config/Claude/claude_desktop_config.json" = {
         text = claudeConfig;
+      };
+
+      # superpowers plugin
+      ".claude/plugins/superpowers" = {
+        source = pkgs.fetchFromGitHub {
+          owner = "obra";
+          repo = "superpowers";
+          rev = "main";
+          sha256 = "sha256-hKzWAeD2zE+8vnnzluu5GB9BliqCCv+Jcwc5iOdXFD8=";
+        };
+        recursive = true;
       };
     };
 
