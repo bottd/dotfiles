@@ -4,6 +4,7 @@
 }:
 {
   home.packages = with pkgs; [
+    chiaki-ng
     gamescope
 
     (prismlauncher.override {
