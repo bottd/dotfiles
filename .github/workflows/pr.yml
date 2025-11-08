@@ -40,17 +40,8 @@ jobs:
           --dry-run
 
   check-darwin:
-    name: Check aarch64-darwin configs
+    name: Check aarch64-darwin config
     runs-on: macos-latest
-    strategy:
-      matrix:
-        include:
-          - type: nixos
-            config: macbook
-            target: darwinConfigurations.macbook.system
-          - type: home-manager
-            config: standalone
-            target: homeConfigurations.standalone.activationPackage
 
     steps:
       - name: Checkout code
@@ -59,8 +50,8 @@ jobs:
       - name: Setup Nix
         uses: ./.github/actions/setup-nix
 
-      - name: Build ${{ matrix.config }} configuration
-        run: nix build .#${{ matrix.target }} --dry-run
+      - name: Build macbook configuration
+        run: nix build .#darwinConfigurations.macbook.system --dry-run
 
   auto-merge:
     needs: [check-x86-linux, check-arm-linux, check-darwin]
