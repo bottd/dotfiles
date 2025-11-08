@@ -16,15 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v27
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Cachix
-        uses: cachix/cachix-action@v15
-        with:
-          name: nix-community
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Build ${{ matrix.config }} configuration
         run:
@@ -38,15 +31,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v27
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Cachix
-        uses: cachix/cachix-action@v15
-        with:
-          name: nix-community
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Build android configuration
         run:
@@ -70,13 +56,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Setup Cachix
-        uses: cachix/cachix-action@v15
-        with:
-          name: nix-community
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Build ${{ matrix.config }} configuration
         run: nix build .#${{ matrix.target }} --dry-run

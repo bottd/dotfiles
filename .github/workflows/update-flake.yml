@@ -16,15 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v27
-        with:
-          github_access_token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
-
-      - name: Setup Cachix
-        uses: cachix/cachix-action@v15
-        with:
-          name: nix-community
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
