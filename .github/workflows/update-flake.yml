@@ -19,7 +19,7 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:
-          github_access_token: ${{ secrets.FLAKE_UPDATE_TOKEN }}
+          github_access_token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v15
@@ -29,6 +29,6 @@ jobs:
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
-          token: ${{ secrets.FLAKE_UPDATE_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
           pr-title: "chore: update flake.lock"
           pr-labels: automated
