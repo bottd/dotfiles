@@ -24,3 +24,18 @@ jobs:
 
       - name: Run flake check
         run: nix flake check
+
+  auto-merge:
+    needs: check
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automated')
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
