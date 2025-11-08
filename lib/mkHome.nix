@@ -2,6 +2,7 @@
                  , system
                  , username
                  , format
+                 , desktopEnvironment ? null
                  , hostPath ? null
                  , extraHomeModules ? [ ]
                  ,
@@ -19,7 +20,7 @@ inputs.home-manager.lib.homeManagerConfiguration {
   };
 
   extraSpecialArgs = {
-    inherit inputs username system;
+    inherit inputs username system desktopEnvironment;
     inherit (inputs) nixpkgs;
     nixpkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;
