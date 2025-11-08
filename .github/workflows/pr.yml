@@ -5,8 +5,12 @@ on:
     branches: [main]
 
 jobs:
-  check:
+  check-x86-linux:
+    name: Check x86_64-linux configs
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config: [desktop, eink, pocket]
 
     steps:
       - name: Checkout code
@@ -22,11 +26,65 @@ jobs:
         with:
           name: nix-community
 
-      - name: Run flake check
-        run: nix flake check
+      - name: Build ${{ matrix.config }} configuration
+        run:
+          nix build .#nixosConfigurations.${{ matrix.config
+          }}.config.system.build.toplevel --dry-run
+
+  check-arm-linux:
+    name: Check aarch64-linux config
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: nix-community
+
+      - name: Build android configuration
+        run:
+          nix build .#nixosConfigurations.android.config.system.build.toplevel
+          --dry-run
+
+  check-darwin:
+    name: Check aarch64-darwin configs
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - type: nixos
+            config: macbook
+            target: darwinConfigurations.macbook.system
+          - type: home-manager
+            config: standalone
+            target: homeConfigurations.standalone.activationPackage
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: nix-community
+
+      - name: Build ${{ matrix.config }} configuration
+        run: nix build .#${{ matrix.target }} --dry-run
 
   auto-merge:
-    needs: check
+    needs: [check-x86-linux, check-arm-linux, check-darwin]
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'automated')
     permissions:
