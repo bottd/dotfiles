@@ -49,6 +49,7 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
+        desktopEnvironment = "macos";
         extraSystemModules = chaletArgs;
       };
     };
