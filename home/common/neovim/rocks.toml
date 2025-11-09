@@ -105,14 +105,6 @@ rev = "v1.0.2"
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
 
-[plugins."neorg-dew"]
-git = "setupyourskills/neorg-dew"
-rev = "5d76c45926c016640e9d91c9da976e6580e2843b"
-
-[plugins."dew-transclude"]
-git = "setupyourskills/dew-transclude"
-rev = "b0e45a686e85748fefc42411981fd73d1df36d9c"
-
 [plugins."cmp-npm"]
 git = "David-Kunz/cmp-npm"
 rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
@@ -131,11 +123,9 @@ rev = "v1.1.0"
 
 [bundles.neorg]
 items = [
-  "dew-transclude",
   "neorg",
   "neorg-archive",
   "neorg-contexts",
-  "neorg-dew",
   "neorg-interim-ls",
   "neorg-query",
   "neorg-templates",

@@ -100,10 +100,7 @@
                                                                       :/meta/templates)}}
                      :external.interim-ls {:config {:completion_provider {:enable true
                                                                           :categories false}}}
-                     :external.worklog {:config {:default_workspace_title :external}}
-                     :external.neorg-dew {}
-                     :external.dew-transclude {:config {:block_end_marker ""
-                                                        :no_title false}}}})
+                     :external.worklog {:config {:default_workspace_title :external}}}})
 
 (vim.keymap.set :n :<leader>j
                 (fn []
