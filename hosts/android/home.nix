@@ -1,10 +1,11 @@
-{ lib, pkgs, ... }:
+_:
 {
   # Required for Android Terminal
   targets.genericLinux.enable = true;
 
-  # Disable GPU driver checks on aarch64 since Intel/AMD GPU packages are x86-only
-  home.activation.checkExistingGpuDrivers = lib.mkIf pkgs.stdenv.hostPlatform.isAarch64 (lib.mkForce "");
+  # Disable GPU driver integration since Android doesn't need desktop GPU drivers
+  # and the Intel/AMD GPU packages are x86-only
+  targets.genericLinux.gpu.enable = false;
 
   # Configure both bash and zsh with proper PATH handling
   programs.bash = {
