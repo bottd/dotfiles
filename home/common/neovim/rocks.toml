@@ -85,7 +85,7 @@ rev = "v2.5.0"
 
 [plugins."blink.indent"]
 git = "Saghen/blink.indent"
-rev = "v1.0.0"
+rev = "v2.0.0"
 
 
 [plugins."neorg-templates"]
@@ -119,7 +119,7 @@ rev = "v1.1.1"
 
 [plugins."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
-rev = "v1.1.0"
+rev = "v2.0.0"
 
 [bundles.neorg]
 items = [
