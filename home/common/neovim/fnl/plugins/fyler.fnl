@@ -1,5 +1,6 @@
 (local fyler (require :fyler))
 
-(fyler.setup {:win {:kind :float}})
+(fyler.setup)
 
-(vim.keymap.set :n :<C-n> #(fyler.toggle) {:desc "Fyler - toggle"})
+(vim.keymap.set :n :<C-n> #(fyler.toggle {:kind :float})
+                {:desc "Fyler - toggle"})
