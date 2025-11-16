@@ -1,9 +1,5 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    # Rust
-    cargo-binstall
-    (rustup.overrideAttrs (_oldAttrs: { doCheck = false; }))
-
     # JavaScript/Node
     nodejs
     nodePackages_latest.svelte-language-server
