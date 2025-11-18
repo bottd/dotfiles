@@ -3,6 +3,7 @@
   imports = [
     ./catppuccin.nix
     ./claude.nix
+    ./gemini.nix
     ./cli.nix
     ./devenv.nix
     ./git.nix
