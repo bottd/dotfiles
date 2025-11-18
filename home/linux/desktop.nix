@@ -17,8 +17,6 @@ in
     vesktop
     flashprint
     filezilla
-    geary
-    godot
     losslesscut-bin
     obs-studio
     helvum
