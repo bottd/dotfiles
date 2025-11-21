@@ -17,6 +17,7 @@ in
     vesktop
     flashprint
     filezilla
+    krita
     losslesscut-bin
     obs-studio
     helvum
