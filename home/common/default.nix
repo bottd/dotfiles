@@ -18,6 +18,7 @@
 
     # import GUI modules when desktop environment is present
   ] ++ lib.optionals (desktopEnvironment != null) [
+    ./browser.nix
     ./desktop.nix
     ./ghostty.nix
     ./spicetify.nix
