@@ -13,7 +13,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    chromium
     vesktop
     flashprint
     filezilla
