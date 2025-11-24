@@ -1,4 +1,5 @@
 { pkgs
+, lib
 , ...
 }: {
   home.sessionVariables = {
@@ -32,7 +33,7 @@
     };
   };
 
-  home.packages = with pkgs; [
-    chromium
+  home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+    pkgs.chromium
   ];
 }
