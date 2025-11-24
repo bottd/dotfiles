@@ -95,7 +95,7 @@
                      :core.summary {}
                      :core.tangle {}
                      :external.archive {}
-                     :external.query {}
+                     ; :external.query {}
                      :external.templates {:config {:templates_dir (.. workspace_path
                                                                       :/meta/templates)}}
                      :external.interim-ls {:config {:completion_provider {:enable true
