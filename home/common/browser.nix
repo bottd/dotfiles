@@ -34,6 +34,6 @@
   };
 
   home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-    pkgs.chromium
+    pkgs.google-chrome
   ];
 }
