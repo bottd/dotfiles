@@ -1,6 +1,6 @@
-{ nixpkgs-unstable, desktopEnvironment ? null, lib, pkgs, ... }: {
-  home.packages = with nixpkgs-unstable; lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
-    # inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
+{ desktopEnvironment ? null, lib, pkgs, inputs, ... }: {
+  home.packages = lib.optionals (desktopEnvironment != null && pkgs.stdenv.isLinux) [
+    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
   ];
 
   programs.git.ignores = [
@@ -41,6 +41,14 @@
                 "args": [
                   "-y",
                   "@sveltejs/mcp"
+                ]
+              },
+              "chrome-devtools": {
+                "command": "npx",
+                "args": [
+                  "-y",
+                  "chrome-devtools-mcp@latest",
+                  "--executablePath=${pkgs.google-chrome}/bin/google-chrome-stable"
                 ]
               }
             }

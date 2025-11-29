@@ -5,6 +5,10 @@
     ./oom-management.nix
   ];
 
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 524288;
+  };
+
   nixpkgs.config.allowUnfree = true;
   networking.networkmanager.enable = true;
 
