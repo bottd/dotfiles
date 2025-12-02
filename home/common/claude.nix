@@ -42,14 +42,6 @@
                   "-y",
                   "@sveltejs/mcp"
                 ]
-              },
-              "chrome-devtools": {
-                "command": "npx",
-                "args": [
-                  "-y",
-                  "chrome-devtools-mcp@latest",
-                  "--executablePath=${pkgs.google-chrome}/bin/google-chrome-stable"
-                ]
               }
             }
           }
