@@ -13,6 +13,7 @@
         # json
         ''
           {
+            "model": "opus",
             "permissions": {
               "allow": [
                 "mcp__svelte__*"
