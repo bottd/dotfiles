@@ -16,25 +16,9 @@
             "permissions": {
               "allow": [
                 "mcp__svelte__*"
-              ],
-              "deny": [
-                "rm"
               ]
             },
-            "plugins": {
-              "marketplaces": [
-                {
-                  "name": "superpowers-marketplace",
-                  "url": "https://github.com/obra/superpowers-marketplace"
-                }
-              ],
-              "installed": [
-                {
-                  "name": "superpowers",
-                  "marketplace": "superpowers-marketplace"
-                }
-              ]
-            },
+            "plugins": {},
             "mcpServers": {
               "svelte": {
                 "command": "npx",
@@ -56,17 +40,6 @@
       # claude desktop config
       ".config/Claude/claude_desktop_config.json" = {
         text = claudeConfig;
-      };
-
-      # superpowers plugin
-      ".claude/plugins/superpowers" = {
-        source = pkgs.fetchFromGitHub {
-          owner = "obra";
-          repo = "superpowers";
-          rev = "main";
-          sha256 = "sha256-hKzWAeD2zE+8vnnzluu5GB9BliqCCv+Jcwc5iOdXFD8=";
-        };
-        recursive = true;
       };
     };
 
