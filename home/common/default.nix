@@ -10,6 +10,7 @@
     ./jujutsu.nix
     ./language.nix
     ./neovim
+    ./opencode.nix
     ./scripts.nix
     ./starship
     ./zellij.nix
