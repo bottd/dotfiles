@@ -19,6 +19,7 @@
     };
   };
   environment.systemPackages = with pkgs; [
+    gfn-electron
     moonlight
     steam-run
   ];

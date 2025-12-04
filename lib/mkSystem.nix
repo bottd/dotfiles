@@ -15,6 +15,10 @@ let
     then hostPath
     else ../hosts/${hostName};
 
+  customOverlay = final: prev: {
+    gfn-electron = final.callPackage ../packages/gfn-electron { };
+  };
+
   systemBuilder =
     if format == "nixos"
     then inputs.nixpkgs.lib.nixosSystem
@@ -65,6 +69,7 @@ systemBuilder {
   inherit specialArgs;
   modules =
     [
+      { nixpkgs.overlays = [ customOverlay ]; }
       path
       homeManagerModule
       homeConfig

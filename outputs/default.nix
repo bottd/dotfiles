@@ -10,5 +10,6 @@
     ./hosts.nix
     ./home-manager.nix
     ./systems.nix
+    ./overlays.nix
   ];
 }
