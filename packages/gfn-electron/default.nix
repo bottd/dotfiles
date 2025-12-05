@@ -1,15 +1,13 @@
 { lib
-, stdenv
 , fetchFromGitHub
 , makeWrapper
 , electron
-, nodejs
-, pnpm_9
+, buildNpmPackage
 , makeDesktopItem
 , copyDesktopItems
 }:
 
-stdenv.mkDerivation rec {
+buildNpmPackage rec {
   pname = "geforcenow-electron";
   version = "2.2.0";
 
@@ -17,17 +15,19 @@ stdenv.mkDerivation rec {
     owner = "hmlendea";
     repo = "gfn-electron";
     rev = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-DwrNCgBp0CD+HYXRMDsu0aKEKzG7k/tk7oATJc30DlE=";
   };
 
-  pnpmDeps = pnpm_9.fetchDeps {
-    inherit pname version src;
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-  };
+  npmDepsHash = "sha256-2v5qTTGhdG1EEK8v50LLYz5jE/36lBm1PKQl6HfqhCU=";
+  forceGitDeps = true;
+  makeCacheWritable = true;
+
+  # Skip the electron download - we use the system electron
+  env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+
+  dontNpmBuild = true;
 
   nativeBuildInputs = [
-    nodejs
-    pnpm_9.configHook
     makeWrapper
     copyDesktopItems
   ];
@@ -43,12 +43,6 @@ stdenv.mkDerivation rec {
     })
   ];
 
-  buildPhase = ''
-    runHook preBuild
-    pnpm install --offline
-    runHook postBuild
-  '';
-
   installPhase = ''
     runHook preInstall
 
@@ -60,7 +54,7 @@ stdenv.mkDerivation rec {
       --add-flags "$out/lib/geforcenow-electron"
 
     mkdir -p $out/share/icons/hicolor/256x256/apps
-    cp assets/icon.png $out/share/icons/hicolor/256x256/apps/geforcenow-electron.png
+    cp icon.png $out/share/icons/hicolor/256x256/apps/geforcenow-electron.png
 
     runHook postInstall
   '';

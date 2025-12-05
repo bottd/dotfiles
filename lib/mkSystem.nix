@@ -15,7 +15,7 @@ let
     then hostPath
     else ../hosts/${hostName};
 
-  customOverlay = final: prev: {
+  customOverlay = final: _prev: {
     gfn-electron = final.callPackage ../packages/gfn-electron { };
   };
 

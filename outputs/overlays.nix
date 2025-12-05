@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.overlays.default = final: prev: {
+_: {
+  flake.overlays.default = final: _prev: {
     gfn-electron = final.callPackage ../packages/gfn-electron { };
   };
 }
