@@ -4,11 +4,11 @@
 let
   catppuccin-latte-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css";
-    sha256 = "sha256-3lC08chJAonWMg1Qx5bfFst2ZDTyAc/iu8GwSmNP2x4=";
+    sha256 = "sha256-IxwqRHy9nYHUcrMOIhj3t0K7gYoeG+kMK3j8y9EypfQ=";
   };
   catppuccin-mocha-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css";
-    sha256 = "sha256-1NIL4TbkHBZirwc4Uj+N+98I+a3B0KltfO6WQ1No9QQ=";
+    sha256 = "sha256-X1AaGVWr/4Ye/8MMViT70d97Eq0ZOLmvumtOG7tiZ+Y=";
   };
 in
 {
