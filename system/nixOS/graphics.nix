@@ -9,6 +9,11 @@
       vulkan-validation-layers
       vulkan-tools
       vulkan-headers
+      # VAAPI for AMD (hardware video encoding/decoding)
+      libva
+      libva-utils
+      libva-vdpau-driver
+      libvdpau-va-gl
     ];
   };
 

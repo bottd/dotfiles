@@ -4,7 +4,6 @@
 }:
 {
   home.packages = with pkgs; [
-    alvr
     chiaki-ng
     gamescope
 
