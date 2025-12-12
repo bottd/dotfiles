@@ -42,6 +42,9 @@
 
     # TOML
     taplo
+
+    # Python
+    python3
   ];
 
   # NPM configuration
