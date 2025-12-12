@@ -6,6 +6,7 @@
     ./gemini.nix
     ./cli.nix
     ./devenv.nix
+    ./email
     ./git.nix
     ./jujutsu.nix
     ./language.nix
