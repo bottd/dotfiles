@@ -155,11 +155,11 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1766101315,
-        "narHash": "sha256-FZLl2/ufs2l4XBNO5gelF9g0XmrAvyTiiHJ7GRTB0aI=",
+        "lastModified": 1766169546,
+        "narHash": "sha256-thWNoT7qZyKpuKsjj7rQcnB8SQIHoaGsZCvkXx0rmdM=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "fa0a982ff26ac851b6cb5d31717ad3deb037be9c",
+        "rev": "73a93abf7b3449bb57fe3e8bc0a04d56b85e7ac0",
         "type": "github"
       },
       "original": {
@@ -480,11 +480,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766103487,
-        "narHash": "sha256-zI1fd6Q0DIw5FwnhFKubNwBLt7UJ8qetZ2iSitNnDwE=",
+        "lastModified": 1766188147,
+        "narHash": "sha256-IhV9ch0XvF3xIAl2rzagexo+MWw1iIwDY+5cWy+8FQo=",
         "owner": "sst",
         "repo": "opencode",
-        "rev": "2f41d0beddacc378e00cfff710cd233f4d2dc33b",
+        "rev": "129d4f0b1b168cb51101a65f92434f82701ec86d",
         "type": "github"
       },
       "original": {
