@@ -90,6 +90,9 @@
       # grammar/spellcheck lsp
       harper
 
+      # rust
+      rust-analyzer
+
       # for startup dashboard
       fortune
       cowsay

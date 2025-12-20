@@ -52,7 +52,6 @@
         :svelte {}
         :tailwindcss {}
         :ts_ls {}
-        :rust_analyzer {}
         :harper_ls {:filetypes [:markdown]
                     :settings {:harper-ls {:userDictPath "~/.config/nvim/dict.txt"}}}
         :lua_ls {:Lua {:diagnostics {:globals [:vim]}
