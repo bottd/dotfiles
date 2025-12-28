@@ -2,6 +2,7 @@
 {
   imports = [
     ./audio.nix
+    ./bluetooth.nix
     ./catppuccin.nix
     ./cli.nix
     ./gaming.nix
