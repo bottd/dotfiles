@@ -1,8 +1,8 @@
-{ desktopEnvironment ? null, hostName, lib, ... }:
+{ desktopEnvironment ? null, hostName, includeGui ? true, includeGaming ? false, lib, ... }:
 {
-  # import GUI modules when desktop environment is present
-  imports = lib.optionals (desktopEnvironment != null) [
+  imports = lib.optionals includeGui [
     ./desktop.nix
+  ] ++ lib.optionals includeGaming [
     ./gaming.nix
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma
