@@ -51,3 +51,14 @@ Standalone home-manager configuration:
 ```bash
 home-manager switch --flake .#standalone
 ```
+
+## Manual Setup
+
+### Tresorit
+
+Uses [nix-tresorit](https://github.com/p15r/nix-tresorit) FHS wrapper. Run the
+installation script once while setting up a machine:
+
+```bash
+tresorit-install
+```

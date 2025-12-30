@@ -1,6 +1,5 @@
 { pkgs, ... }:
 let
-  # High contrast colors for e-ink
   colors = {
     bg = "#ffffff";
     fg = "#000000";
@@ -11,7 +10,11 @@ in
 {
   wayland.windowManager.sway = {
     config = {
-      # E-ink optimized colors - high contrast black on white
+      fonts = {
+        names = [ "MonoLisa Nerd Font" ];
+        size = 12.0;
+      };
+
       colors = {
         focused = {
           inherit (colors) border;
@@ -36,24 +39,20 @@ in
         };
       };
 
-      # E-ink specific keybindings
       keybindings =
         let
           mod = "Mod4";
         in
         {
-          # Quick access to writing and reading
           "${mod}+n" = "exec ghostty -e nvim";
-          "${mod}+b" = "exec foliate"; # books
+          "${mod}+b" = "exec foliate";
         };
 
-      # Start with a writing session
       startup = [
         { command = "ghostty -e nvim"; }
       ];
 
       output = {
-        # Force light background for e-ink
         "*" = {
           bg = "${colors.bg} solid_color";
         };
@@ -61,23 +60,16 @@ in
     };
 
     extraConfig = ''
-      # Disable all animations for e-ink
-      # E-ink displays can't handle smooth transitions
-
-      # Hide cursor after inactivity (less ghosting)
       seat * hide_cursor 3000
-
-      # No transparency anywhere
       for_window [class=".*"] opacity 1
       for_window [app_id=".*"] opacity 1
     '';
   };
 
-  # Fuzzel with e-ink colors
   programs.fuzzel = {
     settings = {
       main = {
-        font = "monospace:size=14";
+        font = "MonoLisa Nerd Font:size=14";
         lines = 10;
         width = 40;
         horizontal-pad = 20;
@@ -97,13 +89,11 @@ in
     };
   };
 
-  # E-ink focused packages
   home.packages = with pkgs; [
-    foliate # excellent ebook reader, GTK-based
-    zathura # minimal PDF viewer
+    foliate
+    zathura
   ];
 
-  # GTK theme - high contrast for e-ink
   gtk = {
     enable = true;
     theme = {
@@ -118,7 +108,6 @@ in
     };
   };
 
-  # Force light mode for apps
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-light";
