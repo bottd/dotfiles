@@ -36,6 +36,10 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    steam-config-nix = {
+      url = "github:different-name/steam-config-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ghostty = {
       url = "github:ghostty-org/ghostty";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +56,7 @@
       url = "github:sst/opencode/dev";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-tresorit.url = "github:p15r/nix-tresorit";
   };
 
   outputs = inputs @ { flake-parts, ... }:

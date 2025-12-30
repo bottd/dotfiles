@@ -1,7 +1,10 @@
 { pkgs
+, inputs
+, system
 , ...
 }:
 let
+  tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;
   catppuccin-latte-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css";
     sha256 = "sha256-IxwqRHy9nYHUcrMOIhj3t0K7gYoeG+kMK3j8y9EypfQ=";
@@ -22,6 +25,7 @@ in
     helvum
     openscad
     vlc
+    tresorit-fhs
   ];
 
   programs.thunderbird = {

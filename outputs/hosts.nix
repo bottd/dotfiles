@@ -14,6 +14,7 @@ let
     username = "drakeb";
     format = "nixos";
     desktopEnvironment = "plasma";
+    includeGaming = true;
     extraSystemModules = chaletArgs;
   };
 in
@@ -24,9 +25,15 @@ in
         hostName = "desktop";
       });
 
-      eink = mkSystem (baseSystem // {
+      eink = mkSystem {
         hostName = "eink";
-      });
+        system = "x86_64-linux";
+        username = "drakeb";
+        format = "nixos";
+        desktopEnvironment = "sway";
+        includeGui = false;
+        extraSystemModules = chaletArgs;
+      };
 
       pocket = mkSystem (baseSystem // {
         hostName = "pocket";
@@ -38,6 +45,7 @@ in
         username = "droid";
         format = "nixos";
         enableAVF = true;
+        includeGui = false;
         extraHomeModules = [ ../hosts/android/home.nix ];
         extraSystemModules = chaletArgs;
       };
