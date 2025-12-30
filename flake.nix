@@ -56,10 +56,7 @@
       url = "github:sst/opencode/dev";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-tresorit = {
-      url = "github:p15r/nix-tresorit";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nix-tresorit.url = "github:p15r/nix-tresorit";
   };
 
   outputs = inputs @ { flake-parts, ... }:
