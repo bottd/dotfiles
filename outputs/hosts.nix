@@ -24,9 +24,14 @@ in
         hostName = "desktop";
       });
 
-      eink = mkSystem (baseSystem // {
+      eink = mkSystem {
         hostName = "eink";
-      });
+        system = "x86_64-linux";
+        username = "drakeb";
+        format = "nixos";
+        desktopEnvironment = "sway";
+        extraSystemModules = chaletArgs;
+      };
 
       pocket = mkSystem (baseSystem // {
         hostName = "pocket";

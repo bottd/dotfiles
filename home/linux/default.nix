@@ -6,7 +6,9 @@
     ./gaming.nix
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma
-  ] ++ lib.optionals (desktopEnvironment != null) [
+  ] ++ lib.optionals (desktopEnvironment == "sway") [
+    ./sway
+  ] ++ lib.optionals (desktopEnvironment != null && desktopEnvironment != "sway") [
     ./${desktopEnvironment}/host/${hostName}.nix
   ];
 }
