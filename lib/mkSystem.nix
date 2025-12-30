@@ -4,6 +4,8 @@
 , username
 , format
 , desktopEnvironment ? null
+, includeGui ? true
+, includeGaming ? false
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
@@ -28,7 +30,7 @@ let
     else inputs.home-manager.darwinModules.home-manager;
 
   specialArgs = {
-    inherit inputs username system desktopEnvironment hostName;
+    inherit inputs username system desktopEnvironment hostName includeGui includeGaming;
     inherit (inputs) nixpkgs nixos-hardware;
     nixpkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;

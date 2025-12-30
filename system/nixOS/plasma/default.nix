@@ -17,7 +17,6 @@
 
   environment.systemPackages = with pkgs; [
     filezilla
-    kdePackages.kate
     kdePackages.kdeconnect-kde
     kdePackages.kdeplasma-addons
     kdePackages.kwalletmanager
