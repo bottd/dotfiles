@@ -27,11 +27,7 @@
       apps.deadlock = {
         id = 1422450;
         compatTool = "GE-Proton";
-        launchOptions = {
-          env.LD_PRELOAD = "";
-          prefix = "gamemoderun";
-          args = [ "-no_prewarm_map" ];
-        };
+        launchOptions = ''LD_PRELOAD="" gamemoderun %command% -no_prewarm_map'';
       };
     };
 
