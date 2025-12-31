@@ -137,7 +137,7 @@
          {1 :<leader>nep
           2 (.. ":Neorg export directory " workspace_path "/public md<Cr>")
           :desc "Export posts"}
-         {1 :<leader>nq 2 ":Neorg query run<Cr>" :desc "Run Queries"}
+         ; {1 :<leader>nq 2 ":Neorg query run<Cr>" :desc "Run Queries"}
          {1 :<leader>n :desc :Neorg :icon " "}])
 
 ;; (setup_template_autoload)
