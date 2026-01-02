@@ -4,6 +4,7 @@
 (local workspace_path (os.getenv :NEORG_WORKSPACE_PATH))
 
 (local workspaces [:archive
+                   :ideas
                    :inbox
                    :journals
                    :meta
