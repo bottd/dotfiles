@@ -1,11 +1,11 @@
 { lib, pkgs, inputs, system, ... }: {
   # Ghostty `command` option fails tolaunch zellij on darwin
   # start zellij via zsh instead on darwin
-  programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
-    if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-      zellij
-    fi
-  '';
+  # programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
+  # if [[ -z "$ZELLIJ" && $- == *i* ]]; then
+  # zellij
+  # fi
+  # '';
 
   home.file = {
     ".config/ghostty/config" = {
