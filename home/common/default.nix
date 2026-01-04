@@ -14,6 +14,7 @@
     ./opencode.nix
     ./scripts.nix
     ./starship
+    ./tmux.nix
     ./zellij.nix
     ./zoxide.nix
     ./zsh.nix

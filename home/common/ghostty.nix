@@ -10,7 +10,7 @@
   home.file = {
     ".config/ghostty/config" = {
       text = ''
-        ${lib.optionalString pkgs.stdenv.isLinux "command = zellij"}
+        # ${lib.optionalString pkgs.stdenv.isLinux "command = zellij"}
         desktop-notifications = false
 
         font-family = MonoLisa Variable
