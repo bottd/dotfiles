@@ -12,6 +12,10 @@
     };
     syntaxHighlighting.enable = true;
     initContent = ''
+      if [ -f "$HOME/.config/zsh/secrets.zsh" ]; then
+        source "$HOME/.config/zsh/secrets.zsh"
+      fi
+
       export PATH="$HOME/.npm-packages/bin:$PATH"
       export NEORG_WORKSPACE=${neorgWorkspace}
       export NEORG_WORKSPACE_PATH=~/${neorgWorkspace}
