@@ -1,6 +1,6 @@
-{ pkgs, inputs, ... }: {
+_: {
   home.packages = [
-    inputs.opencode.packages.${pkgs.system}.default
+    # inputs.opencode.packages.${pkgs.system}.default
   ];
 
   home.file =

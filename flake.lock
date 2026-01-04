@@ -528,27 +528,6 @@
         "type": "github"
       }
     },
-    "opencode": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1767484409,
-        "narHash": "sha256-PqNHYnSlmOA12uy1eZQZtjaoBM52kphzGScmdFHcUCw=",
-        "owner": "sst",
-        "repo": "opencode",
-        "rev": "8b6cf7081f204947cddf293c5eafa2998e0bdea2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "sst",
-        "ref": "dev",
-        "repo": "opencode",
-        "type": "github"
-      }
-    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -609,7 +588,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "opencode": "opencode",
         "plasma-manager": "plasma-manager",
         "pre-commit-hooks": "pre-commit-hooks",
         "spicetify-nix": "spicetify-nix",
