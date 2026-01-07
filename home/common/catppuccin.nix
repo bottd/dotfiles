@@ -8,7 +8,7 @@ let
     btop.enable = true;
     fish.enable = true;
     fzf.enable = true;
-    starship.enable = true;
+    starship.enable = false;
     zsh-syntax-highlighting.enable = true;
 
     delta.enable = true;
