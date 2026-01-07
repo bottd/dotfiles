@@ -11,33 +11,35 @@ let
     text = ''
       palette = "${if palette == "light" then "catppuccin_latte" else "catppuccin_mocha"}"
       format = """
-      [┌$fill](bold blue)
-      [│](bold blue) $time
-      [│](bold blue) $all
-      [└───> ](bold blue)"""
+      $time$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0)
+      $directory$character"""
 
       [character]
-      disabled = true
+      success_symbol = "[❯](bold green)"
+      error_symbol = "[❯](bold red)"
 
       [directory]
       truncation_length = 4
       style = "bold lavender"
 
       [fill]
-      symbol = "─"
-      style = "bold lavender"
-
-      [git_branch]
-      style = "bold maroon"
-
-      [line_break]
-      disabled = true
+      symbol = " "
 
       [time]
       disabled = false
       style = "italic sky"
       format = "[$time]($style)"
-      time_format = "%A, %B %e at %I:%M%P"
+      time_format = "%a, %b %e at %I:%M"
+
+      [git_status]
+      style = "overlay0"
+      format = "[$staged]($style bold teal)[$modified]($style bold maroon)"
+      staged = " ''${count} staged"
+      modified = " ''${count} modified"
+
+      [git_branch]
+      style = "bold maroon"
+      format = " [$symbol$branch]($style)"
 
       ${builtins.readFile "${catppuccinStarship}/themes/latte.toml"}
       ${builtins.readFile "${catppuccinStarship}/themes/mocha.toml"}
@@ -52,7 +54,8 @@ in
   };
 
   xdg.configFile = {
-    "starship/starship.dark.toml" = makeStarshipTheme "dark";
-    "starship/starship.light.toml" = makeStarshipTheme "light";
+    "starship.toml" = makeStarshipTheme "dark";
+    "starship/light.toml" = makeStarshipTheme "light";
+    "starship/dark.toml" = makeStarshipTheme "dark";
   };
 }
