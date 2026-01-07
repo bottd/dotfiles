@@ -11,11 +11,11 @@ let
     text = ''
       palette = "${if palette == "light" then "catppuccin_latte" else "catppuccin_mocha"}"
       format = """
-      $time$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0)
-      $directory$character"""
+      $time[ on ](text)$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0)
+       $directory$character"""
 
       [character]
-      success_symbol = "[❯](bold green)"
+      success_symbol = "[❯](bold lavender)"
       error_symbol = "[❯](bold red)"
 
       [directory]
@@ -27,18 +27,18 @@ let
 
       [time]
       disabled = false
-      style = "italic sky"
+      style = "bold italic sky"
       format = "[$time]($style)"
       time_format = "%a, %b %e at %I:%M"
 
       [git_status]
       style = "overlay0"
-      format = "[$staged]($style bold teal)[$modified]($style bold maroon)"
+      format = "[$staged]($style teal)[$modified]($style maroon)"
       staged = " ''${count} staged"
       modified = " ''${count} modified"
 
       [git_branch]
-      style = "bold maroon"
+      style = "maroon"
       format = " [$symbol$branch]($style)"
 
       ${builtins.readFile "${catppuccinStarship}/themes/latte.toml"}
