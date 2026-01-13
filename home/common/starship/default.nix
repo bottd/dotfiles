@@ -11,7 +11,7 @@ let
     text = ''
       palette = "${if palette == "light" then "catppuccin_latte" else "catppuccin_mocha"}"
       format = """
-      $time[ on ](text)$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0)
+      $time[ on ](text)$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0) 
        $directory$character"""
 
       [character]
