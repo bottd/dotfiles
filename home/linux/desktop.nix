@@ -11,7 +11,7 @@ let
   };
   catppuccin-mocha-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css";
-    sha256 = "sha256-X1AaGVWr/4Ye/8MMViT70d97Eq0ZOLmvumtOG7tiZ+Y=";
+    sha256 = "sha256-cFUFYsRuhDeD5UhJJdPyXaTGaPLWlTp/YtFuPULWzSI=";
   };
 in
 {
