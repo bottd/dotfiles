@@ -7,7 +7,7 @@ let
   tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;
   catppuccin-latte-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css";
-    sha256 = "sha256-IxwqRHy9nYHUcrMOIhj3t0K7gYoeG+kMK3j8y9EypfQ=";
+    sha256 = "sha256-zz5dbHHcOSYPrz9SFnEVgdnioxs390C19nquOn7gxn4=";
   };
   catppuccin-mocha-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css";
