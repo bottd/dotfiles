@@ -1,4 +1,4 @@
-{ lib, pkgs, inputs, system, ... }: {
+{ lib, pkgs, ... }: {
   # Ghostty `command` option fails tolaunch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
@@ -37,6 +37,6 @@
   };
 
   home.packages = lib.optionals pkgs.stdenv.isLinux [
-    inputs.ghostty.packages.${system}.default
+    pkgs.ghostty
   ];
 }
