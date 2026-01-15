@@ -1,6 +1,6 @@
-(require '[babashka.fs :as fs])
-(require '[babashka.process :refer [shell]])
-(require '[babashka.http-client :as http])
+(require '[babashka.fs :as fs]
+         '[babashka.process :refer [shell]]
+         '[babashka.http-client :as http])
 
 (def installer-url "https://installer.tresorit.com/tresorit_installer.run")
 (def installer-path "/tmp/tresorit_installer.run")
