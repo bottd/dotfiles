@@ -1,10 +1,10 @@
 { inputs, ... }:
 {
   imports = with inputs; [
-    steam-config-nix.homeModules.default
-    ./steam.nix
-    ./minecraft.nix
+    ./counter-strike.nix
     ./deadlock.nix
-    ./counterstrike.nix
+    ./minecraft.nix
+    ./steam.nix
+    steam-config-nix.homeModules.default
   ];
 }
