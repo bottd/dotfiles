@@ -1,10 +1,5 @@
 _:
 {
-  programs.steam.config.apps.counterstrike2 = {
-    id = 730;
-    compatTool = "GE-Proton";
-  };
-
   home.file.".local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/autoexec.cfg".text = ''
     cl_radar_square_always "1"
     sensitivity "0.75"
