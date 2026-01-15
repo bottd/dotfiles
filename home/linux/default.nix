@@ -3,7 +3,7 @@
   imports = lib.optionals includeGui [
     ./desktop.nix
   ] ++ lib.optionals includeGaming [
-    ./gaming.nix
+    ./games
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma
   ] ++ lib.optionals (desktopEnvironment == "sway") [
