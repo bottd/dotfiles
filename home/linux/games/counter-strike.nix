@@ -61,7 +61,5 @@ _:
     snd_roundend_volume "0"
     snd_roundstart_volume "0"
     snd_tensecondwarning_volume "0.5"
-
-    host_writeconfig
   '';
 }
