@@ -53,13 +53,14 @@ _:
     cl_radar_square_always "1"
     sensitivity "0.75"
 
-    // Sound - mute all except MVP
+    // Sound - mute all except MVP and bomb
     snd_deathcamera_volume "0"
     snd_menumusic_volume "0"
-    snd_mvp_volume "1"
+    snd_mvp_volume "0.35"
     snd_roundaction_volume "0"
     snd_roundend_volume "0"
     snd_roundstart_volume "0"
-    snd_tensecondwarning_volume "0.5"
+    snd_bombvolume "0.35"
+    snd_tensecondwarning_volume "0"
   '';
 }
