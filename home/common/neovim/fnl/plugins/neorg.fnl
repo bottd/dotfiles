@@ -1,6 +1,5 @@
 (local neorg (require :neorg))
 (local wk (require :which-key))
-(local workspace :chalet)
 (local workspace_path (.. (os.getenv :HOME) :/chalet))
 
 (local workspaces [:archive
@@ -60,13 +59,13 @@
                                                 :name "[Norg]"}}
                      :core.dirman {:config {:workspaces ((fn []
                                                            (local config
-                                                                  {workspace workspace_path})
+                                                                  {:chalet workspace_path})
                                                            (each [_ ws (ipairs workspaces)]
                                                              (tset config ws
                                                                    (.. workspace_path
                                                                        "/" ws)))
                                                            config))
-                                            :default_workspace workspace}}
+                                            :default_workspace :chalet}}
                      :core.esupports.metagen {:config {:type :auto
                                                        :template [[:title
                                                                    (fn []
