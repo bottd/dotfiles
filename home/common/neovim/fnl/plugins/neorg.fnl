@@ -87,6 +87,7 @@
                      :core.export {}
                      :core.export.markdown {:config {:extensions :all}}
                      :core.integrations.treesitter {}
+                     :external.contexts {}
                      :core.itero {}
                      :core.journal {:config {:journal_folder :daily
                                              :template_name :meta/templates/journals.norg
