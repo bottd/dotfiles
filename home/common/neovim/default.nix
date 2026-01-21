@@ -87,7 +87,7 @@
     packages = with pkgs; [
       ripgrep
       tree-sitter
-      # grammar/spellcheck lsp
+      lua5_1
       harper
 
       # rust
@@ -111,6 +111,7 @@
       EDITOR = "nvim";
       VISUAL = "nvim";
       SUDO_EDITOR = "nvim";
+      LUA_INCDIR = "${pkgs.lua5_1}/include";
     };
   };
 
