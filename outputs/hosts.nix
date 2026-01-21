@@ -4,7 +4,6 @@ let
 
   chaletArgs = [{
     home-manager.extraSpecialArgs = {
-      neorgWorkspace = "chalet";
       root = ./.;
     };
   }];

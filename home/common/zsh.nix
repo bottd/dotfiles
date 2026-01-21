@@ -1,4 +1,4 @@
-{ pkgs, neorgWorkspace, config, ... }: {
+{ pkgs, config, ... }: {
   home.packages = with pkgs; [
     neofetch
   ];
@@ -17,8 +17,6 @@
       fi
 
       export PATH="$HOME/.npm-packages/bin:$PATH"
-      export NEORG_WORKSPACE=${neorgWorkspace}
-      export NEORG_WORKSPACE_PATH=~/${neorgWorkspace}
 
       if [[ $- == *i* ]]; then
         neofetch

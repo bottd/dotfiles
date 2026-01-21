@@ -1,7 +1,7 @@
 (local neorg (require :neorg))
 (local wk (require :which-key))
-(local workspace (os.getenv :NEORG_WORKSPACE))
-(local workspace_path (os.getenv :NEORG_WORKSPACE_PATH))
+(local workspace :chalet)
+(local workspace_path (.. (os.getenv :HOME) :/chalet))
 
 (local workspaces [:archive
                    :ideas
