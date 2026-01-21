@@ -14,7 +14,6 @@
 "neorg-worklog" = "1.3.4"
 
 "nvim-thyme" = "1.6.1"
-friendly-snippets = "scm"
 "which-key.nvim" = "3.17.0"
 "lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
@@ -38,14 +37,12 @@ tree-sitter-markdown_inline = "0.0.43"
 tree-sitter-nix = "0.0.67"
 tree-sitter-lua = "0.0.36"
 tree-sitter-python = "0.0.46"
-tree-sitter-query = "0.0.47"
 tree-sitter-rust = "0.0.55"
 tree-sitter-sql = "0.0.49"
 tree-sitter-svelte = "0.0.33"
 tree-sitter-tsx = "0.0.37"
 tree-sitter-typescript = "0.0.38"
 tree-sitter-typst = "0.0.37"
-tree-sitter-vimdoc = "0.0.39"
 tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.37"
 tree-sitter-norg = "0.2.6"
@@ -56,15 +53,12 @@ nvim-treesitter-context = "scm"
 "plenary.nvim" = "scm"
 "snacks.nvim" = "scm"
 "package-info.nvim" = "scm"
-tree-sitter-yuck = "0.0.29"
-tree-sitter-scss = "0.0.29"
 "flash.nvim" = "2.1.0"
-"nvim-web-devicons" = "scm"
+"nvim-web-devicons" = "0.100"
 tree-sitter-clojure = "0.0.32"
 tree-sitter-fennel = "0.0.36"
-tree-sitter-git_config = "0.0.31"
 tree-sitter-cpp = "0.0.49"
-tree-sitter-scheme = "scm"
+# tree-sitter-scheme = "scm"  # dev channel broken
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
@@ -118,11 +112,7 @@ rev = "v1.2.0"
 
 [plugins."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
-rev = "v2.0.0"
-
-[plugins.nvim-treesitter]
-git = "nvim-treesitter/nvim-treesitter"
-rev = "v0.10.0"
+rev = "15b4b1fae0b967820e0000692f17f7988bc4ebc9"
 
 [bundles.neorg]
 items = [
