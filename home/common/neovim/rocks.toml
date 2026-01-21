@@ -114,6 +114,10 @@ rev = "v1.2.0"
 git = "A7Lavinraj/fyler.nvim"
 rev = "15b4b1fae0b967820e0000692f17f7988bc4ebc9"
 
+[plugins.nvim-treesitter]
+git = "nvim-treesitter/nvim-treesitter"
+rev = "v0.10.0"
+
 [bundles.neorg]
 items = [
   "neorg",
