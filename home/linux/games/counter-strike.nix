@@ -1,6 +1,6 @@
-_:
+{ config, ... }:
 {
-  home.file.".local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/autoexec.cfg".text = ''
+  home.file."${config.xdg.dataHome}/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/autoexec.cfg".text = ''
     unbindall
 
     // Mouse Look

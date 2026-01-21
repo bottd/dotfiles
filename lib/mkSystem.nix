@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, versions, mkSpecialArgs, ... }:
 { hostName
 , system
 , username
@@ -29,13 +29,8 @@ let
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
-  specialArgs = {
-    inherit inputs username system desktopEnvironment hostName includeGui includeGaming;
-    inherit (inputs) nixpkgs nixos-hardware;
-    nixpkgs-unstable = import inputs.nixpkgs-unstable {
-      inherit system;
-      config.allowUnfree = true;
-    };
+  specialArgs = mkSpecialArgs {
+    inherit system username desktopEnvironment hostName includeGui includeGaming;
   };
 
   homeConfig = {
@@ -73,15 +68,15 @@ systemBuilder {
     ]
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
-      (_: { system.stateVersion = "25.05"; })
+      (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "nixos" then [
       inputs.catppuccin.nixosModules.catppuccin
       ../system/nixOS
-      (_: { system.stateVersion = "25.05"; })
+      (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "darwin" then [
-      (_: { system.stateVersion = 6; })
+      (_: { system.stateVersion = versions.darwin; })
     ]
     else [
     ])

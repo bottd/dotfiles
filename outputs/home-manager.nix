@@ -3,11 +3,11 @@
 , ...
 }: {
   flake.flakeModules = {
-    commonHome = { pkgs, username, ... }: {
+    commonHome = { pkgs, username, versions, ... }: {
 
       home.username = username;
 
-      home.stateVersion = "25.05";
+      home.stateVersion = versions.home;
       programs.home-manager.enable = true;
 
       nix = {

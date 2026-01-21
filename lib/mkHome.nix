@@ -1,12 +1,12 @@
-{ inputs, ... }: { hostName
-                 , system
-                 , username
-                 , format
-                 , desktopEnvironment ? null
-                 , hostPath ? null
-                 , extraHomeModules ? [ ]
-                 ,
-                 }:
+{ inputs, mkSpecialArgs, ... }:
+{ hostName
+, system
+, username
+, format
+, desktopEnvironment ? null
+, hostPath ? null
+, extraHomeModules ? [ ]
+}:
 let
   path =
     if hostPath != null
@@ -19,14 +19,10 @@ inputs.home-manager.lib.homeManagerConfiguration {
     config.allowUnfree = true;
   };
 
-  extraSpecialArgs = {
-    inherit inputs username system desktopEnvironment;
-    inherit (inputs) nixpkgs;
-    nixpkgs-unstable = import inputs.nixpkgs-unstable {
-      inherit system;
-      config.allowUnfree = true;
-    };
-    neorgWorkspace = "chalet";
+  extraSpecialArgs = mkSpecialArgs
+    {
+      inherit system username desktopEnvironment;
+    } // {
     root = ../.;
   };
 
