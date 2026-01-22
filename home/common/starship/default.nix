@@ -11,8 +11,10 @@ let
     text = ''
       palette = "${if palette == "light" then "catppuccin_latte" else "catppuccin_mocha"}"
       format = """
-      $time[ on ](text)$git_branch$git_state $cmd_duration$jobs$shell$fill [$git_status](overlay0) 
+      $time[ on ](text)$git_branch$git_state$jobs$shell$fill [$git_status](overlay0)
        $directory$character"""
+
+      right_format = "$cmd_duration"
 
       [character]
       success_symbol = "[❯](bold lavender)"
@@ -33,13 +35,16 @@ let
 
       [git_status]
       style = "overlay0"
-      format = "[$staged]($style teal)[$modified]($style maroon)"
+      format = "[$staged]($style teal)[$modified]($style maroon) "
       staged = " ''${count} staged"
       modified = " ''${count} modified"
 
       [git_branch]
       style = "maroon"
       format = " [$symbol$branch]($style)"
+
+      [cmd_duration]
+      format = "[took $duration](yellow)"
 
       ${builtins.readFile "${catppuccinStarship}/themes/latte.toml"}
       ${builtins.readFile "${catppuccinStarship}/themes/mocha.toml"}
