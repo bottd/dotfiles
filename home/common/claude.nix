@@ -1,4 +1,9 @@
 { desktopEnvironment ? null, lib, pkgs, ... }: {
+  # Add native installer location to PATH on macOS
+  home.sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
+    "$HOME/.local/bin"
+  ];
+
   programs.git.ignores = [
     ".claude/settings.local.json"
   ];
