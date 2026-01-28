@@ -40,6 +40,9 @@
     bind "b" "buymenu"
     bind "TAB" "+showscores"
     bind "v" "+voicerecord"
+    bind "y" "messagemode"      // All chat
+    bind "u" "messagemode2"     // Team chat
+    bind "ENTER" "messagemode"  // All chat
     bind "`" "toggleconsole"
     bind "ESCAPE" "cancelselect"
 
