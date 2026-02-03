@@ -21,8 +21,7 @@
                                        :args [:--stdin :$FILENAME]
                                        :cwd (util.root_file [:flake.nix])
                                        :condition (fn [self ctx]
-                                                    (let [flake-path (vim.fs.find [:flake.nix]
-                                                                                  {:path ctx.filename
-                                                                                   :upward true})]
-                                                      (not= nil
-                                                            (. flake-path 1))))}}})
+                                                    (?. (vim.fs.find [:flake.nix]
+                                                                     {:path ctx.filename
+                                                                      :upward true})
+                                                        1))}}})

@@ -1,7 +1,7 @@
-(set vim.opt.spell true)
-(set vim.opt.conceallevel 3)
-(vim.api.nvim_command "set nonumber")
-(vim.api.nvim_command "set linebreak")
-(vim.api.nvim_command "set breakindent")
+(set vim.opt_local.spell true)
+(set vim.opt_local.conceallevel 3)
+(set vim.opt_local.number false)
+(set vim.opt_local.linebreak true)
+(set vim.opt_local.breakindent true)
 
 (vim.keymap.set :n :<Cr> "<Plug>(neorg.esupports.hop.hop-link)")
