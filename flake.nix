@@ -1,7 +1,7 @@
 {
   description = "Drake Flake";
   inputs = {
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "github:catppuccin/nix/release-25.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";

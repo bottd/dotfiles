@@ -26,6 +26,8 @@
           keep-outputs = true;
           keep-derivations = true;
           sandbox = true;
+          download-buffer-size = 536870912; # 512 MiB
+          http-connections = 128;
         };
         optimise.automatic = true;
         gc = {
