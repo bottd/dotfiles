@@ -10,6 +10,9 @@
     kdePackages.gwenview
     kdePackages.filelight
     kdePackages.kcalc
+    kdePackages.partitionmanager
+    hfsprogs
+    exfatprogs
   ];
 
   programs.plasma = {
