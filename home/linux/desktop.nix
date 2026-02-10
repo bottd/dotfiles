@@ -7,11 +7,11 @@ let
   tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;
   catppuccin-latte-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-latte.theme.css";
-    sha256 = "sha256-SMF9QiQv+De3WdSYQibSN2SSa+eXuE26ukafR53Z8OQ=";
+    sha256 = "sha256-Wq2SLe/RuSkJEryn8eA8MqNvbgsE1ILkI1yqfTzVjuY=";
   };
   catppuccin-mocha-css = pkgs.fetchurl {
     url = "https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css";
-    sha256 = "sha256-hHyCu2gA6lcBt1559ndoB0Lt5tH1tovr0kEwB9pdXvQ=";
+    sha256 = "sha256-KVv9vfqI+WADn3w4yE1eNsmtm7PQq9ugKiSL3EOLheI=";
   };
 in
 {
