@@ -2,6 +2,7 @@
 {
   imports = lib.optionals includeGui [
     ./desktop.nix
+    ./mpv
   ] ++ lib.optionals includeGaming [
     ./games
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
