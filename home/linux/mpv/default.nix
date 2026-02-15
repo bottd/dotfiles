@@ -9,7 +9,7 @@ let
 
   mpv-cut-config = pkgs.runCommand "mpv-cut-config.lua"
     {
-      nativeBuildInputs = [ pkgs.fennel ];
+      nativeBuildInputs = [ pkgs.luaPackages.fennel ];
     } ''
     fennel --compile --globals mp,utils,ACTIONS,ACTION,KEY_CUT,KEY_CANCEL_CUT,KEY_BOOKMARK_ADD,KEY_CYCLE_ACTION \
       ${./config.fnl} > $out
