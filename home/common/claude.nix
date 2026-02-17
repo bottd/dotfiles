@@ -53,6 +53,7 @@ in
 
   programs.git.ignores = [
     ".claude/settings.local.json"
+    "CLAUDE.local.md"
   ];
 
   xdg.mimeApps = lib.mkIf (desktopEnvironment != null && pkgs.stdenv.isLinux) {
