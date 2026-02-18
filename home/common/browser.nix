@@ -1,7 +1,4 @@
-{ pkgs
-, lib
-, ...
-}: {
+_: {
   home.sessionVariables = {
     BROWSER = "firefox";
   };
@@ -33,7 +30,4 @@
     };
   };
 
-  home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-    pkgs.google-chrome
-  ];
 }
