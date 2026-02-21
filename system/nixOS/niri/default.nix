@@ -6,6 +6,7 @@
 
   programs.niri = {
     enable = true;
+    package = pkgs.niri-unstable;
   };
 
   services.displayManager.sddm = {

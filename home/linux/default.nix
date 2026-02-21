@@ -7,6 +7,8 @@
     ./games
   ] ++ lib.optionals (desktopEnvironment == "plasma") [
     ./plasma
+  ] ++ lib.optionals (desktopEnvironment == "niri") [
+    ./niri
   ] ++ lib.optionals (desktopEnvironment == "sway") [
     ./sway
   ] ++ lib.optionals (desktopEnvironment != null && desktopEnvironment != "sway") [

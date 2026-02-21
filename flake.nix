@@ -42,7 +42,7 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixos-avf.url = "github:nix-community/nixos-avf";
-    niri.url = "github:sodiboo/niri-flake";
+    niri.url = "github:ohare93/niri-flake/layout-per-display";
     nix-tresorit.url = "github:p15r/nix-tresorit";
   };
 

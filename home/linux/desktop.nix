@@ -24,7 +24,6 @@ in
     obs-studio
     helvum
     openscad
-    mpv
     tresorit-fhs
   ];
 
