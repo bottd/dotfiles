@@ -44,10 +44,6 @@
     nixos-avf.url = "github:nix-community/nixos-avf";
     niri.url = "github:sodiboo/niri-flake";
     nix-tresorit.url = "github:p15r/nix-tresorit";
-    rift = {
-      url = "github:GustavoWidman/rift/feat/nix-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ { flake-parts, ... }:

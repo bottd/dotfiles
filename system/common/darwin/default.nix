@@ -2,8 +2,6 @@
 { ...
 }: {
   imports = [
-    ../../darwin/aerospace.nix
-    ../../darwin/rift.nix
   ];
 
   # Darwin-specific settings

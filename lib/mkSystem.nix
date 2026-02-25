@@ -76,7 +76,6 @@ systemBuilder {
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "darwin" then [
-      inputs.rift.darwinModules.default
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]
