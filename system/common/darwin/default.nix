@@ -2,6 +2,7 @@
 { ...
 }: {
   imports = [
+    ../../darwin/rift.nix
   ];
 
   # Darwin-specific settings
