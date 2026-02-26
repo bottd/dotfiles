@@ -6,7 +6,7 @@ _: {
     animation_fps = 100.0
     animation_easing = "ease_in_out"
 
-    focus_follows_mouse = true
+    focus_follows_mouse = false
     mouse_follows_focus = true
     mouse_hides_on_focus = false
 
@@ -18,14 +18,18 @@ _: {
     mode = "scrolling"
 
     [settings.layout.scrolling]
+    animate = true
     column_width_ratio = 0.7
     min_column_width_ratio = 0.3
     max_column_width_ratio = 0.9
     alignment = "center"
     focus_navigation_style = "niri"
 
+    [settings.layout.scrolling.gestures]
+    enabled = true
+
     [settings.layout.stack]
-    stack_offset = 40.0
+    stack_offset = 0.0
     default_orientation = "perpendicular"
 
     [settings.layout.gaps.outer]

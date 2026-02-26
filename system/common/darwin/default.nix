@@ -3,6 +3,7 @@
 }: {
   imports = [
     ../../darwin/rift.nix
+    ../../darwin/sketchybar.nix
   ];
 
   # Darwin-specific settings
