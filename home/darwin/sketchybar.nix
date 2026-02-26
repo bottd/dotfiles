@@ -1,36 +1,39 @@
 _: {
   home.file = {
-    ".config/sketchybar/sketchybarrc-desktop" = {
+    ".config/sketchybar/sketchybarrc-main" = {
       executable = true;
       text = ''
         #!/usr/bin/env zsh
 
         FONT_FACE="MonoLisa Nerd Font"
         ICON_FONT="MonoLisa Nerd Font"
-        PLUGIN_DIR="$HOME/.config/sketchybar/plugins-desktop"
-        PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
+        RIFT_CLI="/opt/homebrew/bin/rift-cli"
+        PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
         SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
         sketchybar --bar \
             height=32 \
-            color=0x66494d64 \
+            color=0x00000000 \
             margin=16 \
             sticky=on \
             padding_left=16 \
             padding_right=16 \
             notch_width=188 \
-            display=main
+            display=main \
+            y_offset=8
 
         sketchybar --default \
-            background.height=32 \
-            icon.color=0xff24273a \
-            icon.font="$ICON_FONT:Medium:20.0" \
+            background.color=0x66494d64 \
+            background.corner_radius=5 \
+            background.padding_right=5 \
+            background.height=26 \
+            icon.font="$ICON_FONT:Medium:18.0" \
             icon.padding_left=5 \
             icon.padding_right=5 \
-            label.color=0xff24273a \
-            label.font="$FONT_FACE:Bold:14.0" \
-            label.y_offset=1 \
+            label.font="$FONT_FACE:Medium:14.0" \
+            label.color=0xffcad3f5 \
+            label.y_offset=0 \
             label.padding_left=0 \
             label.padding_right=5
 
@@ -38,12 +41,11 @@ _: {
         sketchybar --add event rift_workspace_changed
 
         # Workspace indicators
-        for i in 1 2 3 4 5 6 7 8 9; do
+        for i in 1 2 3 4 5; do
             sketchybar --add item workspace_$i left \
                 --set workspace_$i \
-                background.color=0xff494d64 \
-                background.corner_radius=0 \
-                background.height=32 \
+                background.color=0x00000000 \
+                background.corner_radius=5 \
                 background.padding_left=0 \
                 background.padding_right=0 \
                 icon=$i \
@@ -52,8 +54,8 @@ _: {
                 icon.padding_left=10 \
                 icon.padding_right=10 \
                 label.drawing=off \
-                click_script="rift-cli execute workspace switch $((i - 1))" \
-                script="$PLUGIN_SHARED_DIR/workspace.sh" \
+                click_script="/opt/homebrew/bin/rift-cli execute workspace switch $((i - 1))" \
+                script="$PLUGIN_DIR/workspace.sh" \
                 --subscribe workspace_$i rift_workspace_changed
         done
 
@@ -63,14 +65,16 @@ _: {
             background.padding_left=0 \
             background.padding_right=0 \
             icon.y_offset=1 \
+            icon.color=0xff24273a \
             label.drawing=no \
-            script="$PLUGIN_SHARED_DIR/front_app.sh" \
+            script="$PLUGIN_DIR/front_app.sh" \
             --add item front_app.separator left \
             --set front_app.separator \
             background.color=0x00000000 \
+            background.padding_left=-3 \
             icon= \
             icon.color=0xffa6da95 \
-            icon.font="$ICON_FONT:Bold:23.0" \
+            icon.font="$ICON_FONT:Bold:22.0" \
             icon.padding_left=0 \
             icon.padding_right=0 \
             icon.y_offset=1 \
@@ -78,10 +82,10 @@ _: {
             --add item front_app.name left \
             --set front_app.name \
             background.color=0x00000000 \
+            background.padding_right=0 \
             icon.drawing=off \
-            label.font="$FONT_FACE:Bold:16.0" \
-            label.color=0xffcad3f5 \
-            label.padding_left=5
+            label.font="$FONT_FACE:Bold:14.0" \
+            label.drawing=yes
 
         sketchybar --add bracket front_app_bracket \
             front_app \
@@ -89,12 +93,44 @@ _: {
             front_app.name \
             --subscribe front_app front_app_switched
 
+        sketchybar --add item weather.moon right \
+            --set weather.moon \
+            background.color=0x667dc4e4 \
+            background.padding_right=-1 \
+            icon.color=0xff181926 \
+            icon.font="$ICON_FONT:Bold:26.0" \
+            icon.padding_left=4 \
+            icon.padding_right=3 \
+            label.drawing=off \
+            --subscribe weather.moon mouse.clicked
+
+        sketchybar --add item weather right \
+            --set weather \
+            icon= \
+            icon.color=0xfff5bde6 \
+            icon.font="$ICON_FONT:Bold:18.0" \
+            update_freq=1800 \
+            script="$PLUGIN_DIR/weather.sh" \
+            --subscribe weather system_woke
+
         sketchybar --add item clock right \
             --set clock \
             icon=󰃰 \
-            background.color=0xffed8796 \
+            icon.color=0xffed8796 \
             update_freq=10 \
-            script="$PLUGIN_SHARED_DIR/clock.sh"
+            script="$PLUGIN_DIR/clock.sh"
+
+        sketchybar --add item battery right \
+            --set battery \
+            update_freq=20 \
+            script="$PLUGIN_DIR/battery.sh"
+
+        sketchybar --add item volume right \
+            --set volume \
+            icon.color=0xff8aadf4 \
+            label.drawing=true \
+            script="$PLUGIN_DIR/volume.sh" \
+            --subscribe volume volume_change
 
         sketchybar --add event spotify_change $SPOTIFY_EVENT \
             --add item spotify right \
@@ -110,180 +146,26 @@ _: {
         sketchybar --update
         sketchybar --trigger rift_workspace_changed
 
-        # Subscribe to rift workspace events
-        rift-cli subscribe cli \
-            --event workspace_changed \
-            --command sketchybar \
-            --args "--trigger rift_workspace_changed" &
+        # Subscribe to rift workspace events via mach IPC
+        ($RIFT_CLI subscribe mach workspace_changed | while read -r line; do
+            /run/current-system/sw/bin/sketchybar --trigger rift_workspace_changed
+        done) &
       '';
     };
 
-    ".config/sketchybar/sketchybarrc-laptop" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env zsh
-
-        FONT_FACE="MonoLisa Nerd Font"
-        ICON_FONT="MonoLisa Nerd Font"
-
-        PLUGIN_DIR="$HOME/.config/sketchybar/plugins-laptop"
-        PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
-
-        SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
-
-        sketchybar --bar \
-            height=32 \
-            color=0x00000000 \
-            margin=16 \
-            sticky=on \
-            padding_left=16 \
-            padding_right=16 \
-            notch_width=188 \
-            display=main
-
-        sketchybar --default \
-            background.color=0x66494d64 \
-            background.corner_radius=5 \
-            background.padding_right=5 \
-            background.height=26 \
-            icon.font="$ICON_FONT:Medium:15.0" \
-            icon.padding_left=5 \
-            icon.padding_right=5 \
-            label.font="$FONT_FACE:Medium:12.0" \
-            label.color=0xffcad3f5 \
-            label.y_offset=0 \
-            label.padding_left=0 \
-            label.padding_right=5
-
-        sketchybar --add event spotify_change $SPOTIFY_EVENT \
-            --add item spotify e \
-            --set spotify \
-            icon= \
-            icon.y_offset=1 \
-            icon.font="$ICON_FONT:Bold:20.0" \
-            label.drawing=off \
-            label.padding_left=3 \
-            script="$PLUGIN_DIR/spotify.sh" \
-            --subscribe spotify spotify_change mouse.clicked
-
-        # Rift workspace changed event
-        sketchybar --add event rift_workspace_changed
-
-        # Workspace indicators
-        for i in 1 2 3 4 5 6 7 8 9; do
-            sketchybar --add item workspace_$i left \
-                --set workspace_$i \
-                background.color=0x00000000 \
-                background.corner_radius=5 \
-                background.padding_left=0 \
-                background.padding_right=0 \
-                icon=$i \
-                icon.font="$FONT_FACE:Bold:12.0" \
-                icon.color=0xffcad3f5 \
-                icon.padding_left=8 \
-                icon.padding_right=8 \
-                label.drawing=off \
-                click_script="rift-cli execute workspace switch $((i - 1))" \
-                script="$PLUGIN_SHARED_DIR/workspace.sh" \
-                --subscribe workspace_$i rift_workspace_changed
-        done
-
-        sketchybar --add item front_app left \
-            --set front_app \
-            background.color=0xffa6da95 \
-            background.padding_left=0 \
-            background.padding_right=0 \
-            icon.y_offset=1 \
-            icon.color=0xff24273a \
-            label.drawing=no \
-            script="$PLUGIN_SHARED_DIR/front_app.sh" \
-            --add item front_app.separator left \
-            --set front_app.separator \
-            background.color=0x00000000 \
-            background.padding_left=-3 \
-            icon= \
-            icon.color=0xffa6da95 \
-            icon.font="$ICON_FONT:Bold:20.0" \
-            icon.padding_left=0 \
-            icon.padding_right=0 \
-            icon.y_offset=1 \
-            label.drawing=no \
-            --add item front_app.name left \
-            --set front_app.name \
-            background.color=0x00000000 \
-            background.padding_right=0 \
-            icon.drawing=off \
-            label.font="$FONT_FACE:Bold:12.0" \
-            label.drawing=yes
-
-        sketchybar --add item weather.moon q \
-            --set weather.moon \
-            background.color=0x667dc4e4 \
-            background.padding_right=-1 \
-            icon.color=0xff181926 \
-            icon.font="$ICON_FONT:Bold:22.0" \
-            icon.padding_left=4 \
-            icon.padding_right=3 \
-            label.drawing=off \
-            --subscribe weather.moon mouse.clicked
-
-        sketchybar --add item weather q \
-            --set weather \
-            icon= \
-            icon.color=0xfff5bde6 \
-            icon.font="$ICON_FONT:Bold:15.0" \
-            update_freq=1800 \
-            script="$PLUGIN_SHARED_DIR/weather.sh" \
-            --subscribe weather system_woke
-
-        sketchybar --add bracket front_app_bracket \
-            front_app \
-            front_app.separator \
-            front_app.name \
-            --subscribe front_app front_app_switched
-
-        sketchybar --add item clock right \
-            --set clock \
-            icon=󰃰 \
-            icon.color=0xffed8796 \
-            update_freq=10 \
-            script="$PLUGIN_SHARED_DIR/clock.sh"
-
-        sketchybar --add item battery right \
-            --set battery \
-            update_freq=20 \
-            script="$PLUGIN_DIR/battery.sh"
-
-        sketchybar --add item volume right \
-            --set volume \
-            icon.color=0xff8aadf4 \
-            label.drawing=true \
-            script="$PLUGIN_SHARED_DIR/volume.sh" \
-            --subscribe volume volume_change
-
-        ##### Finalizing Setup #####
-        sketchybar --update
-        sketchybar --trigger rift_workspace_changed
-
-        # Subscribe to rift workspace events
-        rift-cli subscribe cli \
-            --event workspace_changed \
-            --command sketchybar \
-            --args "--trigger rift_workspace_changed" &
-      '';
-    };
-
-    # Shared plugins
+    # Plugins
     ".config/sketchybar/plugins/workspace.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env zsh
 
+        RIFT_CLI="/opt/homebrew/bin/rift-cli"
+
         # Extract workspace index from item name (workspace_1 -> 0, workspace_2 -> 1, etc.)
         WORKSPACE_NUM=''${NAME##workspace_}
         WORKSPACE_INDEX=$((WORKSPACE_NUM - 1))
 
-        WORKSPACES_JSON=$(rift-cli query workspaces 2>/dev/null)
+        WORKSPACES_JSON=$($RIFT_CLI query workspaces 2>/dev/null)
 
         if [[ -z "$WORKSPACES_JSON" ]]; then
             return
@@ -422,15 +304,8 @@ _: {
       text = ''
         #!/usr/bin/env zsh
 
-        IP=$(curl -s https://ipinfo.io/ip)
-        LOCATION_JSON=$(curl -s https://ipinfo.io/$IP/json)
-
-        LOCATION="$(echo $LOCATION_JSON | jq '.city' | tr -d '"')"
-        REGION="$(echo $LOCATION_JSON | jq '.region' | tr -d '"')"
-        COUNTRY="$(echo $LOCATION_JSON | jq '.country' | tr -d '"')"
-
-        LOCATION_ESCAPED="''${LOCATION// /+}+''${REGION// /+}"
-        WEATHER_JSON=$(curl -s "https://wttr.in/$LOCATION_ESCAPED?format=j1")
+        LOCATION="Chicago"
+        WEATHER_JSON=$(curl -s "https://wttr.in/Chicago?format=j1")
 
         if [ -z $WEATHER_JSON ]; then
             sketchybar --set $NAME label=$LOCATION
@@ -474,66 +349,7 @@ _: {
       '';
     };
 
-    # Desktop-specific plugins
-    ".config/sketchybar/plugins-desktop/spotify.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env zsh
-
-        MAX_LENGTH=35
-        HALF_LENGTH=$(((MAX_LENGTH + 1) / 2))
-
-        SPOTIFY_JSON="$INFO"
-
-        update_track() {
-            if [[ -z $SPOTIFY_JSON ]]; then
-                sketchybar --set $NAME background.color=0xffeed49f label.drawing=no
-                return
-            fi
-
-            PLAYER_STATE=$(echo "$SPOTIFY_JSON" | jq -r '.["Player State"]')
-
-            if [ $PLAYER_STATE = "Playing" ]; then
-                TRACK="$(echo "$SPOTIFY_JSON" | jq -r .Name)"
-                ARTIST="$(echo "$SPOTIFY_JSON" | jq -r .Artist)"
-
-                TRACK_LENGTH=''${#TRACK}
-                ARTIST_LENGTH=''${#ARTIST}
-
-                if [ $((TRACK_LENGTH + ARTIST_LENGTH)) -gt $MAX_LENGTH ]; then
-                    if [ $TRACK_LENGTH -gt $HALF_LENGTH ] && [ $ARTIST_LENGTH -gt $HALF_LENGTH ]; then
-                        TRACK="''${TRACK:0:$((MAX_LENGTH % 2 == 0 ? HALF_LENGTH - 2 : HALF_LENGTH - 1))}…"
-                        ARTIST="''${ARTIST:0:$((HALF_LENGTH - 2))}…"
-                    elif [ $TRACK_LENGTH -gt $HALF_LENGTH ]; then
-                        TRACK="''${TRACK:0:$((MAX_LENGTH - ARTIST_LENGTH - 1))}…"
-                    elif [ $ARTIST_LENGTH -gt $HALF_LENGTH ]; then
-                        ARTIST="''${ARTIST:0:$((MAX_LENGTH - TRACK_LENGTH - 1))}…"
-                    fi
-                fi
-                sketchybar --set $NAME label="''${TRACK}  ''${ARTIST}" label.drawing=yes background.color=0xffa6da95
-
-            elif [ $PLAYER_STATE = "Paused" ]; then
-                sketchybar --set $NAME background.color=0xffeed49f
-            elif [ $PLAYER_STATE = "Stopped" ]; then
-                sketchybar --set $NAME background.color=0xffeed49f label.drawing=no
-            else
-                sketchybar --set $NAME background.color=0xffeed49f
-            fi
-        }
-
-        case "$SENDER" in
-        "mouse.clicked")
-            osascript -e 'tell application "Spotify" to playpause'
-            ;;
-        *)
-            update_track
-            ;;
-        esac
-      '';
-    };
-
-    # Laptop-specific plugins
-    ".config/sketchybar/plugins-laptop/battery.sh" = {
+    ".config/sketchybar/plugins/battery.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env sh
@@ -580,7 +396,7 @@ _: {
       '';
     };
 
-    ".config/sketchybar/plugins-laptop/spotify.sh" = {
+    ".config/sketchybar/plugins/spotify.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env zsh

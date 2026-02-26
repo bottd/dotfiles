@@ -32,6 +32,10 @@
         background-blur-radius = 20
 
         gtk-titlebar = true
+
+        macos-titlebar-style = hidden
+
+        keybind = alt+enter=unbind
       '';
     };
   };

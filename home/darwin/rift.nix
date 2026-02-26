@@ -42,24 +42,11 @@ _: {
     horizontal = 16
     vertical = 16
 
-    [settings.ui.menu_bar]
-    enabled = true
-    show_empty = false
-    mode = "all"
-    active_label = "index"
-    display_style = "layout"
-
     [settings.ui.stack_line]
     enabled = false
-    horiz_placement = "top"
-    vert_placement = "left"
-    thickness = 0.0
-    spacing = 0.0
 
     [settings.ui.mission_control]
     enabled = false
-    fade_enabled = false
-    fade_duration_ms = 180.0
 
     [settings.gestures]
     enabled = true
@@ -74,7 +61,7 @@ _: {
 
     [virtual_workspaces]
     enabled = true
-    default_workspace_count = 9
+    default_workspace_count = 5
     auto_assign_windows = true
     preserve_focus_per_workspace = true
     workspace_auto_back_and_forth = true
@@ -107,10 +94,6 @@ _: {
     "Alt + 3" = { switch_to_workspace = 2 }
     "Alt + 4" = { switch_to_workspace = 3 }
     "Alt + 5" = { switch_to_workspace = 4 }
-    "Alt + 6" = { switch_to_workspace = 5 }
-    "Alt + 7" = { switch_to_workspace = 6 }
-    "Alt + 8" = { switch_to_workspace = 7 }
-    "Alt + 9" = { switch_to_workspace = 8 }
 
     # Move window to workspace
     "comb1 + 1" = { move_window_to_workspace = 0 }
@@ -118,10 +101,6 @@ _: {
     "comb1 + 3" = { move_window_to_workspace = 2 }
     "comb1 + 4" = { move_window_to_workspace = 3 }
     "comb1 + 5" = { move_window_to_workspace = 4 }
-    "comb1 + 6" = { move_window_to_workspace = 5 }
-    "comb1 + 7" = { move_window_to_workspace = 6 }
-    "comb1 + 8" = { move_window_to_workspace = 7 }
-    "comb1 + 9" = { move_window_to_workspace = 8 }
 
     # Workspace navigation
     "Alt + Tab" = "switch_to_last_workspace"
@@ -144,8 +123,11 @@ _: {
     "comb1 + Equal" = "resize_window_grow"
     "comb1 + Minus" = "resize_window_shrink"
 
+    # Close focused window
+    "Alt + Q" = { exec = "rift-cli execute window close --window-id $(rift-cli query windows | jq -r '.[] | select(.is_focused) | .window_server_id')" }
+
     # Launch terminal
-    "Alt + Enter" = { exec = "open -na ghostty" }
+    "Alt + Enter" = { exec = "open -na Ghostty --args --new-window" }
 
     # Service
     "Alt + Ctrl + Q" = "save_and_exit"
