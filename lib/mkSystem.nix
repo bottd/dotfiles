@@ -76,6 +76,7 @@ systemBuilder {
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "darwin" then [
+      ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]
     else [

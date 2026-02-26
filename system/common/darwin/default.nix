@@ -2,7 +2,8 @@
 { ...
 }: {
   imports = [
-    ../../darwin/aerospace.nix
+    ../../darwin/rift.nix
+    ../../darwin/sketchybar.nix
   ];
 
   # Darwin-specific settings
