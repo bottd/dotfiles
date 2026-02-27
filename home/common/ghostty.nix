@@ -3,7 +3,7 @@
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
     if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-      zellij --theme "catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}"
+      zellij options --theme "catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}"
     fi
   '';
 
