@@ -5,6 +5,7 @@
     ./karabiner
     ./rift.nix
     ./sketchybar.nix
+    ./theme.nix
     ./wallpaper.nix
     ../common/ghostty.nix
   ];
