@@ -11,6 +11,9 @@ let
       "elements-of-style@superpowers-marketplace" = true;
       "superpowers-lab@superpowers-marketplace" = true;
     };
+    env = {
+      ENABLE_LSP_TOOL = "1";
+    };
     preferNativeInstaller = false;
     plugins = { };
     mcpServers = {

@@ -127,7 +127,7 @@ _: {
     "Alt + Q" = { exec = "rift-cli execute window close --window-id $(rift-cli query windows | jq -r '.[] | select(.is_focused) | .window_server_id')" }
 
     # Launch terminal
-    "Alt + Enter" = { exec = "open -na Ghostty --args --new-window" }
+    "Alt + T" = { exec = "open -na Ghostty --args --new-window" }
 
     # Service
     "Alt + Ctrl + Q" = "save_and_exit"
