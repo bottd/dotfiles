@@ -1,5 +1,4 @@
 (local blink (require :blink.cmp))
-(local lspconfig (require :lspconfig))
 (local wk (require :which-key))
 (local lsp-lines (require :lsp_lines))
 
@@ -44,6 +43,9 @@
                                                             vim.lsp.buf.code_action
                                                             opts)))})
 
+;; Set blink.cmp capabilities for all LSP servers
+(vim.lsp.config "*" {:capabilities (blink.get_lsp_capabilities)})
+
 (local servers
        {:cssls {}
         :eslint {}
@@ -54,16 +56,17 @@
         :ts_ls {}
         :harper_ls {:filetypes [:markdown]
                     :settings {:harper-ls {:userDictPath "~/.config/nvim/dict.txt"}}}
-        :lua_ls {:Lua {:diagnostics {:globals [:vim]}
-                       :workspace {:checkThirdParty false}
-                       :telemetry {:enable false}}}
+        :lua_ls {:settings {:Lua {:diagnostics {:globals [:vim]}
+                                  :workspace {:checkThirdParty false}
+                                  :telemetry {:enable false}}}}
         :clojure_lsp {:filetypes [:clojure :edn :clojurescript :clojurec]
                       :settings {:clojure_lsp {:lint {:level :on}}}}
         :nil_ls {:filetypes [:nix]
                  :settings {:nil {:formatting {:command [:nixpkgs-fmt]}}}}})
 
 (each [server config (pairs servers)]
-  (set config.capabilities (blink.get_lsp_capabilities config.capabilities))
-  ((. lspconfig server :setup) config))
+  (vim.lsp.config server config))
+
+(vim.lsp.enable (vim.tbl_keys servers))
 
 (vim.diagnostic.config {:virtual_text false :virtual_lines true})
