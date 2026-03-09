@@ -5,8 +5,8 @@ in
 {
   programs.zsh.initContent = lib.mkMerge [
     (lib.mkBefore ''
-      # Detect macOS appearance and set theme environment variables
-      if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+      # Detect Linux appearance and set theme environment variables
+      if [[ "$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)" == *"prefer-dark"* ]]; then
         export CATPPUCCIN_FLAVOR="mocha"
         export BAT_THEME="Catppuccin Mocha"
         export STARSHIP_CONFIG="$HOME/.config/starship/dark.toml"
