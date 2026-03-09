@@ -1,6 +1,8 @@
 { desktopEnvironment ? null, hostName, includeGui ? true, includeGaming ? false, lib, ... }:
 {
-  imports = lib.optionals includeGui [
+  imports = [
+    ./theme.nix
+  ] ++ lib.optionals includeGui [
     ./desktop.nix
     ./mpv
   ] ++ lib.optionals includeGaming [

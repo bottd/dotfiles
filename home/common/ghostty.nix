@@ -28,12 +28,11 @@
 
         theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 
-        background-opacity = 0.8
-        background-blur-radius = 20
+        background-opacity = 1.0
 
         gtk-titlebar = true
 
-        macos-titlebar-style = hidden
+        macos-titlebar-style = native
 
         keybind = alt+enter=unbind
       '';

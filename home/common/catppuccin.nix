@@ -9,7 +9,7 @@ let
     fish.enable = true;
     fzf.enable = true;
     starship.enable = false;
-    zsh-syntax-highlighting.enable = true;
+    zsh-syntax-highlighting.enable = false;
 
     delta.enable = true;
     lazygit.enable = true;
