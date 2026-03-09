@@ -7,7 +7,7 @@
 "rocks-edit.nvim" = "scm"
 "luasnip" = "2.4.1"
 
-"neorg" = "9.3.0"
+"neorg" = "9.4.0"
 "neorg-archive" = "1.1.0"
 "neorg-interim-ls" = "2.1.1"
 "neorg-query" = "1.4.0"
@@ -141,12 +141,16 @@ items = ["lsp_lines.nvim", "nvim-lspconfig"]
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
 
+[dev]
+tree-sitter-mog = "/home/drakeb/workspace/mog/crates/tree-sitter"
+
 [treesitter]
 auto_highlight = "all"
 auto_install = "prompt"
 
 [treesitter.parser_map]
 lisp = "fennel"
+mg = "mog"
 
 [config]
 auto_setup = true
