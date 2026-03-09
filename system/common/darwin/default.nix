@@ -1,7 +1,8 @@
 # Darwin-specific common settings
-{ ...
-}: {
+{ inputs, ... }:
+{
   imports = [
+    inputs.rift.darwinModules.default
     ../../darwin/rift.nix
     ../../darwin/sketchybar.nix
   ];
