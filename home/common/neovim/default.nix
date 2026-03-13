@@ -22,7 +22,7 @@
         text =
           #lua
           ''
-            	  do
+            do
                 -- Specifies where to install/use rocks.nvim
                 local install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
 
@@ -50,19 +50,20 @@
 
                 -- Add rocks.nvim to the runtimepath
                 vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
+            end
 
-                -- If rocks.nvim is not installed then install it!
-                if not pcall(require, "rocks") then
-                    vim.system({
-                        rocks_config.luarocks_binary,
-                        "install",
-                        "--tree",
-                        rocks_config.rocks_path,
-                        "--server=https://lumen-oss.github.io/rocks-binaries/",
-                        "--lua-version=5.1",
-                        "rocks.nvim",
-                    }):wait()
+            -- If rocks.nvim is not installed then install it!
+            if not pcall(require, "rocks") then
+                local rocks_location = vim.fs.joinpath(vim.fn.stdpath("cache") --[[@as string]], "rocks.nvim")
+
+                if not vim.uv.fs_stat(rocks_location) then
+                    local url = "https://github.com/lumen-oss/rocks.nvim"
+                    vim.fn.system({ "git", "clone", "--filter=blob:none", url, rocks_location })
+                    assert(vim.v.shell_error == 0, "rocks.nvim installation failed. Try exiting and re-entering Neovim!")
                 end
+
+                vim.cmd.source(vim.fs.joinpath(rocks_location, "bootstrap.lua"))
+                vim.fn.delete(rocks_location, "rf")
             end
             	    local ok, thyme = pcall(require, "thyme")
                         if ok then
