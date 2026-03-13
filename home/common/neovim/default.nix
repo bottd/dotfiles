@@ -1,4 +1,13 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, ... }:
+let
+  luarocksArch = {
+    "aarch64-darwin" = "macosx-aarch64";
+    "x86_64-darwin" = "macosx-x86_64";
+    "x86_64-linux" = "linux-x86_64";
+    "aarch64-linux" = "linux-aarch64";
+  }.${pkgs.stdenv.hostPlatform.system} or "unknown-${pkgs.stdenv.hostPlatform.system}";
+in
+{
   home = {
     file = {
       ".config/nvim/after" = {
@@ -50,20 +59,37 @@
 
                 -- Add rocks.nvim to the runtimepath
                 vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
-            end
 
-            -- If rocks.nvim is not installed then install it!
-            if not pcall(require, "rocks") then
-                local rocks_location = vim.fs.joinpath(vim.fn.stdpath("cache") --[[@as string]], "rocks.nvim")
+                -- If rocks.nvim is not installed then install it!
+                if not pcall(require, "rocks") then
+                    local luarocks = rocks_config.luarocks_binary
+                    local tree = rocks_config.rocks_path
+                    local binary_server = "https://lumen-oss.github.io/rocks-binaries/"
 
-                if not vim.uv.fs_stat(rocks_location) then
-                    local url = "https://github.com/lumen-oss/rocks.nvim"
-                    vim.fn.system({ "git", "clone", "--filter=blob:none", url, rocks_location })
-                    assert(vim.v.shell_error == 0, "rocks.nvim installation failed. Try exiting and re-entering Neovim!")
+                    local function luarocks_install(pkg, only_binary)
+                        local server_flag = (only_binary and "--only-server=" or "--server=") .. binary_server
+                        return vim.system({ luarocks, "--lua-version=5.1", "--tree=" .. tree, server_flag, "install", pkg })
+                    end
+
+                    -- Pre-install native deps from binary server in parallel
+                    vim.notify("Installing rocks.nvim dependencies...")
+                    local handles = {}
+                    for _, dep in ipairs({ "luarocks-build-rust-mlua", "toml-edit", "fzy" }) do
+                        table.insert(handles, { name = dep, handle = luarocks_install(dep, true) })
+                    end
+                    for _, h in ipairs(handles) do
+                        local sc = h.handle:wait()
+                        if sc.code ~= 0 then
+                            error(h.name .. " install failed.\nstderr: " .. (sc.stderr or ""))
+                        end
+                    end
+
+                    vim.notify("Installing rocks.nvim...")
+                    local sc = luarocks_install("rocks.nvim", false):wait()
+                    if sc.code ~= 0 then
+                        error("rocks.nvim installation failed.\nstderr: " .. (sc.stderr or "") .. "\nstdout: " .. (sc.stdout or ""))
+                    end
                 end
-
-                vim.cmd.source(vim.fs.joinpath(rocks_location, "bootstrap.lua"))
-                vim.fn.delete(rocks_location, "rf")
             end
             	    local ok, thyme = pcall(require, "thyme")
                         if ok then
@@ -83,6 +109,10 @@
       ".config/nvim/rocks.toml" = {
         source = config.lib.meta.createSymlink "home/common/neovim/rocks.toml";
       };
+
+      ".luarocks/config-5.1.lua".text = ''
+        arch = "${luarocksArch}"
+      '';
     };
 
     packages = with pkgs; [
