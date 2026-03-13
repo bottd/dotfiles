@@ -7,7 +7,7 @@
 "rocks-edit.nvim" = "scm"
 "luasnip" = "2.4.1"
 
-"neorg" = "9.3.0"
+"neorg" = "9.4.0"
 "neorg-archive" = "1.1.0"
 "neorg-interim-ls" = "2.1.1"
 "neorg-query" = "1.4.0"
@@ -56,6 +56,7 @@ nvim-treesitter-context = "scm"
 tree-sitter-clojure = "0.0.32"
 tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
+"plenary.nvim" = "0.1.4"
 # tree-sitter-scheme = "scm"  # dev channel broken
 
 [plugins."catppuccin"]
@@ -87,7 +88,6 @@ git = "Saghen/blink.pairs"
 rev = "v0.4.1"
 config = {}
 
-
 [plugins."neorg-templates"]
 git = "pysan3/neorg-templates"
 rev = "v2.0.3"
@@ -109,13 +109,6 @@ rev = "v3.0.0"
 git = "David-Kunz/cmp-npm"
 rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 
-[plugins."neorg-contexts"]
-git = "max397574/neorg-contexts"
-rev = "8ae58b646700b8bc2d3bc1346c96835ceb71d884"
-
-[plugins."plenary.nvim"]
-git = "nvim-lua/plenary.nvim"
-
 [plugins."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
 rev = "v2.0.0"
@@ -124,7 +117,6 @@ rev = "v2.0.0"
 items = [
   "neorg",
   "neorg-archive",
-  "neorg-contexts",
   "neorg-interim-ls",
   "neorg-query",
   "neorg-templates",
