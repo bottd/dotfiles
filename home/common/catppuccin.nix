@@ -36,6 +36,7 @@ let
 in
 {
   imports = [
+    inputs.catppuccin.homeModules.catppuccin
     inputs.nix-colors.homeManagerModules.default
   ];
 

@@ -1,6 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
+  imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
   home.packages = with pkgs; [
     kdePackages.yakuake
     kdePackages.konsole
