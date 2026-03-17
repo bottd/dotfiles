@@ -28,9 +28,6 @@ inputs.home-manager.lib.homeManagerConfiguration {
 
   modules =
     [
-      inputs.catppuccin.homeModules.catppuccin
-      inputs.glide.homeManagerModules.default
-      inputs.spicetify-nix.homeManagerModules.default
       ../home.nix
       ../home/common
       path
