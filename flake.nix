@@ -44,6 +44,11 @@
     nixos-avf.url = "github:nix-community/nixos-avf";
     niri.url = "github:sodiboo/niri-flake";
     nix-tresorit.url = "github:p15r/nix-tresorit";
+    glide = {
+      url = "github:glide-browser/glide.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs = inputs @ { flake-parts, ... }:

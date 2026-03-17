@@ -23,6 +23,7 @@
   ] ++ lib.optionals (desktopEnvironment != null) [
     ./browser.nix
     ./desktop.nix
+    ./glide
     ./ghostty.nix
     ./spicetify.nix
   ];
