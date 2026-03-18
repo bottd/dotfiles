@@ -18,6 +18,7 @@
   environment.systemPackages = with pkgs; [
     filezilla
     kdePackages.kdeconnect-kde
+    kdePackages.kio-extras
     kdePackages.kdeplasma-addons
     kdePackages.kwalletmanager
     kdePackages.partitionmanager
