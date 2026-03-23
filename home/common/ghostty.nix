@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, colorScheme ? "light", ... }: {
   # Ghostty `command` option fails tolaunch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
@@ -26,7 +26,7 @@
 
         shell-integration = none
 
-        theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+        theme = ${if colorScheme == "auto" then "dark:Catppuccin Mocha,light:Catppuccin Latte" else "Catppuccin Latte"}
 
         background-opacity = 1.0
 

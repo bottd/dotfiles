@@ -6,6 +6,8 @@
 , desktopEnvironment ? null
 , includeGui ? true
 , includeGaming ? false
+, colorScheme ? "light"
+, baseFontSize ? 12
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
@@ -30,7 +32,7 @@ let
     else inputs.home-manager.darwinModules.home-manager;
 
   specialArgs = mkSpecialArgs {
-    inherit system username desktopEnvironment hostName includeGui includeGaming;
+    inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme baseFontSize;
   };
 
   homeConfig = {

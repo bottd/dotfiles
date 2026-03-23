@@ -6,9 +6,10 @@ let
     darwin = 6;
   };
 
-  mkSpecialArgs = { system, username, desktopEnvironment, hostName ? null, includeGui ? true, includeGaming ? false }:
+  mkSpecialArgs = { system, username, desktopEnvironment, hostName ? null, includeGui ? true, includeGaming ? false, colorScheme ? "light", baseFontSize ? 12 }:
+    assert builtins.elem colorScheme [ "light" "auto" ];
     {
-      inherit inputs username system desktopEnvironment versions;
+      inherit inputs username system desktopEnvironment versions colorScheme baseFontSize;
       inherit (inputs) nixpkgs;
       nixpkgs-unstable = import inputs.nixpkgs-unstable {
         inherit system;

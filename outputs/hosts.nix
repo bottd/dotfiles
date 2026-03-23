@@ -13,6 +13,7 @@ let
     username = "drakeb";
     format = "nixos";
     desktopEnvironment = "plasma";
+    colorScheme = "auto";
     includeGaming = true;
     extraSystemModules = chaletArgs;
   };
@@ -31,6 +32,7 @@ in
         format = "nixos";
         desktopEnvironment = "sway";
         includeGui = false;
+        baseFontSize = 20;
         extraSystemModules = chaletArgs;
       };
 
@@ -57,6 +59,7 @@ in
         username = "drakebott";
         format = "darwin";
         desktopEnvironment = "macos";
+        colorScheme = "auto";
         extraSystemModules = chaletArgs;
       };
     };

@@ -59,7 +59,7 @@ in
   };
 
   xdg.configFile = {
-    "starship.toml" = makeStarshipTheme "dark";
+    "starship.toml" = makeStarshipTheme "light";
     "starship/light.toml" = makeStarshipTheme "light";
     "starship/dark.toml" = makeStarshipTheme "dark";
   };

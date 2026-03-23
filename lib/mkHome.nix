@@ -4,6 +4,8 @@
 , username
 , format
 , desktopEnvironment ? null
+, colorScheme ? "light"
+, baseFontSize ? 12
 , hostPath ? null
 , extraHomeModules ? [ ]
 }:
@@ -21,7 +23,7 @@ inputs.home-manager.lib.homeManagerConfiguration {
 
   extraSpecialArgs = mkSpecialArgs
     {
-      inherit system username desktopEnvironment;
+      inherit system username desktopEnvironment colorScheme baseFontSize;
     } // {
     root = ../.;
   };

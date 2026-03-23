@@ -1,7 +1,9 @@
-{ pkgs, inputs, desktopEnvironment ? null, lib, ... }:
+{ pkgs, inputs, desktopEnvironment ? null, colorScheme ? "light", lib, ... }:
 let
+  flavor = if colorScheme == "light" then "latte" else "mocha";
+
   baseConfig = {
-    flavor = "mocha";
+    inherit flavor;
     accent = "blue";
 
     bat.enable = true;
@@ -23,7 +25,7 @@ let
   guiConfig = {
     cursors = {
       enable = pkgs.stdenv.isLinux;
-      flavor = "mocha";
+      inherit flavor;
       accent = "blue";
     };
     kvantum.enable = pkgs.stdenv.isLinux;
@@ -40,7 +42,7 @@ in
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+  colorScheme = inputs.nix-colors.colorSchemes."catppuccin-${flavor}";
 
   catppuccin = baseConfig // lib.optionalAttrs (desktopEnvironment != null) guiConfig;
 }
