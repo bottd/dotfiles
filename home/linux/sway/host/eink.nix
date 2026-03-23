@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, baseFontSize ? 12, ... }:
 let
   colors = {
     bg = "#ffffff";
@@ -12,7 +12,7 @@ in
     config = {
       fonts = {
         names = [ "MonoLisa Nerd Font" ];
-        size = 12.0;
+        size = baseFontSize * 1.0;
       };
 
       colors = {
@@ -69,7 +69,7 @@ in
   programs.fuzzel = {
     settings = {
       main = {
-        font = "MonoLisa Nerd Font:size=14";
+        font = "MonoLisa Nerd Font:size=${toString (baseFontSize + 2)}";
         lines = 10;
         width = 40;
         horizontal-pad = 20;
@@ -99,12 +99,6 @@ in
     theme = {
       name = "Adwaita";
       package = pkgs.gnome-themes-extra;
-    };
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
     };
   };
 
