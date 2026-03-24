@@ -3,6 +3,7 @@ let
   catppuccinZshSyntax = inputs.catppuccin.packages.${pkgs.system}.zsh-syntax-highlighting;
   themeInit = import ../common/themeInit.nix {
     darkDetectCmd = ''[[ "$(darkman get 2>/dev/null)" == "dark" ]]'';
+    inherit (inputs.nix-colors) colorSchemes;
   };
 in
 {
