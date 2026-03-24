@@ -32,7 +32,7 @@ in
         format = "nixos";
         desktopEnvironment = "sway";
         includeGui = false;
-        baseFontSize = 20;
+        baseFontSize = 24;
         extraSystemModules = chaletArgs;
       };
 

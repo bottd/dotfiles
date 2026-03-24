@@ -5,7 +5,7 @@
     ./claude.nix
     ./gemini.nix
     ./cli.nix
-    ./devenv.nix
+    ./direnv.nix
     ./email
     ./git.nix
     ./jujutsu.nix
