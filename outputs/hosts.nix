@@ -32,7 +32,7 @@ in
         format = "nixos";
         desktopEnvironment = "sway";
         includeGui = false;
-        baseFontSize = 24;
+        baseFontSize = 20;
         extraSystemModules = chaletArgs;
       };
 
@@ -60,6 +60,7 @@ in
         format = "darwin";
         desktopEnvironment = "macos";
         colorScheme = "auto";
+        baseFontSize = 20;
         extraSystemModules = chaletArgs;
       };
     };

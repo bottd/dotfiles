@@ -6,7 +6,7 @@ let
     darwin = 6;
   };
 
-  mkSpecialArgs = { system, username, desktopEnvironment, hostName ? null, includeGui ? true, includeGaming ? false, colorScheme ? "light", baseFontSize ? 16 }:
+  mkSpecialArgs = { system, username, desktopEnvironment ? null, hostName ? null, includeGui ? true, includeGaming ? false, colorScheme ? "light", baseFontSize ? 20 }:
     assert builtins.elem colorScheme [ "light" "auto" ];
     {
       inherit inputs username system desktopEnvironment versions colorScheme baseFontSize;

@@ -1,4 +1,4 @@
-{ lib, pkgs, inputs, colorScheme ? "light", ... }:
+{ lib, pkgs, inputs, colorScheme, ... }:
 let
   catppuccinZshSyntax = inputs.catppuccin.packages.${pkgs.system}.zsh-syntax-highlighting;
   themeInit = import ../common/themeInit.nix {

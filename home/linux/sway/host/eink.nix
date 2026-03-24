@@ -1,4 +1,4 @@
-{ pkgs, baseFontSize ? 12, ... }:
+{ pkgs, baseFontSize, ... }:
 let
   colors = {
     bg = "#ffffff";

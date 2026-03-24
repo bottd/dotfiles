@@ -1,4 +1,4 @@
-{ lib, pkgs, colorScheme ? "light", baseFontSize ? 12, ... }: {
+{ lib, pkgs, colorScheme, baseFontSize, ... }: {
   # Ghostty `command` option fails tolaunch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''

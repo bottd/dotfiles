@@ -5,7 +5,7 @@
 , format
 , desktopEnvironment ? null
 , colorScheme ? "light"
-, baseFontSize ? 12
+, baseFontSize ? 20
 , hostPath ? null
 , extraHomeModules ? [ ]
 }:

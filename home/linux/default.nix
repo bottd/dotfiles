@@ -1,4 +1,4 @@
-{ desktopEnvironment ? null, hostName, includeGui ? true, includeGaming ? false, lib, ... }:
+{ desktopEnvironment, hostName, includeGui, includeGaming, lib, ... }:
 {
   imports = [
     ./theme.nix
