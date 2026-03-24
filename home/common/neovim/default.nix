@@ -129,9 +129,6 @@ in
       fortune
       cowsay
 
-      # GUI
-      neovide
-
       # images
       imagemagick
       luajitPackages.magick
