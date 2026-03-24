@@ -1,17 +1,22 @@
-{ darkDetectCmd }:
+{ darkDetectCmd, colorSchemes }:
 let
-  lightExports = ''
-    export CATPPUCCIN_FLAVOR="latte"
-    export BAT_THEME="Catppuccin Latte"
-    export STARSHIP_CONFIG="$HOME/.config/starship/light.toml"
-    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#ccd0da,bg:#eff1f5,spinner:#dc8a78,hl:#1e66f5,fg:#4c4f69,header:#1e66f5,info:#1e66f5,pointer:#1e66f5,marker:#1e66f5,fg+:#4c4f69,prompt:#1e66f5,hl+:#1e66f5"
-  '';
+  mkFzfColors = palette:
+    "--color=bg+:#${palette.base02},bg:#${palette.base00},spinner:#${palette.base06},hl:#${palette.base0D},fg:#${palette.base05},header:#${palette.base0D},info:#${palette.base0E},pointer:#${palette.base06},marker:#${palette.base07},fg+:#${palette.base05},prompt:#${palette.base0E},hl+:#${palette.base0D}";
 
-  darkExports = ''
-    export CATPPUCCIN_FLAVOR="mocha"
-    export BAT_THEME="Catppuccin Mocha"
-    export STARSHIP_CONFIG="$HOME/.config/starship/dark.toml"
-  '';
+  mkExports = { flavor, flavorCap }:
+    let
+      inherit (colorSchemes."catppuccin-${flavor}") palette;
+      mode = if flavor == "latte" then "light" else "dark";
+    in
+    ''
+      export CATPPUCCIN_FLAVOR="${flavor}"
+      export BAT_THEME="Catppuccin ${flavorCap}"
+      export STARSHIP_CONFIG="$HOME/.config/starship/${mode}.toml"
+      export FZF_DEFAULT_OPTS="${mkFzfColors palette}"
+    '';
+
+  lightExports = mkExports { flavor = "latte"; flavorCap = "Latte"; };
+  darkExports = mkExports { flavor = "mocha"; flavorCap = "Mocha"; };
 
   autoDetect = ''
     if ${darkDetectCmd}; then

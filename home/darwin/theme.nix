@@ -3,6 +3,7 @@ let
   catppuccinZshSyntax = inputs.catppuccin.packages.${pkgs.system}.zsh-syntax-highlighting;
   themeInit = import ../common/themeInit.nix {
     darkDetectCmd = ''[[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]'';
+    inherit (inputs.nix-colors) colorSchemes;
   };
 in
 {
