@@ -1,4 +1,4 @@
-{ desktopEnvironment, includeGaming ? false, lib, ... }:
+{ desktopEnvironment, includeGaming, lib, ... }:
 {
   imports = [
     ./audio.nix

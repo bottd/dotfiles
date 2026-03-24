@@ -1,4 +1,4 @@
-{ pkgs, inputs, desktopEnvironment ? null, colorScheme ? "light", lib, ... }:
+{ pkgs, inputs, desktopEnvironment, colorScheme, lib, ... }:
 let
   flavor = if colorScheme == "light" then "latte" else "mocha";
 

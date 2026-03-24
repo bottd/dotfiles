@@ -7,7 +7,7 @@
 , includeGui ? true
 , includeGaming ? false
 , colorScheme ? "light"
-, baseFontSize ? 12
+, baseFontSize ? 20
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]

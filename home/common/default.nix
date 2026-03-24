@@ -1,4 +1,4 @@
-{ desktopEnvironment ? null, lib, ... }:
+{ desktopEnvironment, lib, ... }:
 {
   imports = [
     ./catppuccin.nix

@@ -1,4 +1,4 @@
-{ desktopEnvironment ? null, lib, pkgs, ... }:
+{ desktopEnvironment, lib, pkgs, ... }:
 let
   claudeSettings = pkgs.writeText "claude-settings.json" (builtins.toJSON {
     permissions = {
