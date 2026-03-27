@@ -1,7 +1,8 @@
 # Darwin-specific common settings
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
+    inputs.mac-app-util.darwinModules.default
     ../../darwin/sketchybar.nix
   ];
 
