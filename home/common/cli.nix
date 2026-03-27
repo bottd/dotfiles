@@ -14,7 +14,6 @@
 
     himalaya
 
-    neofetch
     readline
     typst
 
