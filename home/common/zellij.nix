@@ -13,7 +13,6 @@
       rounded_corners = true;
       show_startup_tips = false;
       show_release_notes = false;
-      theme = "catppuccin-mocha";
       copy_command = if pkgs.stdenv.isLinux then "wl-copy" else "pbcopy";
       copy_clipboard = "system";
       keybinds = {
@@ -33,8 +32,4 @@
       };
     };
   };
-
-  # home.shellAliases = {
-  # zellij = ''zellij --theme catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}'';
-  # };
 }
