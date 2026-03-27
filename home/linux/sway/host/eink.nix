@@ -1,4 +1,4 @@
-{ pkgs, baseFontSize, ... }:
+{ pkgs, lib, baseFontSize, ... }:
 let
   colors = {
     bg = "#ffffff";
@@ -43,7 +43,7 @@ in
         let
           mod = "Mod4";
         in
-        {
+        lib.mkOptionDefault {
           "${mod}+n" = "exec ghostty -e nvim";
           "${mod}+b" = "exec foliate";
         };

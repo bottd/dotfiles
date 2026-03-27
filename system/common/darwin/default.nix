@@ -1,5 +1,5 @@
 # Darwin-specific common settings
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 {
   imports = [
     inputs.mac-app-util.darwinModules.default
@@ -31,6 +31,10 @@
       "com.apple.sound.beep.feedback" = 0;
     };
   };
+
+  system.activationScripts.postActivation.text = ''
+    ${pkgs.findutils}/bin/find ~/Applications/"Home Manager Trampolines" -maxdepth 1 -name '*.app' -exec /usr/bin/xattr -cr {} + 2>/dev/null || true
+  '';
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
