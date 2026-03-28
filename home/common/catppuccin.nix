@@ -13,7 +13,7 @@ let
     starship.enable = false;
     zsh-syntax-highlighting.enable = false;
 
-    delta.enable = true;
+    delta.enable = false;
     lazygit.enable = true;
     gh-dash.enable = true;
 
