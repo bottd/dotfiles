@@ -14,6 +14,15 @@ let
     env = {
       ENABLE_LSP_TOOL = "1";
     };
+    sandbox = {
+      enabled = true;
+      filesystem = {
+        allowRead = [ "." "~/workspace" "~/remote" ];
+        denyRead = [ "~/" ];
+        allowWrite = [ "." ];
+        denyWrite = [ "/" ];
+      };
+    };
     preferNativeInstaller = false;
     plugins = { };
     mcpServers = {
