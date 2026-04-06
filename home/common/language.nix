@@ -46,8 +46,5 @@
     python3
   ];
 
-  # NPM configuration
-  home.file.".npmrc".text = ''
-    prefix = ~/.npm-packages
-  '';
+  home.sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-packages";
 }
