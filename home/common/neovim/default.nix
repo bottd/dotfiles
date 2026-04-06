@@ -62,47 +62,34 @@ in
 
                 -- If rocks.nvim is not installed then install it!
                 if not pcall(require, "rocks") then
-                    local luarocks = rocks_config.luarocks_binary
-                    local tree = rocks_config.rocks_path
-                    local binary_server = "https://lumen-oss.github.io/rocks-binaries/"
-
-                    local function luarocks_install(pkg, only_binary)
-                        local server_flag = (only_binary and "--only-server=" or "--server=") .. binary_server
-                        return vim.system({ luarocks, "--lua-version=5.1", "--tree=" .. tree, server_flag, "install", pkg })
-                    end
-
-                    -- Pre-install native deps from binary server in parallel
-                    vim.notify("Installing rocks.nvim dependencies...")
-                    local handles = {}
-                    for _, dep in ipairs({ "luarocks-build-rust-mlua", "toml-edit", "fzy" }) do
-                        table.insert(handles, { name = dep, handle = luarocks_install(dep, true) })
-                    end
-                    for _, h in ipairs(handles) do
-                        local sc = h.handle:wait()
-                        if sc.code ~= 0 then
-                            error(h.name .. " install failed.\nstderr: " .. (sc.stderr or ""))
-                        end
-                    end
-
                     vim.notify("Installing rocks.nvim...")
-                    local sc = luarocks_install("rocks.nvim", false):wait()
+                    local sc = vim.system({
+                        rocks_config.luarocks_binary,
+                        "--lua-version=5.1",
+                        "--tree=" .. rocks_config.rocks_path,
+                        "--server=https://lumen-oss.github.io/rocks-binaries/",
+                        "install",
+                        "rocks.nvim",
+                    }):wait()
                     if sc.code ~= 0 then
                         error("rocks.nvim installation failed.\nstderr: " .. (sc.stderr or "") .. "\nstdout: " .. (sc.stdout or ""))
                     end
+                    vim.notify("rocks.nvim installed! Please restart Neovim.")
                 end
             end
-            	    local ok, thyme = pcall(require, "thyme")
-                        if ok then
-                          table.insert(package.loaders, function(...)
-                            return thyme.loader(...)
-                          end)
-                          local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
-                          vim.opt.rtp:prepend(thyme_cache_prefix)
-                          thyme.setup()
-                          require("general_config")
-                        else
-                          vim.notify("nvim-thyme not installed yet - run :Rocks sync", vim.log.levels.WARN)
-                        end
+
+            local ok, thyme = pcall(require, "thyme")
+            if ok then
+              table.insert(package.loaders, function(...)
+                return thyme.loader(...)
+              end)
+              local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+              vim.opt.rtp:prepend(thyme_cache_prefix)
+              thyme.setup()
+              require("general_config")
+            else
+              vim.notify("nvim-thyme not installed yet - run :Rocks sync", vim.log.levels.WARN)
+            end
           '';
       };
 
