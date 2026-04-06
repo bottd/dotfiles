@@ -11,6 +11,7 @@
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
+, autologin ? false
 , enableAVF ? false
 }:
 let
@@ -31,15 +32,17 @@ let
     then inputs.home-manager.nixosModules.home-manager
     else inputs.home-manager.darwinModules.home-manager;
 
-  specialArgs = mkSpecialArgs {
+  sharedArgs = mkSpecialArgs {
     inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme baseFontSize;
   };
+
+  specialArgs = sharedArgs // { inherit autologin; };
 
   homeConfig = {
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;
-      extraSpecialArgs = specialArgs;
+      extraSpecialArgs = sharedArgs;
 
       users.${username} = {
         imports =

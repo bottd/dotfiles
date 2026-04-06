@@ -1,13 +1,6 @@
 { pkgs, ... }:
 {
-  services = {
-    xserver.enable = true;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = false;
-    };
-    desktopManager.plasma6.enable = true;
-  };
+  services.desktopManager.plasma6.enable = true;
 
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     oxygen
@@ -28,7 +21,6 @@
     kdePackages.plasma-pa
     kdePackages.plasma-thunderbolt
     kdePackages.powerdevil
-    kdePackages.sddm-kcm
     kdePackages.spectacle
   ];
 }
