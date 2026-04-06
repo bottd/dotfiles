@@ -15,6 +15,7 @@ let
     desktopEnvironment = "plasma";
     colorScheme = "auto";
     includeGaming = true;
+    baseFontSize = 16;
     extraSystemModules = chaletArgs;
   };
 in
@@ -60,7 +61,7 @@ in
         format = "darwin";
         desktopEnvironment = "macos";
         colorScheme = "auto";
-        baseFontSize = 20;
+        baseFontSize = 16;
         extraSystemModules = chaletArgs;
       };
     };
