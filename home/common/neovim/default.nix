@@ -140,7 +140,6 @@ in
   programs.neovim = {
     defaultEditor = true;
     enable = true;
-    package = nixpkgs-unstable.neovim;
-    extraLuaPackages = ps: [ ps.fennel ];
+    package = nixpkgs-unstable.neovim-unwrapped;
   };
 }
