@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, nixpkgs-unstable, ... }:
 let
   luarocksArch = {
     "aarch64-darwin" = "macosx-aarch64";
@@ -12,6 +12,11 @@ in
     file = {
       ".config/nvim/after" = {
         source = ./after;
+        recursive = true;
+      };
+
+      ".config/nvim/lsp" = {
+        source = ./lsp;
         recursive = true;
       };
 
@@ -135,7 +140,7 @@ in
   programs.neovim = {
     defaultEditor = true;
     enable = true;
-    # package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+    package = nixpkgs-unstable.neovim;
     extraLuaPackages = ps: [ ps.fennel ];
   };
 }
