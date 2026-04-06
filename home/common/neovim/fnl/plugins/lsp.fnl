@@ -46,27 +46,19 @@
 ;; Set blink.cmp capabilities for all LSP servers
 (vim.lsp.config "*" {:capabilities (blink.get_lsp_capabilities)})
 
-(local servers
-       {:cssls {}
-        :eslint {}
-        :graphql {}
-        :html {}
-        :svelte {}
-        :tailwindcss {}
-        :ts_ls {}
-        :harper_ls {:filetypes [:markdown]
-                    :settings {:harper-ls {:userDictPath "~/.config/nvim/dict.txt"}}}
-        :lua_ls {:settings {:Lua {:diagnostics {:globals [:vim]}
-                                  :workspace {:checkThirdParty false}
-                                  :telemetry {:enable false}}}}
-        :clojure_lsp {:filetypes [:clojure :edn :clojurescript :clojurec]
-                      :settings {:clojure_lsp {:lint {:level :on}}}}
-        :nil_ls {:filetypes [:nix]
-                 :settings {:nil {:formatting {:command [:nixpkgs-fmt]}}}}})
+;; Server configs in lsp dir
+(local servers [:cssls
+                :eslint
+                :graphql
+                :html
+                :svelte
+                :tailwindcss
+                :ts_ls
+                :harper_ls
+                :lua_ls
+                :clojure_lsp
+                :nil_ls])
 
-(each [server config (pairs servers)]
-  (vim.lsp.config server config))
-
-(vim.lsp.enable (vim.tbl_keys servers))
+(vim.lsp.enable servers)
 
 (vim.diagnostic.config {:virtual_text false :virtual_lines true})
