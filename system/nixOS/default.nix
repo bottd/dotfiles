@@ -10,6 +10,8 @@
     ./keyring.nix
     ./mullvad.nix
     ./printing.nix
+  ] ++ lib.optionals (desktopEnvironment != null) [
+    ./greetd.nix
   ] ++ lib.optionals includeGaming [
     ./gaming.nix
   ] ++ (

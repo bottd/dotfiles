@@ -24,6 +24,7 @@ in
     nixosConfigurations = {
       desktop = mkSystem (baseSystem // {
         hostName = "desktop";
+        autologin = true;
       });
 
       eink = mkSystem {
@@ -32,6 +33,7 @@ in
         username = "drakeb";
         format = "nixos";
         desktopEnvironment = "sway";
+        autologin = true;
         includeGui = false;
         baseFontSize = 20;
         extraSystemModules = chaletArgs;

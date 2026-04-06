@@ -5,7 +5,6 @@
     ../../system/common/linux
   ];
 
-  # Desktop-only: VR and game streaming
   programs.alvr = {
     enable = true;
     openFirewall = true;
@@ -13,7 +12,7 @@
 
   services.sunshine = {
     enable = true;
-    autoStart = true;
+    autoStart = false;
     capSysAdmin = true;
     openFirewall = true;
   };
