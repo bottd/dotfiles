@@ -82,26 +82,30 @@ systemBuilder {
     ]
     else if format == "darwin" then [
       inputs.stylix.darwinModules.stylix
-      ({ pkgs, ... }: {
-        stylix = {
-          enable = true;
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
-          polarity = if colorScheme == "light" then "light" else "dark";
-          autoEnable = true;
-          image = null;
-          fonts = {
-            monospace = {
-              name = "MonoLisa Nerd Font";
-              package = pkgs.emptyDirectory;
+      ({ pkgs, ... }:
+        let
+          inherit (import ./stylixScheme.nix { inherit pkgs colorScheme stylixTheme; }) scheme polarity;
+        in
+        {
+          stylix = {
+            enable = true;
+            base16Scheme = scheme;
+            inherit polarity;
+            autoEnable = true;
+            image = null;
+            fonts = {
+              monospace = {
+                name = "MonoLisa Nerd Font";
+                package = pkgs.emptyDirectory;
+              };
+              sizes.terminal = baseFontSize;
             };
-            sizes.terminal = baseFontSize;
+            homeManagerIntegration = {
+              autoImport = true;
+              followSystem = true;
+            };
           };
-          homeManagerIntegration = {
-            autoImport = true;
-            followSystem = true;
-          };
-        };
-      })
+        })
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]

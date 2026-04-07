@@ -1,14 +1,6 @@
 { lib, colorScheme, stylixTheme, baseFontSize, pkgs, ... }:
 let
-  scheme = {
-    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
-    eink = ../../lib/schemes/eink.yaml;
-  }.${stylixTheme};
-
-  polarity = {
-    catppuccin = if colorScheme == "light" then "light" else "dark";
-    eink = "light";
-  }.${stylixTheme};
+  inherit (import ../../lib/stylixScheme.nix { inherit pkgs colorScheme stylixTheme; }) scheme polarity;
 in
 {
   stylix = {
@@ -21,17 +13,16 @@ in
     fonts = {
       monospace = {
         name = lib.mkOptionDefault "MonoLisa Nerd Font";
+        # MonoLisa is a commercial font installed outside Nix
         package = lib.mkOptionDefault pkgs.emptyDirectory;
       };
       sizes.terminal = lib.mkOptionDefault baseFontSize;
     };
 
     targets = {
-      # mangohud has custom non-color settings that conflict with Stylix defaults
+      firefox.profileNames = [ "default" ];
       mangohud.enable = false;
-      # neovim config is managed by rocks.nvim, avoid init.lua conflict
       neovim.enable = false;
-      # starship is handled manually for runtime light/dark switching
       starship.enable = false;
     };
   };

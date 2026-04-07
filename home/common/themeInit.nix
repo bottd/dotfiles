@@ -1,7 +1,5 @@
-{ darkDetectCmd }:
+{ darkDetectCmd, catppuccinZshSyntax }:
 let
-  # Hardcoded catppuccin base16 palettes for runtime switching
-  # These are stable values from the catppuccin base16 schemes
   palettes = {
     latte = {
       base00 = "eff1f5";
@@ -66,7 +64,11 @@ let
     ${lightExports}
     fi
   '';
+
+  zshSyntaxHighlighting = ''
+    source "${catppuccinZshSyntax}/themes/catppuccin_''${CATPPUCCIN_FLAVOR:-latte}-zsh-syntax-highlighting.zsh"
+  '';
 in
 {
-  inherit lightExports autoDetect;
+  inherit lightExports autoDetect zshSyntaxHighlighting;
 }

@@ -8,6 +8,7 @@ let
 
   mkSpecialArgs = { system, username, desktopEnvironment ? null, hostName ? null, includeGui ? true, includeGaming ? false, colorScheme ? "light", stylixTheme ? "catppuccin", baseFontSize ? 20 }:
     assert builtins.elem colorScheme [ "light" "auto" ];
+    assert builtins.elem stylixTheme [ "catppuccin" "eink" ];
     {
       inherit inputs username system desktopEnvironment versions colorScheme stylixTheme baseFontSize;
       inherit (inputs) nixpkgs;

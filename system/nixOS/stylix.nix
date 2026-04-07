@@ -1,14 +1,6 @@
 { colorScheme, stylixTheme, baseFontSize, pkgs, ... }:
 let
-  scheme = {
-    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
-    eink = ../../lib/schemes/eink.yaml;
-  }.${stylixTheme};
-
-  polarity = {
-    catppuccin = if colorScheme == "light" then "light" else "dark";
-    eink = "light";
-  }.${stylixTheme};
+  inherit (import ../../lib/stylixScheme.nix { inherit pkgs colorScheme stylixTheme; }) scheme polarity;
 in
 {
   stylix = {
@@ -21,6 +13,7 @@ in
     fonts = {
       monospace = {
         name = "MonoLisa Nerd Font";
+        # MonoLisa is a commercial font installed outside Nix
         package = pkgs.emptyDirectory;
       };
       sizes.terminal = baseFontSize;
