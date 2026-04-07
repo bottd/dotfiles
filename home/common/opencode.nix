@@ -10,8 +10,7 @@ _: {
         ''
           {
             "$schema": "https://opencode.ai/config.json",
-            "plugin": ["opencode-gemini-auth"],
-            "theme": "catppuccin"
+            "plugin": ["opencode-gemini-auth"]
           }
         '';
     in

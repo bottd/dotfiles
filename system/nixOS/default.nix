@@ -3,7 +3,7 @@
   imports = [
     ./audio.nix
     ./bluetooth.nix
-    ./catppuccin.nix
+    ./stylix.nix
     ./cli.nix
     ./graphics.nix
     ./jellyfin.nix

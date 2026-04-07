@@ -6,8 +6,6 @@ in
   imports = [ inputs.spicetify-nix.homeManagerModules.default ];
   programs.spicetify = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
-    theme = spicePkgs.themes.catppuccin;
-    colorScheme = "mocha";
 
     enabledExtensions = with spicePkgs.extensions; [
       fullAppDisplay

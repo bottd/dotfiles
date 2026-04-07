@@ -1,8 +1,11 @@
 {
   description = "Drake Flake";
   inputs = {
-    catppuccin.url = "github:catppuccin/nix/release-25.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
@@ -14,7 +17,6 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-colors.url = "github:misterio77/nix-colors";
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";

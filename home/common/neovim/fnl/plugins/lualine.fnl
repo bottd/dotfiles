@@ -1,6 +1,6 @@
 (local lualine (require :lualine))
 
-(lualine.setup {:options {:theme :catppuccin
+(lualine.setup {:options {:theme :base16
                           :icons_enabled true
                           :globalstatus true
                           :component_separators "|"

@@ -7,6 +7,7 @@
 , includeGui ? true
 , includeGaming ? false
 , colorScheme ? "light"
+, stylixTheme ? "catppuccin"
 , baseFontSize ? 20
 , hostPath ? null
 , extraSystemModules ? [ ]
@@ -33,7 +34,7 @@ let
     else inputs.home-manager.darwinModules.home-manager;
 
   sharedArgs = mkSpecialArgs {
-    inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme baseFontSize;
+    inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme stylixTheme baseFontSize;
   };
 
   specialArgs = sharedArgs // { inherit autologin; };
@@ -73,11 +74,12 @@ systemBuilder {
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "nixos" then [
-      inputs.catppuccin.nixosModules.catppuccin
+      inputs.stylix.nixosModules.stylix
       ../system/nixOS
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "darwin" then [
+      inputs.stylix.darwinModules.stylix
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]

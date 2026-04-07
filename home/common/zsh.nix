@@ -8,7 +8,7 @@
     enableCompletion = true;
     autosuggestion = {
       enable = true;
-      highlight = "fg=#${config.colorScheme.palette.base04}";
+      highlight = "fg=#${config.lib.stylix.colors.base04}";
     };
     syntaxHighlighting.enable = true;
     initContent = ''

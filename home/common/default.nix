@@ -1,7 +1,7 @@
 { desktopEnvironment, lib, ... }:
 {
   imports = [
-    ./catppuccin.nix
+    ./stylix.nix
     ./claude.nix
     ./gemini.nix
     ./cli.nix

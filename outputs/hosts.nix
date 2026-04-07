@@ -33,6 +33,7 @@ in
         username = "drakeb";
         format = "nixos";
         desktopEnvironment = "sway";
+        stylixTheme = "eink";
         autologin = true;
         includeGui = false;
         baseFontSize = 20;

@@ -1,42 +1,10 @@
 { pkgs, lib, baseFontSize, ... }:
-let
-  colors = {
-    bg = "#ffffff";
-    fg = "#000000";
-    border = "#000000";
-    inactive = "#888888";
-  };
-in
 {
   wayland.windowManager.sway = {
     config = {
       fonts = {
         names = [ "MonoLisa Nerd Font" ];
         size = baseFontSize * 1.0;
-      };
-
-      colors = {
-        focused = {
-          inherit (colors) border;
-          background = colors.fg;
-          text = colors.bg;
-          indicator = colors.fg;
-          childBorder = colors.border;
-        };
-        unfocused = {
-          border = colors.inactive;
-          background = colors.bg;
-          text = colors.fg;
-          indicator = colors.inactive;
-          childBorder = colors.inactive;
-        };
-        focusedInactive = {
-          border = colors.inactive;
-          background = colors.bg;
-          text = colors.fg;
-          indicator = colors.inactive;
-          childBorder = colors.inactive;
-        };
       };
 
       keybindings =
@@ -54,7 +22,7 @@ in
 
       output = {
         "*" = {
-          bg = "${colors.bg} solid_color";
+          bg = "#ffffff solid_color";
         };
       };
     };
@@ -75,14 +43,6 @@ in
         horizontal-pad = 20;
         vertical-pad = 10;
       };
-      colors = {
-        background = "ffffffff";
-        text = "000000ff";
-        match = "000000ff";
-        selection = "000000ff";
-        selection-text = "ffffffff";
-        border = "000000ff";
-      };
       border = {
         width = 2;
       };
@@ -93,18 +53,4 @@ in
     foliate
     zathura
   ];
-
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Adwaita";
-      package = pkgs.gnome-themes-extra;
-    };
-  };
-
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-light";
-    };
-  };
 }

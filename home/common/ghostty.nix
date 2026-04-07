@@ -1,9 +1,9 @@
-{ lib, pkgs, colorScheme, baseFontSize, ... }: {
-  # Ghostty `command` option fails tolaunch zellij on darwin
+{ lib, pkgs, baseFontSize, ... }: {
+  # Ghostty `command` option fails to launch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
     if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-      zellij options --theme "catppuccin-''${CATPPUCCIN_FLAVOR:-mocha}"
+      zellij
     fi
   '';
 
@@ -26,8 +26,6 @@
         quit-after-last-window-closed = true
 
         shell-integration = none
-
-        theme = ${if colorScheme == "auto" then "dark:Catppuccin Mocha,light:Catppuccin Latte" else "Catppuccin Latte"}
 
         background-opacity = 1.0
 
