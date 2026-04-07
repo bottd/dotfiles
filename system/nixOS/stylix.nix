@@ -1,7 +1,7 @@
 { colorScheme, stylixTheme, baseFontSize, pkgs, ... }:
 let
   scheme = {
-    catppuccin = if colorScheme == "light" then "catppuccin-latte" else "catppuccin-mocha";
+    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
     eink = ../../lib/schemes/eink.yaml;
   }.${stylixTheme};
 
@@ -21,7 +21,7 @@ in
     fonts = {
       monospace = {
         name = "MonoLisa Nerd Font";
-        package = pkgs.nerd-fonts.monolisa;
+        package = pkgs.emptyDirectory;
       };
       sizes.terminal = baseFontSize;
     };

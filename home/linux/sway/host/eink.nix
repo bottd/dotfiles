@@ -3,8 +3,8 @@
   wayland.windowManager.sway = {
     config = {
       fonts = {
-        names = [ "MonoLisa Nerd Font" ];
-        size = baseFontSize * 1.0;
+        names = lib.mkForce [ "MonoLisa Nerd Font" ];
+        size = lib.mkForce (baseFontSize * 1.0);
       };
 
       keybindings =
@@ -37,7 +37,7 @@
   programs.fuzzel = {
     settings = {
       main = {
-        font = "MonoLisa Nerd Font:size=${toString (baseFontSize + 2)}";
+        font = lib.mkForce "MonoLisa Nerd Font:size=${toString (baseFontSize + 2)}";
         lines = 10;
         width = 40;
         horizontal-pad = 20;

@@ -54,7 +54,9 @@ let
           ]
           ++ (if format == "nixos" then [
             ../home/linux
-          ] else [ ../home/darwin ])
+          ] else [
+            ../home/darwin
+          ])
           ++ extraHomeModules;
       };
     };
@@ -80,6 +82,26 @@ systemBuilder {
     ]
     else if format == "darwin" then [
       inputs.stylix.darwinModules.stylix
+      ({ pkgs, ... }: {
+        stylix = {
+          enable = true;
+          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
+          polarity = if colorScheme == "light" then "light" else "dark";
+          autoEnable = true;
+          image = null;
+          fonts = {
+            monospace = {
+              name = "MonoLisa Nerd Font";
+              package = pkgs.emptyDirectory;
+            };
+            sizes.terminal = baseFontSize;
+          };
+          homeManagerIntegration = {
+            autoImport = true;
+            followSystem = true;
+          };
+        };
+      })
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]
