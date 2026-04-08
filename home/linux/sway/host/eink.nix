@@ -49,7 +49,7 @@ in
         };
 
       startup = [
-        { command = "ghostty -e nvim"; }
+        { command = "ghostty"; }
       ];
 
       output = {
