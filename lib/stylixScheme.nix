@@ -2,7 +2,7 @@
 {
   scheme = {
     catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
-    eink = ../lib/schemes/eink.yaml;
+    eink = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
   }.${stylixTheme};
 
   polarity = {
