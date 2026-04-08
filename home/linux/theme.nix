@@ -1,18 +1,12 @@
-{ lib, pkgs, colorScheme, ... }:
+{ lib, pkgs, theme, ... }:
 let
-  catppuccinZshSyntax = pkgs.fetchFromGitHub {
-    owner = "catppuccin";
-    repo = "zsh-syntax-highlighting";
-    rev = "main";
-    hash = "sha256-YjVLEiSMkGVsgB5ZGGWU3FhMp04J3NKZP2jJBRTMCk=";
-  };
   themeInit = import ../common/themeInit.nix {
     darkDetectCmd = ''[[ "$(darkman get 2>/dev/null)" == "dark" ]]'';
-    inherit catppuccinZshSyntax;
+    inherit pkgs;
   };
 in
 {
-  services.darkman = lib.mkIf (colorScheme == "auto") {
+  services.darkman = lib.mkIf (theme.appearance == "auto") {
     enable = true;
     settings.usegeoclue = true;
 
@@ -26,7 +20,7 @@ in
   };
 
   programs.zsh.initContent = lib.mkMerge [
-    (lib.mkBefore (if colorScheme == "auto" then themeInit.autoDetect else themeInit.lightExports))
+    (lib.mkBefore (if theme.appearance == "auto" then themeInit.autoDetect else themeInit.lightExports))
     (lib.mkAfter themeInit.zshSyntaxHighlighting)
   ];
 }

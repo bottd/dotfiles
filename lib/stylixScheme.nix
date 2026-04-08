@@ -1,12 +1,16 @@
-{ pkgs, colorScheme, stylixTheme }:
-{
-  scheme = {
-    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if colorScheme == "light" then "latte" else "mocha"}.yaml";
+{ pkgs, appearance, scheme }:
+let
+  schemes = {
+    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-${if appearance == "light" then "latte" else "mocha"}.yaml";
     eink = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
-  }.${stylixTheme};
+  };
 
-  polarity = {
-    catppuccin = if colorScheme == "light" then "light" else "dark";
+  polarities = {
+    catppuccin = if appearance == "light" then "light" else "dark";
     eink = "light";
-  }.${stylixTheme};
+  };
+in
+{
+  base16Scheme = schemes.${scheme};
+  polarity = polarities.${scheme};
 }

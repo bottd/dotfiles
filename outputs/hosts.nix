@@ -12,10 +12,9 @@ let
     system = "x86_64-linux";
     username = "drakeb";
     format = "nixos";
-    desktopEnvironment = "plasma";
-    colorScheme = "auto";
-    includeGaming = true;
-    baseFontSize = 16;
+    features.desktopEnvironment = "plasma";
+    features.gaming = true;
+    theme.baseFontSize = 16;
     extraSystemModules = chaletArgs;
   };
 in
@@ -32,11 +31,9 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
-        desktopEnvironment = "sway";
-        stylixTheme = "eink";
+        features = { desktopEnvironment = "sway"; gui = false; };
+        theme = { scheme = "eink"; appearance = "light"; baseFontSize = 20; };
         autologin = true;
-        includeGui = false;
-        baseFontSize = 20;
         extraSystemModules = chaletArgs;
       };
 
@@ -49,8 +46,8 @@ in
         system = "aarch64-linux";
         username = "droid";
         format = "nixos";
+        features.gui = false;
         enableAVF = true;
-        includeGui = false;
         extraHomeModules = [ ../hosts/android/home.nix ];
         extraSystemModules = chaletArgs;
       };
@@ -62,9 +59,8 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        desktopEnvironment = "macos";
-        colorScheme = "auto";
-        baseFontSize = 16;
+        features.desktopEnvironment = "macos";
+        theme.baseFontSize = 16;
         extraSystemModules = chaletArgs;
       };
     };

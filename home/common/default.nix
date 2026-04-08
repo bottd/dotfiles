@@ -1,4 +1,4 @@
-{ desktopEnvironment, lib, ... }:
+{ features, lib, ... }:
 {
   imports = [
     ./stylix.nix
@@ -20,7 +20,7 @@
     ./zsh.nix
 
     # import GUI modules when desktop environment is present
-  ] ++ lib.optionals (desktopEnvironment != null) [
+  ] ++ lib.optionals (features.desktopEnvironment != null) [
     ./browser.nix
     ./desktop.nix
     ./glide

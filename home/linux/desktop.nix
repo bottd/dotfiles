@@ -35,7 +35,6 @@ in
         vencordDir = "$HOME/.config/vesktop/vencordDist";
       };
 
-      # Cleared — Stylix handles theming via GTK
       "vesktop/settings/quickCss.css".text = "";
 
       "mimeapps.list".force = true;

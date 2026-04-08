@@ -1,4 +1,4 @@
-{ lib, pkgs, baseFontSize, ... }: {
+{ lib, pkgs, theme, ... }: {
   # Ghostty `command` option fails to launch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
@@ -17,7 +17,7 @@
         font-family-bold = MonoLisa Variable Regular Bold
         font-family-italic = MonoLisa Variable Italic Italic
         font-family-bold-italic = MonoLisa Variable Italic Bold Italic
-        font-size = ${toString baseFontSize}
+        font-size = ${toString theme.baseFontSize}
 
         macos-non-native-fullscreen = true
 

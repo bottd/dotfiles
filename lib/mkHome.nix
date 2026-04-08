@@ -3,10 +3,8 @@
 , system
 , username
 , format
-, desktopEnvironment ? null
-, colorScheme ? "light"
-, stylixTheme ? "catppuccin"
-, baseFontSize ? 20
+, theme ? { }
+, features ? { }
 , hostPath ? null
 , extraHomeModules ? [ ]
 }:
@@ -24,7 +22,7 @@ inputs.home-manager.lib.homeManagerConfiguration {
 
   extraSpecialArgs = mkSpecialArgs
     {
-      inherit system username desktopEnvironment colorScheme stylixTheme baseFontSize;
+      inherit system username theme features;
     } // {
     root = ../.;
   };

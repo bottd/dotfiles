@@ -1,4 +1,4 @@
-{ darkDetectCmd, catppuccinZshSyntax }:
+{ darkDetectCmd, pkgs }:
 let
   palettes = {
     latte = {
@@ -64,6 +64,13 @@ let
     ${lightExports}
     fi
   '';
+
+  catppuccinZshSyntax = pkgs.fetchFromGitHub {
+    owner = "catppuccin";
+    repo = "zsh-syntax-highlighting";
+    rev = "7926c3d3e17d26b3779851a2255b95ee650bd928";
+    hash = "sha256-l6tztApzYpQ2/CiKuLBf8vI2imM6vPJuFdNDSEi7T/o=";
+  };
 
   zshSyntaxHighlighting = ''
     source "${catppuccinZshSyntax}/themes/catppuccin_''${CATPPUCCIN_FLAVOR:-latte}-zsh-syntax-highlighting.zsh"

@@ -3,12 +3,8 @@
 , system
 , username
 , format
-, desktopEnvironment ? null
-, includeGui ? true
-, includeGaming ? false
-, colorScheme ? "light"
-, stylixTheme ? "catppuccin"
-, baseFontSize ? 20
+, theme ? { }
+, features ? { }
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
@@ -34,7 +30,7 @@ let
     else inputs.home-manager.darwinModules.home-manager;
 
   sharedArgs = mkSpecialArgs {
-    inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme stylixTheme baseFontSize;
+    inherit system username hostName theme features;
   };
 
   specialArgs = sharedArgs // { inherit autologin; };
@@ -82,30 +78,6 @@ systemBuilder {
     ]
     else if format == "darwin" then [
       inputs.stylix.darwinModules.stylix
-      ({ pkgs, ... }:
-        let
-          inherit (import ./stylixScheme.nix { inherit pkgs colorScheme stylixTheme; }) scheme polarity;
-        in
-        {
-          stylix = {
-            enable = true;
-            base16Scheme = scheme;
-            inherit polarity;
-            autoEnable = true;
-            image = null;
-            fonts = {
-              monospace = {
-                name = "MonoLisa Nerd Font";
-                package = pkgs.emptyDirectory;
-              };
-              sizes.terminal = baseFontSize;
-            };
-            homeManagerIntegration = {
-              autoImport = true;
-              followSystem = true;
-            };
-          };
-        })
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]

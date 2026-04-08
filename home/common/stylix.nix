@@ -1,11 +1,11 @@
-{ lib, colorScheme, stylixTheme, baseFontSize, pkgs, ... }:
+{ lib, theme, pkgs, ... }:
 let
-  inherit (import ../../lib/stylixScheme.nix { inherit pkgs colorScheme stylixTheme; }) scheme polarity;
+  inherit (import ../../lib/stylixScheme.nix { inherit pkgs; inherit (theme) appearance scheme; }) base16Scheme polarity;
 in
 {
   stylix = {
     enable = lib.mkDefault true;
-    base16Scheme = lib.mkDefault scheme;
+    base16Scheme = lib.mkDefault base16Scheme;
     polarity = lib.mkDefault polarity;
     autoEnable = lib.mkDefault true;
     image = lib.mkDefault null;
@@ -16,7 +16,7 @@ in
         # MonoLisa is a commercial font installed outside Nix
         package = lib.mkOptionDefault pkgs.emptyDirectory;
       };
-      sizes.terminal = lib.mkOptionDefault baseFontSize;
+      sizes.terminal = lib.mkOptionDefault theme.baseFontSize;
     };
 
     targets = {

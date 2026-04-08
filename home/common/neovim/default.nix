@@ -1,4 +1,4 @@
-{ pkgs, config, nixpkgs-unstable, stylixTheme, ... }:
+{ pkgs, config, nixpkgs-unstable, theme, ... }:
 let
   luarocksArch = {
     "aarch64-darwin" = "macosx-aarch64";
@@ -83,7 +83,7 @@ in
                 end
             end
 
-            vim.g.stylix_theme = "${stylixTheme}"
+            vim.g.stylix_theme = "${theme.scheme}"
 
             local ok, thyme = pcall(require, "thyme")
             if ok then

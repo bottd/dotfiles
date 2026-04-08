@@ -1,6 +1,6 @@
 { theme, pkgs, ... }:
 let
-  inherit (import ../../lib/stylixScheme.nix { inherit pkgs; inherit (theme) appearance scheme; }) base16Scheme polarity;
+  inherit (import ../../../lib/stylixScheme.nix { inherit pkgs; inherit (theme) appearance scheme; }) base16Scheme polarity;
 in
 {
   stylix = {
@@ -13,13 +13,10 @@ in
     fonts = {
       monospace = {
         name = "MonoLisa Nerd Font";
-        # MonoLisa is a commercial font installed outside Nix
         package = pkgs.emptyDirectory;
       };
       sizes.terminal = theme.baseFontSize;
     };
-
-    targets.grub.enable = false;
 
     homeManagerIntegration = {
       autoImport = true;

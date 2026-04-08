@@ -6,18 +6,32 @@ let
     darwin = 6;
   };
 
-  mkSpecialArgs = { system, username, desktopEnvironment ? null, hostName ? null, includeGui ? true, includeGaming ? false, colorScheme ? "light", stylixTheme ? "catppuccin", baseFontSize ? 20 }:
-    assert builtins.elem colorScheme [ "light" "auto" ];
-    assert builtins.elem stylixTheme [ "catppuccin" "eink" ];
+  mkSpecialArgs = { system, username, hostName ? null, theme ? { }, features ? { } }:
+    let
+      t = {
+        scheme = theme.scheme or "catppuccin";
+        appearance = theme.appearance or "auto";
+        baseFontSize = theme.baseFontSize or 20;
+      };
+      f = {
+        gui = features.gui or true;
+        gaming = features.gaming or false;
+        desktopEnvironment = features.desktopEnvironment or null;
+      };
+    in
+    assert builtins.elem t.appearance [ "light" "dark" "auto" ];
+    assert builtins.elem t.scheme [ "catppuccin" "eink" ];
     {
-      inherit inputs username system desktopEnvironment versions colorScheme stylixTheme baseFontSize;
+      inherit inputs username system versions;
+      theme = t;
+      features = f;
       inherit (inputs) nixpkgs;
       nixpkgs-unstable = import inputs.nixpkgs-unstable {
         inherit system;
         config.allowUnfree = true;
       };
     }
-    // (if hostName != null then { inherit hostName includeGui includeGaming; inherit (inputs) nixos-hardware; } else { });
+    // (if hostName != null then { inherit hostName; inherit (inputs) nixos-hardware; } else { });
 
   createSymlink = import ./createSymlink.nix;
   mkHome = import ./mkHome.nix { inherit inputs mkSpecialArgs; };
