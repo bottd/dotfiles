@@ -1,4 +1,4 @@
-{ pkgs, config, nixpkgs-unstable, ... }:
+{ pkgs, config, nixpkgs-unstable, stylixTheme, ... }:
 let
   luarocksArch = {
     "aarch64-darwin" = "macosx-aarch64";
@@ -82,6 +82,8 @@ in
                     vim.notify("rocks.nvim installed! Please restart Neovim.")
                 end
             end
+
+            vim.g.stylix_theme = "${stylixTheme}"
 
             local ok, thyme = pcall(require, "thyme")
             if ok then

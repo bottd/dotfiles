@@ -1,6 +1,7 @@
 (local lualine (require :lualine))
+(local theme (if (= vim.g.stylix_theme :catppuccin) :catppuccin :base16))
 
-(lualine.setup {:options {:theme :base16
+(lualine.setup {:options {: theme
                           :icons_enabled true
                           :globalstatus true
                           :component_separators "|"

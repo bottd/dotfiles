@@ -57,6 +57,10 @@ tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "0.1.4"
 
+[plugins."catppuccin"]
+git = "catppuccin/nvim"
+rev = "v1.11.0"
+
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
 rev = "v1.10.0"
