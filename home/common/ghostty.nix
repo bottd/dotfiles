@@ -17,6 +17,7 @@
         font-family-bold = MonoLisa Variable Regular Bold
         font-family-italic = MonoLisa Variable Italic Italic
         font-family-bold-italic = MonoLisa Variable Italic Bold Italic
+        font-feature = ss02
         font-size = ${toString theme.baseFontSize}
 
         macos-non-native-fullscreen = true

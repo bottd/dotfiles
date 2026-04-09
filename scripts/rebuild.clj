@@ -5,10 +5,16 @@
     (when-not h (throw (ex-info "NIX_HOST is not set. Run a manual rebuild first." {})))
     h))
 
+(def appearance
+  (some #(case % "--light" "light" "--dark" "dark" nil) *command-line-args*))
+
+(def config
+  (if appearance (str host "-" appearance) host))
+
 (def cmd
   (case host
     "macbook" "darwin-rebuild"
     "sudo nixos-rebuild"))
 
-(println (str "Rebuilding " host "..."))
-(shell cmd "switch" "--flake" (str ".#" host))
+(println (str "Rebuilding " config "..."))
+(shell cmd "switch" "--flake" (str ".#" config))

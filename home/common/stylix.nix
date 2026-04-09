@@ -21,9 +21,11 @@ in
 
     targets = {
       firefox.profileNames = [ "default" ];
+      gtk.enable = false;
       mangohud.enable = false;
       neovim.enable = false;
       starship.enable = false;
     };
   };
+
 }
