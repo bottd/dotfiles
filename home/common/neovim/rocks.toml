@@ -63,7 +63,7 @@ rev = "v3.6.0"
 
 [plugins."tokyonight.nvim"]
 git = "folke/tokyonight.nvim"
-rev = "v4.12.1"
+rev = "v4.14.1"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
