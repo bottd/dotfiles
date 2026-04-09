@@ -1,5 +1,7 @@
 (local lualine (require :lualine))
-(local theme (if (= vim.g.stylix_theme :catppuccin) :catppuccin :base16))
+(local lualine-themes {:tokyonight :tokyonight :solarized-light :solarized})
+
+(local theme (or (. lualine-themes vim.g.stylix_theme) :base16))
 
 (lualine.setup {:options {: theme
                           :icons_enabled true

@@ -84,6 +84,7 @@ in
             end
 
             vim.g.stylix_theme = "${theme.scheme}"
+            vim.g.stylix_appearance = "${theme.appearance}"
 
             local ok, thyme = pcall(require, "thyme")
             if ok then
@@ -110,24 +111,24 @@ in
     };
 
     packages = with pkgs; [
+      harper
+      lua5_1
       ripgrep
       tree-sitter
-      lua5_1
-      harper
+
+      # for startup dashboard
+      cowsay
+      fortune
+
+      # images
+      ghostscript
+      imagemagick
+      luajitPackages.magick
+      mermaid-cli
 
       # rust
       cargo
       rust-analyzer
-
-      # for startup dashboard
-      fortune
-      cowsay
-
-      # images
-      imagemagick
-      luajitPackages.magick
-      ghostscript
-      mermaid-cli
     ];
 
     sessionVariables = {

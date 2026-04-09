@@ -3,17 +3,17 @@
 {
   imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
   home.packages = with pkgs; [
-    kdePackages.yakuake
-    kdePackages.konsole
-    kdePackages.dolphin
-    kdePackages.ark
-    kdePackages.okular
-    kdePackages.gwenview
-    kdePackages.filelight
-    kdePackages.kcalc
-    kdePackages.partitionmanager
-    hfsprogs
     exfatprogs
+    hfsprogs
+    kdePackages.ark
+    kdePackages.dolphin
+    kdePackages.filelight
+    kdePackages.gwenview
+    kdePackages.kcalc
+    kdePackages.konsole
+    kdePackages.okular
+    kdePackages.partitionmanager
+    kdePackages.yakuake
   ];
 
   programs.plasma = {

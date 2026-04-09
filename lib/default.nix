@@ -8,9 +8,10 @@ let
 
   mkSpecialArgs = { system, username, hostName ? null, theme ? { }, features ? { } }:
     let
+      appearance = theme.appearance or "dark";
       t = {
-        scheme = theme.scheme or "catppuccin";
-        appearance = theme.appearance or "auto";
+        scheme = theme.scheme or "tokyonight";
+        inherit appearance;
         baseFontSize = theme.baseFontSize or 20;
       };
       f = {
@@ -19,8 +20,8 @@ let
         desktopEnvironment = features.desktopEnvironment or null;
       };
     in
-    assert builtins.elem t.appearance [ "light" "dark" "auto" ];
-    assert builtins.elem t.scheme [ "catppuccin" "eink" ];
+    assert builtins.elem t.appearance [ "light" "dark" ];
+    assert builtins.elem t.scheme [ "tokyonight" "solarized-light" ];
     {
       inherit inputs username system versions;
       theme = t;

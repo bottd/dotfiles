@@ -1,12 +1,11 @@
 { features, lib, ... }:
 {
   imports = [
-    ./stylix.nix
     ./claude.nix
-    ./gemini.nix
     ./cli.nix
     ./direnv.nix
     ./email
+    ./gemini.nix
     ./git.nix
     ./jujutsu.nix
     ./language.nix
@@ -14,6 +13,7 @@
     ./opencode.nix
     ./scripts.nix
     ./starship
+    ./stylix.nix
     ./tmux.nix
     ./zellij.nix
     ./zoxide.nix
@@ -23,8 +23,8 @@
   ] ++ lib.optionals (features.desktopEnvironment != null) [
     ./browser.nix
     ./desktop.nix
-    ./glide
     ./ghostty.nix
+    ./glide
     ./spicetify.nix
   ];
 }

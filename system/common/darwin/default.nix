@@ -2,8 +2,8 @@
 {
   imports = [
     inputs.mac-app-util.darwinModules.default
-    ./stylix.nix
     ../../darwin/sketchybar.nix
+    ./stylix.nix
   ];
 
   system.defaults = {

@@ -32,13 +32,14 @@ in
         username = "drakeb";
         format = "nixos";
         features = { desktopEnvironment = "sway"; gui = false; };
-        theme = { scheme = "eink"; appearance = "light"; baseFontSize = 20; };
+        theme = { scheme = "solarized-light"; appearance = "light"; baseFontSize = 20; };
         autologin = true;
         extraSystemModules = chaletArgs;
       };
 
       pocket = mkSystem (baseSystem // {
         hostName = "pocket";
+        theme.appearance = "light";
       });
 
       android = mkSystem {
@@ -60,7 +61,7 @@ in
         username = "drakebott";
         format = "darwin";
         features.desktopEnvironment = "macos";
-        theme.baseFontSize = 16;
+        theme = { appearance = "light"; baseFontSize = 16; };
         extraSystemModules = chaletArgs;
       };
     };

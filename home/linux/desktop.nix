@@ -8,16 +8,16 @@ let
 in
 {
   home.packages = with pkgs; [
-    vesktop
-    flashprint
     filezilla
+    flashprint
+    helvum
     krita
     losslesscut-bin
-    obs-studio
-    helvum
-    openscad
     mpv
+    obs-studio
+    openscad
     tresorit-fhs
+    vesktop
   ];
 
   programs.thunderbird = {
