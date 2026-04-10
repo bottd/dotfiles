@@ -44,7 +44,7 @@ in
       }
       // mkWithVariants "pocket" (baseSystem // {
         hostName = "pocket";
-        theme.appearance = "light";
+        theme = (baseSystem.theme or { }) // { appearance = "light"; };
       })
       // {
         android = mkSystem {

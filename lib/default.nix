@@ -22,6 +22,7 @@ let
     in
     assert builtins.elem t.appearance [ "light" "dark" ];
     assert builtins.elem t.scheme [ "tokyonight" "solarized" ];
+    assert builtins.elem f.desktopEnvironment [ null "plasma" "niri" "sway" "macos" ];
     {
       inherit inputs username system versions;
       theme = t;
