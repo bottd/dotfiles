@@ -17,7 +17,7 @@
 "lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
-"nvim-lspconfig" = "2.7.0"
+"nvim-lspconfig" = "2.8.0"
 "rustaceanvim" = "9.0.1"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.40"
@@ -55,7 +55,7 @@ nvim-treesitter-context = "scm"
 tree-sitter-clojure = "0.0.32"
 tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
-"plenary.nvim" = "0.1.4"
+"plenary.nvim" = "scm"
 
 [plugins."oxocarbon.nvim"]
 git = "nyoom-engineering/oxocarbon.nvim"
@@ -63,7 +63,7 @@ rev = "a7ba74849a00546a311f8c146320b433900393e7"
 
 [plugins."onedark.nvim"]
 git = "navarasu/onedark.nvim"
-rev = "213c23ae45a04797572242568d5d51937181792d"
+rev = "v1.0.3"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -71,7 +71,7 @@ rev = "v1.10.0"
 
 [plugins."blink.cmp"]
 git = "Saghen/blink.cmp"
-rev = "v1.9.1"
+rev = "v1.10.2"
 
 [plugins."blink.compat"]
 git = "Saghen/blink.compat"
@@ -87,12 +87,11 @@ rev = "86361b98f3c8317904a08e3bd12cf3cdcbe3e925"
 
 [plugins."blink.pairs"]
 git = "Saghen/blink.pairs"
-rev = "v0.4.1"
-config = {}
+rev = "v0.5.0"
 
 [plugins."neorg"]
 git = "nvim-neorg/neorg"
-rev = "v9.4.0"
+rev = "v9.6.4"
 
 [plugins."neorg-templates"]
 git = "pysan3/neorg-templates"
@@ -105,7 +104,7 @@ rev = "v1.5.0"
 
 [plugins."gitsigns.nvim"]
 git = "lewis6991/gitsigns.nvim"
-rev = "v2.0.0"
+rev = "v2.1.0"
 
 [plugins."lsp_lines.nvim"]
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
