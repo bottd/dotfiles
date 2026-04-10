@@ -21,10 +21,8 @@ in
 
     targets = {
       firefox.profileNames = [ "default" ];
+      # disable to prevent conflicts with kde
       gtk.enable = false;
-      mangohud.enable = false;
-      neovim.enable = false;
-      starship.enable = false;
     };
   };
 

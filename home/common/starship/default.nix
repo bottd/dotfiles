@@ -1,8 +1,7 @@
-{ config, ... }:
-let
-  palette = config.lib.stylix.colors;
-in
+_:
 {
+  stylix.targets.starship.enable = true;
+
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
@@ -10,51 +9,40 @@ in
   };
 
   xdg.configFile."starship.toml".text = ''
-    palette = "stylix"
     format = """
-    $time[ on ](text)$git_branch$git_state$jobs$shell$fill [$git_status](overlay0)
+    $time[ on ](base05)$git_branch$git_state$jobs$shell$fill [$git_status](base04)
      $directory$character"""
 
     right_format = "$cmd_duration"
 
     [character]
-    success_symbol = "[❯](bold lavender)"
-    error_symbol = "[❯](bold red)"
+    success_symbol = "[❯](bold base0E)"
+    error_symbol = "[❯](bold base08)"
 
     [directory]
     truncation_length = 4
-    style = "bold lavender"
+    style = "bold base0E"
 
     [fill]
     symbol = " "
 
     [time]
     disabled = false
-    style = "bold italic sky"
+    style = "bold italic base0D"
     format = "[$time]($style)"
     time_format = "%a, %b %e at %I:%M"
 
     [git_status]
-    style = "overlay0"
-    format = "[$staged]($style teal)[$modified]($style maroon) "
+    style = "base04"
+    format = "[$staged]($style base0C)[$modified]($style base08) "
     staged = " ''${count} staged"
     modified = " ''${count} modified"
 
     [git_branch]
-    style = "maroon"
+    style = "base08"
     format = " [$symbol$branch]($style)"
 
     [cmd_duration]
-    format = "[took $duration](yellow)"
-
-    [palettes.stylix]
-    text = "#${palette.base05}"
-    lavender = "#${palette.base0E}"
-    maroon = "#${palette.base08}"
-    overlay0 = "#${palette.base04}"
-    sky = "#${palette.base0D}"
-    teal = "#${palette.base0C}"
-    red = "#${palette.base08}"
-    yellow = "#${palette.base0A}"
+    format = "[took $duration](base0A)"
   '';
 }

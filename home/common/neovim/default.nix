@@ -140,6 +140,8 @@ in
     };
   };
 
+  stylix.targets.neovim.enable = false;
+
   programs.neovim = {
     defaultEditor = true;
     enable = true;
