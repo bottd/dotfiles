@@ -1,4 +1,5 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, hostName, ... }:
+{
   home.packages = with pkgs; [
     neofetch
   ];
@@ -8,10 +9,12 @@
     enableCompletion = true;
     autosuggestion = {
       enable = true;
-      highlight = "fg=#${config.colorScheme.palette.base04}";
+      highlight = "fg=#${config.lib.stylix.colors.base04}";
     };
     syntaxHighlighting.enable = true;
     initContent = ''
+      export NIX_HOST="${hostName}"
+
       if [ -f "$HOME/.config/zsh/secrets.zsh" ]; then
         source "$HOME/.config/zsh/secrets.zsh"
       fi

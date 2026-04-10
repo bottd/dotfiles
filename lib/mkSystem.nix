@@ -3,11 +3,8 @@
 , system
 , username
 , format
-, desktopEnvironment ? null
-, includeGui ? true
-, includeGaming ? false
-, colorScheme ? "light"
-, baseFontSize ? 20
+, theme ? { }
+, features ? { }
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
@@ -33,7 +30,7 @@ let
     else inputs.home-manager.darwinModules.home-manager;
 
   sharedArgs = mkSpecialArgs {
-    inherit system username desktopEnvironment hostName includeGui includeGaming colorScheme baseFontSize;
+    inherit system username hostName theme features;
   };
 
   specialArgs = sharedArgs // { inherit autologin; };
@@ -53,7 +50,9 @@ let
           ]
           ++ (if format == "nixos" then [
             ../home/linux
-          ] else [ ../home/darwin ])
+          ] else [
+            ../home/darwin
+          ])
           ++ extraHomeModules;
       };
     };
@@ -70,14 +69,17 @@ systemBuilder {
     ]
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
+      inputs.stylix.nixosModules.stylix
+      ../system/nixOS/stylix.nix
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "nixos" then [
-      inputs.catppuccin.nixosModules.catppuccin
+      inputs.stylix.nixosModules.stylix
       ../system/nixOS
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "darwin" then [
+      inputs.stylix.darwinModules.stylix
       ../system/common/darwin
       (_: { system.stateVersion = versions.darwin; })
     ]

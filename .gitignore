@@ -6,3 +6,4 @@ CLAUDE.md
 .direnv
 .pre-commit-config.yaml
 .clj-kondo
+.lsp

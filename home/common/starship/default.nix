@@ -1,66 +1,47 @@
-{ pkgs, ... }:
-let
-  catppuccinStarship = pkgs.fetchFromGitHub {
-    owner = "catppuccin";
-    repo = "starship";
-    rev = "main";
-    sha256 = "sha256-FLHjbClpTqaK4n2qmepCPkb8rocaAo3qeV4Zp1hia0g=";
-  };
-
-  makeStarshipTheme = palette: {
-    text = ''
-      palette = "${if palette == "light" then "catppuccin_latte" else "catppuccin_mocha"}"
-      format = """
-      $time[ on ](text)$git_branch$git_state$jobs$shell$fill [$git_status](overlay0)
-       $directory$character"""
-
-      right_format = "$cmd_duration"
-
-      [character]
-      success_symbol = "[❯](bold lavender)"
-      error_symbol = "[❯](bold red)"
-
-      [directory]
-      truncation_length = 4
-      style = "bold lavender"
-
-      [fill]
-      symbol = " "
-
-      [time]
-      disabled = false
-      style = "bold italic sky"
-      format = "[$time]($style)"
-      time_format = "%a, %b %e at %I:%M"
-
-      [git_status]
-      style = "overlay0"
-      format = "[$staged]($style teal)[$modified]($style maroon) "
-      staged = " ''${count} staged"
-      modified = " ''${count} modified"
-
-      [git_branch]
-      style = "maroon"
-      format = " [$symbol$branch]($style)"
-
-      [cmd_duration]
-      format = "[took $duration](yellow)"
-
-      ${builtins.readFile "${catppuccinStarship}/themes/latte.toml"}
-      ${builtins.readFile "${catppuccinStarship}/themes/mocha.toml"}
-    '';
-  };
-in
+_:
 {
+  stylix.targets.starship.enable = true;
+
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
-  };
+    settings = {
+      format = "$time[ on ](base05)$git_branch$git_state$jobs$shell$fill [$git_status](base04)\n $directory$character";
+      right_format = "$cmd_duration";
 
-  xdg.configFile = {
-    "starship.toml" = makeStarshipTheme "light";
-    "starship/light.toml" = makeStarshipTheme "light";
-    "starship/dark.toml" = makeStarshipTheme "dark";
+      character = {
+        success_symbol = "[❯](bold base0E)";
+        error_symbol = "[❯](bold base08)";
+      };
+
+      directory = {
+        truncation_length = 4;
+        style = "bold base0E";
+      };
+
+      fill.symbol = " ";
+
+      time = {
+        disabled = false;
+        style = "bold italic base0D";
+        format = "[$time]($style)";
+        time_format = "%a, %b %e at %I:%M";
+      };
+
+      git_status = {
+        style = "base04";
+        format = "[$staged]($style base0C)[$modified]($style base08) ";
+        staged = " \${count} staged";
+        modified = " \${count} modified";
+      };
+
+      git_branch = {
+        style = "base08";
+        format = " [$symbol$branch]($style)";
+      };
+
+      cmd_duration.format = "[took $duration](base0A)";
+    };
   };
 }

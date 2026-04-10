@@ -1,25 +1,25 @@
-{ desktopEnvironment, includeGaming, lib, ... }:
+{ features, lib, ... }:
 {
   imports = [
     ./audio.nix
     ./bluetooth.nix
-    ./catppuccin.nix
     ./cli.nix
     ./graphics.nix
     ./jellyfin.nix
     ./keyring.nix
     ./mullvad.nix
     ./printing.nix
-  ] ++ lib.optionals (desktopEnvironment != null) [
+    ./stylix.nix
+  ] ++ lib.optionals (features.desktopEnvironment != null) [
     ./greetd.nix
-  ] ++ lib.optionals includeGaming [
+  ] ++ lib.optionals features.gaming [
     ./gaming.nix
   ] ++ (
-    if desktopEnvironment == "niri"
+    if features.desktopEnvironment == "niri"
     then [ ./niri ]
-    else if desktopEnvironment == "plasma"
+    else if features.desktopEnvironment == "plasma"
     then [ ./plasma ]
-    else if desktopEnvironment == "sway"
+    else if features.desktopEnvironment == "sway"
     then [ ./sway ]
     else [ ]
   );

@@ -1,12 +1,12 @@
-{ desktopEnvironment, lib, ... }:
+{ features, lib, ... }:
 {
+
   imports = [
-    ./catppuccin.nix
     ./claude.nix
-    ./gemini.nix
     ./cli.nix
     ./direnv.nix
     ./email
+    ./gemini.nix
     ./git.nix
     ./jujutsu.nix
     ./language.nix
@@ -14,17 +14,18 @@
     ./opencode.nix
     ./scripts.nix
     ./starship
+    ./stylix.nix
     ./tmux.nix
     ./zellij.nix
     ./zoxide.nix
     ./zsh.nix
 
     # import GUI modules when desktop environment is present
-  ] ++ lib.optionals (desktopEnvironment != null) [
+  ] ++ lib.optionals (features.desktopEnvironment != null) [
     ./browser.nix
     ./desktop.nix
-    ./glide
     ./ghostty.nix
+    ./glide
     ./spicetify.nix
   ];
 }
