@@ -1,6 +1,6 @@
-{ theme, ... }:
+{ config, ... }:
 let
-  palette = if theme.appearance == "light" then "tokyonight_day" else "tokyonight_storm";
+  palette = config.lib.stylix.colors;
 in
 {
   programs.starship = {
@@ -10,7 +10,7 @@ in
   };
 
   xdg.configFile."starship.toml".text = ''
-    palette = "${palette}"
+    palette = "stylix"
     format = """
     $time[ on ](text)$git_branch$git_state$jobs$shell$fill [$git_status](overlay0)
      $directory$character"""
@@ -47,24 +47,14 @@ in
     [cmd_duration]
     format = "[took $duration](yellow)"
 
-    [palettes.tokyonight_storm]
-    text = "#a9b1d6"
-    lavender = "#bb9af7"
-    maroon = "#f7768e"
-    overlay0 = "#565f89"
-    sky = "#7dcfff"
-    teal = "#73daca"
-    red = "#f7768e"
-    yellow = "#e0af68"
-
-    [palettes.tokyonight_day]
-    text = "#3760bf"
-    lavender = "#9854f1"
-    maroon = "#f52a65"
-    overlay0 = "#8990b3"
-    sky = "#2e7de9"
-    teal = "#387068"
-    red = "#f52a65"
-    yellow = "#8c6c3e"
+    [palettes.stylix]
+    text = "#${palette.base05}"
+    lavender = "#${palette.base0E}"
+    maroon = "#${palette.base08}"
+    overlay0 = "#${palette.base04}"
+    sky = "#${palette.base0D}"
+    teal = "#${palette.base0C}"
+    red = "#${palette.base08}"
+    yellow = "#${palette.base0A}"
   '';
 }
