@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   home.packages = with pkgs; [
     chiaki-ng
@@ -37,7 +37,7 @@
       frame_timing = 1;
       frametime_color = config.lib.stylix.colors.base0B;
       media_player_color = config.lib.stylix.colors.base0A;
-      background_alpha = 0.8;
+      background_alpha = lib.mkForce 0.8;
       font_size = 24;
 
       background_color = config.lib.stylix.colors.base00;
