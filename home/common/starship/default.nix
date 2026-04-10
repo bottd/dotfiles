@@ -11,27 +11,27 @@ _:
       right_format = "$cmd_duration";
 
       character = {
-        success_symbol = "[❯](bold base0E)";
+        success_symbol = "[❯](bold purple)";
         error_symbol = "[❯](bold base08)";
       };
 
       directory = {
         truncation_length = 4;
-        style = "bold base0E";
+        style = "bold purple";
       };
 
       fill.symbol = " ";
 
       time = {
         disabled = false;
-        style = "bold italic base0D";
+        style = "bold italic blue";
         format = "[$time]($style)";
         time_format = "%a, %b %e at %I:%M";
       };
 
       git_status = {
         style = "base04";
-        format = "[$staged](base0C)[$modified](base08) ";
+        format = "[$staged](cyan)[$modified](base08) ";
         staged = " \${count} staged";
         modified = " \${count} modified";
       };
@@ -41,7 +41,7 @@ _:
         format = " [$symbol$branch]($style)";
       };
 
-      cmd_duration.format = "[took $duration](base0A)";
+      cmd_duration.format = "[took $duration](yellow)";
     };
   };
 }
