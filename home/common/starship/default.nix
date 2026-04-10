@@ -31,7 +31,7 @@ _:
 
       git_status = {
         style = "base04";
-        format = "[$staged]($style base0C)[$modified]($style base08) ";
+        format = "[$staged](base0C)[$modified](base08) ";
         staged = " \${count} staged";
         modified = " \${count} modified";
       };
