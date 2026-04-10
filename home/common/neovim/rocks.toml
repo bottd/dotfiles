@@ -57,13 +57,13 @@ tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "0.1.4"
 
-[plugins."solarized.nvim"]
-git = "maxmx03/solarized.nvim"
-rev = "v3.6.0"
+[plugins."oxocarbon.nvim"]
+git = "nyoom-engineering/oxocarbon.nvim"
+rev = "a7ba74849a00546a311f8c146320b433900393e7"
 
-[plugins."tokyonight.nvim"]
-git = "folke/tokyonight.nvim"
-rev = "v4.14.1"
+[plugins."onedark.nvim"]
+git = "navarasu/onedark.nvim"
+rev = "213c23ae45a04797572242568d5d51937181792d"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -136,7 +136,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["solarized.nvim", "tokyonight.nvim"]
+items = ["oxocarbon.nvim", "onedark.nvim"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]

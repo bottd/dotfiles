@@ -38,7 +38,7 @@ in
         username = "drakeb";
         format = "nixos";
         features = { desktopEnvironment = "sway"; gui = false; };
-        theme = { scheme = "solarized"; appearance = "light"; baseFontSize = 20; };
+        theme = { scheme = "one"; appearance = "light"; baseFontSize = 20; };
         autologin = true;
         extraSystemModules = chaletArgs;
       }

@@ -10,7 +10,7 @@ let
     let
       appearance = theme.appearance or "dark";
       t = {
-        scheme = theme.scheme or "tokyonight";
+        scheme = theme.scheme or "oxocarbon";
         inherit appearance;
         baseFontSize = theme.baseFontSize or 20;
       };
@@ -21,7 +21,7 @@ let
       };
     in
     assert builtins.elem t.appearance [ "light" "dark" ];
-    assert builtins.elem t.scheme [ "tokyonight" "solarized" ];
+    assert builtins.elem t.scheme [ "oxocarbon" "one" ];
     assert builtins.elem f.desktopEnvironment [ null "plasma" "niri" "sway" "macos" ];
     {
       inherit inputs username system versions;
