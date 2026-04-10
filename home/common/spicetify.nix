@@ -8,7 +8,7 @@ in
   programs.spicetify = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
 
-    colorScheme = "custom";
+    colorScheme = lib.mkForce "custom";
     customColorScheme = {
       text = colors.base05;
       subtext = colors.base04;
