@@ -1,4 +1,4 @@
-{ pkgs, config, nixpkgs-unstable, ... }:
+{ pkgs, config, nixpkgs-unstable, theme, ... }:
 let
   luarocksArch = {
     "aarch64-darwin" = "macosx-aarch64";
@@ -83,6 +83,9 @@ in
                 end
             end
 
+            vim.g.stylix_theme = "${theme.scheme}"
+            vim.g.stylix_appearance = "${theme.appearance}"
+
             local ok, thyme = pcall(require, "thyme")
             if ok then
               table.insert(package.loaders, function(...)
@@ -108,24 +111,24 @@ in
     };
 
     packages = with pkgs; [
+      harper
+      lua5_1
       ripgrep
       tree-sitter
-      lua5_1
-      harper
+
+      # for startup dashboard
+      cowsay
+      fortune
+
+      # images
+      ghostscript
+      imagemagick
+      luajitPackages.magick
+      mermaid-cli
 
       # rust
       cargo
       rust-analyzer
-
-      # for startup dashboard
-      fortune
-      cowsay
-
-      # images
-      imagemagick
-      luajitPackages.magick
-      ghostscript
-      mermaid-cli
     ];
 
     sessionVariables = {
@@ -136,6 +139,8 @@ in
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
   };
+
+  stylix.targets.neovim.enable = false;
 
   programs.neovim = {
     defaultEditor = true;

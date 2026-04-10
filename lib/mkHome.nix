@@ -3,9 +3,8 @@
 , system
 , username
 , format
-, desktopEnvironment ? null
-, colorScheme ? "light"
-, baseFontSize ? 20
+, theme ? { }
+, features ? { }
 , hostPath ? null
 , extraHomeModules ? [ ]
 }:
@@ -23,13 +22,14 @@ inputs.home-manager.lib.homeManagerConfiguration {
 
   extraSpecialArgs = mkSpecialArgs
     {
-      inherit system username desktopEnvironment colorScheme baseFontSize;
+      inherit system username theme features;
     } // {
     root = ../.;
   };
 
   modules =
     [
+      inputs.stylix.homeModules.stylix
       ../home.nix
       ../home/common
       path

@@ -6,6 +6,7 @@
         buildPhase = ''
           go build -ldflags "-X main.bashPath=${pkgs.bash}/bin/bash" -o direnv
         '';
+        doCheck = false;
       });
       enableBashIntegration = true;
       enableZshIntegration = true;

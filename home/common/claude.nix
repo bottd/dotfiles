@@ -1,4 +1,4 @@
-{ desktopEnvironment, lib, pkgs, ... }:
+{ features, lib, pkgs, ... }:
 let
   claudeSettings = pkgs.writeText "claude-settings.json" (builtins.toJSON {
     permissions = {
@@ -68,7 +68,7 @@ in
     "CLAUDE.local.md"
   ];
 
-  xdg.mimeApps = lib.mkIf (desktopEnvironment != null && pkgs.stdenv.isLinux) {
+  xdg.mimeApps = lib.mkIf (features.desktopEnvironment != null && pkgs.stdenv.isLinux) {
     associations.added = {
       "x-scheme-handler/claude" = "claude-desktop.desktop";
     };

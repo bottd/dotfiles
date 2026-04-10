@@ -1,10 +1,11 @@
-{ config, lib, pkgs, username, desktopEnvironment, autologin, ... }:
+{ config, lib, pkgs, username, features, autologin, ... }:
 let
+  de = features.desktopEnvironment;
   sessionCommand =
-    if desktopEnvironment == "plasma" then "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland"
-    else if desktopEnvironment == "niri" then "${config.programs.niri.package}/bin/niri-session"
-    else if desktopEnvironment == "sway" then "${pkgs.sway}/bin/sway"
-    else throw "greetd: unsupported desktopEnvironment: ${desktopEnvironment}";
+    if de == "plasma" then "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland"
+    else if de == "niri" then "${config.programs.niri.package}/bin/niri-session"
+    else if de == "sway" then "${pkgs.sway}/bin/sway"
+    else throw "greetd: unsupported desktopEnvironment: ${de}";
 in
 {
   services.greetd.enable = true;

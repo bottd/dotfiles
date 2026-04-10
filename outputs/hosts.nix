@@ -8,65 +8,67 @@ let
     };
   }];
 
+  mkWithVariants = name: args: {
+    "${name}" = mkSystem args;
+    "${name}-dark" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "dark"; }; });
+    "${name}-light" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "light"; }; });
+  };
+
   baseSystem = {
     system = "x86_64-linux";
     username = "drakeb";
     format = "nixos";
-    desktopEnvironment = "plasma";
-    colorScheme = "auto";
-    includeGaming = true;
-    baseFontSize = 16;
+    features.desktopEnvironment = "plasma";
+    features.gaming = true;
+    theme.baseFontSize = 12;
     extraSystemModules = chaletArgs;
   };
 in
 {
   flake = {
-    nixosConfigurations = {
-      desktop = mkSystem (baseSystem // {
-        hostName = "desktop";
-        autologin = true;
-      });
-
-      eink = mkSystem {
+    nixosConfigurations =
+      mkWithVariants "desktop"
+        (baseSystem // {
+          hostName = "desktop";
+          autologin = true;
+        })
+      // mkWithVariants "eink" {
         hostName = "eink";
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
-        desktopEnvironment = "sway";
+        features = { desktopEnvironment = "sway"; gui = false; };
+        theme = { scheme = "solarized"; appearance = "light"; baseFontSize = 20; };
         autologin = true;
-        includeGui = false;
-        baseFontSize = 20;
         extraSystemModules = chaletArgs;
-      };
-
-      pocket = mkSystem (baseSystem // {
+      }
+      // mkWithVariants "pocket" (baseSystem // {
         hostName = "pocket";
-      });
-
-      android = mkSystem {
-        hostName = "android";
-        system = "aarch64-linux";
-        username = "droid";
-        format = "nixos";
-        enableAVF = true;
-        includeGui = false;
-        extraHomeModules = [ ../hosts/android/home.nix ];
-        extraSystemModules = chaletArgs;
+        theme = (baseSystem.theme or { }) // { appearance = "light"; };
+      })
+      // {
+        android = mkSystem {
+          hostName = "android";
+          system = "aarch64-linux";
+          username = "droid";
+          format = "nixos";
+          features.gui = false;
+          enableAVF = true;
+          extraHomeModules = [ ../hosts/android/home.nix ];
+          extraSystemModules = chaletArgs;
+        };
       };
-    };
 
-    darwinConfigurations = {
-      macbook = mkSystem {
+    darwinConfigurations =
+      mkWithVariants "macbook" {
         hostName = "macbook";
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        desktopEnvironment = "macos";
-        colorScheme = "auto";
-        baseFontSize = 16;
+        features.desktopEnvironment = "macos";
+        theme = { appearance = "light"; baseFontSize = 12; };
         extraSystemModules = chaletArgs;
       };
-    };
 
     homeConfigurations = {
       standalone = mkHome {

@@ -1,49 +1,49 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
+    # Clojure
+    babashka
+    clj-kondo
+    cljfmt
+    clojure
+    clojure-lsp
+    jet
+    leiningen
+
+    # Common Lisp
+    sbcl
+
+    # Fennel
+    fnlfmt
+    luaPackages.fennel
+
+    # Janet
+    janet
+    jpm
+
     # JavaScript/Node
     nodejs
+    nodePackages_latest.prettier
     nodePackages_latest.svelte-language-server
     nodePackages_latest.typescript-language-server
-    nodePackages_latest.prettier
     prettierd
     stylelint-lsp
     tailwindcss-language-server
     vscode-langservers-extracted
 
     # Lua
+    lua-language-server
     lua5_1
     lua51Packages.luarocks
-    lua-language-server
     stylua
 
     # Nix
     nil
 
-    # Clojure
-    clojure
-    clojure-lsp
-    leiningen
-    cljfmt
-    clj-kondo
-    babashka
-    jet
-
-    # Janet
-    janet
-    jpm
-
-    # Fennel
-    luaPackages.fennel
-    fnlfmt
-
-    # Common Lisp
-    sbcl
+    # Python
+    python3
 
     # TOML
     taplo
-
-    # Python
-    python3
   ];
 
   home.sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-packages";

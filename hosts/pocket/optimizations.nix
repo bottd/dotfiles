@@ -72,11 +72,10 @@
   # };
   #
   environment.systemPackages = with pkgs; [
-    powertop
-    # tlp
     acpi
-    lm_sensors
     intel-gpu-tools
+    lm_sensors
+    powertop
     s-tui
     stress
   ];
