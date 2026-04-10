@@ -70,7 +70,7 @@ systemBuilder {
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
       inputs.stylix.nixosModules.stylix
-      ../system/nixOS
+      ../system/nixOS/stylix.nix
       (_: { system.stateVersion = versions.nixos; })
     ]
     else if format == "nixos" then [
