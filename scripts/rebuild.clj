@@ -14,7 +14,6 @@
 (def cmd
   (case host
     "macbook" "darwin-rebuild"
-    "sudo nixos-rebuild"))
+    "nixos-rebuild"))
 
-(println (str "Rebuilding " config "..."))
-(shell cmd "switch" "--flake" (str ".#" config))
+(shell "sudo" cmd "switch" "--flake" (str ".#" config))

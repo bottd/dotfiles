@@ -1,6 +1,5 @@
-{ features, hostName, lib, ... }:
+{ features, lib, ... }:
 {
-  home.sessionVariables.NIX_HOST = hostName;
 
   imports = [
     ./claude.nix
