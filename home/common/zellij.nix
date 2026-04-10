@@ -8,6 +8,7 @@
     enable = true;
 
     settings = {
+      theme = "default";
       default_shell = "zsh";
       mouse_mode = true;
       rounded_corners = true;
