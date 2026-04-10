@@ -1,9 +1,5 @@
 (local lualine (require :lualine))
-(local lualine-themes {:tokyonight :tokyonight :solarized-light :solarized})
-
-(local theme (or (. lualine-themes vim.g.stylix_theme) :base16))
-
-(lualine.setup {:options {: theme
+(lualine.setup {:options {:theme vim.g.stylix_theme
                           :icons_enabled true
                           :globalstatus true
                           :component_separators "|"

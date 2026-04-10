@@ -21,7 +21,7 @@ let
       };
     in
     assert builtins.elem t.appearance [ "light" "dark" ];
-    assert builtins.elem t.scheme [ "tokyonight" "solarized-light" ];
+    assert builtins.elem t.scheme [ "tokyonight" "solarized" ];
     {
       inherit inputs username system versions;
       theme = t;

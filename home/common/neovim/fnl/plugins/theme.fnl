@@ -9,6 +9,6 @@
                                                           {:fg colors.purple}))
                                    :plugins {:indent_blankline true}})
                 (vim.cmd.colorscheme :tokyonight))
-  :solarized-light (let [solarized (require :solarized)]
-                     (solarized.setup {})
-                     (vim.cmd.colorscheme :solarized)))
+  :solarized (let [solarized (require :solarized)]
+               (solarized.setup {})
+               (vim.cmd.colorscheme :solarized)))

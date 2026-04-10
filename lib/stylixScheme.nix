@@ -2,12 +2,12 @@
 let
   schemes = {
     tokyonight = "${pkgs.base16-schemes}/share/themes/tokyo-night-${if appearance == "light" then "light" else "storm"}.yaml";
-    solarized-light = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
+    solarized = "${pkgs.base16-schemes}/share/themes/solarized-${if appearance == "light" then "light" else "dark"}.yaml";
   };
 
   polarities = {
     tokyonight = if appearance == "light" then "light" else "dark";
-    solarized-light = "light";
+    solarized = appearance;
   };
 in
 {
