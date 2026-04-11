@@ -1,5 +1,7 @@
-{ pkgs, inputs, ... }:
-
+{ pkgs, inputs, theme, ... }:
+let
+  isLight = theme.appearance == "light";
+in
 {
   imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
   home.packages = with pkgs; [
@@ -20,10 +22,10 @@
     enable = true;
 
     workspace = {
-      theme = "breeze-dark";
-      colorScheme = "BreezeDark";
+      theme = if isLight then "default" else "breeze-dark";
+      colorScheme = if isLight then "BreezeLight" else "BreezeDark";
       cursor.theme = "breeze_cursors";
-      iconTheme = "breeze-dark";
+      iconTheme = if isLight then "breeze" else "breeze-dark";
     };
 
     panels = [
