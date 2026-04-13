@@ -21,7 +21,7 @@ let
       };
     in
     assert builtins.elem t.appearance [ "light" "dark" ];
-    assert builtins.elem t.scheme [ "oxocarbon" "one" ];
+    assert t.scheme == "oxocarbon";
     assert builtins.elem f.desktopEnvironment [ null "plasma" "niri" "sway" "macos" ];
     {
       inherit inputs username system versions;
