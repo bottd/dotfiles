@@ -61,9 +61,6 @@ tree-sitter-cpp = "0.0.50"
 git = "nyoom-engineering/oxocarbon.nvim"
 rev = "a7ba74849a00546a311f8c146320b433900393e7"
 
-[plugins."onedark.nvim"]
-git = "navarasu/onedark.nvim"
-rev = "v1.0.3"
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -135,7 +132,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["oxocarbon.nvim", "onedark.nvim"]
+items = ["oxocarbon.nvim"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
