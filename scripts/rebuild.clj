@@ -16,4 +16,6 @@
     "macbook" "darwin-rebuild"
     "nixos-rebuild"))
 
-(shell "sudo" cmd "switch" "--flake" (str ".#" config))
+(def flake-dir (str (System/getProperty "user.home") "/dotfiles"))
+
+(shell "sudo" cmd "switch" "--flake" (str flake-dir "#" config))
