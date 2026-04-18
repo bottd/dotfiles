@@ -1,4 +1,4 @@
-{ features, lib, pkgs, ... }:
+{ features, inputs, lib, pkgs, system, ... }:
 let
   claudeSettings = pkgs.writeText "claude-settings.json" (builtins.toJSON {
     permissions = {
@@ -38,6 +38,8 @@ let
 in
 {
   home = {
+    packages = [ inputs.claude-code.packages.${system}.default ];
+
     # Add native installer location to PATH on macOS
     sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
       "$HOME/.local/bin"
