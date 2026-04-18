@@ -19,4 +19,6 @@
   environment.systemPackages = with pkgs; [
     podman-desktop
   ];
+
+  programs.nix-ld.enable = true;
 }
