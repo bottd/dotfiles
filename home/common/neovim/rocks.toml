@@ -1,5 +1,5 @@
 [plugins]
-"rocks.nvim" = "2.47.4"
+"rocks.nvim" = "2.47.5"
 "rocks-config.nvim" = "3.2.0"
 "rocks-dev.nvim" = "1.8.1"
 "rocks-git.nvim" = "2.5.10"
@@ -18,7 +18,7 @@
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
 "nvim-lspconfig" = "2.8.0"
-"rustaceanvim" = "9.0.1"
+"rustaceanvim" = "9.0.2"
 "nvim-ts-autotag" = "scm"
 tree-sitter-json = "0.0.40"
 tree-sitter-javascript = "0.0.41"
@@ -56,6 +56,7 @@ tree-sitter-clojure = "0.0.32"
 tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "scm"
+"neorg" = "9.6.4"
 
 [plugins."oxocarbon.nvim"]
 git = "nyoom-engineering/oxocarbon.nvim"
@@ -85,10 +86,6 @@ rev = "86361b98f3c8317904a08e3bd12cf3cdcbe3e925"
 [plugins."blink.pairs"]
 git = "Saghen/blink.pairs"
 rev = "v0.5.0"
-
-[plugins."neorg"]
-git = "nvim-neorg/neorg"
-rev = "v9.6.4"
 
 [plugins."neorg-templates"]
 git = "pysan3/neorg-templates"
