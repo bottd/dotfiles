@@ -1,9 +1,9 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, nixpkgs-unstable, ... }: {
   # Ghostty `command` option fails to launch zellij on darwin
   # start zellij via zsh instead on darwin
   programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
     if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-      zellij
+      ${nixpkgs-unstable.zellij}/bin/zellij
     fi
   '';
 
