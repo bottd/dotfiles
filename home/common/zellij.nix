@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, nixpkgs-unstable, ... }:
 {
   home.packages = lib.optionals pkgs.stdenv.isLinux (with pkgs; [
     wl-clipboard
@@ -6,6 +6,7 @@
 
   programs.zellij = {
     enable = true;
+    package = nixpkgs-unstable.zellij;
 
     settings = {
       theme = "default";
