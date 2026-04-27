@@ -54,7 +54,7 @@
                 :svelte
                 :tailwindcss
                 :ts_ls
-                :harper_ls
+                ; :harper_ls
                 :lua_ls
                 :clojure_lsp
                 :nil_ls])
