@@ -1,4 +1,4 @@
 (set vim.o.background vim.g.stylix_appearance)
 (match vim.g.stylix_theme
   :oxocarbon (vim.cmd.colorscheme :oxocarbon)
-  :papercolor-light (vim.cmd.colorscheme :PaperColor))
+  :primer-light (vim.cmd.colorscheme :github_light))
