@@ -26,6 +26,7 @@
     profiles.default = {
       settings = {
         "accessibility.force_disabled" = 1;
+        "dom.webgpu.enabled" = true;
       };
       search = {
         default = "Kagi";
