@@ -62,6 +62,10 @@ tree-sitter-cpp = "0.0.50"
 git = "nyoom-engineering/oxocarbon.nvim"
 rev = "a7ba74849a00546a311f8c146320b433900393e7"
 
+[plugins."papercolor-theme"]
+git = "NLKNguyen/papercolor-theme"
+rev = "0cfe64ffb24c21a6101b5f994ca342a74c977aef"
+
 
 [plugins."lazydev.nvim"]
 git = "folke/lazydev.nvim"
@@ -129,7 +133,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["oxocarbon.nvim"]
+items = ["oxocarbon.nvim", "papercolor-theme"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
