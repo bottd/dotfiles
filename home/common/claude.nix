@@ -1,40 +1,9 @@
-{ features, inputs, lib, pkgs, system, ... }:
+{ config, features, inputs, lib, pkgs, system, ... }:
 let
-  claudeSettings = pkgs.writeText "claude-settings.json" (builtins.toJSON {
-    permissions = {
-      allow = [
-        "mcp__svelte__*"
-      ];
-    };
-    model = "opus";
-    enabledPlugins = {
-      "elements-of-style@superpowers-marketplace" = true;
-      "superpowers-lab@superpowers-marketplace" = true;
-    };
-    env = {
-      ENABLE_LSP_TOOL = "1";
-    };
-    sandbox = {
-      enabled = true;
-      filesystem = {
-        allowRead = [ "." "~/workspace" "~/remote" ];
-        denyRead = [ "~/" ];
-        allowWrite = [ "." ];
-        denyWrite = [ "/" ];
-      };
-    };
-    preferNativeInstaller = false;
-    plugins = { };
-    mcpServers = {
-      svelte = {
-        command = "npx";
-        args = [
-          "-y"
-          "@sveltejs/mcp"
-        ];
-      };
-    };
-  });
+  # Live settings file in the dotfiles repo.
+  # Symlinked into place via mkOutOfStoreSymlink so `claude plugin install/uninstall`
+  # and other in-place edits land back in this repo (git-tracked).
+  claudeSettingsPath = "${config.home.homeDirectory}/dotfiles/home/common/claude-settings.json";
 in
 {
   home = {
@@ -46,15 +15,9 @@ in
     ];
 
     file = {
-      # claude-code config
-      ".claude/settings.json" = {
-        source = claudeSettings;
-      };
-
-      # claude desktop config
-      ".config/Claude/claude_desktop_config.json" = {
-        source = claudeSettings;
-      };
+      # claude-code config — mutable symlink to the file in dotfiles.
+      ".claude/settings.json".source =
+        config.lib.file.mkOutOfStoreSymlink claudeSettingsPath;
     };
 
     shellAliases = {
