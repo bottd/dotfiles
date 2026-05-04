@@ -1,0 +1,31 @@
+{
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  },
+  "permissions": {
+    "allow": ["mcp__svelte__*"]
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "elements-of-style@superpowers-marketplace": true,
+    "superpowers-lab@superpowers-marketplace": true,
+    "lazyweb@lazyweb": true
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "allowWrite": ["."],
+      "denyWrite": ["/"],
+      "denyRead": ["~/"],
+      "allowRead": [".", "~/workspace", "~/remote"]
+    }
+  },
+  "mcpServers": {
+    "svelte": {
+      "args": ["-y", "@sveltejs/mcp"],
+      "command": "npx"
+    }
+  },
+  "plugins": {},
+  "preferNativeInstaller": false
+}
