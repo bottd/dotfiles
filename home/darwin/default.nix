@@ -6,7 +6,6 @@
     ./dev.nix
     ./karabiner
     ./libiconv.nix
-    ./sketchybar.nix
     ./wallpaper.nix
   ];
 }
