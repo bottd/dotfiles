@@ -14,10 +14,10 @@
   "sandbox": {
     "enabled": true,
     "filesystem": {
-      "allowWrite": ["."],
+      "allowWrite": [".", "~/loam"],
       "denyWrite": ["/"],
       "denyRead": ["~/"],
-      "allowRead": [".", "~/workspace", "~/remote"]
+      "allowRead": [".", "~/workspace", "~/loam", "~/remote"]
     }
   },
   "mcpServers": {
@@ -27,5 +27,6 @@
     }
   },
   "plugins": {},
-  "preferNativeInstaller": false
+  "preferNativeInstaller": false,
+  "skipDangerousModePermissionPrompt": true
 }
