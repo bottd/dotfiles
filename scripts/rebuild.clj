@@ -18,6 +18,6 @@
 
 (def flake-dir (str (System/getProperty "user.home") "/dotfiles"))
 
-(shell {:dir flake-dir :continue true} "git" "pull" "--ff-only" "--quiet")
+(shell {:dir flake-dir :continue true} "git" "pull" "--rebase" "--quiet")
 
 (shell "sudo" cmd "switch" "--flake" (str flake-dir "#" config))
