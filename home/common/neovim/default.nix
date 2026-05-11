@@ -129,6 +129,9 @@ in
       # rust
       cargo
       rust-analyzer
+
+      # java
+      jdk25
     ];
 
     sessionVariables = {
