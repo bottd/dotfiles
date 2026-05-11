@@ -20,6 +20,7 @@
       "allowRead": [".", "~/workspace", "~/loam", "~/remote"]
     }
   },
+  "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "svelte": {
       "args": ["-y", "@sveltejs/mcp"],
@@ -27,6 +28,5 @@
     }
   },
   "plugins": {},
-  "preferNativeInstaller": false,
-  "skipDangerousModePermissionPrompt": true
+  "preferNativeInstaller": false
 }
