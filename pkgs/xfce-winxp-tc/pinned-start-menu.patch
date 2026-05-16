@@ -1,0 +1,312 @@
+--- a/shell/taskband/src/start/personal.c
++++ b/shell/taskband/src/start/personal.c
+@@ -62,9 +62,6 @@
+ static void refresh_userpic(
+     WinTCToolbarStart* toolbar_start
+ );
+-static void update_personal_menu_mfu_items(
+-    WinTCToolbarStart* toolbar_start
+-);
+ 
+ static void clear_signal_tuple(
+     StartSignalTuple* tuple
+@@ -104,10 +101,6 @@
+     GtkMenuShell* self,
+     gpointer      user_data
+ );
+-static void on_mfu_tracker_updated(
+-    WinTCStartMfuTracker* self,
+-    gpointer              user_data
+-);
+ static void on_personal_menu_hide(
+     GtkWidget* self,
+     gpointer   user_data
+@@ -795,116 +788,41 @@
+         TOTAL_PROGRAMS_ITEM_COUNT
+     );
+ 
+-    // Add default items
++    // Add pinned items (replaces upstream's 2 MIME defaults + 6 MFU slots)
+     //
+-    GDesktopAppInfo*  entry_internet = wintc_query_mime_handler(
+-                                           "x-scheme-handler/http",
+-                                           NULL
+-                                       );
+-    GDesktopAppInfo*  entry_email    = wintc_query_mime_handler(
+-                                           "x-scheme-handler/mailto",
+-                                           NULL
+-                                       );
++    static const gchar* const s_pinned_desktop_ids[] = {
++        "firefox.desktop",
++        "com.mitchellh.ghostty.desktop",
++        "vesktop.desktop",
++        "steam.desktop",
++    };
+     StartSignalTuple* tuple;
+ 
+-    tuple =
+-        &g_array_index(
+-            toolbar_start->personal.tuples_programs,
+-            StartSignalTuple,
+-            0
+-        );
+-    tuple->toolbar_start = toolbar_start;
+-
+-    gtk_menu_shell_append(
+-        GTK_MENU_SHELL(toolbar_start->personal.menubar_programs),
+-        create_personal_menu_item_from_desktop_entry(
+-            entry_internet,
+-            tuple,
+-            _("Opens your Internet browser."),
+-            _("Internet")
+-        )
+-    );
+-
+-    tuple =
+-        &g_array_index(
+-            toolbar_start->personal.tuples_programs,
+-            StartSignalTuple,
+-            1
+-        );
+-    tuple->toolbar_start = toolbar_start;
+-
+-    gtk_menu_shell_append(
+-        GTK_MENU_SHELL(toolbar_start->personal.menubar_programs),
+-        create_personal_menu_item_from_desktop_entry(
+-            entry_email,
+-            tuple,
+-            _("Opens your e-mail program so you can send or read a message."),
+-            _("E-mail")
+-        )
+-    );
+-
+-    g_clear_object(&entry_internet);
+-    g_clear_object(&entry_email);
+-
+-    // Add separator between defaults & MFU
+-    //
+-    gtk_menu_shell_append(
+-        GTK_MENU_SHELL(toolbar_start->personal.menubar_programs),
+-        gtk_separator_menu_item_new()
+-    );
+-
+-    // Loop over to add the MFU items
+-    //
+-    for (gint i = 0; i < MAX_MFU_ITEM_COUNT; i++)
++    for (gsize i = 0; i < G_N_ELEMENTS(s_pinned_desktop_ids); i++)
+     {
+-        GtkWidget* personal_item =
+-            create_personal_menu_item(
+-                GTK_MENU_SHELL(
+-                    toolbar_start->personal.menubar_programs
+-                ),
+-                NULL,
+-                NULL,
+-                NULL,
+-                NULL
+-            );
++        GDesktopAppInfo* entry =
++            g_desktop_app_info_new(s_pinned_desktop_ids[i]);
+ 
+         tuple =
+             &g_array_index(
+                 toolbar_start->personal.tuples_programs,
+                 StartSignalTuple,
+-                DEFAULT_ITEM_COUNT + i
++                i
+             );
+-
+-        tuple->is_action     = FALSE;
+         tuple->toolbar_start = toolbar_start;
+ 
+-        g_object_set_qdata(
+-            G_OBJECT(personal_item),
+-            S_QUARK_PERSONAL_ITEM_TUPLE,
+-            tuple
+-        );
+-
+-        g_signal_connect(
+-            personal_item,
+-            "activate",
+-            G_CALLBACK(on_menu_item_launcher_activate),
+-            tuple
+-        );
+-
+         gtk_menu_shell_append(
+             GTK_MENU_SHELL(toolbar_start->personal.menubar_programs),
+-            personal_item
++            create_personal_menu_item_from_desktop_entry(
++                entry,
++                tuple,
++                NULL,
++                NULL
++            )
+         );
+-    }
+ 
+-    update_personal_menu_mfu_items(toolbar_start);
+-
+-    g_signal_connect(
+-        wintc_start_mfu_tracker_get_default(),
+-        "mfu-updated",
+-        G_CALLBACK(on_mfu_tracker_updated),
+-        toolbar_start
+-    );
++        g_clear_object(&entry);
++    }
+ 
+     // Re-append All Programs items
+     //
+@@ -970,135 +888,6 @@
+     g_free(css);
+ }
+ 
+-static void update_personal_menu_mfu_items(
+-    WinTCToolbarStart* toolbar_start
+-)
+-{
+-    // Find the first MFU item
+-    //
+-    GList* li_mfu        = NULL;
+-    GList* list_children =
+-        gtk_container_get_children(
+-            GTK_CONTAINER(toolbar_start->personal.menubar_programs)
+-        );
+-
+-    for (GList* iter = list_children; iter; iter = iter->next)
+-    {
+-        if (
+-            g_object_get_qdata(
+-                G_OBJECT(iter->data),
+-                S_QUARK_PERSONAL_ITEM_TUPLE
+-            )
+-        )
+-        {
+-            li_mfu = iter;
+-            break;
+-        }
+-    }
+-
+-    if (!li_mfu)
+-    {
+-        g_critical("%s", "taskband: somehow found no mfu items");
+-        g_list_free(list_children);
+-        return;
+-    }
+-
+-    // Start updating the items
+-    //
+-    GList* list_mfu =
+-        wintc_start_mfu_tracker_get_mfu_list(
+-            wintc_start_mfu_tracker_get_default()
+-        );
+-
+-    for (
+-        GList* iter = list_mfu;
+-        iter;
+-        iter = iter->next, li_mfu = li_mfu->next
+-    )
+-    {
+-        StartSignalTuple* tuple =
+-            g_object_get_qdata(
+-                G_OBJECT(li_mfu->data),
+-                S_QUARK_PERSONAL_ITEM_TUPLE
+-            );
+-
+-        // Protect against the case where there could be more MFU items tracked
+-        // than personal menu items
+-        //
+-        if (!tuple)
+-        {
+-            break;
+-        }
+-
+-        // Update the menu item and tuple
+-        //
+-        GarconMenuItem* garcon_item = GARCON_MENU_ITEM(iter->data);
+-        const gchar*    icon_name   = garcon_menu_item_get_icon_name(
+-                                          garcon_item
+-                                      );
+-        GList*          list_menu_children;
+-        GtkWidget*      menu_item   = GTK_WIDGET(li_mfu->data);
+-        GdkPixbuf*      pixbuf_icon = NULL;
+-
+-        list_menu_children =
+-            gtk_container_get_children(
+-                GTK_CONTAINER(
+-                    gtk_bin_get_child(GTK_BIN(menu_item))
+-                )
+-            );
+-
+-        if (icon_name)
+-        {
+-            pixbuf_icon =
+-                gtk_icon_theme_load_icon(
+-                    gtk_icon_theme_get_default(),
+-                    icon_name,
+-                    PROGRAM_ICON_SIZE,
+-                    GTK_ICON_LOOKUP_FORCE_SIZE,
+-                    NULL
+-                );
+-        }
+-
+-        if (!pixbuf_icon)
+-        {
+-            gtk_icon_theme_load_icon(
+-                gtk_icon_theme_get_default(),
+-                "application-x-generic",
+-                PROGRAM_ICON_SIZE,
+-                GTK_ICON_LOOKUP_FORCE_SIZE,
+-                NULL
+-            );
+-        }
+-
+-        gtk_image_set_from_pixbuf(
+-            GTK_IMAGE(list_menu_children->data),
+-            pixbuf_icon
+-        );
+-        gtk_label_set_text(
+-            GTK_LABEL(list_menu_children->next->data),
+-            garcon_menu_item_get_name(garcon_item)
+-        );
+-        gtk_widget_set_tooltip_text(
+-            menu_item,
+-            garcon_menu_item_get_comment(garcon_item)
+-        );
+-
+-        g_free(tuple->user_data);
+-        tuple->user_data =
+-            garcon_menu_item_get_command_expanded(garcon_item);
+-
+-        if (pixbuf_icon)
+-        {
+-            g_object_unref(pixbuf_icon);
+-        }
+-
+-        g_list_free(list_menu_children);
+-    }
+-
+-    g_list_free(list_mfu);
+-    g_list_free(list_children);
+-}
+-
+ //
+ // CALLBACKS
+ //
+@@ -1286,16 +1075,6 @@
+     toolbar_start->sync_menu_should_close = TRUE;
+ }
+ 
+-static void on_mfu_tracker_updated(
+-    WINTC_UNUSED(WinTCStartMfuTracker* self),
+-    gpointer user_data
+-)
+-{
+-    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(user_data);
+-
+-    update_personal_menu_mfu_items(toolbar_start);
+-}
+-
+ static void on_personal_menu_hide(
+     WINTC_UNUSED(GtkWidget* self),
+     gpointer   user_data

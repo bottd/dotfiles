@@ -46,6 +46,12 @@ in
         hostName = "pocket";
         theme = (baseSystem.theme or { }) // { appearance = "light"; };
       })
+      // mkWithVariants "quote" (baseSystem // {
+        hostName = "quote";
+        features = { desktopEnvironment = "quote"; gaming = true; };
+        autologin = true;
+        theme = (baseSystem.theme or { }) // { appearance = "light"; scheme = "oxocarbon"; };
+      })
       // {
         android = mkSystem {
           hostName = "android";

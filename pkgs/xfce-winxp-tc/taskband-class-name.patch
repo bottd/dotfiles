@@ -1,0 +1,156 @@
+diff --git a/shared/shelldpa/public/api.h b/shared/shelldpa/public/api.h
+index db22546..701919f 100644
+--- a/shared/shelldpa/public/api.h
++++ b/shared/shelldpa/public/api.h
+@@ -156,6 +156,17 @@ extern gchar* (*wintc_wndmgmt_window_get_name) (
+     WinTCWndMgmtWindow* window
+ );
+ 
++/**
++ * Retrieves the WM_CLASS class group name of the specified window. May
++ * return NULL.
++ *
++ * @param window The window.
++ * @return The class group name, or NULL.
++ */
++extern const gchar* (*wintc_wndmgmt_window_get_class_name) (
++    WinTCWndMgmtWindow* window
++);
++
+ /**
+  * Checks if the specified window is maximized.
+  *
+diff --git a/shared/shelldpa/src/api.c b/shared/shelldpa/src/api.c
+index d51a1ed..372e515 100644
+--- a/shared/shelldpa/src/api.c
++++ b/shared/shelldpa/src/api.c
+@@ -42,6 +42,9 @@ GdkPixbuf* (*wintc_wndmgmt_window_get_mini_icon) (
+ gchar* (*wintc_wndmgmt_window_get_name) (
+     WinTCWndMgmtWindow* window
+ ) = NULL;
++const gchar* (*wintc_wndmgmt_window_get_class_name) (
++    WinTCWndMgmtWindow* window
++) = NULL;
+ gboolean (*wintc_wndmgmt_window_is_maximized) (
+     WinTCWndMgmtWindow* window
+ ) = NULL;
+diff --git a/shared/shelldpa/src/dll/wnck.c b/shared/shelldpa/src/dll/wnck.c
+index 9b21f62..84d6f71 100644
+--- a/shared/shelldpa/src/dll/wnck.c
++++ b/shared/shelldpa/src/dll/wnck.c
+@@ -25,6 +25,9 @@ WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void) = NULL;
+ 
+ void (*p_wnck_shutdown) (void) = NULL;
+ 
++const gchar* (*p_wnck_window_get_class_group_name) (
++    WinTCWndMgmtWindow* window
++) = NULL;
+ const gchar* (*p_wnck_window_get_class_instance_name) (
+     WinTCWndMgmtWindow* window
+ ) = NULL;
+@@ -103,6 +106,9 @@ gboolean init_dll_wnck()
+     p_wnck_window_close =
+         dlsym(dl_wnck, "wnck_window_close");   
+ 
++    p_wnck_window_get_class_group_name =
++        dlsym(dl_wnck, "wnck_window_get_class_group_name");
++
+     p_wnck_window_get_class_instance_name =
+         dlsym(dl_wnck, "wnck_window_get_class_instance_name");
+ 
+@@ -144,6 +150,7 @@ gboolean init_dll_wnck()
+         p_wnck_screen_get_default             == NULL ||
+         p_wnck_shutdown                       == NULL ||
+         p_wnck_window_close                   == NULL ||
++        p_wnck_window_get_class_group_name    == NULL ||
+         p_wnck_window_get_class_instance_name == NULL ||
+         p_wnck_window_get_icon_is_fallback    == NULL ||
+         p_wnck_window_get_mini_icon           == NULL ||
+diff --git a/shared/shelldpa/src/dll/wnck.h b/shared/shelldpa/src/dll/wnck.h
+index be10c44..7da9efb 100644
+--- a/shared/shelldpa/src/dll/wnck.h
++++ b/shared/shelldpa/src/dll/wnck.h
+@@ -33,6 +33,9 @@ extern void (*p_wnck_window_close) (
+     WinTCWndMgmtWindow* window,
+     guint32             timestamp
+ );
++extern const gchar* (*p_wnck_window_get_class_group_name) (
++    WinTCWndMgmtWindow* window
++);
+ extern const gchar* (*p_wnck_window_get_class_instance_name) (
+     WinTCWndMgmtWindow* Window
+ );
+diff --git a/shared/shelldpa/src/impl-wndmgmt-wnck.c b/shared/shelldpa/src/impl-wndmgmt-wnck.c
+index e26d7b0..04c9ac0 100644
+--- a/shared/shelldpa/src/impl-wndmgmt-wnck.c
++++ b/shared/shelldpa/src/impl-wndmgmt-wnck.c
+@@ -41,6 +41,7 @@ gboolean init_wndmgmt_wnck_impl(void)
+     wintc_wndmgmt_window_close             = &wnck_window_close_real;
+     wintc_wndmgmt_window_get_mini_icon     = &wnck_window_get_mini_icon_real;
+     wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
++    wintc_wndmgmt_window_get_class_name    = p_wnck_window_get_class_group_name;
+     wintc_wndmgmt_window_is_maximized      = p_wnck_window_is_maximized;
+     wintc_wndmgmt_window_is_minimized      = p_wnck_window_is_minimized;
+     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
+diff --git a/shared/shelldpa/src/impl-wndmgmt-xfw.c b/shared/shelldpa/src/impl-wndmgmt-xfw.c
+index 1b79bcd..7ef3fc4 100644
+--- a/shared/shelldpa/src/impl-wndmgmt-xfw.c
++++ b/shared/shelldpa/src/impl-wndmgmt-xfw.c
+@@ -10,6 +10,9 @@
+ //
+ // FORWARD DECLARATIONS
+ //
++static const gchar* xfw_window_get_class_name(
++    WinTCWndMgmtWindow* window
++);
+ static void xfw_shutdown(void);
+ static void xfw_window_close(
+     WinTCWndMgmtWindow* window,
+@@ -51,6 +54,7 @@ gboolean init_wndmgmt_xfw_impl(void)
+     wintc_wndmgmt_window_close             = &xfw_window_close;
+     wintc_wndmgmt_window_get_mini_icon     = &xfw_window_get_mini_icon;
+     wintc_wndmgmt_window_get_name          = p_xfw_window_get_name;
++    wintc_wndmgmt_window_get_class_name    = &xfw_window_get_class_name;
+     wintc_wndmgmt_window_is_minimized      = p_xfw_window_is_minimized;
+     wintc_wndmgmt_window_is_maximized      = p_xfw_window_is_maximized;
+     wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
+@@ -64,6 +68,13 @@ gboolean init_wndmgmt_xfw_impl(void)
+ 
+ // PRIVATE FUNCTIONS
+ //
++static const gchar* xfw_window_get_class_name(
++    WINTC_UNUSED(WinTCWndMgmtWindow* window)
++)
++{
++    return NULL;
++}
++
+ static void xfw_shutdown(void)
+ {
+     // Nothing to do! xfce4windowing doesn't expose any shutdown method
+diff --git a/shell/taskband/src/taskbuttons/windowmonitor.c b/shell/taskband/src/taskbuttons/windowmonitor.c
+index 7973de1..6ebb659 100644
+--- a/shell/taskband/src/taskbuttons/windowmonitor.c
++++ b/shell/taskband/src/taskbuttons/windowmonitor.c
+@@ -471,16 +471,18 @@ static void window_manager_update_text(
+     WindowManagerSingle* window_manager
+ )
+ {
+-    const gchar* new_text =
++    const gchar* class_text =
++        wintc_wndmgmt_window_get_class_name(window_manager->managed_window);
++    const gchar* title_text =
+         wintc_wndmgmt_window_get_name(window_manager->managed_window);
+ 
+     gtk_label_set_text(
+         window_manager->button_text,
+-        new_text
++        (class_text && *class_text) ? class_text : title_text
+     );
+     gtk_widget_set_tooltip_text(
+         GTK_WIDGET(window_manager->button),
+-        new_text
++        title_text
+     );
+ }
+ 
