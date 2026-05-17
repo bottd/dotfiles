@@ -7,7 +7,3 @@ CLAUDE.md
 .pre-commit-config.yaml
 .clj-kondo
 .lsp
-
-# VM disk images — mutable per-boot, never commit
-*.qcow2
-result

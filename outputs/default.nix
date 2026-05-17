@@ -11,6 +11,5 @@
     ./lib.nix
     ./packages.nix
     ./systems.nix
-    ./vms.nix
   ];
 }

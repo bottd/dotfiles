@@ -56,12 +56,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     claude-code.url = "github:sadjow/claude-code-nix";
-
-    # local working copy; switch to a git ref once the mod stabilizes
-    quote-mc = {
-      url = "path:/home/drakeb/workspace/quote-mc";
-      flake = false;
-    };
   };
 
   outputs = inputs @ { flake-parts, ... }:

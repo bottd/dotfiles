@@ -774,19 +774,6 @@
         "type": "github"
       }
     },
-    "quote-mc": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1778884491,
-        "narHash": "sha256-x9VaDJndcIx1X1frfjtWaE4gfRcNO1FGVw7p71SSiYg=",
-        "path": "/home/drakeb/workspace/quote-mc",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/drakeb/workspace/quote-mc",
-        "type": "path"
-      }
-    },
     "root": {
       "inputs": {
         "claude-code": "claude-code",
@@ -803,7 +790,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "plasma-manager": "plasma-manager",
         "pre-commit-hooks": "pre-commit-hooks",
-        "quote-mc": "quote-mc",
         "spicetify-nix": "spicetify-nix",
         "steam-config-nix": "steam-config-nix",
         "stylix": "stylix",

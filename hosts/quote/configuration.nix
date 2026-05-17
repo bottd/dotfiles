@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, username, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -16,5 +16,5 @@
   ];
 
   # quote shares the desktop host's home; pin UID so workspace files keep ownership
-  users.users.drakeb.uid = 1000;
+  users.users.${username}.uid = 1000;
 }

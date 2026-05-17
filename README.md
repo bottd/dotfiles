@@ -6,11 +6,17 @@ My personal nix flake.
 
 ### NixOS (Linux)
 
-I have a configuration for my gaming desktop:
+My desktop has two configurations sharing the same hardware:
+
+- `desktop` — my main config
+- `quote` — an alternate `desktop` running an XP-themed awesome WM with an
+  embedded Minecraft game as the wallpaper
 
 ```bash
-
 sudo nixos-rebuild switch --flake .#desktop
+
+# or, the Minecraft desktop
+sudo nixos-rebuild switch --flake .#quote
 ```
 
 e-ink desktop using [Dasung Paperlike](https://shop.dasung.com/)

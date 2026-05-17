@@ -3,7 +3,6 @@
   services.picom = {
     enable = true;
     package = pkgs.picom;
-    # xrender is safer under virtio-vga; switch to glx once that's confirmed on metal
     backend = "xrender";
     vSync = false;
 
