@@ -6,6 +6,9 @@
     "allow": ["mcp__svelte__*"]
   },
   "model": "opus",
+  "attribution": {
+    "commit": ""
+  },
   "enabledPlugins": {
     "elements-of-style@superpowers-marketplace": true,
     "superpowers-lab@superpowers-marketplace": true,
