@@ -6,11 +6,17 @@ My personal nix flake.
 
 ### NixOS (Linux)
 
-I have a configuration for my gaming desktop:
+My desktop has two configurations sharing the same hardware:
+
+- `desktop` — my main config
+- `quote` — an alternate `desktop` running an XP-themed awesome WM with an
+  embedded Minecraft game as the wallpaper
 
 ```bash
-
 sudo nixos-rebuild switch --flake .#desktop
+
+# or, the Minecraft desktop
+sudo nixos-rebuild switch --flake .#quote
 ```
 
 e-ink desktop using [Dasung Paperlike](https://shop.dasung.com/)
@@ -31,25 +37,6 @@ My personal MacBook uses [nix-darwin](https://github.com/nix-darwin/nix-darwin):
 
 ```bash
 darwin-rebuild switch --flake .#macbook
-```
-
-### Android
-
-My
-[Pixel 9 Pro Fold](https://store.google.com/us/product/pixel_9_pro_fold?hl=en-US)
-uses [nixos-avf](https://github.com/nix-community/nixos-avf) on Android's Native
-Linux terminal:
-
-```bash
-sudo nixos-rebuild switch --flake .#android
-```
-
-### Standalone
-
-Standalone home-manager configuration:
-
-```bash
-home-manager switch --flake .#standalone
 ```
 
 ## Manual Setup

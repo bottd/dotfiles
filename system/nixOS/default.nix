@@ -1,4 +1,15 @@
 { features, lib, ... }:
+let
+  de = features.desktopEnvironment;
+  deModules = {
+    niri = ./niri;
+    plasma = ./plasma;
+    sway = ./sway;
+    quote = ./quote;
+  };
+  # quote uses lightdm (awesome is X11, autologin via services.displayManager)
+  useGreetd = de != null && de != "quote";
+in
 {
   imports = [
     ./audio.nix
@@ -10,17 +21,9 @@
     ./mullvad.nix
     ./printing.nix
     ./stylix.nix
-  ] ++ lib.optionals (features.desktopEnvironment != null) [
-    ./greetd.nix
-  ] ++ lib.optionals features.gaming [
-    ./gaming.nix
-  ] ++ (
-    if features.desktopEnvironment == "niri"
-    then [ ./niri ]
-    else if features.desktopEnvironment == "plasma"
-    then [ ./plasma ]
-    else if features.desktopEnvironment == "sway"
-    then [ ./sway ]
-    else [ ]
-  );
+    ./webcam.nix
+  ]
+  ++ lib.optional useGreetd ./greetd.nix
+  ++ lib.optionals features.gaming [ ./gaming.nix ]
+  ++ lib.optional (deModules ? ${de}) deModules.${de};
 }

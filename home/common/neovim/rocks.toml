@@ -117,9 +117,9 @@ rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
 git = "A7Lavinraj/fyler.nvim"
 rev = "v2.0.0"
 
-[plugins."nvim-java"]
-git = "nvim-java/nvim-java"
-rev = "v4.1.0"
+# [plugins."nvim-java"]
+# git = "nvim-java/nvim-java"
+# rev = "v4.1.0"
 
 [bundles.neorg]
 items = [

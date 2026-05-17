@@ -1,17 +1,21 @@
 { features, hostName, lib, ... }:
+let
+  de = features.desktopEnvironment;
+  selfContained = {
+    plasma = ./plasma;
+    sway = ./sway;
+    quote = ./quote;
+  };
+  perHost = lib.optional
+    (de != null && !(selfContained ? ${de}))
+    ./${de}/host/${hostName}.nix;
+in
 {
   imports = [
     ./theme.nix
-  ] ++ lib.optionals features.gui [
-    ./desktop.nix
-    ./mpv
-  ] ++ lib.optionals features.gaming [
-    ./games
-  ] ++ lib.optionals (features.desktopEnvironment == "plasma") [
-    ./plasma
-  ] ++ lib.optionals (features.desktopEnvironment == "sway") [
-    ./sway
-  ] ++ lib.optionals (features.desktopEnvironment != null && features.desktopEnvironment != "sway") [
-    ./${features.desktopEnvironment}/host/${hostName}.nix
-  ];
+  ]
+  ++ lib.optionals features.gui [ ./desktop.nix ./mpv ]
+  ++ lib.optionals features.gaming [ ./games ]
+  ++ lib.optional (de != null && selfContained ? ${de}) selfContained.${de}
+  ++ perHost;
 }

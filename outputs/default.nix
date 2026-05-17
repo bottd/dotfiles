@@ -9,6 +9,7 @@
     ./home-manager.nix
     ./hosts.nix
     ./lib.nix
+    ./packages.nix
     ./systems.nix
   ];
 }

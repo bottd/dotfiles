@@ -1,9 +1,12 @@
-{ pkgs, inputs, theme, ... }:
+{ pkgs, inputs, theme, hostName, ... }:
 let
   isLight = theme.appearance == "light";
 in
 {
-  imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
+  imports = [
+    inputs.plasma-manager.homeModules.plasma-manager
+    ./host/${hostName}.nix
+  ];
   home.packages = with pkgs; [
     exfatprogs
     hfsprogs
