@@ -131,7 +131,7 @@ in
       rust-analyzer
 
       # java
-      jdk25
+      temurin-bin-21
     ];
 
     sessionVariables = {
