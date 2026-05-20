@@ -58,6 +58,7 @@ tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "scm"
 "neorg" = "9.6.4"
+tree-sitter-kotlin = "0.0.44"
 
 [plugins."oxocarbon.nvim"]
 git = "nyoom-engineering/oxocarbon.nvim"
