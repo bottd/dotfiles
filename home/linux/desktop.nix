@@ -1,4 +1,5 @@
-{ pkgs
+{ config
+, pkgs
 , inputs
 , system
 , ...
@@ -27,12 +28,7 @@ in
 
   xdg = {
     configFile = {
-      "vesktop/settings.json".text = builtins.toJSON {
-        autostart = true;
-        minimizeToTray = false;
-        discordBranch = "stable";
-        arRPC = true;
-      };
+      "vesktop/settings.json".source = config.lib.meta.createSymlink "home/linux/vesktop/settings.json";
 
       "mimeapps.list".force = true;
     };
