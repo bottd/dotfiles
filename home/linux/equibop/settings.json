@@ -2,8 +2,11 @@
   "autostart": true,
   "minimizeToTray": false,
   "discordBranch": "stable",
-  "arRPC": true,
+  "arRPC": false,
   "splashColor": "rgb(243, 243, 244)",
   "splashBackground": "rgb(44, 45, 50)",
-  "spellCheckLanguages": ["en-US", "en"]
+  "spellCheckLanguages": ["en-US", "en"],
+  "tray": true,
+  "trayColor": "",
+  "trayMainOverride": false
 }
