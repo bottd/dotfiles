@@ -27,15 +27,12 @@ in
 
   xdg = {
     configFile = {
-      "vesktop/settings/settings.json".text = builtins.toJSON {
+      "vesktop/settings.json".text = builtins.toJSON {
         autostart = true;
         minimizeToTray = false;
         discordBranch = "stable";
         arRPC = true;
-        vencordDir = "$HOME/.config/vesktop/vencordDist";
       };
-
-      "vesktop/settings/quickCss.css".text = "";
 
       "mimeapps.list".force = true;
     };

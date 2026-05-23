@@ -62,3 +62,5 @@ installation script once while setting up a machine:
 ```bash
 tresorit-install
 ```
+
+new line
