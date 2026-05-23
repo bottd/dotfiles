@@ -18,7 +18,7 @@ in
     obs-studio
     openscad
     tresorit-fhs
-    vesktop
+    equibop
   ];
 
   programs.thunderbird = {
@@ -28,7 +28,7 @@ in
 
   xdg = {
     configFile = {
-      "vesktop/settings.json".source = config.lib.meta.createSymlink "home/linux/vesktop/settings.json";
+      "equibop/settings.json".source = config.lib.meta.createSymlink "home/linux/equibop/settings.json";
 
       "mimeapps.list".force = true;
     };
@@ -36,7 +36,7 @@ in
     desktopEntries.discord = {
       name = "Discord";
       genericName = "Internet Messenger";
-      exec = "vesktop %U";
+      exec = "equibop %U";
       icon = "discord";
       categories = [ "Network" "InstantMessaging" "Chat" ];
       type = "Application";
