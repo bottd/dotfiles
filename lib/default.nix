@@ -1,7 +1,7 @@
 { inputs ? { }, ... }:
 let
   versions = {
-    home = "25.05";
+    home = "26.05";
     nixos = "25.05";
     darwin = 6;
   };
