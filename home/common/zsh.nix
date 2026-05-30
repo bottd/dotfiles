@@ -1,7 +1,7 @@
 { pkgs, config, hostName, ... }:
 {
   home.packages = with pkgs; [
-    neofetch
+    fastfetch
   ];
 
   programs.zsh = {
@@ -22,7 +22,7 @@
       export PATH="$HOME/.npm-packages/bin:$PATH"
 
       if [[ $- == *i* ]]; then
-        neofetch
+        fastfetch
       fi
     '';
   };

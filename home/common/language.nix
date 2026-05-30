@@ -22,9 +22,9 @@
 
     # JavaScript/Node
     nodejs
-    nodePackages_latest.prettier
-    nodePackages_latest.svelte-language-server
-    nodePackages_latest.typescript-language-server
+    prettier
+    svelte-language-server
+    typescript-language-server
     prettierd
     stylelint-lsp
     tailwindcss-language-server

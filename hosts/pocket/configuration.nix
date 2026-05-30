@@ -14,7 +14,7 @@
     grim
     slurp
     mako
-    helvum
+    crosspipe
     ghostty
   ];
 }

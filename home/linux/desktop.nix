@@ -11,7 +11,7 @@ in
   home.packages = with pkgs; [
     filezilla
     flashprint
-    helvum
+    crosspipe
     krita
     losslesscut-bin
     mpv
