@@ -11,6 +11,8 @@
     ./plasma
   ] ++ lib.optionals (features.desktopEnvironment == "sway") [
     ./sway
+  ] ++ lib.optionals (features.desktopEnvironment == "awesome") [
+    ./awesome
   ] ++ lib.optionals (features.desktopEnvironment != null && features.desktopEnvironment != "sway") [
     ./${features.desktopEnvironment}/host/${hostName}.nix
   ];

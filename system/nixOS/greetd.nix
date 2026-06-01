@@ -5,6 +5,7 @@ let
     if de == "plasma" then "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland"
     else if de == "niri" then "${config.programs.niri.package}/bin/niri-session"
     else if de == "sway" then "${pkgs.sway}/bin/sway"
+    else if de == "awesome" then "${pkgs.awesome}/bin/awesome"
     else throw "greetd: unsupported desktopEnvironment: ${de}";
 in
 {

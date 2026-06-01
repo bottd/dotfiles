@@ -6,6 +6,11 @@
 }:
 let
   tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;
+  tresorit-launcher = pkgs.writeShellScriptBin "tresorit" ''
+    export QT_QPA_PLATFORM=xcb
+    export QT_STYLE_OVERRIDE=
+    exec ${tresorit-fhs}/bin/tresorit-fhs -c '$HOME/.local/share/tresorit/tresorit '"$*"
+  '';
 in
 {
   home.packages = with pkgs; [
@@ -18,6 +23,7 @@ in
     obs-studio
     openscad
     tresorit-fhs
+    tresorit-launcher
     equibop
   ];
 
@@ -40,6 +46,17 @@ in
       icon = "discord";
       categories = [ "Network" "InstantMessaging" "Chat" ];
       type = "Application";
+    };
+
+    desktopEntries.tresorit = {
+      name = "Tresorit";
+      genericName = "Secure File Sync";
+      comment = "Secure file synchronization and sharing";
+      exec = "tresorit --hidden";
+      icon = "${config.home.homeDirectory}/.local/share/tresorit/tresorit.png";
+      categories = [ "Network" "FileTransfer" "Utility" ];
+      type = "Application";
+      mimeType = [ "x-scheme-handler/tresorit" ];
     };
 
     mimeApps.enable = true;

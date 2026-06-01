@@ -21,6 +21,8 @@
     then [ ./plasma ]
     else if features.desktopEnvironment == "sway"
     then [ ./sway ]
+    else if features.desktopEnvironment == "awesome"
+    then [ ./awesome ]
     else [ ]
   );
 }
