@@ -3,7 +3,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     stylix = {
-      url = "github:nix-community/stylix";
+      url = "github:nix-community/stylix/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-unstable = {
@@ -52,8 +52,10 @@
       inputs.home-manager.follows = "home-manager";
     };
     mac-app-util = {
+      # Pinned to nixos-25.11 (sbcl 2.5.10) instead of following our nixos-26.05:
+      # 26.05's sbcl 2.6.4 breaks cl-nix-lite's fare-quasiquote build
       url = "github:hraban/mac-app-util";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     };
     claude-code.url = "github:sadjow/claude-code-nix";
   };

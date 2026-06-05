@@ -26,41 +26,21 @@
     };
   };
 
-  # Trampoline apps open the real .app in /nix/store via AppleScript, but Gatekeeper
-  # blocks unsigned Nix store apps. Copy them to a writable location, strip provenance,
-  # and codesign so macOS will allow them to launch.
+  # Home-manager copies Nix GUI apps as real bundles into ~/Applications/Home
+  # Manager Apps, but they are unsigned and carry a com.apple.provenance xattr,
+  # so Gatekeeper blocks them from launching. Strip provenance and ad-hoc
+  # codesign them in place. (Newer mac-app-util no longer creates trampolines
+  # when the source is a real copied directory, so we sign the copies directly.)
   system.activationScripts.postActivation.text = lib.mkAfter ''
-    nixAppsDir="/Users/${username}/Applications/Nix Apps"
-    trampolinesDir="/Users/${username}/Applications/Home Manager Trampolines"
-    /bin/mkdir -p "$nixAppsDir"
-
-    # Prevent Spotlight from indexing trampolines (avoids duplicate entries)
-    [ -f "$trampolinesDir/.metadata_never_index" ] || /usr/bin/touch "$trampolinesDir/.metadata_never_index"
-
-    for trampoline in "$trampolinesDir"/*.app; do
-      [ -d "$trampoline" ] || continue
-      name=$(/usr/bin/basename "$trampoline")
-
-      # .scpt is compiled AppleScript; strings extracts the open target
-      scpt="$trampoline/Contents/Resources/Scripts/main.scpt"
-      [ -f "$scpt" ] || continue
-      storePath=$(/usr/bin/strings "$scpt" | /usr/bin/grep -o "/nix/store/[^'\"]*\.app" | head -1 || true)
-      [ -n "$storePath" ] && [ -d "$storePath" ] || continue
-
-      # Skip if already copied from this exact store path
-      dest="$nixAppsDir/$name"
-      stamp="$dest/.nix-store-path"
-      if [ -f "$stamp" ] && [ "$(/bin/cat "$stamp")" = "$storePath" ]; then
-        continue
-      fi
-
-      /bin/rm -rf "$dest"
-      /bin/cp -RL "$storePath" "$dest"
-      /bin/chmod -R u+w "$dest"
-      /usr/bin/xattr -cr "$dest" 2>/dev/null
-      /usr/bin/codesign --force --deep --sign - "$dest" 2>/dev/null
-      echo "$storePath" > "$stamp"
-    done
+    appsDir="/Users/${username}/Applications/Home Manager Apps"
+    if [ -d "$appsDir" ]; then
+      for app in "$appsDir"/*.app; do
+        [ -d "$app" ] || continue
+        /bin/chmod -R u+w "$app" 2>/dev/null || true
+        /usr/bin/xattr -cr "$app" 2>/dev/null || true
+        /usr/bin/codesign --force --deep --sign - "$app" 2>/dev/null || true
+      done
+    fi
   '';
 
   nixpkgs.hostPlatform = "aarch64-darwin";
