@@ -7,10 +7,10 @@
 "rocks-edit.nvim" = "scm"
 "luasnip" = "2.5.0"
 
-"neorg-archive" = "1.1.0"
-"neorg-interim-ls" = "2.1.4"
-"neorg-query" = "1.4.1"
-"neorg-worklog" = "1.3.4"
+# "neorg-archive" = "1.1.0"
+# "neorg-interim-ls" = "2.1.4"
+# "neorg-query" = "1.4.1"
+# "neorg-worklog" = "1.3.4"
 
 "nvim-thyme" = "1.6.1"
 "which-key.nvim" = "3.17.0"
@@ -57,7 +57,7 @@ tree-sitter-clojure = "0.0.32"
 tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "scm"
-"neorg" = "9.6.4"
+# "neorg" = "9.6.4"
 tree-sitter-kotlin = "0.0.44"
 
 [plugins."oxocarbon.nvim"]
@@ -93,9 +93,9 @@ rev = "86361b98f3c8317904a08e3bd12cf3cdcbe3e925"
 git = "Saghen/blink.pairs"
 rev = "v0.5.0"
 
-[plugins."neorg-templates"]
-git = "pysan3/neorg-templates"
-rev = "v2.0.3"
+# [plugins."neorg-templates"]
+# git = "pysan3/neorg-templates"
+# rev = "v2.0.3"
 
 
 [plugins."ts-comments.nvim"]
@@ -122,15 +122,15 @@ rev = "v2.0.0"
 git = "nvim-java/nvim-java"
 rev = "v4.1.0"
 
-[bundles.neorg]
-items = [
-  "neorg",
-  "neorg-archive",
-  "neorg-interim-ls",
-  "neorg-query",
-  "neorg-templates",
-  "neorg-worklog",
-]
+# [bundles.neorg]
+# items = [
+# "neorg",
+# "neorg-archive",
+# "neorg-interim-ls",
+# "neorg-query",
+# "neorg-templates",
+# "neorg-worklog",
+# ]
 
 [bundles.blink]
 items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
