@@ -10,7 +10,7 @@ let
     let
       appearance = theme.appearance or "dark";
       t = {
-        scheme = theme.scheme or "oxocarbon";
+        scheme = theme.scheme or "everforest";
         inherit appearance;
         baseFontSize = theme.baseFontSize or 20;
       };

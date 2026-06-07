@@ -31,6 +31,7 @@ in
         (baseSystem // {
           hostName = "desktop";
           autologin = true;
+          theme = (baseSystem.theme or { }) // { appearance = "light"; };
         })
       // mkWithVariants "eink" {
         hostName = "eink";
