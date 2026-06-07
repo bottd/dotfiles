@@ -45,7 +45,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixos-avf.url = "github:nix-community/nixos-avf";
     niri.url = "github:sodiboo/niri-flake";
-    nix-tresorit.url = "github:p15r/nix-tresorit";
+    nix-tresorit.url = "github:p15r/nix-tresorit/release-26.05";
     glide = {
       url = "github:glide-browser/glide.nix";
       inputs.nixpkgs.follows = "nixpkgs";
