@@ -60,9 +60,9 @@ tree-sitter-cpp = "0.0.50"
 # "neorg" = "9.6.4"
 tree-sitter-kotlin = "0.0.44"
 
-[plugins."oxocarbon.nvim"]
-git = "nyoom-engineering/oxocarbon.nvim"
-rev = "a7ba74849a00546a311f8c146320b433900393e7"
+[plugins."everforest-nvim"]
+git = "neanias/everforest-nvim"
+rev = "d235ca0aa6a29546e661a020e2618612acbbffbe"
 
 [plugins."github-nvim-theme"]
 git = "projekt0n/github-nvim-theme"
@@ -139,7 +139,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["oxocarbon.nvim", "github-nvim-theme"]
+items = ["everforest-nvim", "github-nvim-theme"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]

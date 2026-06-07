@@ -1,0 +1,22 @@
+system: "base16"
+name: "Everforest Light Medium"
+slug: "everforest-light-medium"
+variant: "light"
+author: "Sainnhe Park (https://github.com/sainnhe)"
+palette:
+  base00: "#fdf6e3" # default lighter bg, bg0
+  base01: "#f4f0d9" # light bg, bg1
+  base02: "#efebd4" # least light bg, bg2
+  base03: "#e6e2cc" # dimmer bg, bg3
+  base04: "#a6b0a0" # light fg, gray0
+  base05: "#939f91" # default fg, gray1
+  base06: "#829181" # dark fg, gray2
+  base07: "#5c6a72" # darkest fg, fg
+  base08: "#f85552" # red
+  base09: "#f57d26" # orange
+  base0A: "#dfa000" # yellow
+  base0B: "#8da101" # green
+  base0C: "#35a77c" # cyan, aqua
+  base0D: "#3a94c5" # blue
+  base0E: "#df69ba" # purple
+  base0F: "#eaedc8" # bg_visual
