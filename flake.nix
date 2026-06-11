@@ -43,9 +43,18 @@
       inputs.home-manager.follows = "home-manager";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixos-avf.url = "github:nix-community/nixos-avf";
-    niri.url = "github:sodiboo/niri-flake";
-    nix-tresorit.url = "github:p15r/nix-tresorit/release-26.05";
+    nixos-avf = {
+      url = "github:nix-community/nixos-avf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-tresorit = {
+      url = "github:p15r/nix-tresorit/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     glide = {
       url = "github:glide-browser/glide.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -57,6 +66,7 @@
       url = "github:hraban/mac-app-util";
       inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     };
+    # Keeps its own nixpkgs pin so its cachix cache stays hit.
     claude-code.url = "github:sadjow/claude-code-nix";
   };
 

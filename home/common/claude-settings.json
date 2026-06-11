@@ -2,14 +2,14 @@
   "env": {
     "ENABLE_LSP_TOOL": "1"
   },
-  "permissions": {
-    "allow": ["mcp__svelte__*"]
-  },
-  "model": "opus",
   "attribution": {
     "commit": "",
     "pr": ""
   },
+  "permissions": {
+    "allow": ["mcp__svelte__*"]
+  },
+  "model": "claude-fable-5[1m]",
   "enabledPlugins": {
     "elements-of-style@superpowers-marketplace": true,
     "superpowers-lab@superpowers-marketplace": true,

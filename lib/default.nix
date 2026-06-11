@@ -6,6 +6,16 @@ let
     darwin = 6;
   };
 
+  # One nixpkgs-unstable instance per system, shared across every mkSystem
+  # call — re-importing it per host re-evaluates the whole nixpkgs fixpoint.
+  mkUnstable = system: import inputs.nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
+  unstableFor = builtins.listToAttrs
+    (map (s: { name = s; value = mkUnstable s; })
+      [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ]);
+
   mkSpecialArgs = { system, username, hostName ? null, theme ? { }, features ? { } }:
     let
       appearance = theme.appearance or "dark";
@@ -27,17 +37,13 @@ let
       theme = t;
       features = f;
       inherit (inputs) nixpkgs;
-      nixpkgs-unstable = import inputs.nixpkgs-unstable {
-        inherit system;
-        config.allowUnfree = true;
-      };
+      nixpkgs-unstable = unstableFor.${system} or (mkUnstable system);
     }
     // (if hostName != null then { inherit hostName; inherit (inputs) nixos-hardware; } else { });
 
   createSymlink = import ./createSymlink.nix;
-  mkHome = import ./mkHome.nix { inherit inputs mkSpecialArgs; };
   mkSystem = import ./mkSystem.nix { inherit inputs versions mkSpecialArgs; };
 in
 {
-  inherit createSymlink mkHome mkSystem versions;
+  inherit createSymlink mkSystem versions;
 }
