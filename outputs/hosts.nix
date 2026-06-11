@@ -1,6 +1,6 @@
 { inputs, ... }:
 let
-  inherit (import ../lib { inherit inputs; }) mkSystem mkHome;
+  inherit (import ../lib { inherit inputs; }) mkSystem;
 
   chaletArgs = [{
     home-manager.extraSpecialArgs = {
@@ -70,14 +70,5 @@ in
         theme = { appearance = "light"; baseFontSize = 12; };
         extraSystemModules = chaletArgs;
       };
-
-    homeConfigurations = {
-      standalone = mkHome {
-        hostName = "standalone";
-        system = "aarch64-darwin";
-        username = "drakebott";
-        format = "home-manager";
-      };
-    };
   };
 }

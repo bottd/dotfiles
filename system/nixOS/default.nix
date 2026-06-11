@@ -1,6 +1,7 @@
 { features, lib, ... }:
 {
   imports = [
+    ../common/nix.nix
     ./audio.nix
     ./bluetooth.nix
     ./cli.nix

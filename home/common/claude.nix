@@ -1,10 +1,4 @@
 { config, features, inputs, lib, pkgs, system, ... }:
-let
-  # Live settings file in the dotfiles repo.
-  # Symlinked into place via mkOutOfStoreSymlink so `claude plugin install/uninstall`
-  # and other in-place edits land back in this repo (git-tracked).
-  claudeSettingsPath = "${config.home.homeDirectory}/dotfiles/home/common/claude-settings.json";
-in
 {
   home = {
     packages = [ inputs.claude-code.packages.${system}.default ];
@@ -15,9 +9,11 @@ in
     ];
 
     file = {
-      # claude-code config — mutable symlink to the file in dotfiles.
+      # Live settings file in the dotfiles repo — mutable symlink so
+      # `claude plugin install/uninstall` and other in-place edits land
+      # back in this repo (git-tracked).
       ".claude/settings.json".source =
-        config.lib.file.mkOutOfStoreSymlink claudeSettingsPath;
+        config.lib.meta.createSymlink "home/common/claude-settings.json";
     };
 
     shellAliases = {
