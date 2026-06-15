@@ -10,6 +10,8 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+  # bitwarden-desktop pins an Electron flagged insecure by nixpkgs
+  nixpkgs.config.permittedInsecurePackages = [ "electron-39.8.10" ];
   networking.networkmanager.enable = true;
 
   nix.settings.trusted-users = [ "root" username ];

@@ -9,6 +9,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    bitwarden-desktop
     filezilla
     flashprint
     crosspipe
@@ -20,6 +21,12 @@ in
     tresorit-fhs
     equibop
   ];
+
+  # Use Bitwarden's built-in SSH agent. The agent itself is toggled on in the
+  # desktop app: Settings -> enable "SSH agent" (must be running + unlocked).
+  home.sessionVariables = {
+    SSH_AUTH_SOCK = "${config.home.homeDirectory}/.bitwarden-ssh-agent.sock";
+  };
 
   programs.thunderbird = {
     enable = true;
