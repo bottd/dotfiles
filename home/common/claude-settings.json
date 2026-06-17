@@ -7,9 +7,9 @@
     "pr": ""
   },
   "permissions": {
-    "allow": ["mcp__svelte__*"]
+    "allow": ["mcp__nixos__*", "mcp__svelte__*"]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "enabledPlugins": {
     "elements-of-style@superpowers-marketplace": true,
     "superpowers-lab@superpowers-marketplace": true,
@@ -26,6 +26,10 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
+    "nixos": {
+      "args": [],
+      "command": "mcp-nixos"
+    },
     "svelte": {
       "args": ["-y", "@sveltejs/mcp"],
       "command": "npx"

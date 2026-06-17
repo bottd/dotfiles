@@ -1,7 +1,7 @@
 { config, features, inputs, lib, pkgs, system, ... }:
 {
   home = {
-    packages = [ pkgs.codex inputs.claude-code.packages.${system}.default ];
+    packages = [ pkgs.codex pkgs.mcp-nixos inputs.claude-code.packages.${system}.default ];
 
     # Add native installer location to PATH on macOS
     sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
