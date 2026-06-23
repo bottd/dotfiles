@@ -31,7 +31,7 @@ let
       };
     in
     assert builtins.elem t.appearance [ "light" "dark" ];
-    assert builtins.elem f.desktopEnvironment [ null "plasma" "niri" "sway" "macos" ];
+    assert builtins.elem f.desktopEnvironment [ null "plasma" "sway" "macos" ];
     {
       inherit inputs username system versions;
       theme = t;
@@ -41,9 +41,8 @@ let
     }
     // (if hostName != null then { inherit hostName; inherit (inputs) nixos-hardware; } else { });
 
-  createSymlink = import ./createSymlink.nix;
   mkSystem = import ./mkSystem.nix { inherit inputs versions mkSpecialArgs; };
 in
 {
-  inherit createSymlink mkSystem versions;
+  inherit mkSystem;
 }

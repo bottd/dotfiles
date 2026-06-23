@@ -3,19 +3,11 @@ _: {
     ".gemini/"
   ];
 
-  home.file =
-    let
-      geminiConfig =
-        # json
-        ''
-          {
-            "previewFeatures": true
-          }
-        '';
-    in
-    {
-      ".config/gemini/config.json" = {
-        text = geminiConfig;
-      };
-    };
+  home.file.".config/gemini/config.json".text =
+    # json
+    ''
+      {
+        "previewFeatures": true
+      }
+    '';
 }

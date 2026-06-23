@@ -1,4 +1,4 @@
-{ pkgs, nixpkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs = {
     atuin = {
       enable = true;
@@ -7,7 +7,7 @@
     bat.enable = true;
   };
 
-  home.packages = (with pkgs; [
+  home.packages = with pkgs; [
     android-tools
     devcontainer
     fd
@@ -19,5 +19,5 @@
     typst
     unzip
     wget
-  ]) ++ [ nixpkgs-unstable.zellij ];
+  ];
 }

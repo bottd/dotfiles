@@ -47,10 +47,6 @@
       url = "github:nix-community/nixos-avf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-tresorit = {
       url = "github:p15r/nix-tresorit/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
