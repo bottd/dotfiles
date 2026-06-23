@@ -19,7 +19,6 @@ let
     username = "drakeb";
     format = "nixos";
     features.desktopEnvironment = "plasma";
-    features.gaming = true;
     theme.baseFontSize = 12;
     extraSystemModules = chaletArgs;
   };
@@ -31,6 +30,7 @@ in
         (baseSystem // {
           hostName = "desktop";
           autologin = true;
+          features.gaming = true;
           theme = (baseSystem.theme or { }) // { appearance = "light"; };
         })
       // mkWithVariants "eink" {
