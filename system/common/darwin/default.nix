@@ -3,6 +3,7 @@
   imports = [
     inputs.mac-app-util.darwinModules.default
     ../nix.nix
+    ../../darwin/karabiner.nix
     ./stylix.nix
   ];
 

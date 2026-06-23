@@ -44,14 +44,6 @@ Linux terminal:
 sudo nixos-rebuild switch --flake .#android
 ```
 
-### Standalone
-
-Standalone home-manager configuration:
-
-```bash
-home-manager switch --flake .#standalone
-```
-
 ## Manual Setup
 
 ### Tresorit
@@ -62,5 +54,3 @@ installation script once while setting up a machine:
 ```bash
 tresorit-install
 ```
-
-new line

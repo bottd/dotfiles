@@ -1,4 +1,4 @@
-{ pkgs, lib, hostName, ... }:
+{ lib, hostName, ... }:
 {
   imports = [
     ./host/${hostName}.nix
@@ -62,8 +62,4 @@
   programs.fuzzel = {
     enable = true;
   };
-
-  home.packages = with pkgs; [
-    fuzzel
-  ];
 }
