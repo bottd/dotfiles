@@ -36,5 +36,6 @@
     }
   },
   "plugins": {},
-  "preferNativeInstaller": false
+  "preferNativeInstaller": false,
+  "tui": "fullscreen"
 }

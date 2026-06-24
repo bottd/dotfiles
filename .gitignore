@@ -4,3 +4,4 @@ CLAUDE.md
 .pre-commit-config.yaml
 .clj-kondo
 .lsp
+result
