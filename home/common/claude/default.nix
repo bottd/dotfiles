@@ -1,7 +1,7 @@
 { config, features, inputs, lib, pkgs, system, ... }:
 {
   home = {
-    packages = [ pkgs.codex pkgs.mcp-nixos inputs.claude-code.packages.${system}.default ];
+    packages = [ pkgs.mcp-nixos inputs.claude-code.packages.${system}.default ];
 
     # Add native installer location to PATH on macOS
     sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
@@ -13,7 +13,7 @@
       # `claude plugin install/uninstall` and other in-place edits land
       # back in this repo (git-tracked).
       ".claude/settings.json".source =
-        config.lib.meta.createSymlink "home/common/claude-settings.json";
+        config.lib.meta.createSymlink "home/common/claude/settings.json";
     };
 
     shellAliases = {
