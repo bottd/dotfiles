@@ -2,7 +2,6 @@
 trust_level = "trusted"
 
 [marketplaces.ponytail]
-last_updated = "2026-06-24T22:03:13Z"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
