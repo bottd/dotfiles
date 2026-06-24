@@ -2,8 +2,9 @@
 {
 
   imports = [
-    ./claude.nix
+    ./claude
     ./cli.nix
+    ./codex
     ./direnv.nix
     ./email
     ./gemini.nix

@@ -11,9 +11,16 @@
   },
   "model": "opus[1m]",
   "enabledPlugins": {
-    "elements-of-style@superpowers-marketplace": true,
-    "superpowers-lab@superpowers-marketplace": true,
-    "lazyweb@lazyweb": true
+    "lazyweb@lazyweb": true,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
   },
   "sandbox": {
     "enabled": true,
@@ -24,6 +31,7 @@
       "allowRead": [".", "~/workspace", "~/loam", "~/remote"]
     }
   },
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "nixos": {
@@ -36,6 +44,5 @@
     }
   },
   "plugins": {},
-  "preferNativeInstaller": false,
-  "tui": "fullscreen"
+  "preferNativeInstaller": false
 }
