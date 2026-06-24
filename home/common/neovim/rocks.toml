@@ -77,7 +77,7 @@ rev = "v2.5.0"
 
 [plugins."blink.indent"]
 git = "Saghen/blink.indent"
-rev = "v2.1.2"
+rev = "v2.2.0"
 
 [plugins."blink.download"]
 git = "Saghen/blink.lib"
@@ -85,7 +85,7 @@ rev = "86361b98f3c8317904a08e3bd12cf3cdcbe3e925"
 
 [plugins."blink.pairs"]
 git = "Saghen/blink.pairs"
-rev = "v0.5.0"
+rev = "v0.6.0"
 
 [plugins."ts-comments.nvim"]
 git = "folke/ts-comments.nvim"
