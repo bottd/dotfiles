@@ -27,5 +27,7 @@
     ./ghostty.nix
     ./glide
     ./spicetify.nix
+  ] ++ lib.optionals features.gui [
+    ./bitwarden.nix
   ];
 }
