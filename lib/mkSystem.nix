@@ -66,6 +66,7 @@ systemBuilder {
       path
       homeManagerModule
       homeConfig
+      ../system/common/time.nix
     ]
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
