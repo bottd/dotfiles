@@ -30,7 +30,7 @@ in
         (baseSystem // {
           hostName = "desktop";
           autologin = true;
-          features.gaming = true;
+          features = baseSystem.features // { gaming = true; };
           theme = (baseSystem.theme or { }) // { appearance = "light"; };
         })
       // mkWithVariants "eink" {
