@@ -14,6 +14,8 @@ in
       filezilla
       flashprint
       crosspipe
+      kdePackages.kdenlive
+      glaxnimate
       krita
       losslesscut-bin
       mpv
