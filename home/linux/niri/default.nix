@@ -81,7 +81,13 @@ in
               inactive-color "#${c.base02}"
           }
           border { off; }
+          // Empty-workspace background (stylix image = null, so nothing else
+          // fills it — without this niri falls back to its default gray).
+          background-color "#${c.base00}"
       }
+
+      // Overview / inter-workspace backdrop, themed from stylix.
+      overview { backdrop-color "#${c.base01}"; }
 
       prefer-no-csd
       screenshot-path "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png"
