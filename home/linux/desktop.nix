@@ -14,6 +14,7 @@ in
       filezilla
       flashprint
       crosspipe
+      kdePackages.dolphin
       kdePackages.kdenlive
       glaxnimate
       krita

@@ -1,27 +1,9 @@
 { config, lib, pkgs, hostName, ... }:
 let
-  c = config.lib.stylix.colors; # base16 hex, no leading '#'
-  font = config.stylix.fonts.monospace.name;
   isPocket = hostName == "pocket";
 
-  # Per-host `output` blocks (a plain KDL string), spliced into config.kdl.
+  # Per-host `outputs` attrset, spliced into settings.outputs.
   niriOutputs = import ./host/${hostName}.nix;
-
-  # Auto-stacks windows vertically on portrait outputs (niri has no native
-  # vertical layout — issue #1071). Watches niri IPC, consumes new windows into
-  # the column. Tune VERTICAL_STACK_N in the script for windows-per-column.
-  niriStackToN = pkgs.fetchFromGitHub {
-    owner = "FarokhRaad";
-    repo = "niri-stack-to-n";
-    rev = "a8a76e35d6cd3149c7a47417d75779d533942c8a";
-    hash = "sha256-2Hur7XFq6V/ZD/ONLlllFQYTW/QotSE9FFFjjxtLMXg=";
-  };
-
-  # Only desktop has a portrait monitor; skip the helper on the pocket.
-  stackSpawn = lib.optionalString (!isPocket) ''
-    // Auto-stack windows vertically on portrait monitors (no native niri
-    // option — issue #1071). The helper detects portrait outputs itself.
-    spawn-at-startup "${pkgs.python3}/bin/python3" "${niriStackToN}/niri_stack_to_n.py"'';
 
   # Right-hand modules: laptop-only extras (backlight, battery) folded in.
   rightModules =
@@ -32,7 +14,10 @@ in
 {
   # `programs.niri` here comes from niri-flake's NixOS module, which injects its
   # home-manager module automatically (via home-manager.sharedModules) — so we
-  # must NOT import homeModules.niri again. It validates the KDL at build time.
+  # must NOT import homeModules.niri again. The same auto-wiring pulls in
+  # niri-flake's stylix target (homeModules.stylix, active because stylix is a
+  # NixOS module here); it owns the window border + cursor colors, so we don't
+  # set focus-ring/border/cursor below.
 
   home.packages = with pkgs; [
     swaylock
@@ -44,144 +29,143 @@ in
   ];
 
   programs = {
-    # ---- niri compositor config ---------------------------------------
-    # Raw KDL (validated at build time by niri-flake). We keep hand-written
-    # KDL rather than the typed `settings` DSL — it's one readable file.
-    niri.config = ''
-      // Managed by home-manager (home/linux/niri). Edit the Nix file, not this.
-      // niri reloads this file live on save — no restart needed.
+    # ---- niri compositor config (typed settings DSL) ------------------
+    # niri-flake validates this at build time and generates the KDL. We use
+    # `settings` (not raw `config`) because niri-flake's stylix target only
+    # writes into `settings` — setting `config` would override it wholesale.
+    # niri reloads on rebuild-switch; no restart needed.
+    niri.settings = {
+      input = {
+        keyboard.xkb.layout = "us";
+        touchpad = {
+          tap = true;
+          natural-scroll = true;
+        };
+        focus-follows-mouse = {
+          enable = true;
+          max-scroll-amount = "0%";
+        };
+        warp-mouse-to-focus.enable = true;
+      };
 
-      input {
-          keyboard {
-              xkb { layout "us"; }
-          }
-          touchpad {
-              tap
-              natural-scroll
-          }
-          focus-follows-mouse max-scroll-amount="0%"
-          warp-mouse-to-focus
-      }
+      # Monitors (per-host).
+      outputs = niriOutputs;
 
-      // ---- Monitors (per-host) ----
-      ${niriOutputs}
+      layout = {
+        gaps = 8;
+        center-focused-column = "never";
+        preset-column-widths = [
+          { proportion = 0.33333; }
+          { proportion = 0.5; }
+          { proportion = 0.66667; }
+        ];
+        default-column-width.proportion = 0.5;
+        # focus-ring / border colors come from stylix (niri-flake stylix target).
+      };
 
-      layout {
-          gaps 8
-          center-focused-column "never"
-          preset-column-widths {
-              proportion 0.33333
-              proportion 0.5
-              proportion 0.66667
-          }
-          default-column-width { proportion 0.5; }
-          focus-ring {
-              width 2
-              active-color "#${c.base0D}"
-              inactive-color "#${c.base02}"
-          }
-          border { off; }
-      }
+      prefer-no-csd = true;
+      screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
+      hotkey-overlay.skip-at-startup = true;
 
-      prefer-no-csd
-      screenshot-path "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png"
+      # X11 apps: niri manages xwayland-satellite itself (finds it on PATH,
+      # spawns on demand). enable defaults true, path null → uses PATH.
 
-      hotkey-overlay { skip-at-startup; }
+      # niri-vert-scroll (scripts/niri-vert-scroll.clj) makes portrait outputs
+      # one vertical scrolling column. Only desktop has a portrait monitor.
+      spawn-at-startup = lib.optionals (!isPocket) [{ argv = [ "niri-vert-scroll" ]; }];
 
-      // X11 apps: niri manages xwayland-satellite itself (finds it on PATH,
-      // spawns on demand, and sets DISPLAY dynamically).
-      xwayland-satellite { }
+      window-rules = [{
+        geometry-corner-radius =
+          let r = 6.0; in { top-left = r; top-right = r; bottom-left = r; bottom-right = r; };
+        clip-to-geometry = true;
+      }];
 
-      ${stackSpawn}
+      binds = with config.lib.niri.actions; {
+        "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-      window-rule {
-          geometry-corner-radius 6
-          clip-to-geometry true
-      }
+        "Mod+Return".action = spawn "ghostty";
+        "Mod+D".action = spawn "fuzzel";
+        "Mod+Q".action = close-window;
+        "Mod+Alt+L".action = spawn "swaylock";
 
-      binds {
-          Mod+Shift+Slash { show-hotkey-overlay; }
+        # Focus (vim keys, matching the old sway setup)
+        "Mod+H".action = focus-column-left;
+        "Mod+L".action = focus-column-right;
+        "Mod+J".action = focus-window-down;
+        "Mod+K".action = focus-window-up;
 
-          Mod+Return { spawn "ghostty"; }
-          Mod+D      { spawn "fuzzel"; }
-          Mod+Q      { close-window; }
-          Mod+Alt+L  { spawn "swaylock"; }
+        # Move
+        "Mod+Shift+H".action = move-column-left;
+        "Mod+Shift+L".action = move-column-right;
+        "Mod+Shift+J".action = move-window-down;
+        "Mod+Shift+K".action = move-window-up;
 
-          // Focus (vim keys, matching the old sway setup)
-          Mod+H { focus-column-left; }
-          Mod+L { focus-column-right; }
-          Mod+J { focus-window-down; }
-          Mod+K { focus-window-up; }
+        # Monitors (desktop is dual-head)
+        "Mod+Ctrl+H".action = focus-monitor-left;
+        "Mod+Ctrl+L".action = focus-monitor-right;
+        "Mod+Shift+Ctrl+H".action = move-column-to-monitor-left;
+        "Mod+Shift+Ctrl+L".action = move-column-to-monitor-right;
 
-          // Move
-          Mod+Shift+H { move-column-left; }
-          Mod+Shift+L { move-column-right; }
-          Mod+Shift+J { move-window-down; }
-          Mod+Shift+K { move-window-up; }
+        "Mod+Home".action = focus-column-first;
+        "Mod+End".action = focus-column-last;
 
-          // Monitors (desktop is dual-head)
-          Mod+Ctrl+H { focus-monitor-left; }
-          Mod+Ctrl+L { focus-monitor-right; }
-          Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
-          Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
+        # Workspaces
+        "Mod+1".action = focus-workspace 1;
+        "Mod+2".action = focus-workspace 2;
+        "Mod+3".action = focus-workspace 3;
+        "Mod+4".action = focus-workspace 4;
+        "Mod+5".action = focus-workspace 5;
+        "Mod+6".action = focus-workspace 6;
+        "Mod+7".action = focus-workspace 7;
+        "Mod+8".action = focus-workspace 8;
+        "Mod+9".action = focus-workspace 9;
+        # move-column-to-workspace isn't in config.lib.niri.actions as a bare
+        # builder (only the -down/-up variants are), so use the path form.
+        "Mod+Shift+1".action.move-column-to-workspace = 1;
+        "Mod+Shift+2".action.move-column-to-workspace = 2;
+        "Mod+Shift+3".action.move-column-to-workspace = 3;
+        "Mod+Shift+4".action.move-column-to-workspace = 4;
+        "Mod+Shift+5".action.move-column-to-workspace = 5;
+        "Mod+Shift+6".action.move-column-to-workspace = 6;
+        "Mod+Shift+7".action.move-column-to-workspace = 7;
+        "Mod+Shift+8".action.move-column-to-workspace = 8;
+        "Mod+Shift+9".action.move-column-to-workspace = 9;
+        "Mod+U".action = focus-workspace-down;
+        "Mod+I".action = focus-workspace-up;
 
-          Mod+Home { focus-column-first; }
-          Mod+End  { focus-column-last; }
+        # Sizing / layout
+        "Mod+F".action = maximize-column;
+        "Mod+Shift+F".action = fullscreen-window;
+        "Mod+C".action = center-column;
+        "Mod+R".action = switch-preset-column-width;
+        "Mod+Minus".action = set-column-width "-10%";
+        "Mod+Equal".action = set-column-width "+10%";
+        "Mod+Comma".action = consume-window-into-column;
+        "Mod+Period".action = expel-window-from-column;
+        "Mod+Space".action = switch-focus-between-floating-and-tiling;
+        "Mod+Shift+Space".action = toggle-window-floating;
 
-          // Workspaces
-          Mod+1 { focus-workspace 1; }
-          Mod+2 { focus-workspace 2; }
-          Mod+3 { focus-workspace 3; }
-          Mod+4 { focus-workspace 4; }
-          Mod+5 { focus-workspace 5; }
-          Mod+6 { focus-workspace 6; }
-          Mod+7 { focus-workspace 7; }
-          Mod+8 { focus-workspace 8; }
-          Mod+9 { focus-workspace 9; }
-          Mod+Shift+1 { move-column-to-workspace 1; }
-          Mod+Shift+2 { move-column-to-workspace 2; }
-          Mod+Shift+3 { move-column-to-workspace 3; }
-          Mod+Shift+4 { move-column-to-workspace 4; }
-          Mod+Shift+5 { move-column-to-workspace 5; }
-          Mod+Shift+6 { move-column-to-workspace 6; }
-          Mod+Shift+7 { move-column-to-workspace 7; }
-          Mod+Shift+8 { move-column-to-workspace 8; }
-          Mod+Shift+9 { move-column-to-workspace 9; }
-          Mod+U { focus-workspace-down; }
-          Mod+I { focus-workspace-up; }
+        # Screenshots (niri built-in). Not bare builders in config.lib.niri.actions;
+        # use the path form (empty attrset = default props).
+        "Print".action.screenshot = { };
+        "Mod+Print".action.screenshot-screen = { };
+        "Mod+Shift+Print".action.screenshot-window = { };
 
-          // Sizing / layout
-          Mod+F       { maximize-column; }
-          Mod+Shift+F { fullscreen-window; }
-          Mod+C       { center-column; }
-          Mod+R       { switch-preset-column-width; }
-          Mod+Minus   { set-column-width "-10%"; }
-          Mod+Equal   { set-column-width "+10%"; }
-          Mod+Comma   { consume-window-into-column; }
-          Mod+Period  { expel-window-from-column; }
-          Mod+Space       { switch-focus-between-floating-and-tiling; }
-          Mod+Shift+Space { toggle-window-floating; }
+        # Media / volume / brightness
+        "XF86AudioRaiseVolume" = { allow-when-locked = true; action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; };
+        "XF86AudioLowerVolume" = { allow-when-locked = true; action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; };
+        "XF86AudioMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; };
+        "XF86AudioMicMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; };
+        "XF86MonBrightnessUp" = { allow-when-locked = true; action = spawn "brightnessctl" "set" "5%+"; };
+        "XF86MonBrightnessDown" = { allow-when-locked = true; action = spawn "brightnessctl" "set" "5%-"; };
+        "XF86AudioPlay" = { allow-when-locked = true; action = spawn "playerctl" "play-pause"; };
+        "XF86AudioNext" = { allow-when-locked = true; action = spawn "playerctl" "next"; };
+        "XF86AudioPrev" = { allow-when-locked = true; action = spawn "playerctl" "previous"; };
 
-          // Screenshots (niri built-in)
-          Print           { screenshot; }
-          Mod+Print       { screenshot-screen; }
-          Mod+Shift+Print { screenshot-window; }
-
-          // Media / volume / brightness
-          XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; }
-          XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
-          XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-          XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-          XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
-          XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
-          XF86AudioPlay  allow-when-locked=true { spawn "playerctl" "play-pause"; }
-          XF86AudioNext  allow-when-locked=true { spawn "playerctl" "next"; }
-          XF86AudioPrev  allow-when-locked=true { spawn "playerctl" "previous"; }
-
-          Mod+Shift+E { quit; }
-          Mod+Shift+P { power-off-monitors; }
-      }
-    '';
+        "Mod+Shift+E".action = quit;
+        "Mod+Shift+P".action = power-off-monitors;
+      };
+    };
 
     # ---- Waybar: KDE-style bottom panel -------------------------------
     waybar = {
@@ -233,45 +217,12 @@ in
           on-scroll-down = "brightnessctl set 5%-";
         };
       };
-      style = ''
-        * {
-          font-family: "${font}";
-          font-size: 13px;
-          min-height: 0;
-        }
-        window#waybar {
-          background: #${c.base00};
-          color: #${c.base05};
-        }
-        #workspaces button {
-          padding: 0 8px;
-          color: #${c.base04};
-          background: transparent;
-        }
-        #workspaces button.active {
-          color: #${c.base00};
-          background: #${c.base0D};
-          border-radius: 4px;
-        }
-        #workspaces button.urgent {
-          color: #${c.base00};
-          background: #${c.base08};
-          border-radius: 4px;
-        }
-        #window { color: #${c.base04}; }
-        #clock, #pulseaudio, #network, #battery, #backlight, #tray {
-          padding: 0 10px;
-        }
-        #battery.charging { color: #${c.base0B}; }
-        #battery.critical:not(.charging) { color: #${c.base08}; }
-        #network.disconnected { color: #${c.base08}; }
-      '';
+      # No `style`: stylix.targets.waybar owns the CSS (colors + font), themed
+      # to the active base16 scheme. Module layout/config stays ours above.
     };
 
     fuzzel.enable = true;
   };
-  # We own the waybar CSS; keep stylix from also styling it.
-  stylix.targets.waybar.enable = false;
 
   services.mako.enable = true;
   # Network management is the waybar `network` module (on-click
