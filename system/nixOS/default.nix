@@ -16,10 +16,10 @@
   ] ++ lib.optionals features.gaming [
     ./gaming.nix
   ] ++ (
-    if features.desktopEnvironment == "plasma"
-    then [ ./plasma ]
-    else if features.desktopEnvironment == "sway"
+    if features.desktopEnvironment == "sway"
     then [ ./sway ]
+    else if features.desktopEnvironment == "niri"
+    then [ ./niri ]
     else [ ]
   );
 }

@@ -18,7 +18,7 @@ let
     system = "x86_64-linux";
     username = "drakeb";
     format = "nixos";
-    features.desktopEnvironment = "plasma";
+    features.desktopEnvironment = "niri";
     theme.baseFontSize = 12;
     extraSystemModules = chaletArgs;
   };

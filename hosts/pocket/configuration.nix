@@ -10,10 +10,9 @@
     variant = "";
   };
 
+  # grim/slurp/mako now come from the niri modules (screenshots are built-in;
+  # mako runs as a home-manager user service).
   environment.systemPackages = with pkgs; [
-    grim
-    slurp
-    mako
     crosspipe
     ghostty
   ];

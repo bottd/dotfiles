@@ -37,11 +37,6 @@
       url = "github:different-name/steam-config-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixos-avf = {
       url = "github:nix-community/nixos-avf";
@@ -56,6 +51,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    # niri compositor: NixOS + home-manager modules with build-time config
+    # validation. Keeps its own nixpkgs pin so its binary cache stays hit.
+    niri.url = "github:sodiboo/niri-flake";
     mac-app-util = {
       # Pinned to nixos-25.11 (sbcl 2.5.10) instead of following our nixos-26.05:
       # 26.05's sbcl 2.6.4 breaks cl-nix-lite's fare-quasiquote build
