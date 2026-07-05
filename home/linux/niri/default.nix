@@ -7,6 +7,22 @@ let
   # Per-host `output` blocks (a plain KDL string), spliced into config.kdl.
   niriOutputs = import ./host/${hostName}.nix;
 
+  # Auto-stacks windows vertically on portrait outputs (niri has no native
+  # vertical layout — issue #1071). Watches niri IPC, consumes new windows into
+  # the column. Tune VERTICAL_STACK_N in the script for windows-per-column.
+  niriStackToN = pkgs.fetchFromGitHub {
+    owner = "FarokhRaad";
+    repo = "niri-stack-to-n";
+    rev = "a8a76e35d6cd3149c7a47417d75779d533942c8a";
+    hash = "sha256-2Hur7XFq6V/ZD/ONLlllFQYTW/QotSE9FFFjjxtLMXg=";
+  };
+
+  # Only desktop has a portrait monitor; skip the helper on the pocket.
+  stackSpawn = lib.optionalString (!isPocket) ''
+    // Auto-stack windows vertically on portrait monitors (no native niri
+    // option — issue #1071). The helper detects portrait outputs itself.
+    spawn-at-startup "${pkgs.python3}/bin/python3" "${niriStackToN}/niri_stack_to_n.py"'';
+
   # Right-hand modules: laptop-only extras (backlight, battery) folded in.
   rightModules =
     [ "tray" "pulseaudio" "network" ]
@@ -72,12 +88,11 @@ in
 
       hotkey-overlay { skip-at-startup; }
 
-      // X11 apps: xwayland-satellite serves display :0, and niri exports
-      // DISPLAY so children (and systemd/dbus) can reach it.
-      environment {
-          DISPLAY ":0"
-      }
-      spawn-at-startup "xwayland-satellite" ":0"
+      // X11 apps: niri manages xwayland-satellite itself (finds it on PATH,
+      // spawns on demand, and sets DISPLAY dynamically).
+      xwayland-satellite { }
+
+      ${stackSpawn}
 
       window-rule {
           geometry-corner-radius 6
@@ -261,18 +276,5 @@ in
   services.mako.enable = true;
   # Network management is the waybar `network` module (on-click
   # nm-connection-editor) + blueman for bluetooth; no separate nm-applet tray.
-
-  # polkit agent for auth prompts (nm-connection-editor, etc.)
-  systemd.user.services.polkit-gnome = {
-    Unit = {
-      Description = "polkit-gnome authentication agent";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-    };
-  };
+  # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).
 }

@@ -11,6 +11,9 @@
       position x=0 y=282
   }
 
+  // Portrait. Windows auto-stack vertically here via the niri-stack-to-n
+  // helper (see home/linux/niri/default.nix) — niri has no native vertical
+  // layout (issue #1071). The helper detects this output as portrait itself.
   output "DP-3" {
       mode "2560x1440"
       scale 1.0
