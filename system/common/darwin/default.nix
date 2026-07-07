@@ -3,7 +3,6 @@
   imports = [
     inputs.mac-app-util.darwinModules.default
     ../nix.nix
-    ./stylix.nix
   ];
 
   system.defaults = {

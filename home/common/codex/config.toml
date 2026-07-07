@@ -1,9 +1,0 @@
-[projects."/Users/drakebott/workspace/drake-dot-dev"]
-trust_level = "trusted"
-
-[marketplaces.ponytail]
-source_type = "git"
-source = "https://github.com/DietrichGebert/ponytail.git"
-
-[plugins."ponytail@ponytail"]
-enabled = true

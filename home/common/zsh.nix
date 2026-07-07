@@ -1,4 +1,4 @@
-{ pkgs, config, hostName, ... }:
+{ pkgs, hostName, ... }:
 {
   home.packages = with pkgs; [
     fastfetch
@@ -7,10 +7,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    autosuggestion = {
-      enable = true;
-      highlight = "fg=#${config.lib.stylix.colors.base04}";
-    };
+    autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     initContent = ''
       export NIX_HOST="${hostName}"

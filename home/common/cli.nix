@@ -8,15 +8,10 @@
   };
 
   home.packages = with pkgs; [
-    android-tools
-    devcontainer
     fd
     gcc
     gnumake
-    himalaya
     jq
-    readline
-    typst
     unzip
     wget
   ];

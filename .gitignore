@@ -1,7 +1,9 @@
 .claude
 CLAUDE.md
 .direnv
-.pre-commit-config.yaml
+result
+
+# Local leftovers from before the strip-down — never commit these
 .clj-kondo
 .lsp
-result
+home/common/glide/

@@ -1,15 +1,12 @@
-{ inputs, versions, mkSpecialArgs, ... }:
+{ inputs, versions, mkSpecialArgs, homeImports, ... }:
 { hostName
 , system
 , username
-, format
 , theme ? { }
 , features ? { }
 , hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
-, autologin ? false
-, enableAVF ? false
 }:
 let
   path =
@@ -17,74 +14,30 @@ let
     then hostPath
     else ../hosts/${hostName};
 
-  systemBuilder =
-    if format == "nixos"
-    then inputs.nixpkgs.lib.nixosSystem
-    else if format == "darwin"
-    then inputs.nix-darwin.lib.darwinSystem
-    else throw "Unsupported system format: ${format}";
-
-  homeManagerModule =
-    if format == "nixos"
-    then inputs.home-manager.nixosModules.home-manager
-    else inputs.home-manager.darwinModules.home-manager;
-
   sharedArgs = mkSpecialArgs {
-    inherit system username hostName theme features;
+    inherit username hostName theme features;
   };
-
-  specialArgs = sharedArgs // { inherit autologin; };
 
   homeConfig = {
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;
       extraSpecialArgs = sharedArgs;
-
-      users.${username} = {
-        imports =
-          [
-            ../home.nix
-            ../lib/createSymlink.nix
-            ../home/common
-          ]
-          ++ (if format == "nixos" then [
-            ../home/linux
-          ] else [
-            ../home/darwin
-          ])
-          ++ extraHomeModules;
-      };
+      users.${username}.imports = homeImports ++ extraHomeModules;
     };
   };
 in
-systemBuilder {
+inputs.nix-darwin.lib.darwinSystem {
   inherit system;
-  inherit specialArgs;
+  specialArgs = sharedArgs;
   modules =
     [
       path
-      homeManagerModule
+      inputs.home-manager.darwinModules.home-manager
       homeConfig
-      ../system/common/time.nix
-    ]
-    ++ (if enableAVF then [
-      inputs.nixos-avf.nixosModules.avf
-      inputs.stylix.nixosModules.stylix
-      ../system/nixOS/stylix.nix
-      (_: { system.stateVersion = versions.nixos; })
-    ]
-    else if format == "nixos" then [
-      inputs.stylix.nixosModules.stylix
-      ../system/nixOS
-      (_: { system.stateVersion = versions.nixos; })
-    ]
-    else if format == "darwin" then [
-      inputs.stylix.darwinModules.stylix
       ../system/common/darwin
+      ../system/common/time.nix
       (_: { system.stateVersion = versions.darwin; })
     ]
-    else [
-    ])
     ++ extraSystemModules;
 }

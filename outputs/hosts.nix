@@ -1,74 +1,28 @@
 { inputs, ... }:
 let
-  inherit (import ../lib { inherit inputs; }) mkSystem;
+  inherit (import ../lib { inherit inputs; }) mkSystem mkHome;
 
-  chaletArgs = [{
-    home-manager.extraSpecialArgs = {
-      root = ./.;
-    };
-  }];
-
-  mkWithVariants = name: args: {
-    "${name}" = mkSystem args;
-    "${name}-dark" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "dark"; }; });
-    "${name}-light" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "light"; }; });
-  };
-
-  baseSystem = {
-    system = "x86_64-linux";
-    username = "drakeb";
-    format = "nixos";
-    features.desktopEnvironment = "plasma";
-    theme.baseFontSize = 12;
-    extraSystemModules = chaletArgs;
-  };
+  # Change this to your macOS username.
+  username = "mark";
 in
 {
   flake = {
-    nixosConfigurations =
-      mkWithVariants "desktop"
-        (baseSystem // {
-          hostName = "desktop";
-          autologin = true;
-          features = baseSystem.features // { gaming = true; };
-          theme = (baseSystem.theme or { }) // { appearance = "light"; };
-        })
-      // mkWithVariants "eink" {
-        hostName = "eink";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        features = { desktopEnvironment = "sway"; gui = false; };
-        theme = { appearance = "light"; baseFontSize = 20; scheme = "primer-light"; };
-        autologin = true;
-        extraSystemModules = chaletArgs;
-      }
-      // mkWithVariants "pocket" (baseSystem // {
-        hostName = "pocket";
-        theme = (baseSystem.theme or { }) // { appearance = "light"; };
-      })
-      // {
-        android = mkSystem {
-          hostName = "android";
-          system = "aarch64-linux";
-          username = "droid";
-          format = "nixos";
-          features.gui = false;
-          enableAVF = true;
-          extraHomeModules = [ ../hosts/android/home.nix ];
-          extraSystemModules = chaletArgs;
-        };
-      };
+    # Full system, managed with nix-darwin:
+    #   darwin-rebuild switch --flake .#darwin
+    darwinConfigurations.darwin = mkSystem {
+      hostName = "darwin";
+      system = "aarch64-darwin";
+      inherit username;
+      features.desktopEnvironment = "macos";
+      theme = { appearance = "dark"; baseFontSize = 12; };
+    };
 
-    darwinConfigurations =
-      mkWithVariants "macbook" {
-        hostName = "macbook";
-        system = "aarch64-darwin";
-        username = "drakebott";
-        format = "darwin";
-        features.desktopEnvironment = "macos";
-        theme = { appearance = "light"; baseFontSize = 12; };
-        extraSystemModules = chaletArgs;
-      };
+    # User-level only, for a machine where you can't run nix-darwin
+    # (e.g. a work Mac). Managed with standalone home-manager:
+    #   home-manager switch --flake .#standalone
+    homeConfigurations.standalone = mkHome {
+      inherit username;
+      theme = { appearance = "dark"; baseFontSize = 12; };
+    };
   };
 }

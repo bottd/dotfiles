@@ -2,7 +2,9 @@
   programs.git = {
     enable = true;
     settings = {
-      user.email = "bottd@users.noreply.github.com";
+      # Set these to your own name/email.
+      user.name = "Mark";
+      user.email = "mark@example.com";
       push = {
         autoSetupRemote = true;
       };

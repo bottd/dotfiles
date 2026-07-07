@@ -1,48 +1,11 @@
 {
-  "env": {
-    "ENABLE_LSP_TOOL": "1"
-  },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
   "permissions": {
-    "allow": ["mcp__nixos__*", "mcp__svelte__*"]
+    "allow": ["mcp__nixos__*"]
   },
-  "model": "opus[1m]",
-  "enabledPlugins": {
-    "lazyweb@lazyweb": true,
-    "ponytail@ponytail": true
-  },
-  "extraKnownMarketplaces": {
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
-      }
-    }
-  },
-  "sandbox": {
-    "enabled": true,
-    "filesystem": {
-      "allowWrite": [".", "~/loam"],
-      "denyWrite": ["/"],
-      "denyRead": ["~/"],
-      "allowRead": [".", "~/workspace", "~/loam", "~/remote"]
-    }
-  },
-  "tui": "fullscreen",
-  "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "nixos": {
-      "args": [],
-      "command": "mcp-nixos"
-    },
-    "svelte": {
-      "args": ["-y", "@sveltejs/mcp"],
-      "command": "npx"
+      "command": "mcp-nixos",
+      "args": []
     }
-  },
-  "plugins": {},
-  "preferNativeInstaller": false
+  }
 }

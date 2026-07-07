@@ -1,56 +1,41 @@
 # dotfiles
 
-My personal nix flake.
+Starter flake (macOS)
 
-## Targets
+- **`.#darwin`** — system managed with
+  [nix-darwin](https://github.com/nix-darwin/nix-darwin) (system defaults +
+  home-manager). Use this on a Mac where you have admin rights.
+- **`.#standalone`** — user-level only, via standalone
+  [home-manager](https://github.com/nix-community/home-manager). Use this on a
+  locked-down machine (e.g. a work Mac) where you can't install nix-darwin.
 
-### NixOS (Linux)
+Both share everything under `home/`.
 
-I have a configuration for my gaming desktop:
+## Setup
 
-```bash
-
-sudo nixos-rebuild switch --flake .#desktop
-```
-
-e-ink desktop using [Dasung Paperlike](https://shop.dasung.com/)
-
-```sh
-sudo nixos-rebuild switch --flake .#eink
-```
-
-my [GPD Pocket 4](https://gpd.hk/gpdpocket4):
-
-```sh
-sudo nixos-rebuild switch --flake .#pocket
-```
-
-### MacOS
-
-My personal MacBook uses [nix-darwin](https://github.com/nix-darwin/nix-darwin):
+1. Clone this repo to `~/dotfiles` (the path a couple of symlinks assume).
+2. Set your username in `outputs/hosts.nix` and your name/email in
+   `home/common/git.nix`.
+3. Deploy:
 
 ```bash
-darwin-rebuild switch --flake .#macbook
+# nix-darwin:
+darwin-rebuild switch --flake .#darwin
+
+# standalone:
+home-manager switch --flake .#standalone
 ```
 
-### Android
+## Layout
 
-My
-[Pixel 9 Pro Fold](https://store.google.com/us/product/pixel_9_pro_fold?hl=en-US)
-uses [nixos-avf](https://github.com/nix-community/nixos-avf) on Android's Native
-Linux terminal:
-
-```bash
-sudo nixos-rebuild switch --flake .#android
+```
+flake.nix              inputs + flake-parts entry
+outputs/               flake outputs: hosts.nix (the two configs), formatter
+lib/                   mkSystem (nix-darwin) + mkHome (standalone) builders
+hosts/darwin/          per-host system config
+home/common/           home-manager modules shared by both configs
+home/darwin/           macOS-only home-manager modules
+system/common/darwin/  nix-darwin system config (dock, finder, nix)
 ```
 
-## Manual Setup
-
-### Tresorit
-
-Uses [nix-tresorit](https://github.com/p15r/nix-tresorit) FHS wrapper. Run the
-installation script once while setting up a machine:
-
-```bash
-tresorit-install
-```
+`nix fmt` formats the tree (nixpkgs-fmt + deadnix + statix).
