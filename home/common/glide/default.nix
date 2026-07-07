@@ -9,7 +9,7 @@
     # ESR-style build to honor it — if the built-ins linger, glide ignored it.
     policies.SearchEngines = {
       Default = "Kagi";
-      Remove = [ "Google" "Bing" "DuckDuckGo" "Amazon.com" "eBay" "Wikipedia (en)" ];
+      Remove = [ "Google" "Bing" "DuckDuckGo" "Amazon.com" "eBay" "Wikipedia (en)" "Perplexity" ];
       Add = [{
         Name = "Kagi";
         URLTemplate = "https://kagi.com/search?q={searchTerms}";
