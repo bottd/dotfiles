@@ -38,7 +38,7 @@ in
         system = "x86_64-linux";
         username = "drakeb";
         format = "nixos";
-        features = { desktopEnvironment = "sway"; gui = false; };
+        features = { desktopEnvironment = "niri"; gui = false; };
         theme = { appearance = "light"; baseFontSize = 20; scheme = "primer-light"; };
         autologin = true;
         extraSystemModules = chaletArgs;

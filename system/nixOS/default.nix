@@ -11,15 +11,10 @@
     ./mullvad.nix
     ./printing.nix
     ./stylix.nix
-  ] ++ lib.optionals (features.desktopEnvironment != null) [
-    ./greetd.nix
   ] ++ lib.optionals features.gaming [
     ./gaming.nix
-  ] ++ (
-    if features.desktopEnvironment == "sway"
-    then [ ./sway ]
-    else if features.desktopEnvironment == "niri"
-    then [ ./niri ]
-    else [ ]
-  );
+  ] ++ lib.optionals (features.desktopEnvironment == "niri") [
+    ./greetd.nix
+    ./niri
+  ];
 }

@@ -1,9 +1,6 @@
-{ config, lib, pkgs, hostName, ... }:
+{ config, lib, pkgs, hostName, features, ... }:
 let
   isPocket = hostName == "pocket";
-
-  # Per-host `outputs` attrset, spliced into settings.outputs.
-  niriOutputs = import ./host/${hostName}.nix;
 
   # Right-hand modules: laptop-only extras (backlight, battery) folded in.
   rightModules =
@@ -12,6 +9,9 @@ let
     ++ [ "clock" ];
 in
 {
+  # Per-host module: settings.outputs + host-specific extras.
+  imports = [ ./host/${hostName}.nix ];
+
   # `programs.niri` here comes from niri-flake's NixOS module, which injects its
   # home-manager module automatically (via home-manager.sharedModules) — so we
   # must NOT import homeModules.niri again. The same auto-wiring pulls in
@@ -23,9 +23,11 @@ in
     swaylock
     brightnessctl
     playerctl
+  ] ++ lib.optionals features.gui [
+    # Desktop chrome — skipped on gui = false hosts (eink).
     pavucontrol
     networkmanagerapplet # nm-connection-editor for the bar's on-click
-    xwayland-satellite # X11 apps under niri
+    xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
   ];
 
   programs = {
@@ -48,9 +50,6 @@ in
         warp-mouse-to-focus.enable = true;
       };
 
-      # Monitors (per-host).
-      outputs = niriOutputs;
-
       layout = {
         gaps = 8;
         center-focused-column = "never";
@@ -58,21 +57,22 @@ in
           { proportion = 0.33333; }
           { proportion = 0.5; }
           { proportion = 0.66667; }
+          { proportion = 1.0; }
         ];
-        default-column-width.proportion = 0.5;
+        # Open full width — no half-empty screen with a lone window. Mod+R
+        # cycles down to ⅓/½/⅔ when tiling two side by side.
+        default-column-width.proportion = 1.0;
         # focus-ring / border colors come from stylix (niri-flake stylix target).
       };
+
+      # niri keeps each column at its opened width; niri-even-widths (scripts/)
+      # rebalances landscape workspaces to 1 / min(n,3) so a lone window is full
+      # width, two split ½, three+ hold at ⅓ and scroll. Skipped on headless.
+      spawn-at-startup = lib.optionals features.gui [{ argv = [ "niri-even-widths" ]; }];
 
       prefer-no-csd = true;
       screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
       hotkey-overlay.skip-at-startup = true;
-
-      # X11 apps: niri manages xwayland-satellite itself (finds it on PATH,
-      # spawns on demand). enable defaults true, path null → uses PATH.
-
-      # niri-vert-scroll (scripts/niri-vert-scroll.clj) makes portrait outputs
-      # one vertical scrolling column. Only desktop has a portrait monitor.
-      spawn-at-startup = lib.optionals (!isPocket) [{ argv = [ "niri-vert-scroll" ]; }];
 
       window-rules = [{
         geometry-corner-radius =
@@ -103,8 +103,8 @@ in
         # Monitors (desktop is dual-head)
         "Mod+Ctrl+H".action = focus-monitor-left;
         "Mod+Ctrl+L".action = focus-monitor-right;
-        "Mod+Shift+Ctrl+H".action = move-column-to-monitor-left;
-        "Mod+Shift+Ctrl+L".action = move-column-to-monitor-right;
+        "Mod+Shift+Ctrl+H".action = move-window-to-monitor-left;
+        "Mod+Shift+Ctrl+L".action = move-window-to-monitor-right;
 
         "Mod+Home".action = focus-column-first;
         "Mod+End".action = focus-column-last;
@@ -169,7 +169,7 @@ in
 
     # ---- Waybar: KDE-style bottom panel -------------------------------
     waybar = {
-      enable = true;
+      enable = features.gui;
       systemd.enable = true;
       settings.main = {
         layer = "top";
@@ -224,7 +224,7 @@ in
     fuzzel.enable = true;
   };
 
-  services.mako.enable = true;
+  services.mako.enable = features.gui;
   # Network management is the waybar `network` module (on-click
   # nm-connection-editor) + blueman for bluetooth; no separate nm-applet tray.
   # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).
