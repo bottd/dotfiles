@@ -45,6 +45,10 @@ in
       }
       // mkWithVariants "pocket" (baseSystem // {
         hostName = "pocket";
+        # regreet runs under cage, which ignores the panel's DRM orientation and
+        # so renders the greeter sideways. Autologin skips it straight into
+        # niri-session, same as desktop/eink.
+        autologin = true;
         theme = (baseSystem.theme or { }) // { appearance = "light"; };
       })
       // {

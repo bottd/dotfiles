@@ -46,11 +46,13 @@ in
           enable = true;
           max-scroll-amount = "0%";
         };
-        warp-mouse-to-focus.enable = true;
+        warp-mouse-to-focus.enable = lib.mkDefault true;
       };
 
       layout = {
-        gaps = 8;
+        # mkDefault on the settings hosts actually override (see host/eink.nix),
+        # so they can just assign instead of reaching for mkForce.
+        gaps = lib.mkDefault 8;
         center-focused-column = "never";
         preset-column-widths = [
           { proportion = 0.33333; }
@@ -64,7 +66,7 @@ in
         # focus-ring / border colors come from stylix (niri-flake stylix target).
         # Empty-workspace + overview backdrop have no stylix target, so with
         # image = null they'd fall back to niri's gray — wire them by hand.
-        background-color = "#${config.lib.stylix.colors.base00}";
+        background-color = lib.mkDefault "#${config.lib.stylix.colors.base00}";
       };
 
       overview.backdrop-color = "#${config.lib.stylix.colors.base01}";

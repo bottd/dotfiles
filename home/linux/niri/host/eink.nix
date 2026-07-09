@@ -13,13 +13,14 @@
     animations.enable = false;
     cursor.hide-after-inactive-ms = 3000;
     # White backdrop + zero gaps (old sway: `bg #ffffff solid_color`, gaps 0)
-    # — niri's default dark backdrop is a permanent dark field on the panel.
+    # — niri's default dark backdrop is a permanent dark field on the panel,
+    # and the scheme's off-white (#fafbfc) is worse than pure white on e-ink.
     layout = {
       background-color = "#ffffff";
-      gaps = lib.mkForce 0;
+      gaps = 0;
     };
     # Don't drag the cursor across the panel on keyboard focus changes.
-    input.warp-mouse-to-focus.enable = lib.mkForce false;
+    input.warp-mouse-to-focus.enable = false;
 
     spawn-at-startup = [{ argv = [ "ghostty" ]; }];
 
