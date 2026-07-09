@@ -42,7 +42,7 @@ tree-sitter-yaml = "0.0.38"
 tree-sitter-norg = "0.2.6"
 tree-sitter-norg-meta = "0.1.0"
 "conform.nvim" = "9.1.0"
-"helpview.nvim" = "2.1.2"
+"helpview.nvim" = "2.2.0"
 nvim-treesitter-context = "scm"
 "snacks.nvim" = "scm"
 "package-info.nvim" = "scm"
@@ -79,9 +79,9 @@ rev = "v2.5.0"
 git = "Saghen/blink.indent"
 rev = "v2.2.0"
 
-[plugins."blink.download"]
+[plugins."blink.lib"]
 git = "Saghen/blink.lib"
-rev = "86361b98f3c8317904a08e3bd12cf3cdcbe3e925"
+rev = "5876dd95deeb70aadbe9f1c0b7117a135061cdac"
 
 [plugins."blink.pairs"]
 git = "Saghen/blink.pairs"
@@ -109,7 +109,7 @@ rev = "v2.0.0"
 
 [plugins."nvim-java"]
 git = "nvim-java/nvim-java"
-rev = "v4.1.0"
+rev = "v4.1.2"
 
 [bundles.blink]
 items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
