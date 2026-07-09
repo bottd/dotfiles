@@ -232,9 +232,14 @@ in
           icon-size = 16;
           spacing = 8;
         };
+        # Only ever rendered on pocket — `battery` is in rightModules under
+        # isPocket. {time} is blank when full/plugged, hence format-full.
         battery = {
-          format = "{icon} {capacity}%";
-          format-charging = "󰂄 {capacity}%";
+          states = { warning = 30; critical = 15; };
+          format = "{icon} {capacity}% ({time})";
+          format-charging = "󰂄 {capacity}% ({time})";
+          format-full = "󰁹 {capacity}%";
+          format-time = "{H}h{M}m";
           format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
         };
         backlight = {

@@ -54,6 +54,13 @@
     # niri compositor: NixOS + home-manager modules with build-time config
     # validation. Keeps its own nixpkgs pin so its binary cache stays hit.
     niri.url = "github:sodiboo/niri-flake";
+    # Minecraft-styled SDDM theme (pocket's greeter). We take `packages.default`
+    # only, not `nixosModules.default` — that module installs Qt5 deps, but the
+    # theme is Theme-API 2.0 / QtVersion=6 and nixpkgs' sddm is Qt6.
+    minesddm = {
+      url = "github:Davi-S/sddm-theme-minesddm";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util = {
       # Pinned to nixos-25.11 (sbcl 2.5.10) instead of following our nixos-26.05:
       # 26.05's sbcl 2.6.4 breaks cl-nix-lite's fare-quasiquote build
