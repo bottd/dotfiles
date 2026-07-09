@@ -11,7 +11,6 @@
   programs.niri.settings = {
     # E-ink: animations just smear into ghosting.
     animations.enable = false;
-    # Old sway setup: seat * hide_cursor 3000.
     cursor.hide-after-inactive-ms = 3000;
     # White backdrop + zero gaps (old sway: `bg #ffffff solid_color`, gaps 0)
     # — niri's default dark backdrop is a permanent dark field on the panel.

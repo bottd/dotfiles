@@ -7,7 +7,7 @@
          '[babashka.process :as p]
          '[clojure.java.io :as io])
 
-(def config {:max-visible 3})
+(def max-visible 3)
 
 ;; nil on failure — niri msg errors transiently; a throw would kill the daemon.
 (defn niri-json [& args]
@@ -32,9 +32,8 @@
 
 (defn apply-heights! [ws-id]
   (let [wins     (filter #(= (:workspace_id %) ws-id) (niri-json "windows"))
-        maxv     (:max-visible config)
-        overflow (> (count wins) maxv)
-        pct      (str (quot 100 maxv) "%")]
+        overflow (> (count wins) max-visible)
+        pct      (str (quot 100 max-visible) "%")]
     (doseq [w wins]
       (if overflow
         (niri-action "set-window-height" pct "--id" (str (:id w)))

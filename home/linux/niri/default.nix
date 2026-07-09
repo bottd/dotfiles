@@ -2,14 +2,13 @@
 let
   isPocket = hostName == "pocket";
 
-  # Right-hand modules: laptop-only extras (backlight, battery) folded in.
+  # Waybar's right-side modules; laptop-only extras added on pocket.
   rightModules =
     [ "tray" "pulseaudio" "network" ]
-    ++ lib.optionals isPocket [ "backlight" "battery" ]
+    ++ lib.optionals isPocket [ "custom/cellular" "backlight" "battery" ]
     ++ [ "clock" ];
 in
 {
-  # Per-host module: settings.outputs + host-specific extras.
   imports = [ ./host/${hostName}.nix ];
 
   # `programs.niri` here comes from niri-flake's NixOS module, which injects its
@@ -63,7 +62,12 @@ in
         # cycles down to ⅓/½/⅔ when tiling two side by side.
         default-column-width.proportion = 1.0;
         # focus-ring / border colors come from stylix (niri-flake stylix target).
+        # Empty-workspace + overview backdrop have no stylix target, so with
+        # image = null they'd fall back to niri's gray — wire them by hand.
+        background-color = "#${config.lib.stylix.colors.base00}";
       };
+
+      overview.backdrop-color = "#${config.lib.stylix.colors.base01}";
 
       # niri keeps each column at its opened width; niri-even-widths (scripts/)
       # rebalances landscape workspaces to 1 / min(n,3) so a lone window is full
@@ -88,7 +92,7 @@ in
         "Mod+Q".action = close-window;
         "Mod+Alt+L".action = spawn "swaylock";
 
-        # Focus (vim keys, matching the old sway setup)
+        # Focus (vim keys)
         "Mod+H".action = focus-column-left;
         "Mod+L".action = focus-column-right;
         "Mod+J".action = focus-window-down;
@@ -200,6 +204,26 @@ in
           format-ethernet = "󰈀 {ifname}";
           format-disconnected = "󰤭 off";
           tooltip-format = "{ifname}: {ipaddr}";
+          on-click = "nm-connection-editor";
+        };
+        # Cellular (pocket): waybar's `network` module has no modem support, so
+        # poll ModemManager directly. `-m any` grabs the first modem.
+        "custom/cellular" = {
+          exec = pkgs.writeShellScript "waybar-cellular" ''
+            kv=$(${pkgs.modemmanager}/bin/mmcli -m any --output-keyvalue 2>/dev/null) \
+              || { echo '{"text":""}'; exit 0; }
+            get() { printf '%s\n' "$kv" | ${pkgs.gnused}/bin/sed -n "s/^$1 *: //p"; }
+            state=$(get modem.generic.state)
+            if [ "$state" != connected ]; then
+              printf '{"text":"󰣲","tooltip":"cellular: %s"}\n' "''${state:-off}"; exit 0
+            fi
+            printf '{"text":"󰄋 %s%%","tooltip":"%s · %s"}\n' \
+              "$(get modem.generic.signal-quality.value)" \
+              "$(get modem.3gpp.operator-name)" \
+              "$(get modem.generic.access-technologies.value)"
+          '';
+          return-type = "json";
+          interval = 30;
           on-click = "nm-connection-editor";
         };
         tray = {

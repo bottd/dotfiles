@@ -17,9 +17,7 @@ _:
         position = { x = 0; y = 282; };
       };
 
-      # Portrait. niri has no native vertical layout (issue #1071) and the
-      # typed outputs DSL has no per-output layout option — niri-vert-scroll
-      # (spawned above) handles it.
+      # Portrait output; niri-vert-scroll (above) drives its vertical layout.
       "DP-3" = {
         mode = { width = 2560; height = 1440; };
         scale = 1.0;
