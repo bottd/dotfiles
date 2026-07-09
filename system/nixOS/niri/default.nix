@@ -8,6 +8,6 @@
     enable = true;
     # git-main niri. niri-flake doesn't apply its overlay globally, so reference
     # the flake output directly (this is what niri.cachix.org caches).
-    package = inputs.niri.packages.${pkgs.system}.niri-unstable;
+    package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
   };
 }

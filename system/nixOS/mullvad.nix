@@ -9,6 +9,6 @@
   # Enable the Mullvad daemon
   systemd.services.mullvad-daemon.wantedBy = [ "multi-user.target" ];
 
-  # `mullvad-ctl login` (scripts/mullvad-ctl.clj) logs in with the account
-  # number from Bitwarden.
+  # `waybar-mullvad login` (scripts/waybar/mullvad.clj) logs in with the
+  # account number from Bitwarden.
 }

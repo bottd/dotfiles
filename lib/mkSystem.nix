@@ -55,11 +55,10 @@ let
   };
 in
 systemBuilder {
+  inherit system;
   inherit specialArgs;
   modules =
     [
-      # `system` as a systemBuilder arg is deprecated; hostPlatform is the option.
-      { nixpkgs.hostPlatform = system; }
       path
       homeManagerModule
       homeConfig

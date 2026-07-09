@@ -1,32 +1,23 @@
 { pkgs, ... }:
 let
-  # Helper to create a Babashka script from a .clj file
+  inherit (pkgs) lib;
+
   mkBabashkaScript = name: path: pkgs.writeScriptBin name ''
     #!${pkgs.babashka}/bin/bb
     ${builtins.readFile path}
   '';
 
-  # Get all .clj files in this directory
-  scriptFiles = builtins.readDir ./.;
-
-  # Filter to only .clj files and create script bins
-  scripts = builtins.listToAttrs (
-    builtins.map
-      (name:
-        let
-          # Remove .clj extension for the command name
-          scriptName = builtins.replaceStrings [ ".clj" ] [ "" ] name;
-        in
-        {
-          name = scriptName;
-          value = mkBabashkaScript scriptName (./. + "/${name}");
-        }
-      )
-      (builtins.filter
-        (name:
-          builtins.match ".*\\.clj" name != null
-        )
-        (builtins.attrNames scriptFiles))
-  );
+  # Every .clj under this directory becomes a script bin, named after its path:
+  # `rebuild.clj` -> `rebuild`, `waybar/mullvad.clj` -> `waybar-mullvad`.
+  cljScripts = prefix: dir:
+    lib.concatMapAttrs
+      (name: type:
+        if type == "directory" then
+          cljScripts "${prefix}${name}-" (dir + "/${name}")
+        else if lib.hasSuffix ".clj" name then
+          let scriptName = prefix + lib.removeSuffix ".clj" name;
+          in { ${scriptName} = mkBabashkaScript scriptName (dir + "/${name}"); }
+        else { })
+      (builtins.readDir dir);
 in
-scripts
+cljScripts "" ./.

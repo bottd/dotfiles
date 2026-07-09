@@ -263,14 +263,11 @@ in
           tooltip-format = "{ifname}: {ipaddr}";
           on-click = "nm-connection-editor";
         };
-        # Mullvad: the daemon is enabled system-wide (system/nixOS/mullvad.nix),
-        # so poll its CLI (scripts/mullvad-ctl.clj) rather than running the
-        # Electron GUI just for a tray icon.
         "custom/mullvad" = {
-          exec = "${scripts.mullvad-ctl}/bin/mullvad-ctl waybar";
+          exec = "${scripts.waybar-mullvad}/bin/waybar-mullvad";
           return-type = "json";
           interval = 10;
-          on-click = "${scripts.mullvad-ctl}/bin/mullvad-ctl toggle";
+          on-click = "${scripts.waybar-mullvad}/bin/waybar-mullvad toggle";
         };
         # Cellular (pocket): waybar's `network` module has no modem support, so
         # poll ModemManager directly. `-m any` grabs the first modem.
