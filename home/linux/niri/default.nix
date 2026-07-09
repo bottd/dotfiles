@@ -2,9 +2,49 @@
 let
   isPocket = hostName == "pocket";
 
+  scripts = import ./../../../scripts { inherit pkgs; };
+
+  # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
+  # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
+  # radio is soft-blocked and would otherwise pin this to the block branch forever.
+  airplaneToggle = ''
+    if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then
+      rfkill block all
+    else
+      rfkill unblock all
+    fi
+  '';
+
+  # wlr-which-key runs each `cmd` through `sh -c`, so airplaneToggle works verbatim
+  # in both the menu and the XF86RFKill/Mod+Shift+A binds.
+  whichKeyConfig = (pkgs.formats.yaml { }).generate "wlr-which-key.yaml" {
+    font = "${config.stylix.fonts.monospace.name} ${toString config.stylix.fonts.sizes.terminal}";
+    background = "#${config.lib.stylix.colors.base00}e0";
+    # base07, not base05: on the light scheme base05 is only 2.6:1 on base00.
+    color = "#${config.lib.stylix.colors.base07}";
+    border = "#${config.lib.stylix.colors.base0D}";
+    border_width = 2;
+    corner_r = 10;
+    separator = " → ";
+    anchor = "center";
+    menu = [
+      { key = "a"; desc = "Airplane mode"; cmd = airplaneToggle; }
+      {
+        key = "p";
+        desc = "Power";
+        submenu = [
+          { key = "s"; desc = "Sleep"; cmd = "systemctl suspend"; }
+          { key = "r"; desc = "Reboot"; cmd = "systemctl reboot"; }
+          { key = "o"; desc = "Off"; cmd = "systemctl poweroff"; }
+          { key = "l"; desc = "Lock"; cmd = "swaylock"; }
+        ];
+      }
+    ];
+  };
+
   # Waybar's right-side modules; laptop-only extras added on pocket.
   rightModules =
-    [ "tray" "pulseaudio" "network" ]
+    [ "tray" "pulseaudio" "custom/mullvad" "network" ]
     ++ lib.optionals isPocket [ "custom/cellular" "backlight" "battery" ]
     ++ [ "clock" ];
 in
@@ -27,7 +67,11 @@ in
     pavucontrol
     networkmanagerapplet # nm-connection-editor for the bar's on-click
     xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
+    wlr-which-key
   ];
+
+  xdg.configFile."wlr-which-key/config.yaml" =
+    lib.mkIf features.gui { source = whichKeyConfig; };
 
   programs = {
     # ---- niri compositor config (typed settings DSL) ------------------
@@ -148,7 +192,8 @@ in
         "Mod+Equal".action = set-column-width "+10%";
         "Mod+Comma".action = consume-window-into-column;
         "Mod+Period".action = expel-window-from-column;
-        "Mod+Space".action = switch-focus-between-floating-and-tiling;
+        # Mod+Space is the which-key trigger, so floating-focus lives on Mod+Tab.
+        "Mod+Tab".action = switch-focus-between-floating-and-tiling;
         "Mod+Shift+Space".action = toggle-window-floating;
 
         # Screenshots (niri built-in). Not bare builders in config.lib.niri.actions;
@@ -168,8 +213,18 @@ in
         "XF86AudioNext" = { allow-when-locked = true; action = spawn "playerctl" "next"; };
         "XF86AudioPrev" = { allow-when-locked = true; action = spawn "playerctl" "previous"; };
 
+        # Airplane mode. Not allow-when-locked: a lock screen shouldn't expose a
+        # radio kill switch that could cut off remote-locate before a thief does.
+        "XF86RFKill".action = spawn "sh" "-c" airplaneToggle;
+        "Mod+Shift+A".action = spawn "sh" "-c" airplaneToggle;
+
         "Mod+Shift+E".action = quit;
         "Mod+Shift+P".action = power-off-monitors;
+      }
+      # wlr-which-key is only installed/configured when features.gui, so the bind
+      # would spawn a missing binary on eink.
+      // lib.optionalAttrs features.gui {
+        "Mod+Space".action = spawn "wlr-which-key";
       };
     };
 
@@ -207,6 +262,15 @@ in
           format-disconnected = "󰤭 off";
           tooltip-format = "{ifname}: {ipaddr}";
           on-click = "nm-connection-editor";
+        };
+        # Mullvad: the daemon is enabled system-wide (system/nixOS/mullvad.nix),
+        # so poll its CLI (scripts/mullvad-ctl.clj) rather than running the
+        # Electron GUI just for a tray icon.
+        "custom/mullvad" = {
+          exec = "${scripts.mullvad-ctl}/bin/mullvad-ctl waybar";
+          return-type = "json";
+          interval = 10;
+          on-click = "${scripts.mullvad-ctl}/bin/mullvad-ctl toggle";
         };
         # Cellular (pocket): waybar's `network` module has no modem support, so
         # poll ModemManager directly. `-m any` grabs the first modem.

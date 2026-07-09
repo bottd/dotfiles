@@ -5,17 +5,13 @@
 , format
 , theme ? { }
 , features ? { }
-, hostPath ? null
 , extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
 , autologin ? false
 , enableAVF ? false
 }:
 let
-  path =
-    if hostPath != null
-    then hostPath
-    else ../hosts/${hostName};
+  path = ../hosts/${hostName};
 
   systemBuilder =
     if format == "nixos"
@@ -59,10 +55,11 @@ let
   };
 in
 systemBuilder {
-  inherit system;
   inherit specialArgs;
   modules =
     [
+      # `system` as a systemBuilder arg is deprecated; hostPlatform is the option.
+      { nixpkgs.hostPlatform = system; }
       path
       homeManagerModule
       homeConfig

@@ -5,3 +5,17 @@ CLAUDE.md
 .clj-kondo
 .lsp
 result
+
+# Agent sandboxes bind-mount /dev/null over these paths inside the repo, so a
+# sandboxed `git status` sees device nodes. Ignored so they can't be committed.
+.bash_profile
+.bashrc
+.gitconfig
+.gitmodules
+.idea
+.mcp.json
+.profile
+.ripgreprc
+.vscode
+.zprofile
+.zshrc

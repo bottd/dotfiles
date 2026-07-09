@@ -13,6 +13,7 @@
     ./language.nix
     ./neovim
     ./opencode.nix
+    ./pi
     ./scripts.nix
     ./starship
     ./stylix.nix
@@ -24,7 +25,6 @@
     # import GUI modules when desktop environment is present
   ] ++ lib.optionals (features.desktopEnvironment != null) [
     ./browser.nix
-    ./desktop.nix
     ./ghostty.nix
     ./glide
     ./spicetify.nix

@@ -140,6 +140,13 @@ in
           end)
           local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
           vim.opt.rtp:prepend(thyme_cache_prefix)
+          -- thyme reads .nvim-thyme.fnl via vim.secure.read, which resolves the
+          -- symlink to a /nix/store path that changes on every edit. Trust it
+          -- here so the prompt never fires; the file is nix-managed, not project-local.
+          vim.secure.trust({
+            action = "allow",
+            path = vim.fn.stdpath("config") .. "/.nvim-thyme.fnl",
+          })
           thyme.setup()
           require("general_config")
         else

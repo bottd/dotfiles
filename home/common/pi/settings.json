@@ -1,0 +1,4 @@
+{
+  "defaultProvider": "anthropic",
+  "externalEditor": "nvim"
+}
