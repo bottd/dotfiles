@@ -1,4 +1,4 @@
-{ features, hostName, lib, ... }:
+{ features, lib, ... }:
 {
   imports = [
     ./theme.nix
@@ -7,11 +7,7 @@
     ./mpv
   ] ++ lib.optionals features.gaming [
     ./games
-  ] ++ lib.optionals (features.desktopEnvironment == "plasma") [
-    ./plasma
-  ] ++ lib.optionals (features.desktopEnvironment == "sway") [
-    ./sway
-  ] ++ lib.optionals (features.desktopEnvironment != null && features.desktopEnvironment != "sway") [
-    ./${features.desktopEnvironment}/host/${hostName}.nix
+  ] ++ lib.optionals (features.desktopEnvironment == "niri") [
+    ./niri
   ];
 }

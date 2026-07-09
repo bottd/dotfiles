@@ -10,6 +10,14 @@ in
     autoEnable = lib.mkDefault true;
     image = lib.mkDefault null;
 
+    # Themed cursor. niri-flake's stylix target reads this to set niri's xcursor
+    # theme + size; also themes GTK/other apps' cursors. (Global, not niri-only.)
+    cursor = {
+      name = lib.mkDefault "Bibata-Modern-Classic";
+      package = lib.mkDefault pkgs.bibata-cursors;
+      size = lib.mkDefault 24;
+    };
+
     fonts = {
       monospace = {
         name = lib.mkOptionDefault "MonoLisa Nerd Font";

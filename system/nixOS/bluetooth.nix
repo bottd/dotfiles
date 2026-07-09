@@ -1,9 +1,11 @@
-_:
+{ features, ... }:
 {
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
 
-  # Bluedevil is included with Plasma 6 by default for KDE Bluetooth integration
+  # Bluetooth tray applet + manager (KDE's Bluedevil is gone with Plasma).
+  # GUI hosts only — headless hosts have no session to show the applet.
+  services.blueman.enable = features.gui;
 }

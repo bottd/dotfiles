@@ -3,6 +3,19 @@
 
   programs.glide-browser = {
     enable = true;
+
+    policies.SearchEngines = {
+      Default = "Kagi";
+      Remove = [ "Google" "Bing" "DuckDuckGo" "Amazon.com" "eBay" "Wikipedia (en)" "Perplexity" ];
+      Add = [{
+        Name = "Kagi";
+        URLTemplate = "https://kagi.com/search?q={searchTerms}";
+        Method = "GET";
+        IconURL = "https://kagi.com/favicon.ico";
+        SuggestURLTemplate = "https://kagi.com/api/autosuggest?q={searchTerms}";
+        Alias = "kagi";
+      }];
+    };
   };
 
   home.file.".config/glide" = {
