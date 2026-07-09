@@ -9,5 +9,6 @@
     ./games
   ] ++ lib.optionals (features.desktopEnvironment == "niri") [
     ./niri
+    ./spicetify.nix
   ];
 }

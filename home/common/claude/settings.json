@@ -11,10 +11,17 @@
   },
   "model": "opus[1m]",
   "enabledPlugins": {
+    "improve@improve": true,
     "lazyweb@lazyweb": true,
     "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
+    "improve": {
+      "source": {
+        "source": "github",
+        "repo": "shadcn/improve"
+      }
+    },
     "ponytail": {
       "source": {
         "source": "github",

@@ -41,7 +41,5 @@
     intel-gpu-tools
     lm_sensors
     powertop
-    s-tui
-    stress
   ];
 }

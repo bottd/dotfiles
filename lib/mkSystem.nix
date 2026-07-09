@@ -1,11 +1,10 @@
-{ inputs, versions, mkSpecialArgs, ... }:
+{ inputs, mkSpecialArgs, ... }:
 { hostName
 , system
 , username
 , format
 , theme ? { }
 , features ? { }
-, extraSystemModules ? [ ]
 , extraHomeModules ? [ ]
 , autologin ? false
 , enableAVF ? false
@@ -41,7 +40,6 @@ let
         imports =
           [
             ../home.nix
-            ../lib/createSymlink.nix
             ../home/common
           ]
           ++ (if format == "nixos" then [
@@ -60,27 +58,29 @@ systemBuilder {
   modules =
     [
       path
+      ../system/users
       homeManagerModule
       homeConfig
-      ../system/common/time.nix
+      { time.timeZone = "America/Chicago"; }
     ]
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
       inputs.stylix.nixosModules.stylix
-      ../system/nixOS/stylix.nix
-      (_: { system.stateVersion = versions.nixos; })
+      ../system/common/stylix.nix
+      ../system/common/nix.nix
+      (_: {
+        system.stateVersion = "25.05";
+        stylix.targets.grub.enable = false;
+      })
     ]
     else if format == "nixos" then [
       inputs.stylix.nixosModules.stylix
       ../system/nixOS
-      (_: { system.stateVersion = versions.nixos; })
-    ]
-    else if format == "darwin" then [
-      inputs.stylix.darwinModules.stylix
-      ../system/common/darwin
-      (_: { system.stateVersion = versions.darwin; })
+      (_: { system.stateVersion = "25.05"; })
     ]
     else [
-    ])
-    ++ extraSystemModules;
+      inputs.stylix.darwinModules.stylix
+      ../system/common/darwin
+      (_: { system.stateVersion = 6; })
+    ]);
 }

@@ -1,5 +1,9 @@
 { features, lib, autologin, ... }:
 {
+  # The grub target only exists in stylix's NixOS module set, so it can't live
+  # in the shared ../common/stylix.nix (module structure can't branch on pkgs).
+  stylix.targets.grub.enable = false;
+
   imports = [
     ../common/nix.nix
     ./audio.nix
@@ -10,7 +14,7 @@
     ./keyring.nix
     ./mullvad.nix
     ./printing.nix
-    ./stylix.nix
+    ../common/stylix.nix
   ] ++ lib.optionals features.gaming [
     ./gaming.nix
   ] ++ lib.optionals (features.desktopEnvironment == "niri") ([

@@ -1,12 +1,12 @@
-{ username
+{ inputs
+, username
 , ...
 }: {
-  imports = [
-    ./configuration.nix
-    ../../system/users
+  # Set Git commit hash for darwin-version.
+  system.configurationRevision = inputs.rev or inputs.dirtyRev or null;
 
-    {
-      users.users.${username}.home = "/Users/${username}";
-    }
-  ];
+  # Required by nix-darwin for user-scoped options
+  system.primaryUser = username;
+
+  users.users.${username}.home = "/Users/${username}";
 }

@@ -6,10 +6,6 @@
 _:
 {
   programs.niri.settings = {
-    # niri-vert-scroll (scripts/niri-vert-scroll.clj) makes portrait outputs
-    # one vertical scrolling column; only this host has one (DP-3).
-    spawn-at-startup = [{ argv = [ "niri-vert-scroll" ]; }];
-
     outputs = {
       "DP-1" = {
         mode = { width = 2560; height = 1440; };
@@ -17,7 +13,7 @@ _:
         position = { x = 0; y = 282; };
       };
 
-      # Portrait output; niri-vert-scroll (above) drives its vertical layout.
+      # Portrait output; niri-layout (scripts/) drives its vertical layout.
       "DP-3" = {
         mode = { width = 2560; height = 1440; };
         scale = 1.0;

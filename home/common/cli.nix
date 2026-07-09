@@ -15,6 +15,7 @@
     gnumake
     himalaya
     jq
+    notmuch
     readline
     typst
     unzip

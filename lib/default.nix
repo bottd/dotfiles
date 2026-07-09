@@ -1,22 +1,15 @@
 { inputs ? { }, ... }:
 let
-  versions = {
-    home = "26.05";
-    nixos = "25.05";
-    darwin = 6;
-  };
-
   # One nixpkgs-unstable instance per system, shared across every mkSystem
   # call — re-importing it per host re-evaluates the whole nixpkgs fixpoint.
-  mkUnstable = system: import inputs.nixpkgs-unstable {
-    inherit system;
-    config.allowUnfree = true;
-  };
-  unstableFor = builtins.listToAttrs
-    (map (s: { name = s; value = mkUnstable s; })
-      [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ]);
+  unstableFor = inputs.nixpkgs.lib.genAttrs
+    [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ]
+    (system: import inputs.nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    });
 
-  mkSpecialArgs = { system, username, hostName ? null, theme ? { }, features ? { } }:
+  mkSpecialArgs = { system, username, hostName, theme ? { }, features ? { } }:
     let
       appearance = theme.appearance or "dark";
       t = {
@@ -33,15 +26,13 @@ let
     assert builtins.elem t.appearance [ "light" "dark" ];
     assert builtins.elem f.desktopEnvironment [ null "niri" "macos" ];
     {
-      inherit inputs username system versions;
+      inherit inputs username system hostName;
       theme = t;
       features = f;
-      inherit (inputs) nixpkgs;
-      nixpkgs-unstable = unstableFor.${system} or (mkUnstable system);
-    }
-    // (if hostName != null then { inherit hostName; inherit (inputs) nixos-hardware; } else { });
+      nixpkgs-unstable = unstableFor.${system};
+    };
 
-  mkSystem = import ./mkSystem.nix { inherit inputs versions mkSpecialArgs; };
+  mkSystem = import ./mkSystem.nix { inherit inputs mkSpecialArgs; };
 in
 {
   inherit mkSystem;

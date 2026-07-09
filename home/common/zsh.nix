@@ -19,8 +19,6 @@
         source "$HOME/.config/zsh/secrets.zsh"
       fi
 
-      export PATH="$HOME/.npm-packages/bin:$PATH"
-
       if [[ $- == *i* ]]; then
         fastfetch
       fi

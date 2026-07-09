@@ -10,7 +10,6 @@
         statix.enable = true;
         stylua.enable = true;
         shfmt.enable = true;
-        beautysh.enable = true;
         taplo.enable = true;
         prettier = {
           enable = true;
@@ -43,6 +42,12 @@
 
     checks = {
       formatting = config.treefmt.build.check self;
+
+      # Scripts carrying a `selftest` subcommand run it here — an unrun check rots.
+      waybar-mullvad = pkgs.runCommand "waybar-mullvad-selftest" { } ''
+        ${(import ../scripts { inherit pkgs; }).waybar-mullvad}/bin/waybar-mullvad selftest
+        touch $out
+      '';
     };
 
     pre-commit.settings.hooks = {

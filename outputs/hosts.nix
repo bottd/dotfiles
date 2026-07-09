@@ -2,12 +2,6 @@
 let
   inherit (import ../lib { inherit inputs; }) mkSystem;
 
-  chaletArgs = [{
-    home-manager.extraSpecialArgs = {
-      root = ./.;
-    };
-  }];
-
   mkWithVariants = name: args: {
     "${name}" = mkSystem args;
     "${name}-dark" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "dark"; }; });
@@ -20,7 +14,6 @@ let
     format = "nixos";
     features.desktopEnvironment = "niri";
     theme.baseFontSize = 12;
-    extraSystemModules = chaletArgs;
   };
 in
 {
@@ -41,7 +34,6 @@ in
         features = { desktopEnvironment = "niri"; gui = false; };
         theme = { appearance = "light"; baseFontSize = 20; scheme = "primer-light"; };
         autologin = true;
-        extraSystemModules = chaletArgs;
       }
       // mkWithVariants "pocket" (baseSystem // {
         hostName = "pocket";
@@ -56,7 +48,6 @@ in
           features.gui = false;
           enableAVF = true;
           extraHomeModules = [ ../hosts/android/home.nix ];
-          extraSystemModules = chaletArgs;
         };
       };
 
@@ -68,7 +59,6 @@ in
         format = "darwin";
         features.desktopEnvironment = "macos";
         theme = { appearance = "light"; baseFontSize = 12; };
-        extraSystemModules = chaletArgs;
       };
   };
 }

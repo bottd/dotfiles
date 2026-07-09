@@ -24,10 +24,6 @@ in
         source = config.lib.meta.createSymlink "home/common/neovim/fnl";
       };
 
-      ".config/nvim/dict.txt" = {
-        source = ./dict.txt;
-      };
-
       ".config/nvim/.nvim-thyme.fnl" = {
         source = ./.nvim-thyme.fnl;
       };
@@ -42,7 +38,6 @@ in
     };
 
     packages = with pkgs; [
-      harper
       lua5_1
       ripgrep
       tree-sitter

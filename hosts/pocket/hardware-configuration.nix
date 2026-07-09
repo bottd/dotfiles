@@ -1,12 +1,12 @@
 { config
 , lib
 , modulesPath
-, nixos-hardware
+, inputs
 , ...
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    nixos-hardware.nixosModules.gpd-pocket-4
+    inputs.nixos-hardware.nixosModules.gpd-pocket-4
   ];
 
   boot = {

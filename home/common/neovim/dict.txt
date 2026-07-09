@@ -1,4 +1,0 @@
-nvim
-dirman
-neorg
-worklog

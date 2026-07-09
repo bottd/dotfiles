@@ -4,25 +4,22 @@
   };
 
   xdg.mimeApps = lib.mkIf pkgs.stdenv.isLinux {
-    defaultApplications =
-      let
-        firefox = "firefox.desktop";
-      in
-      {
-        "text/html" = firefox;
-        "application/xhtml+xml" = firefox;
-        "x-scheme-handler/http" = firefox;
-        "x-scheme-handler/https" = firefox;
-        "x-scheme-handler/about" = firefox;
-        "x-scheme-handler/unknown" = firefox;
-        "x-scheme-handler/ftp" = firefox;
-        "x-scheme-handler/chrome" = firefox;
-        "application/x-extension-htm" = firefox;
-        "application/x-extension-html" = firefox;
-        "application/x-extension-shtml" = firefox;
-        "application/x-extension-xhtml" = firefox;
-        "application/x-extension-xht" = firefox;
-      };
+    defaultApplications = lib.genAttrs [
+      "text/html"
+      "application/xhtml+xml"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "x-scheme-handler/about"
+      "x-scheme-handler/unknown"
+      "x-scheme-handler/ftp"
+      "x-scheme-handler/chrome"
+      "application/x-extension-htm"
+      "application/x-extension-html"
+      "application/x-extension-shtml"
+      "application/x-extension-xhtml"
+      "application/x-extension-xht"
+    ]
+      (_: "firefox.desktop");
   };
 
   programs.firefox = {

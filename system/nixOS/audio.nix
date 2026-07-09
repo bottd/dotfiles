@@ -6,7 +6,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-    wireplumber.enable = true;
 
     extraConfig.pipewire-pulse."10-game-audio-sink" = {
       "pulse.cmd" = [

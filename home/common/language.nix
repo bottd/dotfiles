@@ -1,50 +1,53 @@
 { pkgs, ... }: {
-  home.packages = with pkgs; [
-    # Clojure
-    babashka
-    clj-kondo
-    cljfmt
-    clojure
-    clojure-lsp
-    jet
-    leiningen
+  home = {
+    packages = with pkgs; [
+      # Clojure
+      babashka
+      clj-kondo
+      cljfmt
+      clojure
+      clojure-lsp
+      jet
+      leiningen
 
-    # Common Lisp
-    sbcl
+      # Common Lisp
+      sbcl
 
-    # Fennel
-    fnlfmt
-    luaPackages.fennel
+      # Fennel
+      fnlfmt
+      luaPackages.fennel
 
-    # Janet
-    janet
-    jpm
+      # Janet
+      janet
+      jpm
 
-    # JavaScript/Node
-    nodejs
-    prettier
-    svelte-language-server
-    typescript-language-server
-    prettierd
-    stylelint-lsp
-    tailwindcss-language-server
-    vscode-langservers-extracted
+      # JavaScript/Node
+      nodejs
+      prettier
+      svelte-language-server
+      typescript-language-server
+      prettierd
+      stylelint-lsp
+      tailwindcss-language-server
+      vscode-langservers-extracted
 
-    # Lua
-    lua-language-server
-    lua5_1
-    lua51Packages.luarocks
-    stylua
+      # Lua
+      lua-language-server
+      lua5_1
+      lua51Packages.luarocks
+      stylua
 
-    # Nix
-    nil
+      # Nix
+      nil
 
-    # Python
-    python3
+      # Python
+      python3
 
-    # TOML
-    taplo
-  ];
+      # TOML
+      taplo
+    ];
 
-  home.sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-packages";
+    sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-packages";
+    sessionPath = [ "$HOME/.npm-packages/bin" ];
+  };
 }

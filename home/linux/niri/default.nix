@@ -2,8 +2,6 @@
 let
   isPocket = hostName == "pocket";
 
-  scripts = import ./../../../scripts { inherit pkgs; };
-
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
   # radio is soft-blocked and would otherwise pin this to the block branch forever.
@@ -115,10 +113,10 @@ in
 
       overview.backdrop-color = "#${config.lib.stylix.colors.base01}";
 
-      # niri keeps each column at its opened width; niri-even-widths (scripts/)
-      # rebalances landscape workspaces to 1 / min(n,3) so a lone window is full
-      # width, two split ½, three+ hold at ⅓ and scroll. Skipped on headless.
-      spawn-at-startup = lib.optionals features.gui [{ argv = [ "niri-even-widths" ]; }];
+      # niri-layout (scripts/) rebalances landscape workspaces to even column
+      # widths and turns portrait outputs into one vertical scrolling column.
+      # Skipped on headless.
+      spawn-at-startup = lib.optionals features.gui [{ argv = [ "niri-layout" ]; }];
 
       prefer-no-csd = true;
       screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
@@ -159,27 +157,6 @@ in
         "Mod+Home".action = focus-column-first;
         "Mod+End".action = focus-column-last;
 
-        # Workspaces
-        "Mod+1".action = focus-workspace 1;
-        "Mod+2".action = focus-workspace 2;
-        "Mod+3".action = focus-workspace 3;
-        "Mod+4".action = focus-workspace 4;
-        "Mod+5".action = focus-workspace 5;
-        "Mod+6".action = focus-workspace 6;
-        "Mod+7".action = focus-workspace 7;
-        "Mod+8".action = focus-workspace 8;
-        "Mod+9".action = focus-workspace 9;
-        # move-column-to-workspace isn't in config.lib.niri.actions as a bare
-        # builder (only the -down/-up variants are), so use the path form.
-        "Mod+Shift+1".action.move-column-to-workspace = 1;
-        "Mod+Shift+2".action.move-column-to-workspace = 2;
-        "Mod+Shift+3".action.move-column-to-workspace = 3;
-        "Mod+Shift+4".action.move-column-to-workspace = 4;
-        "Mod+Shift+5".action.move-column-to-workspace = 5;
-        "Mod+Shift+6".action.move-column-to-workspace = 6;
-        "Mod+Shift+7".action.move-column-to-workspace = 7;
-        "Mod+Shift+8".action.move-column-to-workspace = 8;
-        "Mod+Shift+9".action.move-column-to-workspace = 9;
         "Mod+U".action = focus-workspace-down;
         "Mod+I".action = focus-workspace-up;
 
@@ -221,6 +198,15 @@ in
         "Mod+Shift+E".action = quit;
         "Mod+Shift+P".action = power-off-monitors;
       }
+      # Workspaces: Mod+N focuses, Mod+Shift+N moves. move-column-to-workspace
+      # isn't in config.lib.niri.actions as a bare builder (only the -down/-up
+      # variants are), so use the path form.
+      // builtins.listToAttrs (lib.concatMap
+        (i: [
+          { name = "Mod+${toString i}"; value.action = focus-workspace i; }
+          { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
+        ])
+        (lib.range 1 9))
       # wlr-which-key is only installed/configured when features.gui, so the bind
       # would spawn a missing binary on eink.
       // lib.optionalAttrs features.gui {
@@ -263,11 +249,12 @@ in
           tooltip-format = "{ifname}: {ipaddr}";
           on-click = "nm-connection-editor";
         };
+        # waybar-mullvad is on PATH via home/common/scripts.nix.
         "custom/mullvad" = {
-          exec = "${scripts.waybar-mullvad}/bin/waybar-mullvad";
+          exec = "waybar-mullvad";
           return-type = "json";
           interval = 10;
-          on-click = "${scripts.waybar-mullvad}/bin/waybar-mullvad toggle";
+          on-click = "waybar-mullvad toggle";
         };
         # Cellular (pocket): waybar's `network` module has no modem support, so
         # poll ModemManager directly. `-m any` grabs the first modem.

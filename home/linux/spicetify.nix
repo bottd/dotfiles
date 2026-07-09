@@ -5,7 +5,7 @@ let
 in
 {
   imports = [ inputs.spicetify-nix.homeManagerModules.default ];
-  programs.spicetify = lib.mkIf pkgs.stdenv.isLinux {
+  programs.spicetify = {
     enable = true;
 
     colorScheme = lib.mkForce "custom";

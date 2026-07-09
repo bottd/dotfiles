@@ -1,7 +1,7 @@
-{ ...
-}: {
+{ ... }:
+{
   imports = [
-    ./configuration.nix
-    ../../system/users
+    ./hardware-configuration.nix
+    ../../system/common/linux
   ];
 }
