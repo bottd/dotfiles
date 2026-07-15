@@ -1,4 +1,5 @@
 {
   "defaultProvider": "anthropic",
-  "externalEditor": "nvim"
+  "externalEditor": "nvim",
+  "lastChangelogVersion": "0.75.4"
 }
