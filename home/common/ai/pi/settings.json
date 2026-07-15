@@ -1,5 +1,8 @@
 {
-  "defaultProvider": "anthropic",
+  "defaultProvider": "openai-codex",
   "externalEditor": "nvim",
-  "lastChangelogVersion": "0.75.4"
+  "lastChangelogVersion": "0.75.4",
+  "theme": "stylix",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "medium"
 }
