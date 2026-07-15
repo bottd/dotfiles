@@ -7,7 +7,7 @@
       # Mutable symlink so `/settings` and `pi config` edits land back in
       # this repo (git-tracked). Sessions/auth stay in ~/.pi/agent/.
       ".pi/agent/settings.json".source =
-        config.lib.meta.createSymlink "home/common/pi/settings.json";
+        config.lib.meta.createSymlink "home/common/ai/pi/settings.json";
     };
   };
 

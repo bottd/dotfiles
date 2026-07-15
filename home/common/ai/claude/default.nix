@@ -13,7 +13,7 @@
       # `claude plugin install/uninstall` and other in-place edits land
       # back in this repo (git-tracked).
       ".claude/settings.json".source =
-        config.lib.meta.createSymlink "home/common/claude/settings.json";
+        config.lib.meta.createSymlink "home/common/ai/claude/settings.json";
     };
 
     shellAliases = {

@@ -5,7 +5,7 @@
 
     file = {
       ".codex/config.toml".source =
-        config.lib.meta.createSymlink "home/common/codex/config.toml";
+        config.lib.meta.createSymlink "home/common/ai/codex/config.toml";
     };
   };
 }
