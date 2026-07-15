@@ -5,15 +5,13 @@
   lib.meta.createSymlink = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 
   imports = [
-    ./claude
+    ./ai
     ./cli.nix
-    ./codex
     ./direnv.nix
     ./git.nix
     ./jujutsu.nix
     ./language.nix
     ./neovim
-    ./pi
     ./scripts.nix
     ./starship
     ./stylix.nix
