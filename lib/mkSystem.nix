@@ -59,6 +59,8 @@ systemBuilder {
     [
       path
       ../system/users
+      ../system/common/nix.nix
+      ../system/common/nixpkgs.nix
       homeManagerModule
       homeConfig
       { time.timeZone = "America/Chicago"; }
@@ -67,8 +69,6 @@ systemBuilder {
       inputs.nixos-avf.nixosModules.avf
       inputs.stylix.nixosModules.stylix
       ../system/common/stylix.nix
-      ../system/common/nix.nix
-      ../system/common/nixpkgs.nix
       (_: {
         system.stateVersion = "25.05";
         stylix.targets.grub.enable = false;
