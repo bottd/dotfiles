@@ -68,6 +68,7 @@ systemBuilder {
       inputs.stylix.nixosModules.stylix
       ../system/common/stylix.nix
       ../system/common/nix.nix
+      ../system/common/nixpkgs.nix
       (_: {
         system.stateVersion = "25.05";
         stylix.targets.grub.enable = false;
