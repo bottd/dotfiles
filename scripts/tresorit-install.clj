@@ -17,7 +17,9 @@
     (fs/write-bytes installer-path (:body response)))
 
   (println "Running installer...")
-  (process/shell "sh" (str installer-path))
+  ;; The upstream installer launches the binary directly when accepted. Keep
+  ;; it inside the FHS launcher configured by Home Manager instead.
+  (process/shell {:in "n\nn\n"} "sh" (str installer-path))
 
   ;; Home Manager provides the FHS launcher and its autostart entry.
   (doseq [shortcut vendor-shortcuts]

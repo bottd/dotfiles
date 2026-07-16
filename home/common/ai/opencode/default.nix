@@ -7,6 +7,15 @@ in
   home.packages = with pkgs; [ opencode ];
 
   home.file = {
+    ".config/opencode/opencode.json".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/config.json";
+      permission.external_directory = {
+        "/nix/store/**" = "allow";
+        "~/dotfiles/**" = "allow";
+        "~/workspace/**" = "allow";
+        "~/loam/**" = "allow";
+      };
+    };
     ".config/opencode/tui.json".text = builtins.toJSON { "$schema" = "https://opencode.ai/tui.json"; theme = "stylix"; };
     ".config/opencode/themes/stylix.json".text = builtins.toJSON {
       "$schema" = "https://opencode.ai/theme.json";
