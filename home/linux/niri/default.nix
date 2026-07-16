@@ -233,7 +233,7 @@ in
           max-length = 80;
         };
         clock = {
-          format = "{:%a %d %b  %H:%M}";
+          format = "{:%a, %b %e at %I:%M}";
           tooltip-format = "<tt><big>{:%Y %B}</big>\n{calendar}</tt>";
         };
         pulseaudio = {

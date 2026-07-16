@@ -14,6 +14,7 @@ in
         "~/dotfiles/**" = "allow";
         "~/workspace/**" = "allow";
         "~/loam/**" = "allow";
+        "~/remote/**" = "allow";
       };
     };
     ".config/opencode/tui.json".text = builtins.toJSON { "$schema" = "https://opencode.ai/tui.json"; theme = "stylix"; };
