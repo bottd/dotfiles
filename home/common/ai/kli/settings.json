@@ -1,7 +1,7 @@
 {
   "sessionDir": "~/chalet/_data/kli",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6",
+  "defaultModel": "gpt-5.6-luna",
   "defaultOptions": {
     "reasoning-effort": "high"
   },
