@@ -2,28 +2,42 @@
 {
   boot = {
     kernelParams = [
-      # Disable fan on AC power - https://nixos.wiki/wiki/GPD_Pocket
-      "gpd-pocket-fan.speed_on_ac=0"
-
       # General power saving
       "ahci.mobile_lpm_policy=3"
       "pcie_aspm=force"
     ];
-
-    kernelModules = [
-      "gpd-pocket-fan"
-    ];
-
-    # Less aggressive fan curve - https://github.com/stockmind/gpd-pocket-ubuntu-respin/issues/46
-    # temp_limits: 65°C, 75°C, 80°C (default: 55°C, 60°C, 65°C)
-    extraModprobeConfig = ''
-      options gpd-pocket-fan temp_limits=65000,75000,80000 hysteresis=5000 speed_on_ac=0
-    '';
   };
 
   powerManagement = {
     enable = true;
     powertop.enable = true;
+  };
+
+  # Keep battery work within the low-power firmware envelope to limit short
+  # heat spikes and the fan ramping they cause.
+  services.tlp.settings = {
+    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+    CPU_BOOST_ON_BAT = 0;
+    PLATFORM_PROFILE_ON_BAT = "low-power";
+  };
+
+  # The Pocket 4 uses the DMI-bound gpd_fan driver, not gpd-pocket-fan. Stop
+  # the fan during idle, then ramp to full speed before sustained high heat.
+  hardware.fancontrol = {
+    enable = true;
+    config = ''
+      INTERVAL=5
+      DEVPATH=hwmon6=devices/platform/gpd_fan hwmon5=devices/pci0000:00/0000:00:18.3
+      DEVNAME=hwmon6=gpdfan hwmon5=k10temp
+      FCTEMPS=hwmon6/pwm1=hwmon5/temp1_input
+      FCFANS=hwmon6/pwm1=hwmon6/fan1_input
+      MINTEMP=hwmon6/pwm1=52
+      MAXTEMP=hwmon6/pwm1=85
+      MINSTART=hwmon6/pwm1=40
+      MINSTOP=hwmon6/pwm1=15
+      MINPWM=hwmon6/pwm1=0
+      MAXPWM=hwmon6/pwm1=255
+    '';
   };
 
   # Disable lid switch handling - https://codeberg.org/elloskelling/linux-gpd-pocket-4

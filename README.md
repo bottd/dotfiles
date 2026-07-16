@@ -48,8 +48,9 @@ sudo nixos-rebuild switch --flake .#android
 
 ### Tresorit
 
-Uses [nix-tresorit](https://github.com/p15r/nix-tresorit) FHS wrapper. Run the
-installation script once while setting up a machine:
+Uses [nix-tresorit](https://github.com/p15r/nix-tresorit) for the FHS launcher,
+desktop entry, and autostart. Run the installation script once to install the
+upstream client:
 
 ```bash
 tresorit-install

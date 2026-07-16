@@ -6,5 +6,13 @@
 # Verify with `niri msg outputs` if anything looks off.
 _:
 {
-  programs.niri.settings.outputs."eDP-1".scale = 1.5;
+  programs.niri.settings.outputs."eDP-1" = {
+    # The panel's native 60 Hz mode avoids driving it at 144 Hz on battery.
+    mode = {
+      width = 1600;
+      height = 2560;
+      refresh = 60.0;
+    };
+    scale = 1.5;
+  };
 }
