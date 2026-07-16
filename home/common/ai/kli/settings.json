@@ -1,3 +1,14 @@
 {
-  "sessionDir": "~/chalet/_data/kli"
+  "sessionDir": "~/chalet/_data/kli",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6",
+  "defaultOptions": {
+    "reasoning-effort": "high"
+  },
+  "compaction": {
+    "enabled": true,
+    "thresholdRatio": 0.8
+  },
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "all"
 }
