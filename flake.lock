@@ -68,9 +68,37 @@
         "type": "github"
       }
     },
+    "cl-deps": {
+      "inputs": {
+        "metaBuilder": "metaBuilder",
+        "nix-effects": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nix-effects"
+        ],
+        "nixpkgs": [
+          "kli",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783428830,
+        "narHash": "sha256-Ekc9Xb8qXPJxsK138WhOfa22SQRq8dXm2QZ9b8HLGnw=",
+        "owner": "kleisli-io",
+        "repo": "cl-deps",
+        "rev": "388fe8c6972d627d3101267b30608044908adadf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kleisli-io",
+        "repo": "cl-deps",
+        "type": "github"
+      }
+    },
     "cl-nix-lite": {
       "inputs": {
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_4",
         "nixpkgs": "nixpkgs_2",
         "systems": "systems_2",
         "treefmt-nix": "treefmt-nix"
@@ -179,6 +207,53 @@
     },
     "flake-parts_2": {
       "inputs": {
+        "nixpkgs-lib": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nix-effects",
+          "nix-unit",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772408722,
+        "narHash": "sha256-rHuJtdcOjK7rAHpHphUb1iCvgkU3GpfvicLMwwnfMT0=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "f20dc5d9b8027381c474144ecabc9034d6a839a3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_3": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "kli",
+          "nix-unit",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762440070,
+        "narHash": "sha256-xxdepIcb39UJ94+YydGP221rjnpkDZUlykKuF54PsqI=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "26d05891e14c88eb4a5d5bee659c0db5afb609d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_4": {
+      "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
@@ -195,7 +270,7 @@
         "type": "github"
       }
     },
-    "flake-parts_3": {
+    "flake-parts_5": {
       "inputs": {
         "nixpkgs-lib": [
           "steam-config-nix",
@@ -216,7 +291,7 @@
         "type": "github"
       }
     },
-    "flake-parts_4": {
+    "flake-parts_6": {
       "inputs": {
         "nixpkgs-lib": [
           "stylix",
@@ -370,6 +445,28 @@
         "type": "github"
       }
     },
+    "kli": {
+      "inputs": {
+        "cl-deps": "cl-deps",
+        "nix-unit": "nix-unit_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783680126,
+        "narHash": "sha256-w8b9L8HAA7P77/saglB5db+smQHhSJjk4CbyYWA+H/Y=",
+        "owner": "kleisli-io",
+        "repo": "kli",
+        "rev": "8a41f329f5327153ef3235149b22b062f3a054a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kleisli-io",
+        "repo": "kli",
+        "type": "github"
+      }
+    },
     "mac-app-util": {
       "inputs": {
         "cl-nix-lite": "cl-nix-lite",
@@ -390,6 +487,30 @@
       "original": {
         "owner": "hraban",
         "repo": "mac-app-util",
+        "type": "github"
+      }
+    },
+    "metaBuilder": {
+      "inputs": {
+        "nix-effects": "nix-effects",
+        "nix-unit": "nix-unit_2",
+        "nixpkgs": [
+          "kli",
+          "cl-deps",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783427659,
+        "narHash": "sha256-B0piXM/DS4p5PbMQKB3lTO02tqlsc6RSQkGDthjPexU=",
+        "owner": "kleisli-io",
+        "repo": "metaBuilder",
+        "rev": "c0be9599e63f63bdf493c48517bd8bc9eabf7379",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kleisli-io",
+        "repo": "metaBuilder",
         "type": "github"
       }
     },
@@ -491,6 +612,30 @@
         "type": "github"
       }
     },
+    "nix-effects": {
+      "inputs": {
+        "nix-unit": "nix-unit",
+        "nixpkgs": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782558527,
+        "narHash": "sha256-HHeN3xPIXCKNgko7O1r1TztyYAiHON7reZg6gDc1910=",
+        "owner": "kleisli-io",
+        "repo": "nix-effects",
+        "rev": "95ef1fbe285069d77f20be2bfc6b56f3bbaac268",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kleisli-io",
+        "repo": "nix-effects",
+        "type": "github"
+      }
+    },
     "nix-tresorit": {
       "inputs": {
         "nixpkgs": [
@@ -509,6 +654,105 @@
         "owner": "p15r",
         "ref": "release-26.05",
         "repo": "nix-tresorit",
+        "type": "github"
+      }
+    },
+    "nix-unit": {
+      "inputs": {
+        "flake-parts": "flake-parts_2",
+        "nix-github-actions": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nix-effects"
+        ],
+        "nixpkgs": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nix-effects",
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nix-effects"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762774186,
+        "narHash": "sha256-hRADkHjNt41+JUHw2EiSkMaL4owL83g5ZppjYUdF/Dc=",
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "rev": "1c9ab50554eed0b768f9e5b6f646d63c9673f0f7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "type": "github"
+      }
+    },
+    "nix-unit_2": {
+      "inputs": {
+        "nix-github-actions": [
+          "kli",
+          "cl-deps",
+          "metaBuilder"
+        ],
+        "nixpkgs": [
+          "kli",
+          "cl-deps",
+          "metaBuilder",
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "kli",
+          "cl-deps",
+          "metaBuilder"
+        ]
+      },
+      "locked": {
+        "lastModified": 1778306706,
+        "narHash": "sha256-68bQGOfejrJ6lqCk7IR4yfIFchSlAtN3diPc1imV+3k=",
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "rev": "9317bef0ef5af9381902543e219a3c12d45cf5f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "type": "github"
+      }
+    },
+    "nix-unit_3": {
+      "inputs": {
+        "flake-parts": "flake-parts_3",
+        "nix-github-actions": [
+          "kli"
+        ],
+        "nixpkgs": [
+          "kli",
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "kli"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762774186,
+        "narHash": "sha256-hRADkHjNt41+JUHw2EiSkMaL4owL83g5ZppjYUdF/Dc=",
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "rev": "1c9ab50554eed0b768f9e5b6f646d63c9673f0f7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-unit",
+        "rev": "1c9ab50554eed0b768f9e5b6f646d63c9673f0f7",
         "type": "github"
       }
     },
@@ -775,6 +1019,7 @@
         "flake-parts": "flake-parts",
         "glide": "glide",
         "home-manager": "home-manager",
+        "kli": "kli",
         "mac-app-util": "mac-app-util",
         "minesddm": "minesddm",
         "niri": "niri",
@@ -814,7 +1059,7 @@
     },
     "steam-config-nix": {
       "inputs": {
-        "flake-parts": "flake-parts_3",
+        "flake-parts": "flake-parts_5",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -841,7 +1086,7 @@
         "base16-helix": "base16-helix",
         "base16-vim": "base16-vim",
         "firefox-gnome-theme": "firefox-gnome-theme",
-        "flake-parts": "flake-parts_4",
+        "flake-parts": "flake-parts_6",
         "gnome-shell": "gnome-shell",
         "nixpkgs": [
           "nixpkgs"
