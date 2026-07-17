@@ -253,7 +253,7 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            margins.bottom: keyOverlay.presented && keyOverlay.screen === modelData ? keyOverlay.implicitHeight : 0
+            margins.bottom: keyOverlay.screen === modelData ? keyOverlay.revealedHeight : 0
             implicitHeight: 32
             exclusionMode: ExclusionMode.Ignore
             color: "transparent"

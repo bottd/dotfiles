@@ -15,6 +15,7 @@ PanelWindow {
     required property string mode
     required property date now
     property bool presented: false
+    readonly property real revealedHeight: Math.max(0, root.height - drawer.y)
     property var path: []
     property int selectedIndex: 0
     property bool journalStarted: false
