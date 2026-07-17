@@ -15,6 +15,15 @@
     initContent = ''
       export NIX_HOST="${hostName}"
 
+      nix_appearance_file="''${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/rebuild-appearance"
+      if [ -f "$nix_appearance_file" ]; then
+        nix_appearance="$(< "$nix_appearance_file")"
+        case "$nix_appearance" in
+          light|dark) export NIX_APPEARANCE="$nix_appearance" ;;
+        esac
+      fi
+      unset nix_appearance nix_appearance_file
+
       if [ -f "$HOME/.config/zsh/secrets.zsh" ]; then
         source "$HOME/.config/zsh/secrets.zsh"
       fi

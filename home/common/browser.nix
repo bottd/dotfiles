@@ -1,6 +1,6 @@
 { lib, pkgs, ... }: {
   home.sessionVariables = {
-    BROWSER = "firefox";
+    BROWSER = "glide";
   };
 
   xdg.mimeApps = lib.mkIf pkgs.stdenv.isLinux {
@@ -19,35 +19,15 @@
       "application/x-extension-xhtml"
       "application/x-extension-xht"
     ]
-      (_: "firefox.desktop");
+      (_: "glide.desktop");
   };
 
-  programs.firefox = {
-    enable = true;
-    profiles.default = {
-      settings = {
-        "accessibility.force_disabled" = 1;
-        "dom.webgpu.enabled" = true;
-      };
-      search = {
-        default = "Kagi";
-        force = true;
-        engines = {
-          "Kagi" = {
-            urls = [
-              {
-                template = "https://kagi.com/search?q={searchTerms}";
-              }
-              {
-                template = "https://kagi.com/api/autosuggest?q={searchTerms}";
-                type = "application/x-suggestions+json";
-              }
-            ];
-            definedAliases = [ "@k" ];
-          };
-        };
-      };
-    };
-  };
-
+  home.activation.defaultBrowser = lib.mkIf pkgs.stdenv.isDarwin (
+    lib.hm.dag.entryAfter [ "trampolineApps" ] ''
+      ${pkgs.duti}/bin/duti -s app.glide-browser.glide http
+      ${pkgs.duti}/bin/duti -s app.glide-browser.glide https
+      ${pkgs.duti}/bin/duti -s app.glide-browser.glide public.html all
+      ${pkgs.duti}/bin/duti -s app.glide-browser.glide public.xhtml all
+    ''
+  );
 }

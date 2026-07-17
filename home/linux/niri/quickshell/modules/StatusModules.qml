@@ -18,12 +18,15 @@ RowLayout {
 
     spacing: 8
 
-    Text {
-        visible: root.audioText !== ""
-        text: root.audioText
+    component StatusText: Text {
         color: root.theme.base05
         font.family: root.theme.fontFamily
         font.pixelSize: root.theme.fontSize
+    }
+
+    StatusText {
+        visible: root.audioText !== ""
+        text: root.audioText
 
         MouseArea {
             anchors.fill: parent
@@ -31,12 +34,9 @@ RowLayout {
         }
     }
 
-    Text {
+    StatusText {
         visible: root.mullvadText !== ""
         text: root.mullvadText
-        color: root.theme.base05
-        font.family: root.theme.fontFamily
-        font.pixelSize: root.theme.fontSize
 
         MouseArea {
             anchors.fill: parent
@@ -44,12 +44,9 @@ RowLayout {
         }
     }
 
-    Text {
+    StatusText {
         visible: root.cellularText !== ""
         text: root.cellularText
-        color: root.theme.base05
-        font.family: root.theme.fontFamily
-        font.pixelSize: root.theme.fontSize
 
         MouseArea {
             anchors.fill: parent
@@ -57,12 +54,9 @@ RowLayout {
         }
     }
 
-    Text {
+    StatusText {
         visible: root.backlightText !== ""
         text: root.backlightText
-        color: root.theme.base05
-        font.family: root.theme.fontFamily
-        font.pixelSize: root.theme.fontSize
 
         MouseArea {
             anchors.fill: parent
@@ -70,18 +64,12 @@ RowLayout {
         }
     }
 
-    Text {
-        visible: root.battery !== undefined && root.battery !== null
-        text: root.battery ? ("󰁹 " + Math.round(root.battery.percentage) + "%") : ""
-        color: root.theme.base05
-        font.family: root.theme.fontFamily
-        font.pixelSize: root.theme.fontSize
+    StatusText {
+        visible: !!root.battery
+        text: root.battery ? ("󰁹 " + Math.round(root.battery.percentage * 100) + "%") : ""
     }
 
-    Text {
+    StatusText {
         text: Qt.formatDateTime(root.now, "ddd, MMM d at hh:mm")
-        color: root.theme.base05
-        font.family: root.theme.fontFamily
-        font.pixelSize: root.theme.fontSize
     }
 }

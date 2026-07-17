@@ -1,4 +1,10 @@
-{ config, inputs, ... }: {
+{ config, inputs, pkgs, ... }:
+let
+  pages = pkgs.callPackage ./pages {
+    stylixPalette = config.lib.stylix.colors;
+  };
+in
+{
   imports = [ inputs.glide.homeModules.default ];
 
   programs.glide-browser = {
@@ -18,7 +24,10 @@
     };
   };
 
-  home.file.".config/glide" = {
-    source = config.lib.meta.createSymlink "home/common/glide/config";
+  home.file = {
+    ".config/glide" = {
+      source = config.lib.meta.createSymlink "home/common/glide/config";
+    };
+    ".local/share/glide-pages".source = pages;
   };
 }

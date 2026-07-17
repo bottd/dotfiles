@@ -1,7 +1,7 @@
 # niri extras for the eink box (e-ink monitor), ported from the old sway
 # setup. No outputs block: connector name unconfirmed, niri auto-configures;
 # pin one down with `niri msg outputs` if needed.
-{ config, lib, pkgs, theme, ... }:
+{ config, pkgs, ... }:
 {
   home.packages = with pkgs; [
     foliate
@@ -30,16 +30,4 @@
     };
   };
 
-  # Big legible launcher (ported from the old sway host file); stylix's
-  # fuzzel target otherwise lands at ~10pt sans on a 20pt-baseline panel.
-  programs.fuzzel.settings = {
-    main = {
-      font = lib.mkForce "MonoLisa Nerd Font:size=${toString (theme.baseFontSize + 2)}";
-      lines = 10;
-      width = 40;
-      horizontal-pad = 20;
-      vertical-pad = 10;
-    };
-    border.width = 2;
-  };
 }

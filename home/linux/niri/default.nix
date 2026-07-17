@@ -11,32 +11,20 @@ let
     fi
   '';
 
-  # wlr-which-key runs each `cmd` through `sh -c`, so airplaneToggle works verbatim
-  # in both the menu and the XF86RFKill/Mod+Shift+A binds.
-  whichKeyConfig = (pkgs.formats.yaml { }).generate "wlr-which-key.yaml" {
-    font = "${config.stylix.fonts.monospace.name} ${toString config.stylix.fonts.sizes.terminal}";
-    background = "#${config.lib.stylix.colors.base00}e0";
-    # base07, not base05: on the light scheme base05 is only 2.6:1 on base00.
-    color = "#${config.lib.stylix.colors.base07}";
-    border = "#${config.lib.stylix.colors.base0D}";
-    border_width = 2;
-    corner_r = 10;
-    separator = " → ";
-    anchor = "center";
-    menu = [
-      { key = "a"; desc = "Airplane mode"; cmd = airplaneToggle; }
-      {
-        key = "p";
-        desc = "Power";
-        submenu = [
-          { key = "s"; desc = "Sleep"; cmd = "systemctl suspend"; }
-          { key = "r"; desc = "Reboot"; cmd = "systemctl reboot"; }
-          { key = "o"; desc = "Off"; cmd = "systemctl poweroff"; }
-          { key = "l"; desc = "Lock"; cmd = "swaylock"; }
-        ];
-      }
-    ];
+  qmltermwidget = pkgs.callPackage ./qmltermwidget.nix {
+    inherit (config.lib.stylix) colors;
   };
+
+  journalNvim = pkgs.writeShellScript "quickshell-journal" ''
+    chalet_dir="$HOME/chalet"
+    journal_dir="$chalet_dir/journal"
+    mkdir -p "$journal_dir"
+    cd "$chalet_dir"
+    export COLORTERM=truecolor
+    export TERM=xterm-256color
+    exec ${lib.getExe config.programs.neovim.finalPackage} \
+      "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
+  '';
 
 in
 {
@@ -53,42 +41,47 @@ in
     swaylock
     brightnessctl
     playerctl
+    quickshell
+    xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
   ] ++ lib.optionals features.gui [
-    # Desktop chrome — skipped on gui = false hosts (eink).
     pavucontrol
     networkmanagerapplet # nm-connection-editor for the bar's on-click
     xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
-    wlr-which-key
-    quickshell
   ];
 
   xdg.configFile = {
-    "wlr-which-key/config.yaml" = lib.mkIf features.gui {
-      source = whichKeyConfig;
-    };
-    "quickshell/shell.qml" = lib.mkIf features.gui {
-      source = ./quickshell/shell.qml;
-    };
-    "quickshell/modules" = lib.mkIf features.gui {
-      source = ./quickshell/modules;
-    };
-    "quickshell/Theme.qml" = lib.mkIf features.gui {
+    "quickshell/shell.qml".source = ./quickshell/shell.qml;
+    "quickshell/modules".source = ./quickshell/modules;
+    "quickshell/Theme.qml" = {
       text = ''
         import QtQuick
 
         QtObject {
             readonly property color base00: "#${config.lib.stylix.colors.base00}"
+            readonly property color base01: "#${config.lib.stylix.colors.base01}"
             readonly property color base02: "#${config.lib.stylix.colors.base02}"
+            readonly property color base03: "#${config.lib.stylix.colors.base03}"
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
+            readonly property bool animationsEnabled: ${lib.boolToString features.gui}
+            readonly property string journalProgram: ${builtins.toJSON journalNvim}
+            readonly property var launcherCommand: ${builtins.toJSON [
+              "${pkgs.systemd}/bin/systemd-run"
+              "--user"
+              "--scope"
+              "--quiet"
+              "--collect"
+              "--"
+              "${pkgs.gtk3}/bin/gtk-launch"
+            ]}
         }
       '';
     };
   };
 
-  systemd.user.services.quickshell = lib.mkIf features.gui {
+  systemd.user.services.quickshell = {
     Unit = {
       Description = "Quickshell desktop panel";
       After = [ "graphical-session.target" ];
@@ -96,8 +89,10 @@ in
     };
     Service = {
       ExecStart = "${pkgs.quickshell}/bin/quickshell -c default";
+      Environment = [ "QML_IMPORT_PATH=${qmltermwidget}/${pkgs.qt6.qtbase.qtQmlPrefix}" ];
       Restart = "on-failure";
       RestartSec = 2;
+      TimeoutStopSec = 5;
     };
     Install.WantedBy = [ "graphical-session.target" ];
   };
@@ -166,7 +161,13 @@ in
         "Mod+Shift+Slash".action = show-hotkey-overlay;
 
         "Mod+Return".action = spawn "ghostty";
-        "Mod+D".action = spawn "fuzzel";
+        "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
+        "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+        # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
+        "XF86Tools" = {
+          repeat = false;
+          action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+        };
         "Mod+Q".action = close-window;
         "Mod+Alt+L".action = spawn "swaylock";
 
@@ -203,7 +204,7 @@ in
         "Mod+Equal".action = set-column-width "+10%";
         "Mod+Comma".action = consume-window-into-column;
         "Mod+Period".action = expel-window-from-column;
-        # Mod+Space is the which-key trigger, so floating-focus lives on Mod+Tab.
+        # Mod+Space opens the native Quickshell command overlay, so floating-focus lives on Mod+Tab.
         "Mod+Tab".action = switch-focus-between-floating-and-tiling;
         "Mod+Shift+Space".action = toggle-window-floating;
 
@@ -240,15 +241,9 @@ in
           { name = "Mod+${toString i}"; value.action = focus-workspace i; }
           { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
         ])
-        (lib.range 1 9))
-      # wlr-which-key is only installed/configured when features.gui, so the bind
-      # would spawn a missing binary on eink.
-      // lib.optionalAttrs features.gui {
-        "Mod+Space".action = spawn "wlr-which-key";
-      };
+        (lib.range 1 9));
     };
 
-    fuzzel.enable = true;
   };
 
   services.mako.enable = features.gui;

@@ -1,0 +1,28 @@
+{
+  "name": "glide-pages",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.1.2",
+    "@types/node": "25.9.1",
+    "prettier": "3.8.3",
+    "prettier-plugin-svelte": "4.0.1",
+    "svelte": "5.56.0",
+    "svelte-check": "4.4.8",
+    "typescript": "6.0.3",
+    "unocss": "66.7.5",
+    "vite": "8.0.14",
+    "vite-plugin-singlefile": "2.3.3"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

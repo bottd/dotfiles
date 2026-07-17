@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 
@@ -8,7 +7,6 @@ RowLayout {
     id: root
 
     required property var parentWindow
-    required property var theme
 
     spacing: 8
 
@@ -25,10 +23,11 @@ RowLayout {
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-                onClicked: {
-                    if (modelData.hasMenu && (mouse.button === Qt.LeftButton || mouse.button === Qt.RightButton))
-                        modelData.display(root.parentWindow, mouse.x, mouse.y);
-                    else if (mouse.button === Qt.MiddleButton)
+                onClicked: function (mouse) {
+                    if (modelData.hasMenu && (mouse.button === Qt.LeftButton || mouse.button === Qt.RightButton)) {
+                        const point = root.parentWindow.contentItem.mapFromItem(parent, mouse.x, mouse.y);
+                        modelData.display(root.parentWindow, point.x, point.y);
+                    } else if (mouse.button === Qt.MiddleButton)
                         modelData.secondaryActivate();
                     else
                         modelData.activate();

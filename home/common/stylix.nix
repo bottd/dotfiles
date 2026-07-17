@@ -28,10 +28,29 @@ in
     };
 
     targets = {
-      firefox.profileNames = [ "default" ];
       # disable to prevent conflicts with kde
       gtk.enable = false;
     };
+  };
+
+  fonts.fontconfig.configFile.monolisa-nerd-font = lib.mkIf pkgs.stdenv.isLinux {
+    enable = true;
+    priority = 60;
+    text = ''
+      <?xml version="1.0"?>
+      <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+      <fontconfig>
+        <match target="pattern">
+          <test name="family" compare="eq" qual="any">
+            <string>MonoLisa Nerd Font</string>
+          </test>
+          <edit name="family" mode="prepend" binding="strong">
+            <string>MonoLisa Variable</string>
+            <string>Symbols Nerd Font Mono</string>
+          </edit>
+        </match>
+      </fontconfig>
+    '';
   };
 
 }
