@@ -109,7 +109,6 @@ ShellRoot {
         theme: shellTheme
         open: root.volumeOpen
         level: root.volumeLevel
-        label: "󰕾 " + Math.round(root.volumeLevel * 100) + "%"
         muted: root.volumeMuted
         onSetVolume: level => root.setVolume(level)
         onToggleMute: root.toggleMute()
@@ -151,12 +150,8 @@ ShellRoot {
 
             required property var modelData
             screen: modelData
-            Theme {
-                id: theme
-            }
             property var workspaces: []
             property string windowTitle: ""
-            property string audioText: root.audioText
             property string mullvadText: ""
             property string cellularText: ""
             property string backlightText: ""
@@ -191,10 +186,6 @@ ShellRoot {
 
             function focusWorkspace(index) {
                 Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", String(index)]);
-            }
-
-            function run(command) {
-                Quickshell.execDetached(command);
             }
 
             Timer {
@@ -300,8 +291,8 @@ ShellRoot {
             Rectangle {
                 anchors.fill: parent
                 radius: 0
-                color: theme.base00
-                border.color: theme.base02
+                color: shellTheme.base00
+                border.color: shellTheme.base02
                 border.width: 1
 
                 RowLayout {
@@ -313,7 +304,7 @@ ShellRoot {
                     Modules.WorkspaceList {
                         workspaces: bar.workspaces
                         screenName: bar.screen.name
-                        theme: theme
+                        theme: shellTheme
                         onFocusWorkspace: index => bar.focusWorkspace(index)
                     }
 
@@ -321,28 +312,28 @@ ShellRoot {
                         Layout.fillWidth: true
                         text: bar.windowTitle
                         elide: Text.ElideRight
-                        color: theme.base05
-                        font.family: theme.fontFamily
-                        font.pixelSize: theme.fontSize
+                        color: shellTheme.base05
+                        font.family: shellTheme.fontFamily
+                        font.pixelSize: shellTheme.fontSize
                     }
 
                     Modules.SystemTray {
                         parentWindow: bar
-                        theme: theme
+                        theme: shellTheme
                     }
 
                     Modules.StatusModules {
-                        audioText: bar.audioText
+                        audioText: root.audioText
                         mullvadText: bar.mullvadText
                         cellularText: bar.cellularText
                         backlightText: bar.backlightText
                         battery: bar.battery
                         now: bar.now
-                        theme: theme
+                        theme: shellTheme
                         onAudioClicked: root.toggleVolume(bar.screen)
-                        onMullvadClicked: bar.run(["waybar-mullvad", "toggle"])
-                        onCellularClicked: bar.run(["nm-connection-editor"])
-                        onBacklightWheel: increase => bar.run(["brightnessctl", "set", increase ? "5%+" : "5%-"])
+                        onMullvadClicked: Quickshell.execDetached(["waybar-mullvad", "toggle"])
+                        onCellularClicked: Quickshell.execDetached(["nm-connection-editor"])
+                        onBacklightWheel: increase => Quickshell.execDetached(["brightnessctl", "set", increase ? "5%+" : "5%-"])
                     }
                 }
             }

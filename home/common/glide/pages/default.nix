@@ -43,11 +43,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     root = ./.;
     fileset = lib.fileset.unions [
       ./.npmrc
+      ./index.html
       ./package.json
       ./pnpm-lock.yaml
-      ./pnpm-workspace.yaml
       ./src
-      ./svelte.config.js
       ./tsconfig.json
       ./uno.config.ts
       ./vite.config.ts
@@ -64,7 +63,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) pname version src;
     inherit pnpm;
     fetcherVersion = 4;
-    hash = "sha256-MB1gh0QZL7bnQ/ap0slw6LQSlu8kzki35kcumLGcr7o=";
+    hash = "sha256-EAIlg5Fiu1TLWeK2iDViJiA7sACFVa8gL7nwUPBY0Ns=";
   };
 
   postPatch = ''
@@ -79,7 +78,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-    cp -r build/. $out
+    cp -r dist/. $out
     runHook postInstall
   '';
 })

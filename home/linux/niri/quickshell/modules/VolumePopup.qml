@@ -10,7 +10,6 @@ PanelWindow {
     required property var theme
     required property bool open
     required property real level
-    required property string label
     required property bool muted
     signal setVolume(real level)
     signal toggleMute
@@ -30,6 +29,14 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     WlrLayershell.namespace: "drake-volume-popup"
 
+    Timer {
+        id: dismissTimer
+
+        interval: 3000
+        running: root.open
+        onTriggered: root.dismissed()
+    }
+
     Rectangle {
         anchors.fill: parent
         radius: 7
@@ -47,7 +54,7 @@ PanelWindow {
 
                 Text {
                     Layout.fillWidth: true
-                    text: root.muted ? "󰝟 muted" : root.label
+                    text: root.muted ? "󰝟 muted" : "󰕾 " + Math.round(root.level * 100) + "%"
                     color: root.theme.base05
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
@@ -61,7 +68,10 @@ PanelWindow {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: root.toggleMute()
+                        onClicked: {
+                            root.toggleMute();
+                            dismissTimer.restart();
+                        }
                     }
                 }
             }
@@ -86,10 +96,13 @@ PanelWindow {
                     anchors.fill: parent
                     onPressed: function (mouse) {
                         root.setVolume(Math.max(0, Math.min(1, mouse.x / width)));
+                        dismissTimer.restart();
                     }
                     onPositionChanged: function (mouse) {
-                        if (pressed)
+                        if (pressed) {
                             root.setVolume(Math.max(0, Math.min(1, mouse.x / width)));
+                            dismissTimer.restart();
+                        }
                     }
                 }
             }

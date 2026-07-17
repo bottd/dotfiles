@@ -61,5 +61,16 @@
       deadnix.enable = true;
     };
 
+    devShells.default = pkgs.mkShell {
+      inherit (config.pre-commit.devShell) shellHook;
+      buildInputs = with pkgs; [
+        git
+        fnlfmt
+        cljfmt
+        clj-kondo
+        nodejs
+        pnpm
+      ] ++ config.pre-commit.settings.enabledPackages;
+    };
   };
 }

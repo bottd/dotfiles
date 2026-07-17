@@ -19,6 +19,7 @@ PanelWindow {
     property int selectedIndex: 0
     property bool journalFocused: false
     property bool journalStarted: false
+    property string journalDate: ""
     property var applicationIndex: DesktopEntries.applications.values
     property date now: new Date()
     property alias query: search.text
@@ -87,6 +88,12 @@ PanelWindow {
                     command: ["sh", "-c", "if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then rfkill block all; else rfkill unblock all; fi"]
                 }
             ]
+        },
+        {
+            key: "s",
+            label: "Screenshot",
+            description: "Select a region",
+            screenshot: true
         },
         {
             key: "d",
@@ -164,10 +171,10 @@ PanelWindow {
     }
 
     function focusCurrentMode() {
-        if (root.journalFocused)
-            journalTerminal.forceActiveFocus();
-        else if (root.mode === "launcher")
+        if (root.mode === "launcher")
             search.forceActiveFocus();
+        else if (root.journalFocused)
+            journalTerminal.forceActiveFocus();
         else
             drawer.forceActiveFocus();
     }
@@ -216,6 +223,12 @@ PanelWindow {
             return;
         }
 
+        if (item.screenshot) {
+            root.close();
+            screenshotTimer.restart();
+            return;
+        }
+
         if (item.action)
             Quickshell.execDetached(["niri", "msg", "action", item.action].concat(item.arguments || []));
         else if (item.command)
@@ -239,6 +252,11 @@ PanelWindow {
     }
 
     function focusJournal() {
+        if (!root.journalStarted) {
+            root.journalStarted = true;
+            root.journalDate = Qt.formatDate(new Date(), "yyyy-MM-dd");
+            journalStart.restart();
+        }
         root.journalFocused = true;
         journalTerminal.forceActiveFocus();
     }
@@ -284,6 +302,7 @@ PanelWindow {
 
     onOpenChanged: {
         if (root.open) {
+            screenshotTimer.stop();
             root.presented = true;
             root.path = [];
             root.selectedIndex = 0;
@@ -293,13 +312,14 @@ PanelWindow {
             drawer.y = root.theme.animationsEnabled ? root.height : 0;
             Qt.callLater(function () {
                 root.moveDrawer(0, false);
-                if (!root.journalStarted) {
-                    root.journalStarted = true;
-                    journalStart.start();
-                }
                 root.focusCurrentMode();
             });
         } else if (root.presented) {
+            if (journalStart.running) {
+                journalStart.stop();
+                root.journalStarted = false;
+                root.journalDate = "";
+            }
             root.journalFocused = false;
             root.moveDrawer(root.height, true);
         }
@@ -308,8 +328,10 @@ PanelWindow {
     onModeChanged: {
         root.path = [];
         root.selectedIndex = 0;
-        if (root.mode === "launcher")
+        if (root.mode === "launcher") {
+            root.journalFocused = false;
             root.query = "";
+        }
         if (root.open)
             Qt.callLater(root.focusCurrentMode);
     }
@@ -337,14 +359,6 @@ PanelWindow {
         }
     }
 
-    Connections {
-        target: DesktopEntries
-
-        function onApplicationsChanged() {
-            root.applicationIndex = DesktopEntries.applications.values;
-        }
-    }
-
     ShortcutInhibitor {
         window: root
         enabled: root.open
@@ -361,6 +375,13 @@ PanelWindow {
             if (!root.open)
                 root.presented = false;
         }
+    }
+
+    Timer {
+        id: screenshotTimer
+
+        interval: 200
+        onTriggered: Quickshell.execDetached(["niri", "msg", "action", "screenshot"])
     }
 
     FocusScope {
@@ -562,7 +583,7 @@ PanelWindow {
                             }
 
                             Repeater {
-                                model: root.menu.filter(item => item.items)
+                                model: root.menu.filter(item => item.items || item.screenshot)
 
                                 delegate: Rectangle {
                                     required property var modelData
@@ -658,7 +679,7 @@ PanelWindow {
                                     anchors.fill: parent
                                     anchors.margins: 4
                                     visible: root.presented
-                                    font.family: root.theme.journalFontFamily
+                                    font.family: root.theme.fontFamily
                                     font.pointSize: root.theme.fontSize
                                     colorScheme: "Stylix"
                                     antialiasText: true
@@ -671,12 +692,15 @@ PanelWindow {
                                         id: journalSession
 
                                         shellProgram: root.theme.journalProgram
-                                        onFinished: journalRestart.start()
+                                        onFinished: {
+                                            root.journalStarted = false;
+                                            root.journalFocused = false;
+                                            root.journalDate = "";
+                                            if (root.open)
+                                                drawer.forceActiveFocus();
+                                        }
                                     }
-                                    onActiveFocusChanged: {
-                                        if (activeFocus)
-                                            root.journalFocused = true;
-                                    }
+                                    onActiveFocusChanged: root.journalFocused = activeFocus
                                     Keys.priority: Keys.BeforeItem
                                     Keys.onPressed: function (event) {
                                         if (root.isOverlayKey(event))
@@ -688,13 +712,6 @@ PanelWindow {
                                             event.accepted = true;
                                         }
                                     }
-                                }
-
-                                Timer {
-                                    id: journalRestart
-
-                                    interval: 1000
-                                    onTriggered: journalSession.startShellProgram()
                                 }
 
                                 Timer {
@@ -738,7 +755,7 @@ PanelWindow {
 
                             Text {
                                 Layout.fillWidth: true
-                                text: Qt.formatDate(root.now, "yyyy-MM-dd") + ".norg" + (root.journalFocused ? "  /  SUPER hides" : "  /  j focuses")
+                                text: (root.journalDate || Qt.formatDate(root.now, "yyyy-MM-dd")) + ".norg" + (root.journalFocused ? "  /  SUPER hides" : "  /  j focuses")
                                 elide: Text.ElideRight
                                 color: root.theme.base03
                                 font.family: root.theme.fontFamily

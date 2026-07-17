@@ -54,7 +54,7 @@ stdenv.mkDerivation {
     ${colorSection "Color6Intense" colors.base0C}
     ${colorSection "Color7" colors.base05}
     ${colorSection "Color7Intense" colors.base07}
-    ${colorSection "Foreground" colors.base05}
+    ${colorSection "Foreground" colors.base07}
     ${colorSection "ForegroundIntense" colors.base07}
     [General]
     Description=Stylix

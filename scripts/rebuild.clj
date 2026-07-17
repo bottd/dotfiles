@@ -5,7 +5,7 @@
 
 (def appearance-file
   (java.io.File.
-   (or (System/getenv "XDG_STATE_HOME") (str home-dir "/.local/state"))
+   (or (not-empty (System/getenv "XDG_STATE_HOME")) (str home-dir "/.local/state"))
    "dotfiles/rebuild-appearance"))
 
 (defn valid-appearance [value]
@@ -28,10 +28,6 @@
       saved-appearance
       (valid-appearance (System/getenv "NIX_APPEARANCE"))))
 
-(when flag-appearance
-  (.mkdirs (.getParentFile appearance-file))
-  (spit appearance-file flag-appearance))
-
 (def config
   (if appearance (str host "-" appearance) host))
 
@@ -40,8 +36,12 @@
     "macbook" "darwin-rebuild"
     "nixos-rebuild"))
 
-(def flake-dir (str (System/getProperty "user.home") "/dotfiles"))
+(def flake-dir (str home-dir "/dotfiles"))
 
 (shell {:dir flake-dir :continue true} "git" "pull" "--rebase" "--quiet")
 
 (shell "sudo" cmd "switch" "--flake" (str flake-dir "#" config))
+
+(when flag-appearance
+  (.mkdirs (.getParentFile appearance-file))
+  (spit appearance-file flag-appearance))

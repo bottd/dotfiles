@@ -22,8 +22,7 @@ let
     cd "$chalet_dir"
     export COLORTERM=truecolor
     export TERM=xterm-256color
-    exec ${lib.getExe pkgs.zsh} -lic 'exec "$1" "$2"' zsh \
-      ${lib.getExe config.programs.neovim.finalPackage} \
+    exec ${lib.getExe config.programs.neovim.finalPackage} \
       "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
   '';
 
@@ -43,8 +42,6 @@ in
     brightnessctl
     playerctl
     quickshell
-    qmltermwidget
-    gtk3 # gtk-launch preserves complete desktop-entry launch semantics
     xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
   ] ++ lib.optionals features.gui [
     pavucontrol
@@ -67,7 +64,6 @@ in
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
-            readonly property string journalFontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
             readonly property bool animationsEnabled: ${lib.boolToString features.gui}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
@@ -166,6 +162,7 @@ in
 
         "Mod+Return".action = spawn "ghostty";
         "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
+        "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
         # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
         "XF86Tools" = {
           repeat = false;
@@ -244,10 +241,7 @@ in
           { name = "Mod+${toString i}"; value.action = focus-workspace i; }
           { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
         ])
-        (lib.range 1 9))
-      // {
-        "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
-      };
+        (lib.range 1 9));
     };
 
   };
