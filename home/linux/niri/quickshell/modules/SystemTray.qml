@@ -25,7 +25,7 @@ RowLayout {
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-                onClicked: {
+                onClicked: function (mouse) {
                     if (modelData.hasMenu && (mouse.button === Qt.LeftButton || mouse.button === Qt.RightButton))
                         modelData.display(root.parentWindow, mouse.x, mouse.y);
                     else if (mouse.button === Qt.MiddleButton)

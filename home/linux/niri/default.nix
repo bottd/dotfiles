@@ -11,33 +11,6 @@ let
     fi
   '';
 
-  # wlr-which-key runs each `cmd` through `sh -c`, so airplaneToggle works verbatim
-  # in both the menu and the XF86RFKill/Mod+Shift+A binds.
-  whichKeyConfig = (pkgs.formats.yaml { }).generate "wlr-which-key.yaml" {
-    font = "${config.stylix.fonts.monospace.name} ${toString config.stylix.fonts.sizes.terminal}";
-    background = "#${config.lib.stylix.colors.base00}e0";
-    # base07, not base05: on the light scheme base05 is only 2.6:1 on base00.
-    color = "#${config.lib.stylix.colors.base07}";
-    border = "#${config.lib.stylix.colors.base0D}";
-    border_width = 2;
-    corner_r = 10;
-    separator = " → ";
-    anchor = "center";
-    menu = [
-      { key = "a"; desc = "Airplane mode"; cmd = airplaneToggle; }
-      {
-        key = "p";
-        desc = "Power";
-        submenu = [
-          { key = "s"; desc = "Sleep"; cmd = "systemctl suspend"; }
-          { key = "r"; desc = "Reboot"; cmd = "systemctl reboot"; }
-          { key = "o"; desc = "Off"; cmd = "systemctl poweroff"; }
-          { key = "l"; desc = "Lock"; cmd = "swaylock"; }
-        ];
-      }
-    ];
-  };
-
 in
 {
   imports = [ ./host/${hostName}.nix ];
@@ -58,14 +31,10 @@ in
     pavucontrol
     networkmanagerapplet # nm-connection-editor for the bar's on-click
     xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
-    wlr-which-key
     quickshell
   ];
 
   xdg.configFile = {
-    "wlr-which-key/config.yaml" = lib.mkIf features.gui {
-      source = whichKeyConfig;
-    };
     "quickshell/shell.qml" = lib.mkIf features.gui {
       source = ./quickshell/shell.qml;
     };
@@ -78,7 +47,9 @@ in
 
         QtObject {
             readonly property color base00: "#${config.lib.stylix.colors.base00}"
+            readonly property color base01: "#${config.lib.stylix.colors.base01}"
             readonly property color base02: "#${config.lib.stylix.colors.base02}"
+            readonly property color base03: "#${config.lib.stylix.colors.base03}"
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
@@ -166,7 +137,7 @@ in
         "Mod+Shift+Slash".action = show-hotkey-overlay;
 
         "Mod+Return".action = spawn "ghostty";
-        "Mod+D".action = spawn "fuzzel";
+        "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
         "Mod+Q".action = close-window;
         "Mod+Alt+L".action = spawn "swaylock";
 
@@ -203,7 +174,7 @@ in
         "Mod+Equal".action = set-column-width "+10%";
         "Mod+Comma".action = consume-window-into-column;
         "Mod+Period".action = expel-window-from-column;
-        # Mod+Space is the which-key trigger, so floating-focus lives on Mod+Tab.
+        # Mod+Space opens the native Quickshell command overlay, so floating-focus lives on Mod+Tab.
         "Mod+Tab".action = switch-focus-between-floating-and-tiling;
         "Mod+Shift+Space".action = toggle-window-floating;
 
@@ -241,14 +212,13 @@ in
           { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
         ])
         (lib.range 1 9))
-      # wlr-which-key is only installed/configured when features.gui, so the bind
-      # would spawn a missing binary on eink.
+      # The overlay is only installed/configured when features.gui, so the bind
+      # would call a missing shell on eink.
       // lib.optionalAttrs features.gui {
-        "Mod+Space".action = spawn "wlr-which-key";
+        "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
       };
     };
 
-    fuzzel.enable = true;
   };
 
   services.mako.enable = features.gui;

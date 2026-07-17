@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -6,7 +8,27 @@ import Quickshell.Services.UPower
 import "./modules" as Modules
 
 Variants {
+    id: root
+
     model: Quickshell.screens
+    property bool launcherOpen: false
+    property bool keyOverlayOpen: false
+
+    IpcHandler {
+        target: "launcher"
+
+        function toggle(): void {
+            root.launcherOpen = !root.launcherOpen;
+        }
+    }
+
+    IpcHandler {
+        target: "key-overlay"
+
+        function toggle(): void {
+            root.keyOverlayOpen = !root.keyOverlayOpen;
+        }
+    }
 
     PanelWindow {
         id: bar
@@ -22,6 +44,8 @@ Variants {
         property string mullvadText: ""
         property string cellularText: ""
         property string backlightText: ""
+        property real volumeLevel: 0
+        property bool volumeOpen: false
         property date now: new Date()
         property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
 
@@ -59,6 +83,16 @@ Variants {
 
         function run(command) {
             Quickshell.execDetached(command);
+        }
+
+        function setVolume(level) {
+            run(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", String(level)]);
+            audioProcess.running = true;
+        }
+
+        function toggleMute() {
+            run(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
+            audioProcess.running = true;
         }
 
         Timer {
@@ -125,7 +159,8 @@ Variants {
                 onStreamFinished: {
                     const value = audioOutput.text.trim();
                     const volume = value.match(/([0-9]+(?:\.[0-9]+)?)/);
-                    bar.audioText = value.includes("MUTED") ? "󰝟 muted" : ("󰕾 " + (volume ? Math.round(Number(volume[1]) * 100) : 0) + "%");
+                    bar.volumeLevel = volume ? Math.max(0, Math.min(1, Number(volume[1]))) : 0;
+                    bar.audioText = value.includes("MUTED") ? "󰝟 muted" : ("󰕾 " + Math.round(bar.volumeLevel * 100) + "%");
                 }
             }
         }
@@ -145,6 +180,33 @@ Variants {
                     }
                 }
             }
+        }
+
+        Modules.VolumePopup {
+            id: volumePopup
+
+            parentWindow: bar
+            theme: theme
+            open: bar.volumeOpen
+            level: bar.volumeLevel
+            label: bar.audioText
+            onSetVolume: level => bar.setVolume(level)
+            onToggleMute: bar.toggleMute()
+            onDismissed: bar.volumeOpen = false
+        }
+
+        Modules.Launcher {
+            parentWindow: bar
+            theme: theme
+            open: root.launcherOpen && bar.screen.name === Quickshell.screens[0].name
+            onDismissed: root.launcherOpen = false
+        }
+
+        Modules.KeyOverlay {
+            parentWindow: bar
+            theme: theme
+            open: root.keyOverlayOpen && bar.screen.name === Quickshell.screens[0].name
+            onDismissed: root.keyOverlayOpen = false
         }
 
         Process {
@@ -217,7 +279,7 @@ Variants {
                     battery: bar.battery
                     now: bar.now
                     theme: theme
-                    onAudioClicked: bar.run(["pavucontrol"])
+                    onAudioClicked: bar.volumeOpen = !bar.volumeOpen
                     onMullvadClicked: bar.run(["waybar-mullvad", "toggle"])
                     onCellularClicked: bar.run(["nm-connection-editor"])
                     onBacklightWheel: increase => bar.run(["brightnessctl", "set", increase ? "5%+" : "5%-"])
