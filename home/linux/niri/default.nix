@@ -145,7 +145,8 @@ in
 
         "Mod+Return".action = spawn "ghostty";
         "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
-        "F13" = {
+        # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
+        "XF86Tools" = {
           repeat = false;
           action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
         };

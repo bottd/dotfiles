@@ -117,6 +117,8 @@ ShellRoot {
     }
 
     Modules.KeyOverlay {
+        id: keyOverlay
+
         screen: root.drawerScreen ? root.drawerScreen : Quickshell.screens[0]
         theme: shellTheme
         open: root.drawerOpen
@@ -148,7 +150,7 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            margins.bottom: 6
+            margins.bottom: keyOverlay.presented && root.drawerScreen === modelData ? keyOverlay.implicitHeight + 6 : 6
             margins.left: 6
             margins.right: 6
             implicitHeight: 32

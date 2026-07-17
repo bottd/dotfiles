@@ -229,9 +229,6 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
     screen: root.screen
-    margins.bottom: 10
-    margins.left: 10
-    margins.right: 10
     implicitHeight: Math.min(320, root.screen.height * 0.45)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
@@ -347,6 +344,10 @@ PanelWindow {
         return event.text;
     }
 
+    function isOverlayKey(event) {
+        return event.key === Qt.Key_F13 || event.key === Qt.Key_Tools;
+    }
+
     function handleCommandKey(event) {
         if (event.key === Qt.Key_Escape || event.key === Qt.Key_Backspace) {
             root.goBack();
@@ -422,7 +423,7 @@ PanelWindow {
         anchors.fill: parent
         focus: root.open
         Keys.onPressed: function (event) {
-            if (event.key === Qt.Key_F13) {
+            if (root.isOverlayKey(event)) {
                 event.accepted = true;
                 return;
             }
@@ -430,7 +431,7 @@ PanelWindow {
                 root.handleCommandKey(event);
         }
         Keys.onReleased: function (event) {
-            if (event.key === Qt.Key_F13) {
+            if (root.isOverlayKey(event)) {
                 root.close();
                 event.accepted = true;
             }
@@ -441,10 +442,15 @@ PanelWindow {
 
             width: parent.width
             height: parent.height
-            radius: 8
             color: root.theme.base00
-            border.color: root.theme.base0D
-            border.width: 2
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: 2
+                color: root.theme.base0D
+            }
 
             ColumnLayout {
                 anchors.fill: parent

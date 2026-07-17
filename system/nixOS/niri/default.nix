@@ -11,7 +11,7 @@
       ids = [ "*" ];
       settings = {
         global.overload_tap_timeout = 200;
-        main.leftmeta = "overload(meta, f13)";
+        main.meta = "overload(meta, f13)";
       };
     };
   };
