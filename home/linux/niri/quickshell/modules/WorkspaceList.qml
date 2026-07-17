@@ -11,7 +11,7 @@ RowLayout {
 
     spacing: 4
 
-    function visibleWorkspaces() {
+    readonly property var visibleWorkspaces: {
         const visible = workspaces.filter(workspace => workspace.output === screenName);
         if (visible.length > 0)
             return visible.sort((a, b) => a.idx - b.idx);
@@ -20,13 +20,12 @@ RowLayout {
             length: 9
         }, (_, index) => ({
                     idx: index + 1,
-                    is_focused: false,
-                    is_active: false
+                    is_focused: false
                 }));
     }
 
     Repeater {
-        model: root.visibleWorkspaces()
+        model: root.visibleWorkspaces
 
         delegate: Rectangle {
             required property var modelData

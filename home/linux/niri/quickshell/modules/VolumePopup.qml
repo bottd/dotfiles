@@ -6,16 +6,13 @@ import Quickshell.Wayland
 PanelWindow {
     id: root
 
-    required property var screen
     required property var theme
-    required property bool open
     required property real level
     required property bool muted
     signal setVolume(real level)
     signal toggleMute
     signal dismissed
 
-    screen: root.screen
     anchors.bottom: true
     anchors.right: true
     margins.bottom: 48
@@ -24,16 +21,31 @@ PanelWindow {
     implicitHeight: 96
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
-    visible: root.open
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     WlrLayershell.namespace: "drake-volume-popup"
+
+    onScreenChanged: {
+        if (root.visible)
+            dismissTimer.restart();
+    }
+
+    function updateVolume(x, width) {
+        root.setVolume(x / width);
+        dismissTimer.restart();
+    }
+
+    component PopupText: Text {
+        color: root.theme.base05
+        font.family: root.theme.fontFamily
+        font.pixelSize: root.theme.fontSize
+    }
 
     Timer {
         id: dismissTimer
 
         interval: 3000
-        running: root.open
+        running: root.visible
         onTriggered: root.dismissed()
     }
 
@@ -52,19 +64,13 @@ PanelWindow {
             RowLayout {
                 Layout.fillWidth: true
 
-                Text {
+                PopupText {
                     Layout.fillWidth: true
                     text: root.muted ? "󰝟 muted" : "󰕾 " + Math.round(root.level * 100) + "%"
-                    color: root.theme.base05
-                    font.family: root.theme.fontFamily
-                    font.pixelSize: root.theme.fontSize
                 }
 
-                Text {
+                PopupText {
                     text: "󰝟"
-                    color: root.theme.base05
-                    font.family: root.theme.fontFamily
-                    font.pixelSize: root.theme.fontSize
 
                     MouseArea {
                         anchors.fill: parent
@@ -77,8 +83,6 @@ PanelWindow {
             }
 
             Rectangle {
-                id: track
-
                 Layout.fillWidth: true
                 height: 8
                 radius: 4
@@ -86,7 +90,7 @@ PanelWindow {
                 color: root.theme.base02
 
                 Rectangle {
-                    width: track.width * Math.max(0, Math.min(1, root.level))
+                    width: parent.width * Math.max(0, Math.min(1, root.level))
                     height: parent.height
                     radius: parent.radius
                     color: root.theme.base0D
@@ -95,14 +99,11 @@ PanelWindow {
                 MouseArea {
                     anchors.fill: parent
                     onPressed: function (mouse) {
-                        root.setVolume(Math.max(0, Math.min(1, mouse.x / width)));
-                        dismissTimer.restart();
+                        root.updateVolume(mouse.x, width);
                     }
                     onPositionChanged: function (mouse) {
-                        if (pressed) {
-                            root.setVolume(Math.max(0, Math.min(1, mouse.x / width)));
-                            dismissTimer.restart();
-                        }
+                        if (pressed)
+                            root.updateVolume(mouse.x, width);
                     }
                 }
             }

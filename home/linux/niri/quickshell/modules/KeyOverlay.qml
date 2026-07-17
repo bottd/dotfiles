@@ -10,19 +10,17 @@ import QMLTermWidget 2.0
 PanelWindow {
     id: root
 
-    required property var screen
     required property var theme
     required property bool open
     required property string mode
+    required property date now
     property bool presented: false
     property var path: []
     property int selectedIndex: 0
-    property bool journalFocused: false
     property bool journalStarted: false
     property string journalDate: ""
-    property var applicationIndex: DesktopEntries.applications.values
-    property date now: new Date()
-    property alias query: search.text
+    readonly property alias journalFocused: journalTerminal.activeFocus
+    readonly property var applicationIndex: DesktopEntries.applications.values
     signal dismissed
     signal modeRequested(string mode)
 
@@ -30,7 +28,6 @@ PanelWindow {
         {
             key: "p",
             label: "Power",
-            description: "Session actions",
             items: [
                 {
                     key: "s",
@@ -57,7 +54,6 @@ PanelWindow {
         {
             key: "a",
             label: "Apps",
-            description: "Quick launch common apps",
             items: [
                 {
                     key: "d",
@@ -79,7 +75,6 @@ PanelWindow {
         {
             key: "m",
             label: "Meta",
-            description: "System controls",
             items: [
                 {
                     key: "a",
@@ -92,25 +87,22 @@ PanelWindow {
         {
             key: "s",
             label: "Screenshot",
-            description: "Select a region",
             screenshot: true
         },
         {
             key: "d",
-            label: "Launcher",
-            description: "Search applications",
             targetMode: "launcher"
         }
     ]
 
     readonly property var activeItems: root.path.length === 0 ? root.menu : root.path[root.path.length - 1].items
-    readonly property var commonApplications: ["Glide", "Ghostty", "Spotify", "Discord"].map(name => root.applicationIndex.find(entry => entry.name.toLowerCase() === name.toLowerCase())).filter(entry => entry)
+    readonly property var commonApplications: ["Glide", "Ghostty", "Spotify", "Discord"].map(root.findApplication).filter(entry => entry)
     readonly property var recentApplications: recentState.apps.map(id => root.applicationIndex.find(entry => entry.id === id)).filter(entry => entry)
     readonly property date monthStart: new Date(root.now.getFullYear(), root.now.getMonth(), 1)
     readonly property int leadingDays: (root.monthStart.getDay() + 6) % 7
     readonly property int daysInMonth: new Date(root.now.getFullYear(), root.now.getMonth() + 1, 0).getDate()
     readonly property var filteredApplications: {
-        const needle = root.query.trim().toLowerCase();
+        const needle = search.text.trim().toLowerCase();
         if (needle === "")
             return root.applicationIndex;
 
@@ -124,7 +116,6 @@ PanelWindow {
     anchors.bottom: true
     anchors.left: true
     anchors.right: true
-    screen: root.screen
     implicitHeight: Math.min(360, root.screen.height * 0.45)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
@@ -170,11 +161,13 @@ PanelWindow {
         return Math.max(root.fuzzyScore(needle, entry.name), root.fuzzyScore(needle, entry.genericName) - 10, root.fuzzyScore(needle, entry.keywords.join(" ")) - 15, root.fuzzyScore(needle, entry.comment) - 25);
     }
 
+    function findApplication(name) {
+        return root.applicationIndex.find(entry => entry.name.toLowerCase() === name.toLowerCase());
+    }
+
     function focusCurrentMode() {
         if (root.mode === "launcher")
             search.forceActiveFocus();
-        else if (root.journalFocused)
-            journalTerminal.forceActiveFocus();
         else
             drawer.forceActiveFocus();
     }
@@ -192,13 +185,9 @@ PanelWindow {
         slide.start();
     }
 
-    function close() {
-        root.dismissed();
-    }
-
     function goBack() {
         if (root.path.length === 0) {
-            root.close();
+            root.dismissed();
             return;
         }
 
@@ -217,23 +206,21 @@ PanelWindow {
         }
 
         if (item.application) {
-            const entry = root.applicationIndex.find(candidate => candidate.name.toLowerCase() === item.application.toLowerCase());
+            const entry = root.findApplication(item.application);
             if (entry)
                 root.launchApplication(entry);
             return;
         }
 
         if (item.screenshot) {
-            root.close();
+            root.dismissed();
             screenshotTimer.restart();
             return;
         }
 
-        if (item.action)
-            Quickshell.execDetached(["niri", "msg", "action", item.action].concat(item.arguments || []));
-        else if (item.command)
+        if (item.command)
             Quickshell.execDetached(item.command);
-        root.close();
+        root.dismissed();
     }
 
     function launchSelected() {
@@ -248,7 +235,7 @@ PanelWindow {
         recentState.apps = [entry.id].concat(recentState.apps.filter(id => id !== entry.id)).slice(0, 5);
         recentFile.writeAdapter();
         Quickshell.execDetached(root.theme.launcherCommand.concat([entry.id]));
-        root.close();
+        root.dismissed();
     }
 
     function focusJournal() {
@@ -257,23 +244,7 @@ PanelWindow {
             root.journalDate = Qt.formatDate(new Date(), "yyyy-MM-dd");
             journalStart.restart();
         }
-        root.journalFocused = true;
         journalTerminal.forceActiveFocus();
-    }
-
-    function calendarDay(index) {
-        const day = index - root.leadingDays + 1;
-        return day > 0 && day <= root.daysInMonth ? day : "";
-    }
-
-    function keyName(event) {
-        if (event.key === Qt.Key_Space)
-            return "Space";
-        if (event.key === Qt.Key_Tab)
-            return "Tab";
-        if (event.key === Qt.Key_Print)
-            return "Print";
-        return event.text;
     }
 
     function isOverlayKey(event) {
@@ -287,13 +258,13 @@ PanelWindow {
             return;
         }
 
-        const key = root.keyName(event);
+        const key = event.text;
         if (root.path.length === 0 && key.toLowerCase() === "j") {
             root.focusJournal();
             event.accepted = true;
             return;
         }
-        const item = root.activeItems.find(candidate => candidate.key === key);
+        const item = root.activeItems.find(candidate => candidate.key === key.toLowerCase());
         if (item) {
             root.activate(item);
             event.accepted = true;
@@ -306,13 +277,14 @@ PanelWindow {
             root.presented = true;
             root.path = [];
             root.selectedIndex = 0;
-            root.journalFocused = false;
             if (root.mode === "launcher")
-                root.query = "";
+                search.text = "";
             drawer.y = root.theme.animationsEnabled ? root.height : 0;
             Qt.callLater(function () {
-                root.moveDrawer(0, false);
-                root.focusCurrentMode();
+                if (root.open) {
+                    root.moveDrawer(0, false);
+                    root.focusCurrentMode();
+                }
             });
         } else if (root.presented) {
             if (journalStart.running) {
@@ -320,7 +292,6 @@ PanelWindow {
                 root.journalStarted = false;
                 root.journalDate = "";
             }
-            root.journalFocused = false;
             root.moveDrawer(root.height, true);
         }
     }
@@ -329,21 +300,17 @@ PanelWindow {
         root.path = [];
         root.selectedIndex = 0;
         if (root.mode === "launcher") {
-            root.journalFocused = false;
-            root.query = "";
+            search.text = "";
         }
-        if (root.open)
-            Qt.callLater(root.focusCurrentMode);
+        if (root.open) {
+            Qt.callLater(function () {
+                if (root.open)
+                    root.focusCurrentMode();
+            });
+        }
     }
 
     Component.onCompleted: drawer.y = root.height
-
-    Timer {
-        interval: 60000
-        running: true
-        repeat: true
-        onTriggered: root.now = new Date()
-    }
 
     FileView {
         id: recentFile
@@ -385,8 +352,6 @@ PanelWindow {
     }
 
     FocusScope {
-        id: keyboard
-
         anchors.fill: parent
         focus: root.open
         Keys.onPressed: function (event) {
@@ -399,7 +364,7 @@ PanelWindow {
         }
         Keys.onReleased: function (event) {
             if (root.isOverlayKey(event)) {
-                root.close();
+                root.dismissed();
                 event.accepted = true;
             }
         }
@@ -694,13 +659,11 @@ PanelWindow {
                                         shellProgram: root.theme.journalProgram
                                         onFinished: {
                                             root.journalStarted = false;
-                                            root.journalFocused = false;
                                             root.journalDate = "";
                                             if (root.open)
-                                                drawer.forceActiveFocus();
+                                                root.focusCurrentMode();
                                         }
                                     }
-                                    onActiveFocusChanged: root.journalFocused = activeFocus
                                     Keys.priority: Keys.BeforeItem
                                     Keys.onPressed: function (event) {
                                         if (root.isOverlayKey(event))
@@ -708,7 +671,7 @@ PanelWindow {
                                     }
                                     Keys.onReleased: function (event) {
                                         if (root.isOverlayKey(event)) {
-                                            root.close();
+                                            root.dismissed();
                                             event.accepted = true;
                                         }
                                     }
@@ -726,15 +689,15 @@ PanelWindow {
                                 }
 
                                 MouseArea {
-                                    anchors.left: parent.left
-                                    anchors.top: parent.top
-                                    width: focusHint.width + 12
-                                    height: focusHint.height + 8
+                                    anchors.fill: parent
                                     visible: !root.journalFocused
                                     onClicked: root.focusJournal()
 
                                     Rectangle {
-                                        anchors.fill: parent
+                                        anchors.left: parent.left
+                                        anchors.top: parent.top
+                                        width: focusHint.width + 12
+                                        height: focusHint.height + 8
                                         color: root.theme.base01
                                         border.color: root.theme.base0D
                                         border.width: 1
@@ -816,7 +779,8 @@ PanelWindow {
 
                                         delegate: Rectangle {
                                             required property int index
-                                            readonly property var day: root.calendarDay(index)
+                                            readonly property int calendarDay: index - root.leadingDays + 1
+                                            readonly property var day: calendarDay > 0 && calendarDay <= root.daysInMonth ? calendarDay : ""
                                             readonly property bool today: day === root.now.getDate()
 
                                             Layout.fillWidth: true
@@ -849,7 +813,7 @@ PanelWindow {
                         spacing: 8
 
                         Repeater {
-                            model: root.activeItems
+                            model: root.path.length > 0 ? root.activeItems : []
 
                             delegate: Rectangle {
                                 required property var modelData
@@ -956,10 +920,7 @@ PanelWindow {
 
                             MouseArea {
                                 anchors.fill: parent
-                                onClicked: {
-                                    root.selectedIndex = index;
-                                    root.launchSelected();
-                                }
+                                onClicked: root.launchApplication(modelData)
                             }
                         }
 
@@ -994,7 +955,7 @@ PanelWindow {
                     onTextChanged: root.selectedIndex = 0
                     Keys.onPressed: function (event) {
                         if (event.key === Qt.Key_Escape) {
-                            root.close();
+                            root.dismissed();
                             event.accepted = true;
                         } else if (event.key === Qt.Key_Backspace && search.text === "") {
                             root.modeRequested("commands");
