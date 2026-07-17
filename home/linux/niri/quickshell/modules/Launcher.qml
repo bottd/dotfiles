@@ -2,12 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Widgets
 
-PopupWindow {
+PanelWindow {
     id: root
 
-    required property var parentWindow
+    required property var screen
     required property var theme
     required property bool open
     signal dismissed
@@ -25,26 +26,35 @@ PopupWindow {
         });
     }
 
-    anchor.window: root.parentWindow
-    anchor.rect.x: (root.parentWindow.width - width) / 2
-    anchor.rect.y: -height - 16
-    width: 520
-    height: 380
+    screen: root.screen
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
+    exclusiveZone: 0
+    color: "transparent"
     visible: root.open
-    grabFocus: true
-
-    onVisibleChanged: {
-        if (!visible && root.open)
-            root.dismissed();
-    }
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     onOpenChanged: {
         if (open) {
             root.query = "";
             root.selectedIndex = 0;
             search.text = "";
-            search.forceActiveFocus();
+            Qt.callLater(function () {
+                search.forceActiveFocus();
+            });
         }
+    }
+
+    onVisibleChanged: {
+        if (!visible && root.open)
+            root.dismissed();
+        else if (visible)
+            Qt.callLater(function () {
+                search.forceActiveFocus();
+            });
     }
 
     Connections {
@@ -62,8 +72,15 @@ PopupWindow {
         }
     }
 
-    Rectangle {
+    MouseArea {
         anchors.fill: parent
+        onClicked: root.dismissed()
+    }
+
+    Rectangle {
+        anchors.centerIn: parent
+        width: 520
+        height: 380
         radius: 9
         color: root.theme.base00
         border.color: root.theme.base02
@@ -80,6 +97,7 @@ PopupWindow {
                 Layout.fillWidth: true
                 placeholderText: "Launch an application"
                 text: root.query
+                focus: root.open
                 selectByMouse: true
                 font.family: root.theme.fontFamily
                 font.pixelSize: root.theme.fontSize

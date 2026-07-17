@@ -1,34 +1,49 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 
-PopupWindow {
+PanelWindow {
     id: root
 
-    required property var parentWindow
+    required property var screen
     required property var theme
     required property bool open
     required property real level
     required property string label
+    required property bool muted
     signal setVolume(real level)
     signal toggleMute
     signal dismissed
 
-    anchor.window: root.parentWindow
-    anchor.rect.x: root.parentWindow.width - width - 120
-    anchor.rect.y: -height - 10
-    width: 240
-    height: 96
+    screen: root.screen
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
+    exclusiveZone: 0
+    color: "transparent"
     visible: root.open
-    grabFocus: true
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
     onVisibleChanged: {
         if (!visible && root.open)
             root.dismissed();
     }
 
-    Rectangle {
+    MouseArea {
         anchors.fill: parent
+        onClicked: root.dismissed()
+    }
+
+    Rectangle {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 120
+        anchors.bottomMargin: 48
+        width: 240
+        height: 96
         radius: 7
         color: root.theme.base00
         border.color: root.theme.base02
@@ -44,7 +59,7 @@ PopupWindow {
 
                 Text {
                     Layout.fillWidth: true
-                    text: root.label
+                    text: root.muted ? "󰝟 muted" : root.label
                     color: root.theme.base05
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize

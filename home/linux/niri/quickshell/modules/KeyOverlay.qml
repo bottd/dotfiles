@@ -6,7 +6,7 @@ import Quickshell.Wayland
 PanelWindow {
     id: root
 
-    required property var parentWindow
+    required property var screen
     required property var theme
     required property bool open
     property var path: []
@@ -246,7 +246,7 @@ PanelWindow {
     anchors.bottom: true
     anchors.left: true
     anchors.right: true
-    screen: root.parentWindow.screen
+    screen: root.screen
     margins.bottom: 10
     margins.left: 10
     margins.right: 10

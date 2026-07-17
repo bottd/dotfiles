@@ -7,12 +7,43 @@ import Quickshell.Io
 import Quickshell.Services.UPower
 import "./modules" as Modules
 
-Variants {
+ShellRoot {
     id: root
 
-    model: Quickshell.screens
     property bool launcherOpen: false
     property bool keyOverlayOpen: false
+    property bool volumeOpen: false
+    property bool volumeMuted: false
+    property real volumeLevel: 0
+    property var volumeScreen: null
+
+    Theme {
+        id: shellTheme
+    }
+
+    function setVolume(level) {
+        Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", String(level)]);
+        root.volumeLevel = level;
+        root.refreshAudio();
+    }
+
+    function toggleMute() {
+        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
+        root.volumeMuted = !root.volumeMuted;
+        root.refreshAudio();
+    }
+
+    function toggleVolume(screen) {
+        if (root.volumeOpen && root.volumeScreen === screen) {
+            root.volumeOpen = false;
+            return;
+        }
+
+        root.volumeScreen = screen;
+        root.volumeOpen = true;
+    }
+
+    signal refreshAudio
 
     IpcHandler {
         target: "launcher"
@@ -30,259 +61,259 @@ Variants {
         }
     }
 
-    PanelWindow {
-        id: bar
+    Modules.VolumePopup {
+        screen: root.volumeScreen ? root.volumeScreen : Quickshell.screens[0]
+        theme: shellTheme
+        open: root.volumeOpen
+        level: root.volumeLevel
+        label: "󰕾 " + Math.round(root.volumeLevel * 100) + "%"
+        muted: root.volumeMuted
+        onSetVolume: level => root.setVolume(level)
+        onToggleMute: root.toggleMute()
+        onDismissed: root.volumeOpen = false
+    }
 
-        required property var modelData
-        screen: modelData
-        Theme {
-            id: theme
-        }
-        property var workspaces: []
-        property string windowTitle: ""
-        property string audioText: ""
-        property string mullvadText: ""
-        property string cellularText: ""
-        property string backlightText: ""
-        property real volumeLevel: 0
-        property bool volumeOpen: false
-        property date now: new Date()
-        property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
+    Modules.Launcher {
+        screen: Quickshell.screens[0]
+        theme: shellTheme
+        open: root.launcherOpen
+        onDismissed: root.launcherOpen = false
+    }
 
-        anchors.bottom: true
-        anchors.left: true
-        anchors.right: true
-        margins.bottom: 6
-        margins.left: 6
-        margins.right: 6
-        implicitHeight: 32
-        exclusiveZone: implicitHeight + 6
-        color: "transparent"
+    Modules.KeyOverlay {
+        screen: Quickshell.screens[0]
+        theme: shellTheme
+        open: root.keyOverlayOpen
+        onDismissed: root.keyOverlayOpen = false
+    }
 
-        function refreshNiri() {
-            if (!workspaceProcess.running)
-                workspaceProcess.running = true;
-            if (!windowProcess.running)
-                windowProcess.running = true;
-        }
+    Variants {
+        model: Quickshell.screens
 
-        function refreshStatus() {
-            if (!audioProcess.running)
-                audioProcess.running = true;
-            if (!mullvadProcess.running)
-                mullvadProcess.running = true;
-            if (!cellularProcess.running)
-                cellularProcess.running = true;
-            if (!backlightProcess.running)
-                backlightProcess.running = true;
-        }
+        PanelWindow {
+            id: bar
 
-        function focusWorkspace(index) {
-            Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", String(index)]);
-        }
+            required property var modelData
+            screen: modelData
+            Theme {
+                id: theme
+            }
+            property var workspaces: []
+            property string windowTitle: ""
+            property string audioText: ""
+            property string mullvadText: ""
+            property string cellularText: ""
+            property string backlightText: ""
+            property date now: new Date()
+            property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
 
-        function run(command) {
-            Quickshell.execDetached(command);
-        }
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
+            margins.bottom: 6
+            margins.left: 6
+            margins.right: 6
+            implicitHeight: 32
+            exclusiveZone: implicitHeight + 6
+            color: "transparent"
 
-        function setVolume(level) {
-            run(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", String(level)]);
-            audioProcess.running = true;
-        }
+            function refreshNiri() {
+                if (!workspaceProcess.running)
+                    workspaceProcess.running = true;
+                if (!windowProcess.running)
+                    windowProcess.running = true;
+            }
 
-        function toggleMute() {
-            run(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
-            audioProcess.running = true;
-        }
+            function refreshStatus() {
+                if (!audioProcess.running)
+                    audioProcess.running = true;
+                if (!mullvadProcess.running)
+                    mullvadProcess.running = true;
+                if (!cellularProcess.running)
+                    cellularProcess.running = true;
+                if (!backlightProcess.running)
+                    backlightProcess.running = true;
+            }
 
-        Timer {
-            interval: 1000
-            running: true
-            repeat: true
-            onTriggered: bar.now = new Date()
-        }
+            function focusWorkspace(index) {
+                Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", String(index)]);
+            }
 
-        Timer {
-            interval: 2000
-            running: true
-            repeat: true
-            onTriggered: bar.refreshNiri()
-        }
+            function run(command) {
+                Quickshell.execDetached(command);
+            }
 
-        Timer {
-            interval: 5000
-            running: true
-            repeat: true
-            onTriggered: bar.refreshStatus()
-        }
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: bar.now = new Date()
+            }
 
-        Process {
-            id: workspaceProcess
-            command: ["niri", "msg", "-j", "workspaces"]
-            running: true
-            stdout: StdioCollector {
-                id: workspaceOutput
-                onStreamFinished: {
-                    try {
-                        const value = JSON.parse(workspaceOutput.text);
-                        bar.workspaces = Array.isArray(value) ? value : (value.workspaces || []);
-                    } catch (error) {
-                        bar.workspaces = [];
+            Timer {
+                interval: 2000
+                running: true
+                repeat: true
+                onTriggered: bar.refreshNiri()
+            }
+
+            Timer {
+                interval: 5000
+                running: true
+                repeat: true
+                onTriggered: bar.refreshStatus()
+            }
+
+            Process {
+                id: workspaceProcess
+                command: ["niri", "msg", "-j", "workspaces"]
+                running: true
+                stdout: StdioCollector {
+                    id: workspaceOutput
+                    onStreamFinished: {
+                        try {
+                            const value = JSON.parse(workspaceOutput.text);
+                            bar.workspaces = Array.isArray(value) ? value : (value.workspaces || []);
+                        } catch (error) {
+                            bar.workspaces = [];
+                        }
                     }
                 }
             }
-        }
 
-        Process {
-            id: windowProcess
-            command: ["niri", "msg", "-j", "focused-window"]
-            running: true
-            stdout: StdioCollector {
-                id: windowOutput
-                onStreamFinished: {
-                    try {
-                        const value = JSON.parse(windowOutput.text);
-                        bar.windowTitle = value ? (value.title || "") : "";
-                    } catch (error) {
-                        bar.windowTitle = "";
+            Process {
+                id: windowProcess
+                command: ["niri", "msg", "-j", "focused-window"]
+                running: true
+                stdout: StdioCollector {
+                    id: windowOutput
+                    onStreamFinished: {
+                        try {
+                            const value = JSON.parse(windowOutput.text);
+                            bar.windowTitle = value ? (value.title || "") : "";
+                        } catch (error) {
+                            bar.windowTitle = "";
+                        }
                     }
                 }
             }
-        }
 
-        Process {
-            id: audioProcess
-            command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null"]
-            running: true
-            stdout: StdioCollector {
-                id: audioOutput
-                onStreamFinished: {
-                    const value = audioOutput.text.trim();
-                    const volume = value.match(/([0-9]+(?:\.[0-9]+)?)/);
-                    bar.volumeLevel = volume ? Math.max(0, Math.min(1, Number(volume[1]))) : 0;
-                    bar.audioText = value.includes("MUTED") ? "󰝟 muted" : ("󰕾 " + Math.round(bar.volumeLevel * 100) + "%");
-                }
-            }
-        }
-
-        Process {
-            id: mullvadProcess
-            command: ["waybar-mullvad"]
-            running: true
-            stdout: StdioCollector {
-                id: mullvadOutput
-                onStreamFinished: {
-                    try {
-                        const value = JSON.parse(mullvadOutput.text);
-                        bar.mullvadText = value.text || "";
-                    } catch (error) {
-                        bar.mullvadText = mullvadOutput.text.trim();
+            Process {
+                id: audioProcess
+                command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null"]
+                running: true
+                stdout: StdioCollector {
+                    id: audioOutput
+                    onStreamFinished: {
+                        const value = audioOutput.text.trim();
+                        const volume = value.match(/([0-9]+(?:\.[0-9]+)?)/);
+                        root.volumeLevel = volume ? Math.max(0, Math.min(1, Number(volume[1]))) : 0;
+                        root.volumeMuted = value.includes("MUTED");
+                        bar.audioText = root.volumeMuted ? "󰝟 muted" : ("󰕾 " + Math.round(root.volumeLevel * 100) + "%");
                     }
                 }
             }
-        }
 
-        Modules.VolumePopup {
-            id: volumePopup
-
-            parentWindow: bar
-            theme: theme
-            open: bar.volumeOpen
-            level: bar.volumeLevel
-            label: bar.audioText
-            onSetVolume: level => bar.setVolume(level)
-            onToggleMute: bar.toggleMute()
-            onDismissed: bar.volumeOpen = false
-        }
-
-        Modules.Launcher {
-            parentWindow: bar
-            theme: theme
-            open: root.launcherOpen && bar.screen.name === Quickshell.screens[0].name
-            onDismissed: root.launcherOpen = false
-        }
-
-        Modules.KeyOverlay {
-            parentWindow: bar
-            theme: theme
-            open: root.keyOverlayOpen && bar.screen.name === Quickshell.screens[0].name
-            onDismissed: root.keyOverlayOpen = false
-        }
-
-        Process {
-            id: cellularProcess
-            command: ["sh", "-c", "mmcli -m any --output-keyvalue 2>/dev/null"]
-            running: true
-            stdout: StdioCollector {
-                id: cellularOutput
-                onStreamFinished: {
-                    const value = cellularOutput.text;
-                    const state = value.match(/modem\.generic\.state: (.+)/);
-                    const signal = value.match(/modem\.generic\.signal-quality\.value: (.+)/);
-                    bar.cellularText = state && state[1].trim() === "connected" && signal ? "󰄋 " + signal[1].trim() + "%" : "";
+            Connections {
+                target: root
+                function onRefreshAudio() {
+                    audioProcess.running = false;
+                    audioProcess.running = true;
                 }
             }
-        }
 
-        Process {
-            id: backlightProcess
-            command: ["sh", "-c", "brightnessctl -m 2>/dev/null"]
-            running: true
-            stdout: StdioCollector {
-                id: backlightOutput
-                onStreamFinished: {
-                    const value = backlightOutput.text.trim().split(",")[4] || "";
-                    bar.backlightText = value ? "󰃟 " + value : "";
+            Process {
+                id: mullvadProcess
+                command: ["waybar-mullvad"]
+                running: true
+                stdout: StdioCollector {
+                    id: mullvadOutput
+                    onStreamFinished: {
+                        try {
+                            const value = JSON.parse(mullvadOutput.text);
+                            bar.mullvadText = value.text || "";
+                        } catch (error) {
+                            bar.mullvadText = mullvadOutput.text.trim();
+                        }
+                    }
                 }
             }
-        }
 
-        Rectangle {
-            anchors.fill: parent
-            radius: 7
-            color: theme.base00
-            border.color: theme.base02
-            border.width: 1
+            Process {
+                id: cellularProcess
+                command: ["sh", "-c", "mmcli -m any --output-keyvalue 2>/dev/null"]
+                running: true
+                stdout: StdioCollector {
+                    id: cellularOutput
+                    onStreamFinished: {
+                        const value = cellularOutput.text;
+                        const state = value.match(/modem\.generic\.state: (.+)/);
+                        const signal = value.match(/modem\.generic\.signal-quality\.value: (.+)/);
+                        bar.cellularText = state && state[1].trim() === "connected" && signal ? "󰄋 " + signal[1].trim() + "%" : "";
+                    }
+                }
+            }
 
-            RowLayout {
+            Process {
+                id: backlightProcess
+                command: ["sh", "-c", "brightnessctl -m 2>/dev/null"]
+                running: true
+                stdout: StdioCollector {
+                    id: backlightOutput
+                    onStreamFinished: {
+                        const value = backlightOutput.text.trim().split(",")[4] || "";
+                        bar.backlightText = value ? "󰃟 " + value : "";
+                    }
+                }
+            }
+
+            Rectangle {
                 anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                spacing: 8
+                radius: 7
+                color: theme.base00
+                border.color: theme.base02
+                border.width: 1
 
-                Modules.WorkspaceList {
-                    workspaces: bar.workspaces
-                    screenName: bar.screen.name
-                    theme: theme
-                    onFocusWorkspace: index => bar.focusWorkspace(index)
-                }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                    spacing: 8
 
-                Text {
-                    Layout.fillWidth: true
-                    text: bar.windowTitle
-                    elide: Text.ElideRight
-                    color: theme.base05
-                    font.family: theme.fontFamily
-                    font.pixelSize: theme.fontSize
-                }
+                    Modules.WorkspaceList {
+                        workspaces: bar.workspaces
+                        screenName: bar.screen.name
+                        theme: theme
+                        onFocusWorkspace: index => bar.focusWorkspace(index)
+                    }
 
-                Modules.SystemTray {
-                    parentWindow: bar
-                    theme: theme
-                }
+                    Text {
+                        Layout.fillWidth: true
+                        text: bar.windowTitle
+                        elide: Text.ElideRight
+                        color: theme.base05
+                        font.family: theme.fontFamily
+                        font.pixelSize: theme.fontSize
+                    }
 
-                Modules.StatusModules {
-                    audioText: bar.audioText
-                    mullvadText: bar.mullvadText
-                    cellularText: bar.cellularText
-                    backlightText: bar.backlightText
-                    battery: bar.battery
-                    now: bar.now
-                    theme: theme
-                    onAudioClicked: bar.volumeOpen = !bar.volumeOpen
-                    onMullvadClicked: bar.run(["waybar-mullvad", "toggle"])
-                    onCellularClicked: bar.run(["nm-connection-editor"])
-                    onBacklightWheel: increase => bar.run(["brightnessctl", "set", increase ? "5%+" : "5%-"])
+                    Modules.SystemTray {
+                        parentWindow: bar
+                        theme: theme
+                    }
+
+                    Modules.StatusModules {
+                        audioText: bar.audioText
+                        mullvadText: bar.mullvadText
+                        cellularText: bar.cellularText
+                        backlightText: bar.backlightText
+                        battery: bar.battery
+                        now: bar.now
+                        theme: theme
+                        onAudioClicked: root.toggleVolume(bar.screen)
+                        onMullvadClicked: bar.run(["waybar-mullvad", "toggle"])
+                        onCellularClicked: bar.run(["nm-connection-editor"])
+                        onBacklightWheel: increase => bar.run(["brightnessctl", "set", increase ? "5%+" : "5%-"])
+                    }
                 }
             }
         }
