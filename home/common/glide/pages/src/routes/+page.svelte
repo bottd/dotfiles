@@ -12,7 +12,20 @@
     url?: string;
   };
 
+  type AstronomyPicture = {
+    copyright?: string;
+    date: string;
+    explanation: string;
+    hdurl?: string;
+    media_type: "image" | "video";
+    thumbnail_url?: string;
+    title: string;
+    url: string;
+  };
+
   const hackerNewsApi = "https://hacker-news.firebaseio.com/v0";
+  const astronomyPictureApi =
+    "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true";
   const mediaUrls = [
     "https://destiny.gg/",
     "https://youtube.com/",
@@ -53,7 +66,11 @@
   let stories: HackerNewsStory[] = [];
   let loading = true;
   let error = false;
-  let controller: AbortController;
+  let storiesController: AbortController;
+  let astronomyPicture: AstronomyPicture | undefined;
+  let astronomyPictureLoading = true;
+  let astronomyPictureError = false;
+  let astronomyPictureController: AbortController;
 
   function storyUrl(story: HackerNewsStory) {
     return story.url ?? `https://news.ycombinator.com/item?id=${story.id}`;
@@ -88,14 +105,14 @@
   }
 
   async function loadStories() {
-    controller?.abort();
-    controller = new AbortController();
+    storiesController?.abort();
+    storiesController = new AbortController();
     loading = true;
     error = false;
 
     try {
       const topResponse = await fetch(`${hackerNewsApi}/topstories.json`, {
-        signal: controller.signal,
+        signal: storiesController.signal,
       });
       if (!topResponse.ok) throw new Error("Could not load Hacker News");
 
@@ -103,7 +120,7 @@
       const responses = await Promise.all(
         ids.slice(0, 8).map((id) =>
           fetch(`${hackerNewsApi}/item/${id}.json`, {
-            signal: controller.signal,
+            signal: storiesController.signal,
           }),
         ),
       );
@@ -127,9 +144,78 @@
     }
   }
 
+  function astronomyPictureUrl(picture: AstronomyPicture) {
+    return picture.media_type === "image" ? picture.url : picture.thumbnail_url;
+  }
+
+  function astronomyPictureTarget(picture: AstronomyPicture) {
+    return picture.media_type === "image"
+      ? (picture.hdurl ?? picture.url)
+      : picture.url;
+  }
+
+  function astronomyPictureDate(date: string) {
+    return new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  async function loadAstronomyPicture() {
+    astronomyPictureController?.abort();
+    astronomyPictureController = new AbortController();
+    astronomyPictureLoading = true;
+    astronomyPictureError = false;
+    const cacheKey = `nasa-apod:${new Date().toLocaleDateString("en-CA")}`;
+
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const picture = JSON.parse(cached) as AstronomyPicture;
+        if (astronomyPictureUrl(picture)) {
+          astronomyPicture = picture;
+          astronomyPictureLoading = false;
+          return;
+        }
+      }
+    } catch {
+      // Fetch a fresh copy when storage is unavailable or stale.
+    }
+
+    try {
+      const response = await fetch(astronomyPictureApi, {
+        signal: astronomyPictureController.signal,
+      });
+      if (!response.ok) throw new Error("Could not load NASA APOD");
+
+      const picture = (await response.json()) as AstronomyPicture;
+      if (!astronomyPictureUrl(picture)) {
+        throw new Error("NASA APOD did not provide an image");
+      }
+
+      astronomyPicture = picture;
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(picture));
+      } catch {
+        // The image can still be displayed without browser storage.
+      }
+    } catch (cause) {
+      if (!(cause instanceof DOMException && cause.name === "AbortError")) {
+        astronomyPictureError = true;
+      }
+    } finally {
+      astronomyPictureLoading = false;
+    }
+  }
+
   onMount(() => {
     loadStories();
-    return () => controller?.abort();
+    loadAstronomyPicture();
+    return () => {
+      storiesController?.abort();
+      astronomyPictureController?.abort();
+    };
   });
 </script>
 
@@ -137,7 +223,7 @@
   <title>New tab</title>
   <meta
     name="description"
-    content="Glide new tab with Hacker News, Wikipedia, and media shortcuts"
+    content="Glide new tab with Hacker News, Wikipedia, media shortcuts, and NASA's astronomy picture of the day"
   />
 </svelte:head>
 
@@ -154,13 +240,6 @@
         class="hn-frame min-w-0 overflow-hidden"
         aria-labelledby="hacker-news-title"
       >
-        <div class="browser-bar" aria-hidden="true">
-          <span class="browser-dot"></span>
-          <span class="browser-dot"></span>
-          <span class="browser-dot"></span>
-          <span class="browser-address">news.ycombinator.com</span>
-        </div>
-
         <div class="hn-page">
           <header class="hn-header">
             <a
@@ -254,19 +333,12 @@
           <div
             class="widget-header flex items-center justify-between border-b border-base02 px-5 py-4"
           >
-            <div>
-              <p
-                class="widget-kicker m-0 text-[9px] font-semibold tracking-[0.22em] text-base04 uppercase"
-              >
-                Reference
-              </p>
-              <h2
-                id="wiki-title"
-                class="m-0 mt-1 text-base font-medium text-base07"
-              >
-                Wikipedia
-              </h2>
-            </div>
+            <h2
+              id="wiki-title"
+              class="m-0 text-base font-medium text-base07"
+            >
+              Wikipedia
+            </h2>
             <span class="wiki-mark text-3xl text-base06" aria-hidden="true"
               >W</span
             >
@@ -330,14 +402,9 @@
           aria-labelledby="media-title"
         >
           <div class="widget-header border-b border-base02 px-5 py-4">
-            <p
-              class="widget-kicker m-0 text-[9px] font-semibold tracking-[0.22em] text-base04 uppercase"
-            >
-              Channels
-            </p>
             <h2
               id="media-title"
-              class="m-0 mt-1 text-base font-medium text-base07"
+              class="m-0 text-base font-medium text-base07"
             >
               Media
             </h2>
@@ -365,33 +432,73 @@
     </div>
 
     <section
-      class="widget mt-4 overflow-hidden"
-      aria-label="Counterscale analytics"
+      class="widget relative mt-4 h-[clamp(420px,62vh,700px)] overflow-hidden border border-base03 bg-base01"
+      aria-labelledby="astronomy-picture-title"
+      aria-live="polite"
     >
-      <div class="browser-bar">
-        <span class="browser-dot" aria-hidden="true"></span>
-        <span class="browser-dot" aria-hidden="true"></span>
-        <span class="browser-dot" aria-hidden="true"></span>
-        <a
-          class="browser-address flex-1 text-inherit no-underline"
-          href="https://a.drake.dev/dashboard"
+      {#if astronomyPictureLoading}
+        <div
+          class="h-full w-full animate-pulse bg-gradient-to-br from-base01 via-base02 to-base00"
+          aria-label="Loading NASA astronomy picture of the day"
+        ></div>
+      {:else if astronomyPictureError || !astronomyPicture}
+        <div
+          class="grid h-full place-content-center justify-items-center gap-3"
         >
-          a.drake.dev/dashboard
-        </a>
+          <p class="m-0 text-sm text-base05">
+            NASA's astronomy picture could not be reached.
+          </p>
+          <button
+            class="cursor-pointer border border-base03 bg-base02 px-3 py-1.5 text-xs text-base06 hover:border-base0D hover:text-base07"
+            type="button"
+            onclick={loadAstronomyPicture}
+          >
+            Try again
+          </button>
+        </div>
+      {:else}
         <a
-          class="px-1 text-xs text-base04 no-underline hover:text-base07"
-          href="https://a.drake.dev/dashboard"
-          aria-label="Open Counterscale analytics"
+          class="block h-full bg-black"
+          href={astronomyPictureTarget(astronomyPicture)}
+          aria-label={`Open ${astronomyPicture.title}`}
         >
-          ↗
+          <img
+            class="h-full w-full object-cover"
+            src={astronomyPictureUrl(astronomyPicture)}
+            alt={astronomyPicture.title}
+          />
         </a>
-      </div>
-      <iframe
-        class="block h-[520px] w-full border border-base03 border-t-0 bg-white sm:h-[640px]"
-        src="https://a.drake.dev/dashboard"
-        title="Counterscale analytics"
-        referrerpolicy="no-referrer"
-      ></iframe>
+        <div
+          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/65 to-transparent px-5 pb-5 pt-28 text-white sm:px-7 sm:pb-7"
+        >
+          <p
+            class="m-0 text-[9px] font-semibold tracking-[0.22em] text-white/65 uppercase"
+          >
+            NASA astronomy picture of the day · {astronomyPictureDate(
+              astronomyPicture.date,
+            )}
+          </p>
+          <h2
+            id="astronomy-picture-title"
+            class="m-0 mt-2 text-2xl font-medium tracking-[-0.025em] text-white sm:text-3xl"
+          >
+            {astronomyPicture.title}
+          </h2>
+          <p
+            class="m-0 mt-2 max-w-3xl line-clamp-3 text-xs leading-5 text-white/75 sm:text-sm"
+          >
+            {astronomyPicture.explanation}
+          </p>
+          <p class="m-0 mt-3 text-[10px] text-white/55">
+            {astronomyPicture.copyright
+              ? `Image: ${astronomyPicture.copyright}`
+              : "Image: NASA"}
+            {astronomyPicture.media_type === "video"
+              ? " · Video thumbnail"
+              : ""}
+          </p>
+        </div>
+      {/if}
     </section>
   </div>
 </main>

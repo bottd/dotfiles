@@ -27,143 +27,6 @@ PanelWindow {
 
     readonly property var menu: [
         {
-            key: "f",
-            label: "Focus",
-            description: "Move focus",
-            items: [
-                {
-                    key: "h",
-                    label: "Focus left",
-                    action: "focus-column-left"
-                },
-                {
-                    key: "l",
-                    label: "Focus right",
-                    action: "focus-column-right"
-                },
-                {
-                    key: "j",
-                    label: "Focus down",
-                    action: "focus-window-down"
-                },
-                {
-                    key: "k",
-                    label: "Focus up",
-                    action: "focus-window-up"
-                },
-                {
-                    key: "m",
-                    label: "Focus floating/tiling",
-                    action: "switch-focus-between-floating-and-tiling"
-                }
-            ]
-        },
-        {
-            key: "m",
-            label: "Move",
-            description: "Move columns and windows",
-            items: [
-                {
-                    key: "h",
-                    label: "Move column left",
-                    action: "move-column-left"
-                },
-                {
-                    key: "l",
-                    label: "Move column right",
-                    action: "move-column-right"
-                },
-                {
-                    key: "j",
-                    label: "Move window down",
-                    action: "move-window-down"
-                },
-                {
-                    key: "k",
-                    label: "Move window up",
-                    action: "move-window-up"
-                },
-                {
-                    key: "H",
-                    label: "Move to monitor left",
-                    action: "move-window-to-monitor-left"
-                },
-                {
-                    key: "L",
-                    label: "Move to monitor right",
-                    action: "move-window-to-monitor-right"
-                }
-            ]
-        },
-        {
-            key: "w",
-            label: "Workspace",
-            description: "Switch workspace",
-            items: [
-                {
-                    key: "u",
-                    label: "Previous workspace",
-                    action: "focus-workspace-down"
-                },
-                {
-                    key: "i",
-                    label: "Next workspace",
-                    action: "focus-workspace-up"
-                }
-            ].concat(Array.from({
-                length: 9
-            }, (_, index) => ({
-                        key: String(index + 1),
-                        label: "Workspace " + String(index + 1),
-                        action: "focus-workspace",
-                        arguments: [String(index + 1)]
-                    })))
-        },
-        {
-            key: "s",
-            label: "Layout",
-            description: "Size and arrangement",
-            items: [
-                {
-                    key: "f",
-                    label: "Maximize column",
-                    action: "maximize-column"
-                },
-                {
-                    key: "F",
-                    label: "Fullscreen window",
-                    action: "fullscreen-window"
-                },
-                {
-                    key: "c",
-                    label: "Center column",
-                    action: "center-column"
-                },
-                {
-                    key: "r",
-                    label: "Cycle column width",
-                    action: "switch-preset-column-width"
-                },
-                {
-                    key: "-",
-                    label: "Narrow column",
-                    action: "set-column-width",
-                    arguments: ["-10%"]
-                },
-                {
-                    key: "=",
-                    label: "Widen column",
-                    action: "set-column-width",
-                    arguments: ["+10%"]
-                },
-                {
-                    key: "t",
-                    label: "Toggle floating",
-                    action: "toggle-window-floating"
-                }
-            ]
-        },
-        {
             key: "p",
             label: "Power",
             description: "Session actions",
@@ -192,32 +55,48 @@ PanelWindow {
         },
         {
             key: "a",
-            label: "Airplane mode",
-            description: "Toggle all radios",
-            command: ["sh", "-c", "if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then rfkill block all; else rfkill unblock all; fi"]
+            label: "Apps",
+            description: "Quick launch common apps",
+            items: [
+                {
+                    key: "d",
+                    label: "Equibop",
+                    application: "Discord"
+                },
+                {
+                    key: "s",
+                    label: "Steam",
+                    application: "Steam"
+                },
+                {
+                    key: "b",
+                    label: "Glide",
+                    application: "Glide"
+                }
+            ]
+        },
+        {
+            key: "m",
+            label: "Meta",
+            description: "System controls",
+            items: [
+                {
+                    key: "a",
+                    label: "Airplane mode",
+                    description: "Toggle all radios",
+                    command: ["sh", "-c", "if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then rfkill block all; else rfkill unblock all; fi"]
+                }
+            ]
         },
         {
             key: "d",
             label: "Launcher",
             description: "Search applications",
             targetMode: "launcher"
-        },
-        {
-            key: "q",
-            label: "Close window",
-            description: "Close the focused window",
-            action: "close-window"
-        },
-        {
-            key: "e",
-            label: "Exit Niri",
-            description: "Quit the compositor",
-            action: "quit"
         }
     ]
 
     readonly property var activeItems: root.path.length === 0 ? root.menu : root.path[root.path.length - 1].items
-    readonly property string breadcrumb: root.path.length === 0 ? "OVERVIEW" : root.path.map(item => item.label).join("  /  ")
     readonly property var commonApplications: ["Glide", "Ghostty", "Spotify", "Discord"].map(name => root.applicationIndex.find(entry => entry.name.toLowerCase() === name.toLowerCase())).filter(entry => entry)
     readonly property var recentApplications: recentState.apps.map(id => root.applicationIndex.find(entry => entry.id === id)).filter(entry => entry)
     readonly property date monthStart: new Date(root.now.getFullYear(), root.now.getMonth(), 1)
@@ -327,6 +206,13 @@ PanelWindow {
 
         if (item.targetMode) {
             root.modeRequested(item.targetMode);
+            return;
+        }
+
+        if (item.application) {
+            const entry = root.applicationIndex.find(candidate => candidate.name.toLowerCase() === item.application.toLowerCase());
+            if (entry)
+                root.launchApplication(entry);
             return;
         }
 
@@ -517,29 +403,6 @@ PanelWindow {
                 anchors.margins: 16
                 spacing: 10
 
-                RowLayout {
-                    Layout.fillWidth: true
-
-                    Text {
-                        text: root.mode === "launcher" ? "APPLICATIONS" : root.breadcrumb
-                        color: root.theme.base0D
-                        font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize
-                        font.bold: true
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                    }
-
-                    Text {
-                        text: root.mode === "launcher" ? "BACKSPACE on empty returns  /  SUPER closes" : root.journalFocused ? "NVIM ACTIVE  /  SUPER hides" : "ESC back  /  SUPER closes"
-                        color: root.theme.base03
-                        font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize - 1
-                    }
-                }
-
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -681,7 +544,7 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base02
+                            color: root.theme.base0D
                         }
 
                         ColumnLayout {
@@ -749,7 +612,7 @@ PanelWindow {
                             }
 
                             Text {
-                                text: "d apps   j journal   esc close"
+                                text: "a quick apps   d all apps   j journal"
                                 color: root.theme.base05
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
@@ -763,7 +626,7 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base02
+                            color: root.theme.base0D
                         }
 
                         ColumnLayout {
@@ -886,72 +749,79 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base02
+                            color: root.theme.base0D
                         }
 
-                        ColumnLayout {
+                        Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             Layout.preferredWidth: 2
-                            spacing: 6
 
-                            Text {
-                                Layout.alignment: Qt.AlignRight
-                                text: Qt.formatDate(root.now, "MMMM yyyy").toUpperCase()
-                                color: root.theme.base0D
-                                font.family: root.theme.fontFamily
-                                font.pixelSize: root.theme.fontSize
-                                font.bold: true
-                            }
+                            ColumnLayout {
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                                width: parent.width / 2
+                                spacing: 6
 
-                            GridLayout {
-                                Layout.fillWidth: true
-                                columns: 7
-                                columnSpacing: 4
-                                rowSpacing: 3
-
-                                Repeater {
-                                    model: ["M", "T", "W", "T", "F", "S", "S"]
-
-                                    delegate: Text {
-                                        required property string modelData
-
-                                        Layout.fillWidth: true
-                                        horizontalAlignment: Text.AlignHCenter
-                                        text: modelData
-                                        color: root.theme.base03
-                                        font.family: root.theme.fontFamily
-                                        font.pixelSize: root.theme.fontSize - 2
-                                    }
+                                Text {
+                                    Layout.alignment: Qt.AlignRight
+                                    text: Qt.formatDate(root.now, "MMMM yyyy").toUpperCase()
+                                    color: root.theme.base0D
+                                    font.family: root.theme.fontFamily
+                                    font.pixelSize: root.theme.fontSize
+                                    font.bold: true
                                 }
 
-                                Repeater {
-                                    model: 42
+                                GridLayout {
+                                    Layout.fillWidth: true
+                                    columns: 7
+                                    columnSpacing: 4
+                                    rowSpacing: 3
 
-                                    delegate: Rectangle {
-                                        required property int index
-                                        readonly property var day: root.calendarDay(index)
-                                        readonly property bool today: day === root.now.getDate()
+                                    Repeater {
+                                        model: ["M", "T", "W", "T", "F", "S", "S"]
 
-                                        Layout.fillWidth: true
-                                        implicitHeight: 27
-                                        radius: 4
-                                        color: today ? root.theme.base0D : "transparent"
+                                        delegate: Text {
+                                            required property string modelData
 
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: day
-                                            color: parent.today ? root.theme.base00 : root.theme.base05
+                                            Layout.fillWidth: true
+                                            horizontalAlignment: Text.AlignHCenter
+                                            text: modelData
+                                            color: root.theme.base03
                                             font.family: root.theme.fontFamily
-                                            font.pixelSize: root.theme.fontSize - 1
-                                            font.bold: parent.today
+                                            font.pixelSize: root.theme.fontSize - 2
+                                        }
+                                    }
+
+                                    Repeater {
+                                        model: 42
+
+                                        delegate: Rectangle {
+                                            required property int index
+                                            readonly property var day: root.calendarDay(index)
+                                            readonly property bool today: day === root.now.getDate()
+
+                                            Layout.fillWidth: true
+                                            implicitHeight: 27
+                                            radius: 4
+                                            color: today ? root.theme.base0D : "transparent"
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: day
+                                                color: parent.today ? root.theme.base00 : root.theme.base05
+                                                font.family: root.theme.fontFamily
+                                                font.pixelSize: root.theme.fontSize - 1
+                                                font.bold: parent.today
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            Item {
-                                Layout.fillHeight: true
+                                Item {
+                                    Layout.fillHeight: true
+                                }
                             }
                         }
                     }

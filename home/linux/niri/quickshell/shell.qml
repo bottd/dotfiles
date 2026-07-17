@@ -138,7 +138,7 @@ ShellRoot {
             anchors.left: true
             anchors.right: true
             implicitHeight: 1
-            exclusiveZone: 38
+            exclusiveZone: 32
             color: "transparent"
         }
     }
@@ -166,7 +166,7 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            margins.bottom: keyOverlay.presented && root.drawerScreen === modelData ? keyOverlay.implicitHeight : 6
+            margins.bottom: keyOverlay.presented && root.drawerScreen === modelData ? keyOverlay.implicitHeight : 0
             margins.left: 0
             margins.right: 0
             implicitHeight: 32
@@ -299,7 +299,7 @@ ShellRoot {
 
             Rectangle {
                 anchors.fill: parent
-                radius: 7
+                radius: 0
                 color: theme.base00
                 border.color: theme.base02
                 border.width: 1
