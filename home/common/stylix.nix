@@ -28,7 +28,6 @@ in
     };
 
     targets = {
-      firefox.profileNames = [ "default" ];
       # disable to prevent conflicts with kde
       gtk.enable = false;
     };

@@ -4,33 +4,41 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 import "./modules" as Modules
 
 ShellRoot {
     id: root
 
-    property bool launcherOpen: false
-    property bool keyOverlayOpen: false
+    property bool drawerOpen: false
+    property string drawerMode: "commands"
+    property string pendingDrawerMode: ""
+    property var drawerScreen: null
     property bool volumeOpen: false
-    property bool volumeMuted: false
-    property real volumeLevel: 0
     property var volumeScreen: null
+    readonly property var audioSink: Pipewire.defaultAudioSink
+    readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
+    readonly property real volumeLevel: root.audioReady ? root.audioSink.audio.volume : 0
+    readonly property bool volumeMuted: root.audioReady ? root.audioSink.audio.muted : false
+    readonly property string audioText: root.audioReady ? (root.volumeMuted ? "󰝟 muted" : ("󰕾 " + Math.round(root.volumeLevel * 100) + "%")) : ""
 
     Theme {
         id: shellTheme
     }
 
+    PwObjectTracker {
+        objects: root.audioSink ? [root.audioSink] : []
+    }
+
     function setVolume(level) {
-        Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", String(level)]);
-        root.volumeLevel = level;
-        root.refreshAudio();
+        if (root.audioReady)
+            root.audioSink.audio.volume = Math.max(0, Math.min(1, level));
     }
 
     function toggleMute() {
-        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
-        root.volumeMuted = !root.volumeMuted;
-        root.refreshAudio();
+        if (root.audioReady)
+            root.audioSink.audio.muted = !root.audioSink.audio.muted;
     }
 
     function toggleVolume(screen) {
@@ -43,13 +51,48 @@ ShellRoot {
         root.volumeOpen = true;
     }
 
-    signal refreshAudio
+    function toggleDrawer(mode) {
+        if (root.drawerOpen && root.drawerMode === mode) {
+            root.drawerOpen = false;
+            return;
+        }
+
+        if (root.drawerOpen) {
+            root.drawerMode = mode;
+            return;
+        }
+
+        root.pendingDrawerMode = mode;
+        if (!focusedOutputProcess.running)
+            focusedOutputProcess.running = true;
+    }
+
+    Process {
+        id: focusedOutputProcess
+
+        command: ["niri", "msg", "-j", "focused-output"]
+        stdout: StdioCollector {
+            id: focusedOutput
+
+            onStreamFinished: {
+                let outputName = "";
+                try {
+                    outputName = JSON.parse(focusedOutput.text).name || "";
+                } catch (error) {}
+
+                root.drawerScreen = Quickshell.screens.find(screen => screen.name === outputName) || Quickshell.screens[0];
+                root.drawerMode = root.pendingDrawerMode || "commands";
+                root.pendingDrawerMode = "";
+                root.drawerOpen = true;
+            }
+        }
+    }
 
     IpcHandler {
         target: "launcher"
 
         function toggle(): void {
-            root.launcherOpen = !root.launcherOpen;
+            root.toggleDrawer("launcher");
         }
     }
 
@@ -57,7 +100,7 @@ ShellRoot {
         target: "key-overlay"
 
         function toggle(): void {
-            root.keyOverlayOpen = !root.keyOverlayOpen;
+            root.toggleDrawer("commands");
         }
     }
 
@@ -73,18 +116,13 @@ ShellRoot {
         onDismissed: root.volumeOpen = false
     }
 
-    Modules.Launcher {
-        screen: Quickshell.screens[0]
-        theme: shellTheme
-        open: root.launcherOpen
-        onDismissed: root.launcherOpen = false
-    }
-
     Modules.KeyOverlay {
-        screen: Quickshell.screens[0]
+        screen: root.drawerScreen ? root.drawerScreen : Quickshell.screens[0]
         theme: shellTheme
-        open: root.keyOverlayOpen
-        onDismissed: root.keyOverlayOpen = false
+        open: root.drawerOpen
+        mode: root.drawerMode
+        onDismissed: root.drawerOpen = false
+        onModeRequested: mode => root.drawerMode = mode
     }
 
     Variants {
@@ -100,7 +138,7 @@ ShellRoot {
             }
             property var workspaces: []
             property string windowTitle: ""
-            property string audioText: ""
+            property string audioText: root.audioText
             property string mullvadText: ""
             property string cellularText: ""
             property string backlightText: ""
@@ -125,8 +163,6 @@ ShellRoot {
             }
 
             function refreshStatus() {
-                if (!audioProcess.running)
-                    audioProcess.running = true;
                 if (!mullvadProcess.running)
                     mullvadProcess.running = true;
                 if (!cellularProcess.running)
@@ -195,30 +231,6 @@ ShellRoot {
                             bar.windowTitle = "";
                         }
                     }
-                }
-            }
-
-            Process {
-                id: audioProcess
-                command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null"]
-                running: true
-                stdout: StdioCollector {
-                    id: audioOutput
-                    onStreamFinished: {
-                        const value = audioOutput.text.trim();
-                        const volume = value.match(/([0-9]+(?:\.[0-9]+)?)/);
-                        root.volumeLevel = volume ? Math.max(0, Math.min(1, Number(volume[1]))) : 0;
-                        root.volumeMuted = value.includes("MUTED");
-                        bar.audioText = root.volumeMuted ? "󰝟 muted" : ("󰕾 " + Math.round(root.volumeLevel * 100) + "%");
-                    }
-                }
-            }
-
-            Connections {
-                target: root
-                function onRefreshAudio() {
-                    audioProcess.running = false;
-                    audioProcess.running = true;
                 }
             }
 

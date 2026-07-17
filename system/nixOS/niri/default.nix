@@ -4,6 +4,18 @@
   # agent, the swaylock PAM service, and the niri.cachix.org substituter.
   imports = [ inputs.niri.nixosModules.niri ];
 
+  # Tap Super to emit F13 while preserving Super as the modifier for chords.
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings = {
+        global.overload_tap_timeout = 200;
+        main.leftmeta = "overload(meta, f13)";
+      };
+    };
+  };
+
   programs.niri = {
     enable = true;
     # git-main niri. niri-flake doesn't apply its overlay globally, so reference

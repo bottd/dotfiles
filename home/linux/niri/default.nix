@@ -26,22 +26,19 @@ in
     swaylock
     brightnessctl
     playerctl
+    quickshell
+    gtk3 # gtk-launch preserves complete desktop-entry launch semantics
+    xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
   ] ++ lib.optionals features.gui [
-    # Desktop chrome — skipped on gui = false hosts (eink).
     pavucontrol
     networkmanagerapplet # nm-connection-editor for the bar's on-click
     xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
-    quickshell
   ];
 
   xdg.configFile = {
-    "quickshell/shell.qml" = lib.mkIf features.gui {
-      source = ./quickshell/shell.qml;
-    };
-    "quickshell/modules" = lib.mkIf features.gui {
-      source = ./quickshell/modules;
-    };
-    "quickshell/Theme.qml" = lib.mkIf features.gui {
+    "quickshell/shell.qml".source = ./quickshell/shell.qml;
+    "quickshell/modules".source = ./quickshell/modules;
+    "quickshell/Theme.qml" = {
       text = ''
         import QtQuick
 
@@ -54,12 +51,22 @@ in
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
+            readonly property bool animationsEnabled: ${lib.boolToString features.gui}
+            readonly property var launcherCommand: ${builtins.toJSON [
+              "${pkgs.systemd}/bin/systemd-run"
+              "--user"
+              "--scope"
+              "--quiet"
+              "--collect"
+              "--"
+              "${pkgs.gtk3}/bin/gtk-launch"
+            ]}
         }
       '';
     };
   };
 
-  systemd.user.services.quickshell = lib.mkIf features.gui {
+  systemd.user.services.quickshell = {
     Unit = {
       Description = "Quickshell desktop panel";
       After = [ "graphical-session.target" ];
@@ -138,6 +145,10 @@ in
 
         "Mod+Return".action = spawn "ghostty";
         "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
+        "F13" = {
+          repeat = false;
+          action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+        };
         "Mod+Q".action = close-window;
         "Mod+Alt+L".action = spawn "swaylock";
 
@@ -212,9 +223,7 @@ in
           { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
         ])
         (lib.range 1 9))
-      # The overlay is only installed/configured when features.gui, so the bind
-      # would call a missing shell on eink.
-      // lib.optionalAttrs features.gui {
+      // {
         "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
       };
     };

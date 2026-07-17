@@ -9,6 +9,10 @@ in
     image = null;
 
     fonts = {
+      sansSerif = {
+        name = "Inter";
+        package = pkgs.inter;
+      };
       monospace = {
         name = "MonoLisa Nerd Font";
         # MonoLisa itself is a commercial font installed outside Nix, so `name`

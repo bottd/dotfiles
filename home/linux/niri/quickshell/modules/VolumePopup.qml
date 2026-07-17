@@ -17,33 +17,21 @@ PanelWindow {
     signal dismissed
 
     screen: root.screen
-    anchors.top: true
     anchors.bottom: true
-    anchors.left: true
     anchors.right: true
-    exclusiveZone: 0
+    margins.bottom: 48
+    margins.right: 120
+    implicitWidth: 240
+    implicitHeight: 96
+    exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     visible: root.open
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-
-    onVisibleChanged: {
-        if (!visible && root.open)
-            root.dismissed();
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: root.dismissed()
-    }
+    WlrLayershell.namespace: "drake-volume-popup"
 
     Rectangle {
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 120
-        anchors.bottomMargin: 48
-        width: 240
-        height: 96
+        anchors.fill: parent
         radius: 7
         color: root.theme.base00
         border.color: root.theme.base02
@@ -84,10 +72,11 @@ PanelWindow {
                 Layout.fillWidth: true
                 height: 8
                 radius: 4
+                clip: true
                 color: root.theme.base02
 
                 Rectangle {
-                    width: track.width * root.level
+                    width: track.width * Math.max(0, Math.min(1, root.level))
                     height: parent.height
                     radius: parent.radius
                     color: root.theme.base0D
