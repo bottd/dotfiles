@@ -69,6 +69,9 @@ in
     "quickshell/shell.qml" = lib.mkIf features.gui {
       source = ./quickshell/shell.qml;
     };
+    "quickshell/modules" = lib.mkIf features.gui {
+      source = ./quickshell/modules;
+    };
     "quickshell/Theme.qml" = lib.mkIf features.gui {
       text = ''
         import QtQuick
@@ -249,7 +252,7 @@ in
   };
 
   services.mako.enable = features.gui;
-  # Network management is the Quickshell network module (on-click
-  # nm-connection-editor) + blueman for bluetooth; no separate nm-applet tray.
+  # NetworkManager and Blueman provide tray applets; Quickshell renders their
+  # menus in the panel and keeps the click interaction in the tray.
   # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).
 }

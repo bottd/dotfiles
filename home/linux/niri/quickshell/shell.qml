@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import Quickshell.Services.SystemTray
 import Quickshell.Services.UPower
-import Quickshell.Widgets
+import "./modules" as Modules
 
 Variants {
     model: Quickshell.screens
@@ -14,9 +13,11 @@ Variants {
 
         required property var modelData
         screen: modelData
+        Theme {
+            id: theme
+        }
         property var workspaces: []
         property string windowTitle: ""
-        property string networkText: ""
         property string audioText: ""
         property string mullvadText: ""
         property string cellularText: ""
@@ -25,6 +26,8 @@ Variants {
         property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
 
         anchors.bottom: true
+        anchors.left: true
+        anchors.right: true
         margins.bottom: 6
         margins.left: 6
         margins.right: 6
@@ -40,8 +43,6 @@ Variants {
         }
 
         function refreshStatus() {
-            if (!networkProcess.running)
-                networkProcess.running = true;
             if (!audioProcess.running)
                 audioProcess.running = true;
             if (!mullvadProcess.running)
@@ -50,20 +51,6 @@ Variants {
                 cellularProcess.running = true;
             if (!backlightProcess.running)
                 backlightProcess.running = true;
-        }
-
-        function workspaceList() {
-            const visible = workspaces.filter(workspace => workspace.output === screen.name);
-            if (visible.length > 0)
-                return visible.sort((a, b) => a.idx - b.idx);
-
-            return Array.from({
-                length: 9
-            }, (_, index) => ({
-                        idx: index + 1,
-                        is_focused: false,
-                        is_active: false
-                    }));
         }
 
         function focusWorkspace(index) {
@@ -130,27 +117,6 @@ Variants {
         }
 
         Process {
-            id: networkProcess
-            command: ["sh", "-c", "nmcli -t -f TYPE,STATE,CONNECTION dev 2>/dev/null"]
-            running: true
-            stdout: StdioCollector {
-                id: networkOutput
-                onStreamFinished: {
-                    const line = networkOutput.text.trim().split("\n").find(value => value.includes(":connected:"));
-                    if (!line) {
-                        bar.networkText = "󰤭 off";
-                        return;
-                    }
-
-                    const fields = line.split(":");
-                    const type = fields[0];
-                    const connection = fields.slice(2).join(":");
-                    bar.networkText = (type === "wifi" ? "󰤨 " : "󰈀 ") + connection;
-                }
-            }
-        }
-
-        Process {
             id: audioProcess
             command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null"]
             running: true
@@ -212,8 +178,8 @@ Variants {
         Rectangle {
             anchors.fill: parent
             radius: 7
-            color: Theme.base00
-            border.color: Theme.base02
+            color: theme.base00
+            border.color: theme.base02
             border.width: 1
 
             RowLayout {
@@ -222,154 +188,39 @@ Variants {
                 anchors.rightMargin: 10
                 spacing: 8
 
-                RowLayout {
-                    spacing: 4
-
-                    Repeater {
-                        model: bar.workspaceList()
-
-                        delegate: Rectangle {
-                            required property var modelData
-
-                            implicitWidth: 22
-                            implicitHeight: 22
-                            radius: 5
-                            color: modelData.is_focused ? Theme.base0D : Theme.base02
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: modelData.idx
-                                color: modelData.is_focused ? Theme.base00 : Theme.base05
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: bar.focusWorkspace(modelData.idx)
-                            }
-                        }
-                    }
+                Modules.WorkspaceList {
+                    workspaces: bar.workspaces
+                    screenName: bar.screen.name
+                    theme: theme
+                    onFocusWorkspace: index => bar.focusWorkspace(index)
                 }
 
                 Text {
                     Layout.fillWidth: true
                     text: bar.windowTitle
                     elide: Text.ElideRight
-                    color: Theme.base05
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize
+                    color: theme.base05
+                    font.family: theme.fontFamily
+                    font.pixelSize: theme.fontSize
                 }
 
-                RowLayout {
-                    spacing: 8
+                Modules.SystemTray {
+                    parentWindow: bar
+                    theme: theme
+                }
 
-                    Repeater {
-                        model: SystemTray.items
-
-                        delegate: IconImage {
-                            required property var modelData
-
-                            implicitWidth: 16
-                            implicitHeight: 16
-                            source: modelData.icon
-
-                            MouseArea {
-                                anchors.fill: parent
-                                acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-                                onClicked: {
-                                    if (mouse.button === Qt.RightButton && modelData.hasMenu)
-                                        modelData.display(bar, mouse.x, mouse.y);
-                                    else if (mouse.button === Qt.MiddleButton)
-                                        modelData.secondaryActivate();
-                                    else
-                                        modelData.activate();
-                                }
-                            }
-                        }
-                    }
-
-                    Text {
-                        visible: bar.audioText !== ""
-                        text: bar.audioText
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: bar.run(["pavucontrol"])
-                        }
-                    }
-
-                    Text {
-                        visible: bar.networkText !== ""
-                        text: bar.networkText
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: bar.run(["nm-connection-editor"])
-                        }
-                    }
-
-                    Text {
-                        visible: bar.mullvadText !== ""
-                        text: bar.mullvadText
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: bar.run(["waybar-mullvad", "toggle"])
-                        }
-                    }
-
-                    Text {
-                        visible: bar.cellularText !== ""
-                        text: bar.cellularText
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: bar.run(["nm-connection-editor"])
-                        }
-                    }
-
-                    Text {
-                        visible: bar.backlightText !== ""
-                        text: bar.backlightText
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onWheel: {
-                                bar.run(["brightnessctl", "set", wheel.angleDelta.y > 0 ? "5%+" : "5%-"]);
-                            }
-                        }
-                    }
-
-                    Text {
-                        visible: bar.battery !== undefined && bar.battery !== null
-                        text: bar.battery ? ("󰁹 " + Math.round(bar.battery.percentage) + "%") : ""
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-                    }
-
-                    Text {
-                        text: Qt.formatDateTime(bar.now, "ddd, MMM d at hh:mm")
-                        color: Theme.base05
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize
-                    }
+                Modules.StatusModules {
+                    audioText: bar.audioText
+                    mullvadText: bar.mullvadText
+                    cellularText: bar.cellularText
+                    backlightText: bar.backlightText
+                    battery: bar.battery
+                    now: bar.now
+                    theme: theme
+                    onAudioClicked: bar.run(["pavucontrol"])
+                    onMullvadClicked: bar.run(["waybar-mullvad", "toggle"])
+                    onCellularClicked: bar.run(["nm-connection-editor"])
+                    onBacklightWheel: increase => bar.run(["brightnessctl", "set", increase ? "5%+" : "5%-"])
                 }
             }
         }
