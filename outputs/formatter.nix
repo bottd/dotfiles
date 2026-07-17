@@ -37,6 +37,11 @@
           options = [ "--lint" ];
           includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
         };
+        qmlformat = {
+          command = "${pkgs.qt6Packages.qtdeclarative}/bin/qmlformat";
+          options = [ "--inplace" "--indent-width" "4" ];
+          includes = [ "*.qml" ];
+        };
       };
     };
 

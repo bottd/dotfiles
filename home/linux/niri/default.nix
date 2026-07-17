@@ -1,7 +1,5 @@
 { config, lib, pkgs, hostName, features, ... }:
 let
-  isPocket = hostName == "pocket";
-
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
   # radio is soft-blocked and would otherwise pin this to the block branch forever.
@@ -40,11 +38,6 @@ let
     ];
   };
 
-  # Waybar's right-side modules; laptop-only extras added on pocket.
-  rightModules =
-    [ "tray" "pulseaudio" "custom/mullvad" "network" ]
-    ++ lib.optionals isPocket [ "custom/cellular" "backlight" "battery" ]
-    ++ [ "clock" ];
 in
 {
   imports = [ ./host/${hostName}.nix ];
@@ -66,10 +59,45 @@ in
     networkmanagerapplet # nm-connection-editor for the bar's on-click
     xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
     wlr-which-key
+    quickshell
   ];
 
-  xdg.configFile."wlr-which-key/config.yaml" =
-    lib.mkIf features.gui { source = whichKeyConfig; };
+  xdg.configFile = {
+    "wlr-which-key/config.yaml" = lib.mkIf features.gui {
+      source = whichKeyConfig;
+    };
+    "quickshell/shell.qml" = lib.mkIf features.gui {
+      source = ./quickshell/shell.qml;
+    };
+    "quickshell/Theme.qml" = lib.mkIf features.gui {
+      text = ''
+        import QtQuick
+
+        QtObject {
+            readonly property color base00: "#${config.lib.stylix.colors.base00}"
+            readonly property color base02: "#${config.lib.stylix.colors.base02}"
+            readonly property color base05: "#${config.lib.stylix.colors.base05}"
+            readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
+            readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
+            readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
+        }
+      '';
+    };
+  };
+
+  systemd.user.services.quickshell = lib.mkIf features.gui {
+    Unit = {
+      Description = "Quickshell desktop panel";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.quickshell}/bin/quickshell -c default";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
   programs = {
     # ---- niri compositor config (typed settings DSL) ------------------
@@ -116,7 +144,10 @@ in
       # niri-layout (scripts/) rebalances landscape workspaces to even column
       # widths and turns portrait outputs into one vertical scrolling column.
       # Skipped on headless.
-      spawn-at-startup = lib.optionals features.gui [{ argv = [ "niri-layout" ]; }];
+      spawn-at-startup = lib.optionals features.gui [
+        { argv = [ "niri-layout" ]; }
+        { argv = [ "nm-applet" "--indicator" ]; }
+      ];
 
       prefer-no-csd = true;
       screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
@@ -214,97 +245,11 @@ in
       };
     };
 
-    # ---- Waybar: KDE-style bottom panel -------------------------------
-    waybar = {
-      enable = features.gui;
-      systemd.enable = true;
-      settings.main = {
-        layer = "top";
-        position = "bottom";
-        height = 32;
-        spacing = 6;
-        modules-left = [ "niri/workspaces" ];
-        modules-center = [ "niri/window" ];
-        modules-right = rightModules;
-
-        "niri/workspaces".format = "{index}";
-        "niri/window" = {
-          format = "{}";
-          max-length = 80;
-        };
-        clock = {
-          format = "{:%a, %b %e at %I:%M}";
-          tooltip-format = "<tt><big>{:%Y %B}</big>\n{calendar}</tt>";
-        };
-        pulseaudio = {
-          format = "{icon} {volume}%";
-          format-muted = "󰝟 muted";
-          format-icons.default = [ "󰕿" "󰖀" "󰕾" ];
-          on-click = "pavucontrol";
-        };
-        network = {
-          format-wifi = "󰤨 {essid}";
-          format-ethernet = "󰈀 {ifname}";
-          format-disconnected = "󰤭 off";
-          tooltip-format = "{ifname}: {ipaddr}";
-          on-click = "nm-connection-editor";
-        };
-        # waybar-mullvad is on PATH via home/common/scripts.nix.
-        "custom/mullvad" = {
-          exec = "waybar-mullvad";
-          return-type = "json";
-          interval = 10;
-          on-click = "waybar-mullvad toggle";
-        };
-        # Cellular (pocket): waybar's `network` module has no modem support, so
-        # poll ModemManager directly. `-m any` grabs the first modem.
-        "custom/cellular" = {
-          exec = pkgs.writeShellScript "waybar-cellular" ''
-            kv=$(${pkgs.modemmanager}/bin/mmcli -m any --output-keyvalue 2>/dev/null) \
-              || { echo '{"text":""}'; exit 0; }
-            get() { printf '%s\n' "$kv" | ${pkgs.gnused}/bin/sed -n "s/^$1 *: //p"; }
-            state=$(get modem.generic.state)
-            if [ "$state" != connected ]; then
-              printf '{"text":"󰣲","tooltip":"cellular: %s"}\n' "''${state:-off}"; exit 0
-            fi
-            printf '{"text":"󰄋 %s%%","tooltip":"%s · %s"}\n' \
-              "$(get modem.generic.signal-quality.value)" \
-              "$(get modem.3gpp.operator-name)" \
-              "$(get modem.generic.access-technologies.value)"
-          '';
-          return-type = "json";
-          interval = 30;
-          on-click = "nm-connection-editor";
-        };
-        tray = {
-          icon-size = 16;
-          spacing = 8;
-        };
-        # Only ever rendered on pocket — `battery` is in rightModules under
-        # isPocket. {time} is blank when full/plugged, hence format-full.
-        battery = {
-          states = { warning = 30; critical = 15; };
-          format = "{icon} {capacity}% ({time})";
-          format-charging = "󰂄 {capacity}% ({time})";
-          format-full = "󰁹 {capacity}%";
-          format-time = "{H}h{M}m";
-          format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
-        };
-        backlight = {
-          format = "󰃟 {percent}%";
-          on-scroll-up = "brightnessctl set 5%+";
-          on-scroll-down = "brightnessctl set 5%-";
-        };
-      };
-      # No `style`: stylix.targets.waybar owns the CSS (colors + font), themed
-      # to the active base16 scheme. Module layout/config stays ours above.
-    };
-
     fuzzel.enable = true;
   };
 
   services.mako.enable = features.gui;
-  # Network management is the waybar `network` module (on-click
+  # Network management is the Quickshell network module (on-click
   # nm-connection-editor) + blueman for bluetooth; no separate nm-applet tray.
   # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).
 }
