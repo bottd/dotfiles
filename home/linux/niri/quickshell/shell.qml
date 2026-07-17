@@ -131,6 +131,22 @@ ShellRoot {
         model: Quickshell.screens
 
         PanelWindow {
+            required property var modelData
+
+            screen: modelData
+            anchors.bottom: true
+            anchors.left: true
+            anchors.right: true
+            implicitHeight: 1
+            exclusiveZone: 38
+            color: "transparent"
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        PanelWindow {
             id: bar
 
             required property var modelData
@@ -154,7 +170,7 @@ ShellRoot {
             margins.left: 6
             margins.right: 6
             implicitHeight: 32
-            exclusiveZone: implicitHeight + 6
+            exclusionMode: ExclusionMode.Ignore
             color: "transparent"
 
             function refreshNiri() {

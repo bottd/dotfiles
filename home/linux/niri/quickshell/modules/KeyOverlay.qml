@@ -2,8 +2,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
+import QMLTermWidget 2.0
 
 PanelWindow {
     id: root
@@ -15,7 +17,10 @@ PanelWindow {
     property bool presented: false
     property var path: []
     property int selectedIndex: 0
+    property bool journalFocused: false
+    property bool journalStarted: false
     property var applicationIndex: DesktopEntries.applications.values
+    property date now: new Date()
     property alias query: search.text
     signal dismissed
     signal modeRequested(string mode)
@@ -212,7 +217,12 @@ PanelWindow {
     ]
 
     readonly property var activeItems: root.path.length === 0 ? root.menu : root.path[root.path.length - 1].items
-    readonly property string breadcrumb: root.path.length === 0 ? "COMMAND MENU" : root.path.map(item => item.label).join("  /  ")
+    readonly property string breadcrumb: root.path.length === 0 ? "OVERVIEW" : root.path.map(item => item.label).join("  /  ")
+    readonly property var commonApplications: ["Glide", "Ghostty", "Spotify", "Discord"].map(name => root.applicationIndex.find(entry => entry.name.toLowerCase() === name.toLowerCase())).filter(entry => entry)
+    readonly property var recentApplications: recentState.apps.map(id => root.applicationIndex.find(entry => entry.id === id)).filter(entry => entry)
+    readonly property date monthStart: new Date(root.now.getFullYear(), root.now.getMonth(), 1)
+    readonly property int leadingDays: (root.monthStart.getDay() + 6) % 7
+    readonly property int daysInMonth: new Date(root.now.getFullYear(), root.now.getMonth() + 1, 0).getDate()
     readonly property var filteredApplications: {
         const needle = root.query.trim().toLowerCase();
         if (needle === "")
@@ -229,7 +239,7 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
     screen: root.screen
-    implicitHeight: Math.min(320, root.screen.height * 0.45)
+    implicitHeight: Math.min(360, root.screen.height * 0.45)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     visible: root.presented
@@ -275,7 +285,9 @@ PanelWindow {
     }
 
     function focusCurrentMode() {
-        if (root.mode === "launcher")
+        if (root.journalFocused)
+            journalTerminal.forceActiveFocus();
+        else if (root.mode === "launcher")
             search.forceActiveFocus();
         else
             drawer.forceActiveFocus();
@@ -330,8 +342,24 @@ PanelWindow {
         if (!entry)
             return;
 
+        root.launchApplication(entry);
+    }
+
+    function launchApplication(entry) {
+        recentState.apps = [entry.id].concat(recentState.apps.filter(id => id !== entry.id)).slice(0, 5);
+        recentFile.writeAdapter();
         Quickshell.execDetached(root.theme.launcherCommand.concat([entry.id]));
         root.close();
+    }
+
+    function focusJournal() {
+        root.journalFocused = true;
+        journalTerminal.forceActiveFocus();
+    }
+
+    function calendarDay(index) {
+        const day = index - root.leadingDays + 1;
+        return day > 0 && day <= root.daysInMonth ? day : "";
     }
 
     function keyName(event) {
@@ -356,6 +384,11 @@ PanelWindow {
         }
 
         const key = root.keyName(event);
+        if (root.path.length === 0 && key.toLowerCase() === "j") {
+            root.focusJournal();
+            event.accepted = true;
+            return;
+        }
         const item = root.activeItems.find(candidate => candidate.key === key);
         if (item) {
             root.activate(item);
@@ -368,14 +401,20 @@ PanelWindow {
             root.presented = true;
             root.path = [];
             root.selectedIndex = 0;
+            root.journalFocused = false;
             if (root.mode === "launcher")
                 root.query = "";
             drawer.y = root.theme.animationsEnabled ? root.height : 0;
             Qt.callLater(function () {
                 root.moveDrawer(0, false);
+                if (!root.journalStarted) {
+                    root.journalStarted = true;
+                    journalStart.start();
+                }
                 root.focusCurrentMode();
             });
         } else if (root.presented) {
+            root.journalFocused = false;
             root.moveDrawer(root.height, true);
         }
     }
@@ -390,6 +429,27 @@ PanelWindow {
     }
 
     Component.onCompleted: drawer.y = root.height
+
+    Timer {
+        interval: 60000
+        running: true
+        repeat: true
+        onTriggered: root.now = new Date()
+    }
+
+    FileView {
+        id: recentFile
+
+        path: Quickshell.statePath("recent-apps.json")
+        blockLoading: true
+        printErrors: false
+
+        JsonAdapter {
+            id: recentState
+
+            property var apps: []
+        }
+    }
 
     Connections {
         target: DesktopEntries
@@ -427,7 +487,7 @@ PanelWindow {
                 event.accepted = true;
                 return;
             }
-            if (root.mode === "commands")
+            if (root.mode === "commands" && !root.journalFocused)
                 root.handleCommandKey(event);
         }
         Keys.onReleased: function (event) {
@@ -473,7 +533,7 @@ PanelWindow {
                     }
 
                     Text {
-                        text: root.mode === "launcher" ? "BACKSPACE on empty returns  /  SUPER closes" : "ESC back  /  SUPER closes"
+                        text: root.mode === "launcher" ? "BACKSPACE on empty returns  /  SUPER closes" : root.journalFocused ? "NVIM ACTIVE  /  SUPER hides" : "ESC back  /  SUPER closes"
                         color: root.theme.base03
                         font.family: root.theme.fontFamily
                         font.pixelSize: root.theme.fontSize - 1
@@ -485,9 +545,420 @@ PanelWindow {
                     Layout.fillHeight: true
                     clip: true
 
+                    RowLayout {
+                        anchors.fill: parent
+                        visible: root.mode === "commands" && root.path.length === 0
+                        spacing: 16
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            spacing: 6
+
+                            Text {
+                                text: "APPS"
+                                color: root.theme.base0D
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize
+                                font.bold: true
+                            }
+
+                            Text {
+                                text: "COMMON"
+                                color: root.theme.base03
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+
+                            Repeater {
+                                model: root.commonApplications
+
+                                delegate: Rectangle {
+                                    required property var modelData
+
+                                    Layout.fillWidth: true
+                                    implicitHeight: 30
+                                    radius: 4
+                                    color: commonMouse.containsMouse ? root.theme.base02 : root.theme.base01
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: 8
+
+                                        IconImage {
+                                            implicitWidth: 18
+                                            implicitHeight: 18
+                                            source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
+                                        }
+
+                                        Text {
+                                            Layout.fillWidth: true
+                                            text: modelData.name
+                                            elide: Text.ElideRight
+                                            color: root.theme.base05
+                                            font.family: root.theme.fontFamily
+                                            font.pixelSize: root.theme.fontSize - 1
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: commonMouse
+
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onClicked: root.launchApplication(modelData)
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: "RECENT"
+                                color: root.theme.base03
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+
+                            Repeater {
+                                model: root.recentApplications.slice(0, 3)
+
+                                delegate: Rectangle {
+                                    required property var modelData
+
+                                    Layout.fillWidth: true
+                                    implicitHeight: 28
+                                    radius: 4
+                                    color: recentMouse.containsMouse ? root.theme.base02 : "transparent"
+
+                                    Text {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        verticalAlignment: Text.AlignVCenter
+                                        text: modelData.name
+                                        elide: Text.ElideRight
+                                        color: root.theme.base05
+                                        font.family: root.theme.fontFamily
+                                        font.pixelSize: root.theme.fontSize - 1
+                                    }
+
+                                    MouseArea {
+                                        id: recentMouse
+
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onClicked: root.launchApplication(modelData)
+                                    }
+                                }
+                            }
+
+                            Text {
+                                visible: root.recentApplications.length === 0
+                                text: "No drawer launches yet"
+                                color: root.theme.base03
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
+                            }
+
+                            Text {
+                                text: "d  ALL APPLICATIONS"
+                                color: root.theme.base0D
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 1
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: root.modeRequested("launcher")
+                                }
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.fillHeight: true
+                            implicitWidth: 1
+                            color: root.theme.base02
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 1
+                            spacing: 6
+
+                            Text {
+                                text: "HOTKEYS"
+                                color: root.theme.base0D
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize
+                                font.bold: true
+                            }
+
+                            Repeater {
+                                model: root.menu.filter(item => item.items)
+
+                                delegate: Rectangle {
+                                    required property var modelData
+
+                                    Layout.fillWidth: true
+                                    implicitHeight: 34
+                                    radius: 4
+                                    color: hotkeyMouse.containsMouse ? root.theme.base02 : root.theme.base01
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+
+                                        Text {
+                                            text: modelData.key
+                                            color: root.theme.base0D
+                                            font.family: root.theme.fontFamily
+                                            font.pixelSize: root.theme.fontSize
+                                            font.bold: true
+                                        }
+
+                                        Text {
+                                            Layout.fillWidth: true
+                                            text: modelData.label
+                                            color: root.theme.base05
+                                            font.family: root.theme.fontFamily
+                                            font.pixelSize: root.theme.fontSize - 1
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: hotkeyMouse
+
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onClicked: root.activate(modelData)
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: "SHORTCUTS"
+                                color: root.theme.base03
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+
+                            Text {
+                                text: "d apps   j journal   esc close"
+                                color: root.theme.base05
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.fillHeight: true
+                            implicitWidth: 1
+                            color: root.theme.base02
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 2
+                            spacing: 8
+
+                            Text {
+                                text: "DAILY JOURNAL"
+                                color: root.theme.base0D
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize
+                                font.bold: true
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 4
+                                color: root.theme.base00
+                                border.color: root.journalFocused ? root.theme.base0D : root.theme.base02
+                                border.width: 1
+                                clip: true
+
+                                QMLTermWidget {
+                                    id: journalTerminal
+
+                                    anchors.fill: parent
+                                    anchors.margins: 4
+                                    visible: root.presented
+                                    font.family: root.theme.journalFontFamily
+                                    font.pointSize: root.theme.fontSize
+                                    colorScheme: "Stylix"
+                                    antialiasText: true
+                                    blinkingCursor: false
+                                    enableBold: true
+                                    enableItalic: true
+                                    fullCursorHeight: true
+                                    useFBORendering: false
+                                    session: QMLTermSession {
+                                        id: journalSession
+
+                                        shellProgram: root.theme.journalProgram
+                                        onFinished: journalRestart.start()
+                                    }
+                                    onActiveFocusChanged: {
+                                        if (activeFocus)
+                                            root.journalFocused = true;
+                                    }
+                                    Keys.priority: Keys.BeforeItem
+                                    Keys.onPressed: function (event) {
+                                        if (root.isOverlayKey(event))
+                                            event.accepted = true;
+                                    }
+                                    Keys.onReleased: function (event) {
+                                        if (root.isOverlayKey(event)) {
+                                            root.close();
+                                            event.accepted = true;
+                                        }
+                                    }
+                                }
+
+                                Timer {
+                                    id: journalRestart
+
+                                    interval: 1000
+                                    onTriggered: journalSession.startShellProgram()
+                                }
+
+                                Timer {
+                                    id: journalStart
+
+                                    interval: 250
+                                    onTriggered: {
+                                        journalTerminal.lineSpacing = 1;
+                                        journalTerminal.lineSpacing = 0;
+                                        journalSession.startShellProgram();
+                                    }
+                                }
+
+                                MouseArea {
+                                    anchors.left: parent.left
+                                    anchors.top: parent.top
+                                    width: focusHint.width + 12
+                                    height: focusHint.height + 8
+                                    visible: !root.journalFocused
+                                    onClicked: root.focusJournal()
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        color: root.theme.base01
+                                        border.color: root.theme.base0D
+                                        border.width: 1
+
+                                        Text {
+                                            id: focusHint
+
+                                            anchors.centerIn: parent
+                                            text: "j  FOCUS"
+                                            color: root.theme.base0D
+                                            font.family: root.theme.fontFamily
+                                            font.pixelSize: root.theme.fontSize - 2
+                                            font.bold: true
+                                        }
+                                    }
+                                }
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: Qt.formatDate(root.now, "yyyy-MM-dd") + ".norg" + (root.journalFocused ? "  /  SUPER hides" : "  /  j focuses")
+                                elide: Text.ElideRight
+                                color: root.theme.base03
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize - 2
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.fillHeight: true
+                            implicitWidth: 1
+                            color: root.theme.base02
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 2
+                            spacing: 6
+
+                            Text {
+                                Layout.alignment: Qt.AlignRight
+                                text: Qt.formatDate(root.now, "MMMM yyyy").toUpperCase()
+                                color: root.theme.base0D
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize
+                                font.bold: true
+                            }
+
+                            GridLayout {
+                                Layout.fillWidth: true
+                                columns: 7
+                                columnSpacing: 4
+                                rowSpacing: 3
+
+                                Repeater {
+                                    model: ["M", "T", "W", "T", "F", "S", "S"]
+
+                                    delegate: Text {
+                                        required property string modelData
+
+                                        Layout.fillWidth: true
+                                        horizontalAlignment: Text.AlignHCenter
+                                        text: modelData
+                                        color: root.theme.base03
+                                        font.family: root.theme.fontFamily
+                                        font.pixelSize: root.theme.fontSize - 2
+                                    }
+                                }
+
+                                Repeater {
+                                    model: 42
+
+                                    delegate: Rectangle {
+                                        required property int index
+                                        readonly property var day: root.calendarDay(index)
+                                        readonly property bool today: day === root.now.getDate()
+
+                                        Layout.fillWidth: true
+                                        implicitHeight: 27
+                                        radius: 4
+                                        color: today ? root.theme.base0D : "transparent"
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: day
+                                            color: parent.today ? root.theme.base00 : root.theme.base05
+                                            font.family: root.theme.fontFamily
+                                            font.pixelSize: root.theme.fontSize - 1
+                                            font.bold: parent.today
+                                        }
+                                    }
+                                }
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
+                            }
+                        }
+                    }
+
                     Flow {
                         anchors.fill: parent
-                        visible: root.mode === "commands"
+                        visible: root.mode === "commands" && root.path.length > 0
                         spacing: 8
 
                         Repeater {
@@ -536,7 +1007,7 @@ PanelWindow {
 
                                         Text {
                                             Layout.fillWidth: true
-                                            text: modelData.items ? "+ " + modelData.description : modelData.description
+                                            text: modelData.description ? (modelData.items ? "+ " : "") + modelData.description : ""
                                             elide: Text.ElideRight
                                             color: root.theme.base03
                                             font.family: root.theme.fontFamily

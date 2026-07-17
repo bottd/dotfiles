@@ -11,6 +11,16 @@ let
     fi
   '';
 
+  qmltermwidget = pkgs.callPackage ./qmltermwidget.nix {
+    inherit (config.lib.stylix) colors;
+  };
+
+  journalNvim = pkgs.writeShellScript "quickshell-journal" ''
+    journal_dir="$HOME/chalet/journal"
+    mkdir -p "$journal_dir"
+    exec ${lib.getExe config.programs.neovim.finalPackage} "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
+  '';
+
 in
 {
   imports = [ ./host/${hostName}.nix ];
@@ -27,6 +37,7 @@ in
     brightnessctl
     playerctl
     quickshell
+    qmltermwidget
     gtk3 # gtk-launch preserves complete desktop-entry launch semantics
     xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
   ] ++ lib.optionals features.gui [
@@ -50,8 +61,10 @@ in
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
+            readonly property string journalFontFamily: ${builtins.toJSON config.programs.ghostty.settings.font-family}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
             readonly property bool animationsEnabled: ${lib.boolToString features.gui}
+            readonly property string journalProgram: ${builtins.toJSON journalNvim}
             readonly property var launcherCommand: ${builtins.toJSON [
               "${pkgs.systemd}/bin/systemd-run"
               "--user"
@@ -74,8 +87,10 @@ in
     };
     Service = {
       ExecStart = "${pkgs.quickshell}/bin/quickshell -c default";
+      Environment = [ "QML_IMPORT_PATH=${qmltermwidget}/${pkgs.qt6.qtbase.qtQmlPrefix}" ];
       Restart = "on-failure";
       RestartSec = 2;
+      TimeoutStopSec = 5;
     };
     Install.WantedBy = [ "graphical-session.target" ];
   };
