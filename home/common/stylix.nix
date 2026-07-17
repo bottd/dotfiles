@@ -33,4 +33,21 @@ in
     };
   };
 
+  fonts.fontconfig.configFile.monolisa-nerd-font = lib.mkIf pkgs.stdenv.isLinux {
+    priority = 60;
+    text = ''
+      <?xml version="1.0"?>
+      <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+      <fontconfig>
+        <alias>
+          <family>MonoLisa Nerd Font</family>
+          <prefer>
+            <family>MonoLisa Variable</family>
+            <family>Symbols Nerd Font Mono</family>
+          </prefer>
+        </alias>
+      </fontconfig>
+    '';
+  };
+
 }

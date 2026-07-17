@@ -166,9 +166,9 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            margins.bottom: keyOverlay.presented && root.drawerScreen === modelData ? keyOverlay.implicitHeight + 6 : 6
-            margins.left: 6
-            margins.right: 6
+            margins.bottom: keyOverlay.presented && root.drawerScreen === modelData ? keyOverlay.implicitHeight : 6
+            margins.left: 0
+            margins.right: 0
             implicitHeight: 32
             exclusionMode: ExclusionMode.Ignore
             color: "transparent"

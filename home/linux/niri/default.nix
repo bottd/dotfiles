@@ -16,9 +16,15 @@ let
   };
 
   journalNvim = pkgs.writeShellScript "quickshell-journal" ''
-    journal_dir="$HOME/chalet/journal"
+    chalet_dir="$HOME/chalet"
+    journal_dir="$chalet_dir/journal"
     mkdir -p "$journal_dir"
-    exec ${lib.getExe config.programs.neovim.finalPackage} "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
+    cd "$chalet_dir"
+    export COLORTERM=truecolor
+    export TERM=xterm-256color
+    exec ${lib.getExe pkgs.zsh} -lic 'exec "$1" "$2"' zsh \
+      ${lib.getExe config.programs.neovim.finalPackage} \
+      "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
   '';
 
 in
@@ -61,7 +67,7 @@ in
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
-            readonly property string journalFontFamily: ${builtins.toJSON config.programs.ghostty.settings.font-family}
+            readonly property string journalFontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
             readonly property bool animationsEnabled: ${lib.boolToString features.gui}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
