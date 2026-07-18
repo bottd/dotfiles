@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, inputs, pkgs, ... }:
 let
   colors = config.lib.stylix.colors;
   hex = color: "#${color}";
 in
 {
-  home.packages = with pkgs; [ opencode ];
+  home.packages = [ inputs.opencode.packages.${pkgs.system}.opencode ];
 
   home.file = {
     ".config/opencode/opencode.json".text = builtins.toJSON {
