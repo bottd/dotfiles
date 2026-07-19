@@ -40,6 +40,7 @@ in
       kdePackages.dolphin
       kdePackages.kdenlive
       glaxnimate
+      inkscape
       krita
       losslesscut-bin
       mpv

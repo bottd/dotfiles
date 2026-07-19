@@ -67,8 +67,6 @@
       url = "github:hraban/mac-app-util";
       inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     };
-    # Keeps its own nixpkgs pin so its cachix cache stays hit.
-    claude-code.url = "github:sadjow/claude-code-nix";
     opencode = {
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
