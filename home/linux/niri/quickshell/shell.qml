@@ -17,11 +17,14 @@ ShellRoot {
     property var drawerScreen: null
     property bool volumeOpen: false
     property var volumeScreen: null
+    property bool brightnessOpen: false
+    property var brightnessScreen: null
     property var workspaces: []
     property string windowTitle: ""
     property string mullvadText: ""
     property string cellularText: ""
     property string backlightText: ""
+    property real brightnessLevel: 0
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
     readonly property real volumeLevel: root.audioReady ? root.audioSink.audio.volume : 0
@@ -66,8 +69,22 @@ ShellRoot {
 
     function toggleVolume(screen) {
         const closing = root.volumeOpen && root.volumeScreen === screen;
+        root.brightnessOpen = false;
         root.volumeScreen = screen;
         root.volumeOpen = !closing;
+    }
+
+    function toggleBrightness(screen) {
+        const closing = root.brightnessOpen && root.brightnessScreen === screen;
+        root.volumeOpen = false;
+        root.brightnessScreen = screen;
+        root.brightnessOpen = !closing;
+    }
+
+    function setBrightness(level) {
+        root.brightnessLevel = Math.max(0, Math.min(1, level));
+        root.backlightText = "󰃟 " + Math.round(root.brightnessLevel * 100) + "%";
+        Quickshell.execDetached(["brightnessctl", "set", Math.round(root.brightnessLevel * 100) + "%"]);
     }
 
     function toggleDrawer(mode) {
@@ -154,6 +171,7 @@ ShellRoot {
             onStreamFinished: {
                 const value = text.trim().split(",")[4] || "";
                 root.backlightText = value ? "󰃟 " + value : "";
+                root.brightnessLevel = value ? parseInt(value, 10) / 100 : 0;
             }
         }
     }
@@ -211,6 +229,15 @@ ShellRoot {
                 root.audioSink.audio.muted = !root.audioSink.audio.muted;
         }
         onDismissed: root.volumeOpen = false
+    }
+
+    Modules.BrightnessPopup {
+        screen: root.brightnessScreen || Quickshell.screens[0]
+        theme: shellTheme
+        visible: root.brightnessOpen
+        level: root.brightnessLevel
+        onSetBrightness: level => root.setBrightness(level)
+        onDismissed: root.brightnessOpen = false
     }
 
     Modules.KeyOverlay {
@@ -301,6 +328,7 @@ ShellRoot {
                         onAudioClicked: root.toggleVolume(bar.screen)
                         onMullvadClicked: Quickshell.execDetached(["waybar-mullvad", "toggle"])
                         onCellularClicked: Quickshell.execDetached(["nm-connection-editor"])
+                        onBacklightClicked: root.toggleBrightness(bar.screen)
                         onBacklightWheel: increase => Quickshell.execDetached(["brightnessctl", "set", increase ? "5%+" : "5%-"])
                     }
                 }

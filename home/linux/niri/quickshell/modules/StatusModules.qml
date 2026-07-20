@@ -14,6 +14,7 @@ RowLayout {
     signal audioClicked
     signal mullvadClicked
     signal cellularClicked
+    signal backlightClicked
     signal backlightWheel(bool increase)
 
     spacing: 8
@@ -60,6 +61,7 @@ RowLayout {
 
         MouseArea {
             anchors.fill: parent
+            onClicked: root.backlightClicked()
             onWheel: root.backlightWheel(wheel.angleDelta.y > 0)
         }
     }
