@@ -72,12 +72,14 @@
       "inputs": {
         "metaBuilder": "metaBuilder",
         "nix-effects": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
           "nix-effects"
         ],
         "nixpkgs": [
+          "kli-config",
           "kli",
           "nixpkgs"
         ]
@@ -189,6 +191,7 @@
     "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
@@ -214,6 +217,7 @@
     "flake-parts_3": {
       "inputs": {
         "nixpkgs-lib": [
+          "kli-config",
           "kli",
           "nix-unit",
           "nixpkgs"
@@ -413,6 +417,7 @@
         "cl-deps": "cl-deps",
         "nix-unit": "nix-unit_3",
         "nixpkgs": [
+          "kli-config",
           "nixpkgs"
         ]
       },
@@ -428,6 +433,52 @@
         "owner": "kleisli-io",
         "repo": "kli",
         "type": "github"
+      }
+    },
+    "kli-config": {
+      "inputs": {
+        "kli": "kli",
+        "kli-kagi": "kli-kagi",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "./home/common/ai/kli",
+        "type": "path"
+      },
+      "original": {
+        "path": "./home/common/ai/kli",
+        "type": "path"
+      },
+      "parent": []
+    },
+    "kli-kagi": {
+      "inputs": {
+        "cl-deps": [
+          "kli-config",
+          "kli-kagi",
+          "kli",
+          "cl-deps"
+        ],
+        "kli": [
+          "kli-config",
+          "kli"
+        ],
+        "nixpkgs": [
+          "kli-config",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784570066,
+        "narHash": "sha256-+5c0EF/z2tAvSWVlz3t65Uux6KufJ3hXpOqjEEnLDsM=",
+        "path": "/home/drakeb/workspace/kli-kagi",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/drakeb/workspace/kli-kagi",
+        "type": "path"
       }
     },
     "mac-app-util": {
@@ -458,6 +509,7 @@
         "nix-effects": "nix-effects",
         "nix-unit": "nix-unit_2",
         "nixpkgs": [
+          "kli-config",
           "kli",
           "cl-deps",
           "nixpkgs"
@@ -508,11 +560,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1784458980,
-        "narHash": "sha256-BWFTNPJWS9G1ME7bfjQIb7aWKWKpnjMMU1rlbw8PH/s=",
+        "lastModified": 1784541752,
+        "narHash": "sha256-iONvlcXqaIUzEwZHabWLMtE90kqH3/iBmg5lQHZ1StY=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "e40af292a5890c48d51bfa33d3db3d967d41784e",
+        "rev": "85a12e471a13eff3a3c476783a5d1cb0702c9da9",
         "type": "github"
       },
       "original": {
@@ -579,6 +631,7 @@
       "inputs": {
         "nix-unit": "nix-unit",
         "nixpkgs": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
@@ -624,12 +677,14 @@
       "inputs": {
         "flake-parts": "flake-parts_2",
         "nix-github-actions": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
           "nix-effects"
         ],
         "nixpkgs": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
@@ -637,6 +692,7 @@
           "nixpkgs"
         ],
         "treefmt-nix": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
@@ -660,17 +716,20 @@
     "nix-unit_2": {
       "inputs": {
         "nix-github-actions": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder"
         ],
         "nixpkgs": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder",
           "nixpkgs"
         ],
         "treefmt-nix": [
+          "kli-config",
           "kli",
           "cl-deps",
           "metaBuilder"
@@ -694,13 +753,16 @@
       "inputs": {
         "flake-parts": "flake-parts_3",
         "nix-github-actions": [
+          "kli-config",
           "kli"
         ],
         "nixpkgs": [
+          "kli-config",
           "kli",
           "nixpkgs"
         ],
         "treefmt-nix": [
+          "kli-config",
           "kli"
         ]
       },
@@ -807,11 +869,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1784453100,
-        "narHash": "sha256-zpGZb8FYui+i8KLtC0nlcmb0voR2zB80Qn8pe7lzIbk=",
+        "lastModified": 1784525419,
+        "narHash": "sha256-yocJ4I4Kd4as0UPMFs9P7laPvvA2x/Bj8EW46iW3VVM=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b471514bed69eff5255c8e63c1f80e5fe56c616f",
+        "rev": "a16c3fde2ffeab7f6326f50f460aaffde7ae066d",
         "type": "github"
       },
       "original": {
@@ -871,11 +933,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1784356753,
-        "narHash": "sha256-12KrbMiWLcf8m7pCvAtZh1ZrgF85ZXDXvfR/fWTKy84=",
+        "lastModified": 1784497964,
+        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "61b7c44c4073f0b827768aff0049561b5110ea5a",
+        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
         "type": "github"
       },
       "original": {
@@ -946,11 +1008,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784514168,
-        "narHash": "sha256-TmlSQvOgRyEs46lj6/3XxvJJ7woMcYanzI18xVixI+0=",
+        "lastModified": 1784565807,
+        "narHash": "sha256-SjEqrBJsHrliCwqlBxT413cYeOZxy33c7ZyTAC3Otlc=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "ba4b8e21f4ecd70f30b8dc24458f56a4fe84eca5",
+        "rev": "4cc022481c184cb9d5e14f7e882b6749d2414553",
         "type": "github"
       },
       "original": {
@@ -985,7 +1047,7 @@
         "flake-parts": "flake-parts",
         "glide": "glide",
         "home-manager": "home-manager",
-        "kli": "kli",
+        "kli-config": "kli-config",
         "mac-app-util": "mac-app-util",
         "minesddm": "minesddm",
         "niri": "niri",

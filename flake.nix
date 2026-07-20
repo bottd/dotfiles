@@ -51,12 +51,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-    # niri compositor: NixOS + home-manager modules with build-time config
-    # validation. Keeps its own nixpkgs pin so its binary cache stays hit.
     niri.url = "github:sodiboo/niri-flake";
-    # Minecraft-styled SDDM theme (pocket's greeter). We take `packages.default`
-    # only, not `nixosModules.default` — that module installs Qt5 deps, but the
-    # theme is Theme-API 2.0 / QtVersion=6 and nixpkgs' sddm is Qt6.
     minesddm = {
       url = "github:Davi-S/sddm-theme-minesddm";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -71,8 +66,8 @@
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    kli = {
-      url = "github:kleisli-io/kli";
+    kli-config = {
+      url = "path:./home/common/ai/kli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

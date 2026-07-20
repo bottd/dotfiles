@@ -58,27 +58,26 @@ let
       bashMode = hex colors.base09;
     };
   };
-  configuredKli = inputs.kli.lib.${pkgs.stdenv.hostPlatform.system}.mkConfiguredKli {
-    inherit (config.programs.kli) extensions settings registries blessedNativeLibs dataDir sandbox;
+  configuredKli = inputs.kli-config.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  kliWrapper = pkgs.writers.writeBabashkaBin "kli" { } (
+    builtins.replaceStrings
+      [ "@bw@" "@kli@" "@openssl-lib@" ]
+      [ "${pkgs.bitwarden-cli}/bin/bw" "${configuredKli}/bin/kli" "${pkgs.openssl.out}/lib" ]
+      (builtins.readFile ./wrapper.clj)
+  );
+  # buildLisp's runtime wrapper only sets LD_LIBRARY_PATH; macOS needs
+  # DYLD_LIBRARY_PATH. This wrapper also injects the runtime-only Kagi credential.
+  wrappedKli = pkgs.symlinkJoin {
+    name = "kli";
+    paths = [ configuredKli ];
+    postBuild = ''
+      rm "$out/bin/kli"
+      ln -s ${kliWrapper}/bin/kli "$out/bin/kli"
+    '';
   };
 in
 {
-  imports = [ inputs.kli.homeManagerModules.default ];
-
-  programs.kli = {
-    enable = true;
-    # buildLisp's runtime wrapper only sets LD_LIBRARY_PATH; macOS needs DYLD_LIBRARY_PATH.
-    package = pkgs.symlinkJoin {
-      name = "kli";
-      paths = [ configuredKli ];
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        rm "$out/bin/kli"
-        makeWrapper ${configuredKli}/bin/kli "$out/bin/kli" \
-          --prefix DYLD_LIBRARY_PATH : "${pkgs.openssl.out}/lib"
-      '';
-    };
-  };
+  home.packages = [ wrappedKli ];
 
   home.file = {
     ".config/kli/settings.json".source =
