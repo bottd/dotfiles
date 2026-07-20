@@ -8,6 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     kli-kagi = {
+      # Temporary local source while the extension is under development.
       url = "path:/home/drakeb/workspace/kli-kagi";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.kli.follows = "kli";
@@ -61,7 +62,8 @@
 
       checks = forEachSystem (system: {
         manifest = (mkConfiguredKli system).manifestGate;
-        kli-kagi = kli-kagi.checks.${system}.integration;
+        kli-kagi-tests = kli-kagi.checks.${system}.tests;
+        kli-kagi-source-load = kli-kagi.checks.${system}.source-load;
       });
 
       formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.nixfmt);

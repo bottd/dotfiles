@@ -6,6 +6,7 @@
 
   imports = [
     ./ai
+    ./bitwarden.nix
     ./cli.nix
     ./direnv.nix
     ./git.nix
@@ -25,7 +26,5 @@
     ./browser.nix
     ./ghostty.nix
     ./glide
-  ] ++ lib.optionals features.gui [
-    ./bitwarden.nix
   ];
 }

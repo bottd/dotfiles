@@ -61,8 +61,8 @@ let
   configuredKli = inputs.kli-config.packages.${pkgs.stdenv.hostPlatform.system}.default;
   kliWrapper = pkgs.writers.writeBabashkaBin "kli" { } (
     builtins.replaceStrings
-      [ "@bw@" "@kli@" "@openssl-lib@" ]
-      [ "${pkgs.bitwarden-cli}/bin/bw" "${configuredKli}/bin/kli" "${pkgs.openssl.out}/lib" ]
+      [ "@rbw@" "@kli@" "@openssl-lib@" ]
+      [ "${pkgs.rbw}/bin/rbw" "${configuredKli}/bin/kli" "${pkgs.openssl.out}/lib" ]
       (builtins.readFile ./wrapper.clj)
   );
   # buildLisp's runtime wrapper only sets LD_LIBRARY_PATH; macOS needs

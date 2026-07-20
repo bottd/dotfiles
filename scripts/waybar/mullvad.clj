@@ -4,8 +4,7 @@
 ;;
 ;;   waybar-mullvad          ;; one JSON line for waybar's custom module
 ;;   waybar-mullvad toggle   ;; connect if down, disconnect if up
-;;   waybar-mullvad login    ;; account number from the Bitwarden item "mullvad";
-;;                           ;; needs an unlocked vault: BW_SESSION=$(bw unlock --raw)
+;;   waybar-mullvad login    ;; account number from the Bitwarden item "mullvad"
 
 (require '[cheshire.core :as json]
          '[babashka.process :as p]
@@ -39,10 +38,9 @@
     (p/shell "mullvad" "disconnect")
     (p/shell "mullvad" "connect")))
 
-;; bw prints its own diagnostics (locked vault, no such item) and exits nonzero,
-;; so let p/shell's throw carry that out rather than reformatting it.
+;; rbw starts its agent and prompts through pinentry when the vault is locked.
 (defn login []
-  (let [account (-> (p/shell {:out :string} "bw" "get" "password" "mullvad") :out str/trim)]
+  (let [account (-> (p/shell {:out :string} "rbw" "get" "mullvad") :out str/trim)]
     (p/shell "mullvad" "account" "login" account)))
 
 (defn selftest []
