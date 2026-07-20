@@ -946,11 +946,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784475708,
-        "narHash": "sha256-fZQQ4+OQvQ2SzdtyZTJhqzVM0aK26/rSbtmDADyNLZc=",
+        "lastModified": 1784514168,
+        "narHash": "sha256-TmlSQvOgRyEs46lj6/3XxvJJ7woMcYanzI18xVixI+0=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "67caf894e0843ee370e72839e8265e483233479b",
+        "rev": "ba4b8e21f4ecd70f30b8dc24458f56a4fe84eca5",
         "type": "github"
       },
       "original": {
@@ -1033,11 +1033,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1783258469,
-        "narHash": "sha256-WNNE9Fm/DHj6ppMCxdAujyRamcNeng9wC3se0aw/oPc=",
+        "lastModified": 1784507323,
+        "narHash": "sha256-MCd4DY28cNOGJlD8K2cZjLnQc8v+TO8/h/N7jiZHI00=",
         "owner": "different-name",
         "repo": "steam-config-nix",
-        "rev": "87b661b33f5f7cf441d4e2234ab302bdd6c6b310",
+        "rev": "576428352a185001373c921bbf7554674e4fc1d5",
         "type": "github"
       },
       "original": {
