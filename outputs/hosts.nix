@@ -32,7 +32,7 @@ in
         username = "drakeb";
         format = "nixos";
         features = { desktopEnvironment = "niri"; gui = false; };
-        theme = { appearance = "light"; baseFontSize = 20; scheme = "primer-light"; };
+        theme = { appearance = "light"; baseFontSize = 20; scheme = "primer"; };
         autologin = true;
       }
       // mkWithVariants "pocket" (baseSystem // {

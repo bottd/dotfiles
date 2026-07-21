@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
@@ -22,7 +23,7 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     WlrLayershell.namespace: "drake-volume-popup"
 
     onScreenChanged: {
@@ -30,13 +31,13 @@ PanelWindow {
             dismissTimer.restart();
     }
 
-    function updateVolume(x, width) {
-        root.setVolume(x / width);
+    function updateVolume(level) {
+        root.setVolume(level);
         dismissTimer.restart();
     }
 
     component PopupText: Text {
-        color: root.theme.base05
+        color: root.theme.textPrimary
         font.family: root.theme.fontFamily
         font.pixelSize: root.theme.fontSize
     }
@@ -52,8 +53,8 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 7
-        color: root.theme.base00
-        border.color: root.theme.base02
+        color: root.theme.background
+        border.color: root.theme.border
         border.width: 1
 
         ColumnLayout {
@@ -69,43 +70,58 @@ PanelWindow {
                     text: root.muted ? "󰝟 muted" : "󰕾 " + Math.round(root.level * 100) + "%"
                 }
 
-                PopupText {
-                    text: "󰝟"
+                Rectangle {
+                    id: muteButton
+
+                    Layout.preferredWidth: 28
+                    Layout.preferredHeight: 28
+                    radius: 4
+                    color: muteMouse.pressed ? root.theme.surfacePressed : (muteMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
+                    border.color: muteButton.activeFocus || muteMouse.containsMouse ? root.theme.focusRing : root.theme.border
+                    border.width: 1
+                    activeFocusOnTab: true
+                    Accessible.role: Accessible.Button
+                    Accessible.name: root.muted ? "Unmute" : "Mute"
+
+                    Keys.onPressed: function (event) {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+                            root.toggleMute();
+                            dismissTimer.restart();
+                            event.accepted = true;
+                        }
+                    }
+
+                    PopupText {
+                        anchors.centerIn: parent
+                        text: "󰝟"
+                    }
 
                     MouseArea {
+                        id: muteMouse
+
                         anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
                         onClicked: {
+                            muteButton.forceActiveFocus();
                             root.toggleMute();
                             dismissTimer.restart();
                         }
                     }
+
+                    ToolTip.visible: muteMouse.containsMouse
+                    ToolTip.delay: 500
+                    ToolTip.text: root.muted ? "Unmute" : "Mute"
                 }
             }
 
-            Rectangle {
+            LevelSlider {
                 Layout.fillWidth: true
-                height: 8
-                radius: 4
-                clip: true
-                color: root.theme.base02
-
-                Rectangle {
-                    width: parent.width * Math.max(0, Math.min(1, root.level))
-                    height: parent.height
-                    radius: parent.radius
-                    color: root.theme.base0D
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: function (mouse) {
-                        root.updateVolume(mouse.x, width);
-                    }
-                    onPositionChanged: function (mouse) {
-                        if (pressed)
-                            root.updateVolume(mouse.x, width);
-                    }
-                }
+                Layout.preferredHeight: 28
+                theme: root.theme
+                value: root.level
+                accessibleName: "Volume"
+                onMoved: value => root.updateVolume(value)
             }
         }
     }

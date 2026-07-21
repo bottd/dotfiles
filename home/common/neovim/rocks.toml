@@ -54,9 +54,9 @@ tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "scm"
 tree-sitter-kotlin = "0.0.44"
 
-[plugins."everforest-nvim"]
-git = "neanias/everforest-nvim"
-rev = "d235ca0aa6a29546e661a020e2618612acbbffbe"
+[plugins."tokyonight.nvim"]
+git = "folke/tokyonight.nvim"
+rev = "v4.14.1"
 
 [plugins."github-nvim-theme"]
 git = "projekt0n/github-nvim-theme"
@@ -118,7 +118,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["everforest-nvim", "github-nvim-theme"]
+items = ["tokyonight.nvim", "github-nvim-theme"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]

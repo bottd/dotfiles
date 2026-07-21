@@ -28,33 +28,88 @@
         "aarch64-darwin"
       ];
       forEachSystem = nixpkgs.lib.genAttrs systems;
+      homeDirectories = {
+        x86_64-linux = "/home/drakeb";
+        aarch64-linux = "/home/droid";
+      };
+      mkSandbox = home:
+        let
+          inHome = map (path: "${home}/${path}");
+        in
+        {
+          writablePaths = inHome [
+            ".cache/kli"
+            ".config/kli"
+            "chalet/_data/kli"
+          ];
+          denyRead = inHome [
+            ".aws"
+            ".claude"
+            ".codex"
+            ".config/Bitwarden"
+            ".config/Bitwarden CLI"
+            ".config/gh"
+            ".config/opencode"
+            ".config/rbw"
+            ".docker"
+            ".gnupg"
+            ".kube"
+            ".local/share"
+            ".password-store"
+            ".ssh"
+          ];
+        };
       mkConfiguredKli =
         system:
+        let
+          home = homeDirectories.${system} or null;
+        in
         kli.lib.${system}.mkConfiguredKli {
           extensions = [ kli-kagi.packages.${system}.extension ];
+          sandbox = if home == null then null else mkSandbox home;
+        };
+      mkKli =
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          configuredKli = mkConfiguredKli system;
+          wrapper = pkgs.writers.writeBabashkaBin "kli" { } (
+            builtins.replaceStrings
+              [ "@rbw@" "@kli@" "@openssl-lib@" ]
+              [ "${pkgs.rbw}/bin/rbw" "${configuredKli}/bin/kli" "${pkgs.openssl.out}/lib" ]
+              (builtins.readFile ./wrapper.clj)
+          );
+        in
+        pkgs.symlinkJoin {
+          name = "kli";
+          paths = [ configuredKli ];
+          postBuild = ''
+            rm "$out/bin/kli"
+            ln -s ${wrapper}/bin/kli "$out/bin/kli"
+          '';
         };
     in
     {
       packages = forEachSystem (
         system:
         let
-          configuredKli = mkConfiguredKli system;
+          kli = mkKli system;
         in
         {
-          default = configuredKli;
-          kli = configuredKli;
+          default = kli;
+          inherit kli;
         }
       );
 
       apps = forEachSystem (
         system:
         let
-          configuredKli = mkConfiguredKli system;
+          kli = mkKli system;
         in
         {
           default = {
             type = "app";
-            program = "${configuredKli}/bin/kli";
+            program = "${kli}/bin/kli";
             meta.description = "Run Drake's configured KLI image";
           };
         }

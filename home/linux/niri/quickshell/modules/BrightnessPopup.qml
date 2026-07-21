@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
@@ -20,7 +21,7 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     WlrLayershell.namespace: "drake-brightness-popup"
 
     onScreenChanged: {
@@ -28,8 +29,8 @@ PanelWindow {
             dismissTimer.restart();
     }
 
-    function updateBrightness(x, width) {
-        root.setBrightness(Math.max(0, Math.min(1, x / width)));
+    function updateBrightness(level) {
+        root.setBrightness(level);
         dismissTimer.restart();
     }
 
@@ -44,8 +45,8 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 7
-        color: root.theme.base00
-        border.color: root.theme.base02
+        color: root.theme.background
+        border.color: root.theme.border
         border.width: 1
 
         ColumnLayout {
@@ -56,35 +57,18 @@ PanelWindow {
             Text {
                 Layout.fillWidth: true
                 text: "󰃟 " + Math.round(root.level * 100) + "%"
-                color: root.theme.base05
+                color: root.theme.textPrimary
                 font.family: root.theme.fontFamily
                 font.pixelSize: root.theme.fontSize
             }
 
-            Rectangle {
+            LevelSlider {
                 Layout.fillWidth: true
-                height: 8
-                radius: 4
-                clip: true
-                color: root.theme.base02
-
-                Rectangle {
-                    width: parent.width * Math.max(0, Math.min(1, root.level))
-                    height: parent.height
-                    radius: parent.radius
-                    color: root.theme.base0D
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: function (mouse) {
-                        root.updateBrightness(mouse.x, width);
-                    }
-                    onPositionChanged: function (mouse) {
-                        if (pressed)
-                            root.updateBrightness(mouse.x, width);
-                    }
-                }
+                Layout.preferredHeight: 28
+                theme: root.theme
+                value: root.level
+                accessibleName: "Brightness"
+                onMoved: value => root.updateBrightness(value)
             }
         }
     }

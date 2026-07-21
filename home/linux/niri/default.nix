@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostName, features, ... }:
+{ config, lib, pkgs, hostName, features, theme, ... }:
 let
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
@@ -63,6 +63,20 @@ in
             readonly property color base03: "#${config.lib.stylix.colors.base03}"
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
+            readonly property color background: "#${config.lib.stylix.colors.base00}"
+            readonly property color surface: "#${config.lib.stylix.colors.base01}"
+            readonly property color surfaceHover: "#${config.lib.stylix.colors.base02}"
+            readonly property color surfaceSelected: "#${config.lib.stylix.colors.base02}"
+            readonly property color surfacePressed: "#${config.lib.stylix.colors.base03}"
+            readonly property color border: "#${config.lib.stylix.colors.base03}"
+            readonly property color textPrimary: "#${config.lib.stylix.colors.base07}"
+            readonly property color textMuted: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base06 else config.lib.stylix.colors.base04}"
+            readonly property color accent: "#${config.lib.stylix.colors.base0D}"
+            readonly property color textOnAccent: "#${config.lib.stylix.colors.base00}"
+            readonly property color focusRing: "#${config.lib.stylix.colors.base0D}"
+            readonly property color statusPositive: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0B else config.lib.stylix.colors.base0D}"
+            readonly property color statusWarning: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0A else config.lib.stylix.colors.base0F}"
+            readonly property color danger: "#${config.lib.stylix.colors.base08}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
             readonly property bool animationsEnabled: ${lib.boolToString features.gui}
@@ -219,8 +233,8 @@ in
         "XF86AudioLowerVolume" = { allow-when-locked = true; action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; };
         "XF86AudioMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; };
         "XF86AudioMicMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; };
-        "XF86MonBrightnessUp" = { allow-when-locked = true; action = spawn "brightnessctl" "set" "5%+"; };
-        "XF86MonBrightnessDown" = { allow-when-locked = true; action = spawn "brightnessctl" "set" "5%-"; };
+        "XF86MonBrightnessUp" = { allow-when-locked = true; action = spawn "brightnessctl" "--class=backlight" "set" "5%+"; };
+        "XF86MonBrightnessDown" = { allow-when-locked = true; action = spawn "brightnessctl" "--class=backlight" "set" "5%-"; };
         "XF86AudioPlay" = { allow-when-locked = true; action = spawn "playerctl" "play-pause"; };
         "XF86AudioNext" = { allow-when-locked = true; action = spawn "playerctl" "next"; };
         "XF86AudioPrev" = { allow-when-locked = true; action = spawn "playerctl" "previous"; };

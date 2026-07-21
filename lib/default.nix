@@ -13,7 +13,7 @@ let
     let
       appearance = theme.appearance or "dark";
       t = {
-        scheme = theme.scheme or "everforest";
+        scheme = theme.scheme or "tokyo-night";
         inherit appearance;
         baseFontSize = theme.baseFontSize or 20;
       };

@@ -20,6 +20,8 @@ PanelWindow {
     property int selectedIndex: 0
     property bool journalStarted: false
     property string journalDate: ""
+    property var confirmationItem: null
+    readonly property color dangerColor: root.theme.danger || root.theme.accent
     readonly property alias journalFocused: journalTerminal.activeFocus
     readonly property var applicationIndex: DesktopEntries.applications.values
     signal dismissed
@@ -38,11 +40,15 @@ PanelWindow {
                 {
                     key: "r",
                     label: "Reboot",
+                    description: "Restarts the system immediately",
+                    destructive: true,
                     command: ["systemctl", "reboot"]
                 },
                 {
                     key: "o",
                     label: "Power off",
+                    description: "Shuts down the system immediately",
+                    destructive: true,
                     command: ["systemctl", "poweroff"]
                 },
                 {
@@ -98,20 +104,28 @@ PanelWindow {
 
     readonly property var activeItems: root.path.length === 0 ? root.menu : root.path[root.path.length - 1].items
     readonly property var commonApplications: ["Glide", "Ghostty", "Spotify", "Discord"].map(root.findApplication).filter(entry => entry)
-    readonly property var recentApplications: recentState.apps.map(id => root.applicationIndex.find(entry => entry.id === id)).filter(entry => entry)
+    readonly property var recentApplications: recentState.apps.map(id => root.applicationIndex.find(entry => entry.id === id)).filter(entry => entry && !root.commonApplications.some(common => common.id === entry.id))
     readonly property date monthStart: new Date(root.now.getFullYear(), root.now.getMonth(), 1)
     readonly property int leadingDays: (root.monthStart.getDay() + 6) % 7
     readonly property int daysInMonth: new Date(root.now.getFullYear(), root.now.getMonth() + 1, 0).getDate()
     readonly property var filteredApplications: {
         const needle = search.text.trim().toLowerCase();
-        if (needle === "")
-            return root.applicationIndex;
+        if (needle === "") {
+            return root.applicationIndex.slice().sort((a, b) => {
+                const recentA = root.applicationRecency(a.id);
+                const recentB = root.applicationRecency(b.id);
+                if (recentA !== recentB)
+                    return recentA - recentB;
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            });
+        }
 
         return root.applicationIndex.map((entry, index) => ({
                     entry: entry,
                     index: index,
-                    score: root.applicationScore(needle, entry)
-                })).filter(candidate => candidate.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || a.index - b.index).map(candidate => candidate.entry);
+                    score: root.applicationScore(needle, entry),
+                    recent: root.applicationRecency(entry.id)
+                })).filter(candidate => candidate.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || a.recent - b.recent || a.entry.name.toLowerCase().localeCompare(b.entry.name.toLowerCase()) || a.index - b.index).map(candidate => candidate.entry);
     }
 
     anchors.bottom: true
@@ -159,7 +173,35 @@ PanelWindow {
     }
 
     function applicationScore(needle, entry) {
-        return Math.max(root.fuzzyScore(needle, entry.name), root.fuzzyScore(needle, entry.genericName) - 10, root.fuzzyScore(needle, entry.keywords.join(" ")) - 15, root.fuzzyScore(needle, entry.comment) - 25);
+        return Math.max(root.fuzzyScore(needle, entry.name), root.fuzzyScore(needle, entry.genericName) - 10, root.fuzzyScore(needle, (entry.keywords || []).join(" ")) - 15, root.fuzzyScore(needle, entry.comment) - 25);
+    }
+
+    function applicationRecency(id) {
+        const index = recentState.apps.indexOf(id);
+        return index < 0 ? 1000000 : index;
+    }
+
+    function applicationSubtitle(entry) {
+        const needle = search.text.trim().toLowerCase();
+        const genericName = entry.genericName || "";
+        const comment = entry.comment || "";
+        let detail = genericName && genericName.toLowerCase() !== entry.name.toLowerCase() ? genericName : comment;
+
+        if (needle !== "") {
+            if (genericName.toLowerCase().includes(needle))
+                detail = genericName;
+            else {
+                const keyword = (entry.keywords || []).find(value => (value || "").toLowerCase().includes(needle));
+                if (keyword)
+                    detail = keyword;
+                else if (comment.toLowerCase().includes(needle))
+                    detail = comment;
+            }
+        }
+
+        if (root.applicationRecency(entry.id) < 1000000)
+            return detail ? "Recent  ·  " + detail : "Recent";
+        return detail;
     }
 
     function findApplication(name) {
@@ -187,6 +229,7 @@ PanelWindow {
     }
 
     function goBack() {
+        root.clearDangerConfirmation();
         if (root.path.length === 0) {
             root.dismissed();
             return;
@@ -195,7 +238,23 @@ PanelWindow {
         root.path = root.path.slice(0, -1);
     }
 
+    function clearDangerConfirmation() {
+        dangerConfirmationTimer.stop();
+        root.confirmationItem = null;
+    }
+
     function activate(item) {
+        if (item.destructive) {
+            if (root.confirmationItem !== item) {
+                root.confirmationItem = item;
+                dangerConfirmationTimer.restart();
+                return;
+            }
+            root.clearDangerConfirmation();
+        } else {
+            root.clearDangerConfirmation();
+        }
+
         if (item.items) {
             root.path = root.path.concat([item]);
             return;
@@ -253,6 +312,11 @@ PanelWindow {
     }
 
     function handleCommandKey(event) {
+        if (event.isAutoRepeat) {
+            event.accepted = true;
+            return;
+        }
+
         if (event.key === Qt.Key_Escape || event.key === Qt.Key_Backspace) {
             root.goBack();
             event.accepted = true;
@@ -275,6 +339,7 @@ PanelWindow {
     onOpenChanged: {
         if (root.open) {
             screenshotTimer.stop();
+            root.clearDangerConfirmation();
             root.presented = true;
             root.path = [];
             root.selectedIndex = 0;
@@ -288,6 +353,7 @@ PanelWindow {
                 }
             });
         } else if (root.presented) {
+            root.clearDangerConfirmation();
             if (journalStart.running) {
                 journalStart.stop();
                 root.journalStarted = false;
@@ -298,6 +364,7 @@ PanelWindow {
     }
 
     onModeChanged: {
+        root.clearDangerConfirmation();
         root.path = [];
         root.selectedIndex = 0;
         if (root.mode === "launcher") {
@@ -352,6 +419,13 @@ PanelWindow {
         onTriggered: Quickshell.execDetached(["niri", "msg", "action", "screenshot"])
     }
 
+    Timer {
+        id: dangerConfirmationTimer
+
+        interval: 3000
+        onTriggered: root.confirmationItem = null
+    }
+
     FocusScope {
         anchors.fill: parent
         focus: root.open
@@ -375,14 +449,14 @@ PanelWindow {
 
             width: parent.width
             height: parent.height
-            color: root.theme.base00
+            color: root.theme.background
 
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
                 height: 2
-                color: root.theme.base0D
+                color: root.theme.accent
             }
 
             ColumnLayout {
@@ -403,12 +477,12 @@ PanelWindow {
                         ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 1
+                            Layout.preferredWidth: 1.15
                             spacing: 6
 
                             Text {
                                 text: "APPS"
-                                color: root.theme.base0D
+                                color: root.theme.accent
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -416,7 +490,7 @@ PanelWindow {
 
                             Text {
                                 text: "COMMON"
-                                color: root.theme.base03
+                                color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
@@ -430,7 +504,7 @@ PanelWindow {
                                     Layout.fillWidth: true
                                     implicitHeight: 30
                                     radius: 4
-                                    color: commonMouse.containsMouse ? root.theme.base02 : root.theme.base01
+                                    color: commonMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface
 
                                     RowLayout {
                                         anchors.fill: parent
@@ -448,7 +522,7 @@ PanelWindow {
                                             Layout.fillWidth: true
                                             text: modelData.name
                                             elide: Text.ElideRight
-                                            color: root.theme.base05
+                                            color: root.theme.textPrimary
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize - 1
                                         }
@@ -465,8 +539,9 @@ PanelWindow {
                             }
 
                             Text {
+                                visible: root.recentApplications.length > 0 || recentState.apps.length === 0
                                 text: "RECENT"
-                                color: root.theme.base03
+                                color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
@@ -480,7 +555,7 @@ PanelWindow {
                                     Layout.fillWidth: true
                                     implicitHeight: 28
                                     radius: 4
-                                    color: recentMouse.containsMouse ? root.theme.base02 : "transparent"
+                                    color: recentMouse.containsMouse ? root.theme.surfaceHover : "transparent"
 
                                     Text {
                                         anchors.fill: parent
@@ -488,7 +563,7 @@ PanelWindow {
                                         verticalAlignment: Text.AlignVCenter
                                         text: modelData.name
                                         elide: Text.ElideRight
-                                        color: root.theme.base05
+                                        color: root.theme.textPrimary
                                         font.family: root.theme.fontFamily
                                         font.pixelSize: root.theme.fontSize - 1
                                     }
@@ -504,9 +579,9 @@ PanelWindow {
                             }
 
                             Text {
-                                visible: root.recentApplications.length === 0
+                                visible: recentState.apps.length === 0
                                 text: "No drawer launches yet"
-                                color: root.theme.base03
+                                color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
@@ -517,7 +592,7 @@ PanelWindow {
 
                             Text {
                                 text: "d  ALL APPLICATIONS"
-                                color: root.theme.base0D
+                                color: root.theme.accent
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 1
 
@@ -531,18 +606,18 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base0D
+                            color: root.theme.accent
                         }
 
                         ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 1
+                            Layout.preferredWidth: 1.15
                             spacing: 6
 
                             Text {
                                 text: "HOTKEYS"
-                                color: root.theme.base0D
+                                color: root.theme.accent
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -557,7 +632,7 @@ PanelWindow {
                                     Layout.fillWidth: true
                                     implicitHeight: 34
                                     radius: 4
-                                    color: hotkeyMouse.containsMouse ? root.theme.base02 : root.theme.base01
+                                    color: hotkeyMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface
 
                                     RowLayout {
                                         anchors.fill: parent
@@ -566,7 +641,7 @@ PanelWindow {
 
                                         Text {
                                             text: modelData.key
-                                            color: root.theme.base0D
+                                            color: root.theme.accent
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize
                                             font.bold: true
@@ -575,7 +650,7 @@ PanelWindow {
                                         Text {
                                             Layout.fillWidth: true
                                             text: modelData.label
-                                            color: root.theme.base05
+                                            color: root.theme.textPrimary
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize - 1
                                         }
@@ -593,14 +668,14 @@ PanelWindow {
 
                             Text {
                                 text: "SHORTCUTS"
-                                color: root.theme.base03
+                                color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
 
                             Text {
                                 text: "a quick apps   d all apps   j journal"
-                                color: root.theme.base05
+                                color: root.theme.textPrimary
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
@@ -613,18 +688,18 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base0D
+                            color: root.theme.accent
                         }
 
                         ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 2
+                            Layout.preferredWidth: root.journalFocused ? 2 : 1.5
                             spacing: 8
 
                             Text {
                                 text: "DAILY JOURNAL"
-                                color: root.theme.base0D
+                                color: root.theme.accent
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -634,8 +709,8 @@ PanelWindow {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 radius: 4
-                                color: root.theme.base00
-                                border.color: root.journalFocused ? root.theme.base0D : root.theme.base02
+                                color: root.theme.background
+                                border.color: root.journalFocused ? root.theme.focusRing : root.theme.border
                                 border.width: 1
                                 clip: true
 
@@ -699,8 +774,8 @@ PanelWindow {
                                         anchors.top: parent.top
                                         width: focusHint.width + 12
                                         height: focusHint.height + 8
-                                        color: root.theme.base01
-                                        border.color: root.theme.base0D
+                                        color: root.theme.surface
+                                        border.color: root.theme.focusRing
                                         border.width: 1
 
                                         Text {
@@ -708,7 +783,7 @@ PanelWindow {
 
                                             anchors.centerIn: parent
                                             text: "j  FOCUS"
-                                            color: root.theme.base0D
+                                            color: root.theme.accent
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize - 2
                                             font.bold: true
@@ -721,7 +796,7 @@ PanelWindow {
                                 Layout.fillWidth: true
                                 text: (root.journalDate || Qt.formatDate(root.now, "yyyy-MM-dd")) + ".norg" + (root.journalFocused ? "  /  SUPER hides" : "  /  j focuses")
                                 elide: Text.ElideRight
-                                color: root.theme.base03
+                                color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
                             }
@@ -730,25 +805,22 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.base0D
+                            color: root.theme.accent
                         }
 
                         Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 2
+                            Layout.preferredWidth: 1.4
 
                             ColumnLayout {
-                                anchors.top: parent.top
-                                anchors.right: parent.right
-                                anchors.bottom: parent.bottom
-                                width: parent.width / 2
+                                anchors.fill: parent
                                 spacing: 6
 
                                 Text {
                                     Layout.alignment: Qt.AlignRight
                                     text: Qt.formatDate(root.now, "MMMM yyyy").toUpperCase()
-                                    color: root.theme.base0D
+                                    color: root.theme.accent
                                     font.family: root.theme.fontFamily
                                     font.pixelSize: root.theme.fontSize
                                     font.bold: true
@@ -769,7 +841,7 @@ PanelWindow {
                                             Layout.fillWidth: true
                                             horizontalAlignment: Text.AlignHCenter
                                             text: modelData
-                                            color: root.theme.base03
+                                            color: root.theme.textMuted
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize - 2
                                         }
@@ -787,12 +859,12 @@ PanelWindow {
                                             Layout.fillWidth: true
                                             implicitHeight: 27
                                             radius: 4
-                                            color: today ? root.theme.base0D : "transparent"
+                                            color: today ? root.theme.accent : "transparent"
 
                                             Text {
                                                 anchors.centerIn: parent
                                                 text: day
-                                                color: parent.today ? root.theme.base00 : root.theme.base05
+                                                color: parent.today ? root.theme.textOnAccent : root.theme.textPrimary
                                                 font.family: root.theme.fontFamily
                                                 font.pixelSize: root.theme.fontSize - 1
                                                 font.bold: parent.today
@@ -818,13 +890,16 @@ PanelWindow {
 
                             delegate: Rectangle {
                                 required property var modelData
+                                readonly property bool destructive: !!modelData.destructive
+                                readonly property bool confirming: root.confirmationItem === modelData
 
-                                width: Math.max(150, commandLabel.implicitWidth + commandKey.implicitWidth + 42)
+                                width: Math.max(destructive ? 240 : 150, commandLabel.implicitWidth + commandKey.implicitWidth + 42)
                                 height: 56
                                 radius: 6
-                                color: commandMouse.containsMouse ? root.theme.base02 : root.theme.base01
-                                border.color: commandMouse.containsMouse ? root.theme.base0D : root.theme.base02
+                                color: confirming ? root.dangerColor : (commandMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
+                                border.color: destructive ? root.dangerColor : (commandMouse.containsMouse ? root.theme.focusRing : root.theme.border)
                                 border.width: 1
+                                opacity: commandMouse.pressed ? 0.75 : 1
 
                                 RowLayout {
                                     anchors.fill: parent
@@ -836,7 +911,7 @@ PanelWindow {
                                         id: commandKey
 
                                         text: modelData.key
-                                        color: root.theme.base0D
+                                        color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.accent)
                                         font.family: root.theme.fontFamily
                                         font.pixelSize: root.theme.fontSize + 2
                                         font.bold: true
@@ -852,16 +927,16 @@ PanelWindow {
                                             Layout.fillWidth: true
                                             text: modelData.label
                                             elide: Text.ElideRight
-                                            color: root.theme.base05
+                                            color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.textPrimary)
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize
                                         }
 
                                         Text {
                                             Layout.fillWidth: true
-                                            text: modelData.description ? (modelData.items ? "+ " : "") + modelData.description : ""
+                                            text: confirming ? "Press " + modelData.key + " again to confirm" : (modelData.description || "")
                                             elide: Text.ElideRight
-                                            color: root.theme.base03
+                                            color: confirming ? root.theme.textOnAccent : root.theme.textMuted
                                             font.family: root.theme.fontFamily
                                             font.pixelSize: root.theme.fontSize - 2
                                         }
@@ -873,6 +948,7 @@ PanelWindow {
 
                                     anchors.fill: parent
                                     hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
                                     onClicked: root.activate(modelData)
                                 }
                             }
@@ -882,20 +958,30 @@ PanelWindow {
                     ListView {
                         id: results
 
-                        anchors.fill: parent
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.min(parent.width, 840)
                         visible: root.mode === "launcher"
                         clip: true
                         spacing: 3
                         model: root.filteredApplications
+                        ScrollBar.vertical: ScrollBar {
+                            policy: ScrollBar.AsNeeded
+                        }
 
                         delegate: Rectangle {
+                            id: resultRow
+
                             required property var modelData
                             required property int index
 
                             width: results.width
-                            height: 40
+                            height: 48
                             radius: 5
-                            color: index === root.selectedIndex ? root.theme.base02 : "transparent"
+                            color: index === root.selectedIndex ? root.theme.surfaceSelected : (resultMouse.containsMouse ? root.theme.surfaceHover : "transparent")
+                            border.color: index === root.selectedIndex ? root.theme.focusRing : "transparent"
+                            border.width: 1
 
                             IconImage {
                                 anchors.left: parent.left
@@ -906,21 +992,40 @@ PanelWindow {
                                 source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
                             }
 
-                            Text {
+                            ColumnLayout {
                                 anchors.left: parent.left
                                 anchors.leftMargin: 40
                                 anchors.right: parent.right
-                                anchors.rightMargin: 8
+                                anchors.rightMargin: 18
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.name
-                                elide: Text.ElideRight
-                                color: root.theme.base05
-                                font.family: root.theme.fontFamily
-                                font.pixelSize: root.theme.fontSize
+                                spacing: 0
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: modelData.name
+                                    elide: Text.ElideRight
+                                    color: root.theme.textPrimary
+                                    font.family: root.theme.fontFamily
+                                    font.pixelSize: root.theme.fontSize
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    visible: text !== ""
+                                    text: root.applicationSubtitle(modelData)
+                                    elide: Text.ElideRight
+                                    color: root.theme.textMuted
+                                    font.family: root.theme.fontFamily
+                                    font.pixelSize: root.theme.fontSize - 2
+                                }
                             }
 
                             MouseArea {
+                                id: resultMouse
+
                                 anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
                                 onClicked: root.launchApplication(modelData)
                             }
                         }
@@ -929,7 +1034,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             visible: root.filteredApplications.length === 0
                             text: "No applications found"
-                            color: root.theme.base03
+                            color: root.theme.textMuted
                             font.family: root.theme.fontFamily
                             font.pixelSize: root.theme.fontSize
                         }
@@ -940,20 +1045,25 @@ PanelWindow {
                     id: search
 
                     Layout.fillWidth: true
+                    Layout.maximumWidth: 840
+                    Layout.alignment: Qt.AlignHCenter
                     visible: root.mode === "launcher"
                     placeholderText: "Search applications"
                     selectByMouse: true
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
-                    color: root.theme.base05
-                    placeholderTextColor: root.theme.base03
+                    color: root.theme.textPrimary
+                    placeholderTextColor: root.theme.textMuted
                     background: Rectangle {
                         radius: 6
-                        color: root.theme.base01
-                        border.color: root.theme.base02
+                        color: root.theme.surface
+                        border.color: search.activeFocus ? root.theme.focusRing : root.theme.border
                         border.width: 1
                     }
-                    onTextChanged: root.selectedIndex = 0
+                    onTextChanged: {
+                        root.selectedIndex = 0;
+                        results.positionViewAtBeginning();
+                    }
                     Keys.onPressed: function (event) {
                         if (event.key === Qt.Key_Escape) {
                             root.dismissed();

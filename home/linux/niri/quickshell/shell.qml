@@ -21,15 +21,29 @@ ShellRoot {
     property var brightnessScreen: null
     property var workspaces: []
     property string windowTitle: ""
-    property string mullvadText: ""
-    property string cellularText: ""
+    property var mullvadStatus: ({
+            text: "",
+            tone: "neutral",
+            tooltip: ""
+        })
+    property var cellularStatus: ({
+            text: "",
+            tone: "neutral",
+            tooltip: ""
+        })
     property string backlightText: ""
+    property bool backlightAvailable: false
     property real brightnessLevel: 0
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
     readonly property real volumeLevel: root.audioReady ? root.audioSink.audio.volume : 0
     readonly property bool volumeMuted: root.audioReady ? root.audioSink.audio.muted : false
-    readonly property string audioText: root.audioReady ? (root.volumeMuted ? "󰝟 muted" : ("󰕾 " + Math.round(root.volumeLevel * 100) + "%")) : ""
+    readonly property string audioIcon: root.volumeMuted ? "󰝟" : (root.volumeLevel < 0.01 ? "󰖁" : (root.volumeLevel < 0.34 ? "󰕿" : (root.volumeLevel < 0.67 ? "󰖀" : "󰕾")))
+    readonly property var audioStatus: ({
+            text: root.audioReady ? root.audioIcon + " " + (root.volumeMuted ? "muted" : Math.round(root.volumeLevel * 100) + "%") : "",
+            tone: root.volumeMuted ? "warning" : "neutral",
+            tooltip: root.audioReady ? "Volume " + Math.round(root.volumeLevel * 100) + "%" + (root.volumeMuted ? " · muted" : "") : "Audio unavailable"
+        })
     readonly property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
 
     Theme {
@@ -75,6 +89,9 @@ ShellRoot {
     }
 
     function toggleBrightness(screen) {
+        if (!root.backlightAvailable)
+            return;
+
         const closing = root.brightnessOpen && root.brightnessScreen === screen;
         root.volumeOpen = false;
         root.brightnessScreen = screen;
@@ -82,9 +99,32 @@ ShellRoot {
     }
 
     function setBrightness(level) {
+        if (!root.backlightAvailable)
+            return;
+
         root.brightnessLevel = Math.max(0, Math.min(1, level));
         root.backlightText = "󰃟 " + Math.round(root.brightnessLevel * 100) + "%";
-        Quickshell.execDetached(["brightnessctl", "set", Math.round(root.brightnessLevel * 100) + "%"]);
+        Quickshell.execDetached(["brightnessctl", "--class=backlight", "set", Math.round(root.brightnessLevel * 100) + "%"]);
+    }
+
+    function adjustBrightness(increase) {
+        if (!root.backlightAvailable)
+            return;
+
+        root.brightnessLevel = Math.max(0, Math.min(1, root.brightnessLevel + (increase ? 0.05 : -0.05)));
+        root.backlightText = "󰃟 " + Math.round(root.brightnessLevel * 100) + "%";
+        Quickshell.execDetached(["brightnessctl", "--class=backlight", "set", increase ? "5%+" : "5%-"]);
+        backlightRefreshTimer.restart();
+    }
+
+    function connectionTone(state) {
+        if (state === "connected")
+            return "positive";
+        if (["connecting", "reconnecting", "registering", "searching", "enabling", "registered"].includes(state))
+            return "warning";
+        if (["failed", "error", "daemon-down"].includes(state))
+            return "danger";
+        return "muted";
     }
 
     function toggleDrawer(mode) {
@@ -141,9 +181,18 @@ ShellRoot {
             onStreamFinished: {
                 try {
                     const value = JSON.parse(text);
-                    root.mullvadText = value.text || "";
+                    const state = value.class || "daemon-down";
+                    root.mullvadStatus = {
+                        text: value.text || "",
+                        tone: root.connectionTone(state),
+                        tooltip: value.tooltip || "Mullvad status unavailable"
+                    };
                 } catch (error) {
-                    root.mullvadText = text.trim();
+                    root.mullvadStatus = {
+                        text: text.trim(),
+                        tone: "danger",
+                        tooltip: "Mullvad status unavailable"
+                    };
                 }
             }
         }
@@ -158,22 +207,50 @@ ShellRoot {
                 const value = text;
                 const state = value.match(/modem\.generic\.state: (.+)/);
                 const signal = value.match(/modem\.generic\.signal-quality\.value: (.+)/);
-                root.cellularText = state && state[1].trim() === "connected" && signal ? "󰄋 " + signal[1].trim() + "%" : "";
+                const currentState = state ? state[1].trim() : "";
+                const signalValue = signal ? signal[1].trim() : "";
+                if (currentState === "") {
+                    root.cellularStatus = {
+                        text: "",
+                        tone: "neutral",
+                        tooltip: ""
+                    };
+                    return;
+                }
+
+                root.cellularStatus = {
+                    text: "󰄋 " + (currentState === "connected" && signalValue ? signalValue + "%" : currentState),
+                    tone: root.connectionTone(currentState),
+                    tooltip: "Cellular: " + currentState + (signalValue ? " · " + signalValue + "% signal" : "")
+                };
             }
         }
     }
 
     Process {
         id: backlightProcess
-        command: ["sh", "-c", "brightnessctl -m 2>/dev/null"]
+        command: ["sh", "-c", "brightnessctl --class=backlight -m 2>/dev/null"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                const value = text.trim().split(",")[4] || "";
-                root.backlightText = value ? "󰃟 " + value : "";
-                root.brightnessLevel = value ? parseInt(value, 10) / 100 : 0;
+                const line = text.trim().split("\n")[0] || "";
+                const fields = line.split(",");
+                // Machine output is device,class,current,percentage,max.
+                const percentage = fields.length >= 5 ? parseInt(fields[3], 10) : NaN;
+                root.backlightAvailable = Number.isFinite(percentage);
+                root.backlightText = root.backlightAvailable ? "󰃟 " + percentage + "%" : "";
+                root.brightnessLevel = root.backlightAvailable ? percentage / 100 : 0;
+                if (!root.backlightAvailable)
+                    root.brightnessOpen = false;
             }
         }
+    }
+
+    Timer {
+        id: backlightRefreshTimer
+
+        interval: 250
+        onTriggered: backlightProcess.running = true
     }
 
     Process {
@@ -287,8 +364,8 @@ ShellRoot {
 
             Rectangle {
                 anchors.fill: parent
-                color: shellTheme.base00
-                border.color: shellTheme.base02
+                color: shellTheme.background
+                border.color: shellTheme.border
                 border.width: 1
 
                 RowLayout {
@@ -308,19 +385,20 @@ ShellRoot {
                         Layout.fillWidth: true
                         text: root.windowTitle
                         elide: Text.ElideRight
-                        color: shellTheme.base05
+                        color: shellTheme.textPrimary
                         font.family: shellTheme.fontFamily
                         font.pixelSize: shellTheme.fontSize
                     }
 
                     Modules.SystemTray {
                         parentWindow: bar
+                        theme: shellTheme
                     }
 
                     Modules.StatusModules {
-                        audioText: root.audioText
-                        mullvadText: root.mullvadText
-                        cellularText: root.cellularText
+                        audioStatus: root.audioStatus
+                        mullvadStatus: root.mullvadStatus
+                        cellularStatus: root.cellularStatus
                         backlightText: root.backlightText
                         battery: root.battery
                         now: clock.date
@@ -329,7 +407,7 @@ ShellRoot {
                         onMullvadClicked: Quickshell.execDetached(["waybar-mullvad", "toggle"])
                         onCellularClicked: Quickshell.execDetached(["nm-connection-editor"])
                         onBacklightClicked: root.toggleBrightness(bar.screen)
-                        onBacklightWheel: increase => Quickshell.execDetached(["brightnessctl", "set", increase ? "5%+" : "5%-"])
+                        onBacklightWheel: increase => root.adjustBrightness(increase)
                     }
                 }
             }

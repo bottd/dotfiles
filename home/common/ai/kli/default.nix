@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 let
   colors = config.lib.stylix.colors;
   hex = color: "#${color}";
@@ -58,58 +58,53 @@ let
       bashMode = hex colors.base09;
     };
   };
-  configuredKli = inputs.kli-config.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  kliWrapper = pkgs.writers.writeBabashkaBin "kli" { } (
-    builtins.replaceStrings
-      [ "@rbw@" "@kli@" "@openssl-lib@" ]
-      [ "${pkgs.rbw}/bin/rbw" "${configuredKli}/bin/kli" "${pkgs.openssl.out}/lib" ]
-      (builtins.readFile ./wrapper.clj)
-  );
-  # buildLisp's runtime wrapper only sets LD_LIBRARY_PATH; macOS needs
-  # DYLD_LIBRARY_PATH. This wrapper also injects the runtime-only Kagi credential.
-  wrappedKli = pkgs.symlinkJoin {
-    name = "kli";
-    paths = [ configuredKli ];
-    postBuild = ''
-      rm "$out/bin/kli"
-      ln -s ${kliWrapper}/bin/kli "$out/bin/kli"
-    '';
-  };
+  kli = inputs.kli-config.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
-  home.packages = [ wrappedKli ];
+  home = {
+    packages = [ kli ];
 
-  home.file = {
-    ".config/kli/settings.json".source =
-      config.lib.meta.createSymlink "home/common/ai/kli/settings.json";
-    ".config/kli/themes/stylix.json".text = stylixTheme;
-    ".config/kli/extensions/stylix-theme.lisp".text = ''
-      (defextension stylix-theme
-        (:provides
-         (theme stylix
-           (kli/tui/style:load-theme
-            #P"${config.home.homeDirectory}/.config/kli/themes/stylix.json"))
-         (effect activate-stylix-theme
-           (lambda (protocol contribution context)
-             (declare (ignore contribution context))
-             (prog1
-                 (list (kli/tui/style:theme-name
-                        (kli/tui/style:active-theme protocol))
-                       (kli/ext:protocol-storage
-                        protocol kli/tui/style:+theme-mode-key+))
-               (kli/tui/style:set-active-theme protocol "stylix")
-               (setf (kli/ext:protocol-storage
-                      protocol kli/tui/style:+theme-mode-key+)
-                     :explicit)))
-           (lambda (protocol contribution context)
-             (declare (ignore context))
-             (destructuring-bind (previous-theme previous-mode)
-                 (kli/ext:contribution-state contribution)
-               (when (kli/tui/style:find-theme protocol previous-theme)
-                 (kli/tui/style:set-active-theme protocol previous-theme))
-               (setf (kli/ext:protocol-storage
-                      protocol kli/tui/style:+theme-mode-key+)
-                     previous-mode))))))
-    '';
+    activation.kliSandboxPaths = lib.mkIf pkgs.stdenv.isLinux (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD mkdir -p \
+          "${config.xdg.cacheHome}/kli" \
+          "${config.xdg.configHome}/kli" \
+          "${config.home.homeDirectory}/chalet/_data/kli"
+      ''
+    );
+
+    file = {
+      ".config/kli/settings.json".source =
+        config.lib.meta.createSymlink "home/common/ai/kli/settings.json";
+      ".config/kli/themes/stylix.json".text = stylixTheme;
+      ".config/kli/extensions/stylix-theme.lisp".text = ''
+        (defextension stylix-theme
+          (:provides
+           (theme stylix
+             (kli/tui/style:load-theme
+              #P"${config.home.homeDirectory}/.config/kli/themes/stylix.json"))
+           (effect activate-stylix-theme
+             (lambda (protocol contribution context)
+               (declare (ignore contribution context))
+               (prog1
+                   (list (kli/tui/style:theme-name
+                          (kli/tui/style:active-theme protocol))
+                         (kli/ext:protocol-storage
+                          protocol kli/tui/style:+theme-mode-key+))
+                 (kli/tui/style:set-active-theme protocol "stylix")
+                 (setf (kli/ext:protocol-storage
+                        protocol kli/tui/style:+theme-mode-key+)
+                       :explicit)))
+             (lambda (protocol contribution context)
+               (declare (ignore context))
+               (destructuring-bind (previous-theme previous-mode)
+                   (kli/ext:contribution-state contribution)
+                 (when (kli/tui/style:find-theme protocol previous-theme)
+                   (kli/tui/style:set-active-theme protocol previous-theme))
+                 (setf (kli/ext:protocol-storage
+                        protocol kli/tui/style:+theme-mode-key+)
+                       previous-mode))))))
+      '';
+    };
   };
 }
