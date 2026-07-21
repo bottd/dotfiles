@@ -37,7 +37,7 @@ in
       filezilla
       flashprint
       crosspipe
-      kdePackages.dolphin
+      nautilus
       kdePackages.kdenlive
       glaxnimate
       inkscape
