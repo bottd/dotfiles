@@ -44,10 +44,13 @@ in
       krita
       losslesscut-bin
       mpv
+      mupdf
       openscad
+      sioyek
       tresorit-fhs
       tresorit-launcher
       equibop
+      signal-desktop
     ];
   };
 
@@ -91,6 +94,10 @@ in
       icon = "discord";
       categories = [ "Network" "InstantMessaging" "Chat" ];
       type = "Application";
+    };
+
+    mimeApps.defaultApplications = {
+      "application/pdf" = "sioyek.desktop";
     };
 
     mimeApps.enable = true;
