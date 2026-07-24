@@ -25,7 +25,6 @@
   home.activation.defaultBrowser = lib.mkIf pkgs.stdenv.isDarwin (
     lib.hm.dag.entryAfter [ "trampolineApps" ] ''
       ${pkgs.duti}/bin/duti -s app.glide-browser.glide http
-      ${pkgs.duti}/bin/duti -s app.glide-browser.glide https
       ${pkgs.duti}/bin/duti -s app.glide-browser.glide public.html all
       ${pkgs.duti}/bin/duti -s app.glide-browser.glide public.xhtml all
     ''
