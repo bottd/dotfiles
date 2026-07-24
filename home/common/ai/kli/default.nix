@@ -62,7 +62,9 @@ let
 in
 {
   home = {
-    packages = [ kli ];
+    # kli-kagi is a local Linux dev path and there's no darwin homeDirectory yet,
+    # so kli only builds on Linux. ponytail: drop the guard once darwin is supported.
+    packages = lib.mkIf pkgs.stdenv.isLinux [ kli ];
 
     activation.kliSandboxPaths = lib.mkIf pkgs.stdenv.isLinux (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
