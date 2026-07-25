@@ -24,6 +24,22 @@ jobs:
           nix build .#nixosConfigurations.${{ matrix.config
           }}.config.system.build.toplevel --dry-run
 
+  checks:
+    name: Flake checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
+
+      - name: Build checks
+        run:
+          nix build -L .#checks.x86_64-linux.formatting
+          .#checks.x86_64-linux.clj-kondo
+
   check-arm-linux:
     name: Check aarch64-linux config
     runs-on: ubuntu-24.04-arm
@@ -54,7 +70,7 @@ jobs:
         run: nix build .#darwinConfigurations.macbook.system --dry-run
 
   auto-merge:
-    needs: [check-x86-linux, check-arm-linux, check-darwin]
+    needs: [checks, check-x86-linux, check-arm-linux, check-darwin]
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'automated')
     permissions:

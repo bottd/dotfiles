@@ -32,11 +32,6 @@
           options = [ "fix" ];
           includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
         };
-        clj-kondo = {
-          command = "${pkgs.clj-kondo}/bin/clj-kondo";
-          options = [ "--lint" ];
-          includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
-        };
         qmlformat = {
           command = "${pkgs.qt6Packages.qtdeclarative}/bin/qmlformat";
           options = [ "--inplace" "--indent-width" "4" ];
@@ -47,6 +42,14 @@
 
     checks = {
       formatting = config.treefmt.build.check self;
+
+      clj-kondo = pkgs.runCommand "clj-kondo-lint" { } ''
+        export HOME="$TMPDIR"
+        for f in $(find ${self}/scripts -name '*.clj'); do
+          ${pkgs.clj-kondo}/bin/clj-kondo --lint "$f"
+        done
+        touch $out
+      '';
 
       # Scripts carrying a `selftest` subcommand run it here — an unrun check rots.
       waybar-mullvad = pkgs.runCommand "waybar-mullvad-selftest" { } ''

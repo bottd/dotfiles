@@ -11,7 +11,7 @@ runs:
   using: composite
   steps:
     - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@main
+      uses: DeterminateSystems/nix-installer-action@v22
 
     - name: Setup Cachix
       uses: cachix/cachix-action@v15

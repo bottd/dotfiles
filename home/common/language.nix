@@ -8,7 +8,6 @@
       clojure
       clojure-lsp
       jet
-      leiningen
 
       # Common Lisp
       sbcl
@@ -16,10 +15,6 @@
       # Fennel
       fnlfmt
       luaPackages.fennel
-
-      # Janet
-      janet
-      jpm
 
       # JavaScript/Node
       nodejs

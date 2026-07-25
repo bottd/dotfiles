@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../system/common/linux
+    ../../system/nixOS/jellyfin.nix
   ];
 
   programs.alvr = {

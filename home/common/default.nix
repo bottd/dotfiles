@@ -16,7 +16,6 @@
     ./scripts.nix
     ./starship
     ./stylix.nix
-    ./tmux.nix
     ./zellij.nix
     ./zoxide.nix
     ./zsh.nix

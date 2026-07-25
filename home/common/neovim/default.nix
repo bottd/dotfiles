@@ -38,7 +38,6 @@ in
     };
 
     packages = with pkgs; [
-      lua5_1
       ripgrep
       tree-sitter
 

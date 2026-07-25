@@ -10,7 +10,6 @@
     ./bluetooth.nix
     ./cli.nix
     ./graphics.nix
-    ./jellyfin.nix
     ./keyring.nix
     ./mullvad.nix
     ./printing.nix

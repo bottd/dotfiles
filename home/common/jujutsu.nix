@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+_: {
   programs.jujutsu = {
     enable = true;
     settings = {
@@ -7,8 +7,4 @@
       };
     };
   };
-
-  home.packages = with pkgs; [
-    lazyjj
-  ];
 }

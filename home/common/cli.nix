@@ -9,7 +9,6 @@
 
   home.packages = with pkgs; [
     android-tools
-    devcontainer
     fd
     gcc
     gnumake
