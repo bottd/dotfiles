@@ -1,8 +1,7 @@
-{ config, inputs, lib, pkgs, theme, ... }:
+{ config, inputs, pkgs, ... }:
 let
   colors = config.lib.stylix.colors;
   hex = color: "#${color}";
-  themeName = if theme.scheme == "tokyo-night" then "tokyonight" else "stylix";
 in
 {
   home.packages = [ inputs.opencode.packages.${pkgs.system}.opencode ];
@@ -18,8 +17,8 @@ in
         "~/remote/**" = "allow";
       };
     };
-    ".config/opencode/tui.json".text = builtins.toJSON { "$schema" = "https://opencode.ai/tui.json"; theme = themeName; };
-    ".config/opencode/themes/stylix.json" = lib.mkIf (theme.scheme != "tokyo-night") {
+    ".config/opencode/tui.json".text = builtins.toJSON { "$schema" = "https://opencode.ai/tui.json"; theme = "stylix"; };
+    ".config/opencode/themes/stylix.json" = {
       text = builtins.toJSON {
         "$schema" = "https://opencode.ai/theme.json";
         theme = {
