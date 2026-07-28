@@ -60,4 +60,4 @@
 
 (vim.lsp.enable servers)
 
-(vim.diagnostic.config {:virtual_text false :virtual_lines true})
+(vim.diagnostic.config {:virtual_text false :virtual_lines false})
