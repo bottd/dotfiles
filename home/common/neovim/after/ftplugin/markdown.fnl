@@ -1,0 +1,5 @@
+(set vim.opt_local.spell true)
+(set vim.opt_local.conceallevel 3)
+(set vim.opt_local.number false)
+(set vim.opt_local.linebreak true)
+(set vim.opt_local.breakindent true)
