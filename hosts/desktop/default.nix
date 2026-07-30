@@ -6,6 +6,8 @@
     ../../system/nixOS/jellyfin.nix
   ];
 
+  services.ddccontrol.enable = true;
+
   programs.alvr = {
     enable = true;
     openFirewall = true;
