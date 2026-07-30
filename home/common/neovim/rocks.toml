@@ -123,8 +123,8 @@ items = ["catppuccin", "github-nvim-theme"]
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
 
-[dev]
-tree-sitter-mog = "/home/drakeb/workspace/mog/crates/tree-sitter"
+[plugins."tree-sitter-mog"]
+dir = "~/workspace/mog-private/packages/tree-sitter"
 
 [treesitter]
 auto_highlight = "all"
@@ -132,7 +132,6 @@ auto_install = "prompt"
 
 [treesitter.parser_map]
 lisp = "fennel"
-mg = "mog"
 
 [config]
 auto_setup = true
