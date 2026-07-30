@@ -9,23 +9,21 @@ let
 
   # nvim sources ftdetect/ftplugin as *.{vim,lua} only, so the fnl sources get
   # compiled here rather than at runtime. A syntax error fails the switch.
-  compileAfter = pkgs.writers.writeBabashka "compile-after" { } ''
-    (require '[babashka.fs :as fs]
-             '[babashka.process :refer [shell]]
-             '[clojure.string :as str])
+  compileAfter = pkgs.writers.writeBabashka "compile-after" { } #clojure
+    ''
+      (require '[ babashka.fs :as fs ]
+        '[ babashka.process :refer [ shell ] ]
+        '[ clojure.string :as str ])
 
-    (let [[src out] *command-line-args*]
-      (doseq [file (filter fs/regular-file? (fs/glob src "**"))]
-        (let [rel (str (fs/relativize src file))
-              fennel? (str/ends-with? rel ".fnl")
-              target (fs/file out (if fennel?
-                                    (str/replace rel #"\.fnl$" ".lua")
-                                    rel))]
+      (
+        let
+          [[src out] *command-line-args*]
+          (doseq [file (fs/glob src "**.fnl")
+          :let [target (fs/file out (str/replace (str (fs/relativize src file))
+          #"\.fnl$" ".lua"))]]
           (fs/create-dirs (fs/parent target))
-          (if fennel?
-            (shell {:out :write :out-file target} "fennel" "--compile" (str file))
-            (fs/copy file target)))))
-  '';
+          (shell {:out :write :out-file target} "fennel" "--compile" (str file))))
+    '';
 
   afterCompiled = pkgs.runCommand "nvim-after"
     {
@@ -104,51 +102,52 @@ in
     initLua =
       #lua
       ''
-        do
-            -- Specifies where to install/use rocks.nvim
-            local install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
+          do
+        - - Specifies where to install/use rocks.nvim
+          local
+          install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
 
-            -- Set up configuration options related to rocks.nvim (recommended to leave as default)
-            local rocks_config = {
-                rocks_path = vim.fs.normalize(install_location),
-                luarocks_binary = "${pkgs.lua51Packages.luarocks}/bin/luarocks",
-            }
+        -- Set up configuration options related to rocks.nvim (recommended to leave as default)
+        local rocks_config = {
+        rocks_path = vim.fs.normalize(install_location),
+        luarocks_binary = "${pkgs.lua51Packages.luarocks}/bin/luarocks",
+        }
 
-            vim.g.rocks_nvim = rocks_config
+        vim.g.rocks_nvim = rocks_config
 
-            -- Configure the package path (so that plugin code can be found)
-            local luarocks_path = {
-                vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?.lua"),
-                vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?", "init.lua"),
-            }
-            package.path = package.path .. ";" .. table.concat(luarocks_path, ";")
+        -- Configure the package path (so that plugin code can be found)
+        local luarocks_path = {
+        vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?.lua"),
+        vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?", "init.lua"),
+        }
+        package.path = package.path .. ";" .. table.concat(luarocks_path, ";")
 
-            -- Configure the C path (so that e.g. tree-sitter parsers can be found)
-            local luarocks_cpath = {
-                vim.fs.joinpath(rocks_config.rocks_path, "lib", "lua", "5.1", "?.so"),
-                vim.fs.joinpath(rocks_config.rocks_path, "lib64", "lua", "5.1", "?.so"),
-            }
-            package.cpath = package.cpath .. ";" .. table.concat(luarocks_cpath, ";")
+        -- Configure the C path (so that e.g. tree-sitter parsers can be found)
+        local luarocks_cpath = {
+        vim.fs.joinpath(rocks_config.rocks_path, "lib", "lua", "5.1", "?.so"),
+        vim.fs.joinpath(rocks_config.rocks_path, "lib64", "lua", "5.1", "?.so"),
+        }
+        package.cpath = package.cpath .. ";" .. table.concat(luarocks_cpath, ";")
 
-            -- Add rocks.nvim to the runtimepath
-            vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
+        -- Add rocks.nvim to the runtimepath
+        vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
 
-            -- If rocks.nvim is not installed then install it!
-            if not pcall(require, "rocks") then
-                vim.notify("Installing rocks.nvim...")
-                local sc = vim.system({
-                    rocks_config.luarocks_binary,
-                    "--lua-version=5.1",
-                    "--tree=" .. rocks_config.rocks_path,
-                    "--server=https://lumen-oss.github.io/rocks-binaries/",
-                    "install",
-                    "rocks.nvim",
-                }):wait()
-                if sc.code ~= 0 then
-                    error("rocks.nvim installation failed.\nstderr: " .. (sc.stderr or "") .. "\nstdout: " .. (sc.stdout or ""))
-                end
-                vim.notify("rocks.nvim installed! Please restart Neovim.")
-            end
+        -- If rocks.nvim is not installed then install it!
+        if not pcall(require, "rocks") then
+        vim.notify("Installing rocks.nvim...")
+        local sc = vim.system({
+        rocks_config.luarocks_binary,
+        "--lua-version=5.1",
+        "--tree=" .. rocks_config.rocks_path,
+        "--server=https://lumen-oss.github.io/rocks-binaries/",
+        "install",
+        "rocks.nvim",
+        }):wait()
+        if sc.code ~= 0 then
+        error("rocks.nvim installation failed.\nstderr: " .. (sc.stderr or "") .. "\nstdout: " .. (sc.stdout or ""))
+        end
+        vim.notify("rocks.nvim installed! Please restart Neovim.")
+        end
         end
 
         vim.g.stylix_theme = "${theme.scheme}"
@@ -156,23 +155,31 @@ in
 
         local ok, thyme = pcall(require, "thyme")
         if ok then
-          table.insert(package.loaders, function(...)
-            return thyme.loader(...)
-          end)
-          local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
-          vim.opt.rtp:prepend(thyme_cache_prefix)
-          -- thyme reads .nvim-thyme.fnl via vim.secure.read, which resolves the
-          -- symlink to a /nix/store path that changes on every edit. Trust it
-          -- here so the prompt never fires; the file is nix-managed, not project-local.
-          vim.secure.trust({
-            action = "allow",
-            path = vim.fn.stdpath("config") .. "/.nvim-thyme.fnl",
-          })
-          thyme.setup()
-          require("general_config")
+        table.insert(package.loaders, function(...)
+        return thyme.loader(...)
+        end)
+        local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+        vim.opt.rtp:prepend(thyme_cache_prefix)
+        -- thyme reads .nvim-thyme.fnl via vim.secure.read, which resolves the
+        -- symlink to a /nix/store path that changes on every edit. Trust it
+        -- here so the prompt never fires;
+        the file is nix-managed, not project-local.
+        vim.secure.trust({
+        action = "allow",
+        path = vim.fn.stdpath("config") .. "/.nvim-thyme.fnl",
+        })
+        thyme.setup()
+        require("general_config")
         else
-          vim.notify("nvim-thyme not installed yet - run :Rocks sync", vim.log.levels.WARN)
+        vim.notify("nvim-thyme not installed yet - run :Rocks sync", vim.log.levels.WARN)
         end
       '';
   };
 }
+
+
+
+
+
+
+
