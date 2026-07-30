@@ -102,10 +102,9 @@ in
     initLua =
       #lua
       ''
-          do
-        - - Specifies where to install/use rocks.nvim
-          local
-          install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
+        do
+        -- Specifies where to install/use rocks.nvim
+        local install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
 
         -- Set up configuration options related to rocks.nvim (recommended to leave as default)
         local rocks_config = {
@@ -162,8 +161,8 @@ in
         vim.opt.rtp:prepend(thyme_cache_prefix)
         -- thyme reads .nvim-thyme.fnl via vim.secure.read, which resolves the
         -- symlink to a /nix/store path that changes on every edit. Trust it
-        -- here so the prompt never fires;
-        the file is nix-managed, not project-local.
+        -- here so the prompt never fires; the file is nix-managed, not
+        -- project-local.
         vim.secure.trust({
         action = "allow",
         path = vim.fn.stdpath("config") .. "/.nvim-thyme.fnl",
