@@ -53,6 +53,7 @@ tree-sitter-fennel = "0.0.37"
 tree-sitter-cpp = "0.0.50"
 "plenary.nvim" = "scm"
 tree-sitter-kotlin = "0.0.47"
+tree-sitter-kdl = "0.0.30"
 
 [plugins."catppuccin"]
 git = "catppuccin/nvim"
