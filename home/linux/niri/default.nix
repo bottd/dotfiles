@@ -62,7 +62,6 @@ in
             readonly property color base02: "#${config.lib.stylix.colors.base02}"
             readonly property color base03: "#${config.lib.stylix.colors.base03}"
             readonly property color base05: "#${config.lib.stylix.colors.base05}"
-            readonly property color base0D: "#${config.lib.stylix.colors.base0D}"
             readonly property color background: "#${config.lib.stylix.colors.base00}"
             readonly property color surface: "#${config.lib.stylix.colors.base01}"
             readonly property color surfaceHover: "#${config.lib.stylix.colors.base02}"
@@ -71,9 +70,9 @@ in
             readonly property color border: "#${config.lib.stylix.colors.base03}"
             readonly property color textPrimary: "#${config.lib.stylix.colors.base07}"
             readonly property color textMuted: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base06 else config.lib.stylix.colors.base04}"
-            readonly property color accent: "#${config.lib.stylix.colors.base0D}"
+            readonly property color accent: "#${config.lib.stylix.colors.base09}"
             readonly property color textOnAccent: "#${config.lib.stylix.colors.base00}"
-            readonly property color focusRing: "#${config.lib.stylix.colors.base0D}"
+            readonly property color focusRing: "#${config.lib.stylix.colors.base09}"
             readonly property color statusPositive: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0B else config.lib.stylix.colors.base0D}"
             readonly property color statusWarning: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0A else config.lib.stylix.colors.base0F}"
             readonly property color danger: "#${config.lib.stylix.colors.base08}"
@@ -145,7 +144,10 @@ in
         # Open full width — no half-empty screen with a lone window. Mod+R
         # cycles down to ⅓/½/⅔ when tiling two side by side.
         default-column-width.proportion = 1.0;
-        # focus-ring / border colors come from stylix (niri-flake stylix target).
+        # focus-ring / border colors come from stylix (niri-flake stylix target),
+        # which points the active border at base0D (blue) with mkDefault — a plain
+        # assignment wins. base09 (burnt orange) matches the bar's accent.
+        border.active.color = "#${config.lib.stylix.colors.base09}";
         # Empty-workspace + overview backdrop have no stylix target, so with
         # image = null they'd fall back to niri's gray — wire them by hand.
         background-color = lib.mkDefault "#${config.lib.stylix.colors.base00}";
