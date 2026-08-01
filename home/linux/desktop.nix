@@ -46,6 +46,8 @@ in
       mpv
       mupdf
       openscad
+      # not in nixpkgs and upstream ships no flake, so it's packaged locally
+      (pkgs.callPackage ./icy-draw { })
       pablodraw
       sioyek
       tresorit-fhs

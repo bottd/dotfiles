@@ -7,7 +7,13 @@
 , libxkbcommon
 , libGL
 , wayland
-, xorg
+, libx11
+, libxcursor
+, libxi
+, libxrandr
+, libxcb
+, openssl
+, fontconfig
 }:
 
 # Not in nixpkgs and upstream ships no flake, so it's packaged here. IcyDraw is
@@ -16,18 +22,21 @@
 # wordmark are hand-painted into rendered output instead of living in the font.
 rustPlatform.buildRustPackage rec {
   pname = "icy_draw";
-  version = "0.5.0";
+  # A master revision, not the IcyDraw0.5.0 tag: that tag ships no Cargo.lock
+  # (it's only committed on master), and buildRustPackage can't vendor without
+  # one. Bump rev + hash together to update.
+  version = "0.5.0-unstable-2026-07-17";
 
   src = fetchFromGitHub {
     owner = "mkrueger";
     repo = "icy_tools";
-    rev = "IcyDraw${version}";
+    rev = "47acdfaa4e3367ddf9335d261b9b58704a299946";
     # crates/icy_draw/external/plugins is a submodule
     fetchSubmodules = true;
-    hash = "sha256-ma6dW/KVZXfPZmRpKOEIE2F8ziGB72NoLheGzUuNiCs=";
+    hash = "sha256-F3wzfM5U/QiMSdpajlymLaTBuRcmzYZrDMT6A5zDzfk=";
   };
 
-  cargoHash = lib.fakeHash;
+  cargoHash = "sha256-nWgnTDu4IOJR57tsm8NbG9Ebd1Vu9Io3Z9F06rZvz04=";
 
   # the repo is a workspace of several tools; only IcyDraw is wanted
   cargoBuildFlags = [ "-p" "icy_draw" ];
@@ -39,22 +48,36 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     alsa-lib
+    openssl # openssl-sys, pulled in via the collaboration feature
+    fontconfig
     libxkbcommon
     libGL
     wayland
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr
-    xorg.libxcb
+    libx11
+    libxcursor
+    libxi
+    libxrandr
+    libxcb
   ];
+
+  # Upstream ships a desktop entry and icon but no install rule, so without this
+  # only the binary lands and nothing shows up in a launcher. Its Exec points at
+  # /usr/bin, which doesn't exist here.
+  postInstall = ''
+    install -Dm644 crates/icy_draw/build/linux/icy_draw.desktop \
+      $out/share/applications/icy_draw.desktop
+    substituteInPlace $out/share/applications/icy_draw.desktop \
+      --replace-fail /usr/bin/icy_draw $out/bin/icy_draw
+    install -Dm644 crates/icy_draw/icon.png \
+      $out/share/icons/hicolor/256x256/apps/icy_draw.png
+  '';
 
   # eframe/winit dlopen these at runtime rather than linking them, so rpath
   # alone isn't enough — without this it builds fine and dies on launch.
   postFixup = ''
     wrapProgram $out/bin/icy_draw \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [
-        libGL libxkbcommon wayland xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr
+        libGL libxkbcommon wayland libx11 libxcursor libxi libxrandr
       ]}
   '';
 
