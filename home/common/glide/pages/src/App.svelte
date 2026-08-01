@@ -45,12 +45,6 @@
       kind: "Video",
     },
     {
-      href: "https://reddit.com/",
-      title: "Reddit",
-      description: "Communities, conversations, news, and discovery.",
-      kind: "Communities",
-    },
-    {
       href: "https://destiny.gg/",
       title: "Destiny",
       description: "Livestreams, debates, events, and the DGG community.",

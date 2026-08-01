@@ -46,6 +46,7 @@ in
       mpv
       mupdf
       openscad
+      pablodraw
       sioyek
       tresorit-fhs
       tresorit-launcher
