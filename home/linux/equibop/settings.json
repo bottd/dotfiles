@@ -4,7 +4,7 @@
   "discordBranch": "stable",
   "arRPC": false,
   "splashColor": "rgb(243, 243, 244)",
-  "splashBackground": "rgb(44, 45, 50)",
+  "splashBackground": "rgb(41, 37, 34)",
   "spellCheckLanguages": ["en-US", "en"],
   "tray": true,
   "trayColor": "",
