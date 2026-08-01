@@ -4,6 +4,9 @@
   # in the shared ../common/stylix.nix (module structure can't branch on pkgs).
   stylix.targets.grub.enable = false;
 
+  # Used for working with Android MTP
+  services.gvfs.enable = features.gui;
+
   imports = [
     ../common/nix.nix
     ./audio.nix

@@ -7,10 +7,7 @@
       size = lib.mkDefault 24;
     };
 
-    targets = {
-      # disable to prevent conflicts with kde
-      gtk.enable = false;
-    };
+    targets.gtk.enable = pkgs.stdenv.isLinux;
   };
 
   fonts.fontconfig.configFile.monolisa-nerd-font = lib.mkIf pkgs.stdenv.isLinux {
