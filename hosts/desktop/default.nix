@@ -1,4 +1,7 @@
 { pkgs, ... }:
+let
+  shurectl = pkgs.callPackage ./shurectl.nix { };
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -6,21 +9,28 @@
     ../../system/nixOS/jellyfin.nix
   ];
 
-  services.ddccontrol.enable = true;
-
   programs.alvr = {
     enable = true;
     openFirewall = true;
   };
 
-  services.sunshine = {
-    enable = true;
-    autoStart = false;
-    capSysAdmin = true;
-    openFirewall = true;
+  services = {
+    ddccontrol.enable = true;
+
+    sunshine = {
+      enable = true;
+      autoStart = false;
+      capSysAdmin = true;
+      openFirewall = true;
+    };
+
+    # The package ships the udev rule that uaccess-tags the MV7+'s hidraw node,
+    # so shurectl reaches the mic's onboard DSP without root.
+    udev.packages = [ shurectl ];
   };
 
   environment.systemPackages = with pkgs; [
     moonlight
+    shurectl
   ];
 }

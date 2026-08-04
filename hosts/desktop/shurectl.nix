@@ -31,6 +31,13 @@ rustPlatform.buildRustPackage rec {
   # src/bin/probe.rs is a HID feature-address sweeper for reverse-engineering
   # work. Building it too would put a binary named `probe` on the system PATH.
   cargoBuildFlags = [ "--bin" "shurectl" ];
+  cargoTestFlags = cargoBuildFlags;
+
+  # The 247 tests are worth keeping — 164 of them cover the HID feature-report
+  # encoding, where a wrong byte reaches the mic's DSP. Testing in debug halves
+  # the check phase: upstream's release profile sets panic = "abort", which
+  # libtest can't use, so a release check rebuilds most of the crate graph.
+  checkType = "debug";
 
   # Upstream ships the rules file but has no install rule for it. Carrying it in
   # the package lets services.udev.packages pick it up, so the vendor/product IDs
