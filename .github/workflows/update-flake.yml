@@ -19,18 +19,9 @@ jobs:
       - name: Setup Nix
         uses: ./.github/actions/setup-nix
 
-      # kli-config's own kli-kagi input is a local dev path that only exists on
-      # the Linux box, so updating it fails in CI. Update every other input.
-      - name: List updatable inputs
-        id: updatable
-        run:
-          echo "inputs=$(jq -r '.nodes.root.inputs | keys | map(select(. !=
-          "kli-config")) | join(" ")' flake.lock)" >>"$GITHUB_OUTPUT"
-
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v24
         with:
-          inputs: ${{ steps.updatable.outputs.inputs }}
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
           pr-title: "chore: update flake.lock"
           pr-labels: automated

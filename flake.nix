@@ -68,10 +68,6 @@
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    kli-config = {
-      url = "path:./home/common/ai/kli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ { flake-parts, ... }:
