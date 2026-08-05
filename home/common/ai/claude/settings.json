@@ -12,20 +12,13 @@
   "model": "opus[1m]",
   "enabledPlugins": {
     "improve@improve": true,
-    "lazyweb@lazyweb": true,
-    "ponytail@ponytail": true
+    "lazyweb@lazyweb": true
   },
   "extraKnownMarketplaces": {
     "improve": {
       "source": {
         "source": "github",
         "repo": "shadcn/improve"
-      }
-    },
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
       }
     }
   },
