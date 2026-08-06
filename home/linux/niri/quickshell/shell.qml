@@ -34,6 +34,7 @@ ShellRoot {
     property string backlightText: ""
     property bool backlightAvailable: false
     property real brightnessLevel: 0
+    readonly property int barHeight: 32
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
     readonly property real volumeLevel: root.audioReady ? root.audioSink.audio.volume : 0
@@ -321,6 +322,7 @@ ShellRoot {
         id: keyOverlay
 
         screen: root.drawerScreen || Quickshell.screens[0]
+        margins.bottom: root.barHeight
         theme: shellTheme
         open: root.drawerOpen
         mode: root.drawerMode
@@ -340,7 +342,7 @@ ShellRoot {
             anchors.left: true
             anchors.right: true
             implicitHeight: 1
-            exclusiveZone: 32
+            exclusiveZone: root.barHeight
             color: "transparent"
         }
     }
@@ -357,8 +359,7 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            margins.bottom: keyOverlay.screen === modelData ? keyOverlay.revealedHeight : 0
-            implicitHeight: 32
+            implicitHeight: root.barHeight
             exclusionMode: ExclusionMode.Ignore
             color: "transparent"
 
