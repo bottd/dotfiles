@@ -53,5 +53,5 @@ desktop entry, and autostart. Run the installation script once to install the
 upstream client:
 
 ```bash
-tresorit-install
+nix run ~/dotfiles#tresorit-install
 ```

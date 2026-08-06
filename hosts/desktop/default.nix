@@ -20,7 +20,7 @@ in
     sunshine = {
       enable = true;
       autoStart = false;
-      capSysAdmin = true;
+      capSysAdmin = false;
       openFirewall = true;
     };
 
@@ -30,7 +30,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    moonlight
+    moonlight-qt
     shurectl
   ];
 }

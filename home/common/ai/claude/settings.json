@@ -35,12 +35,10 @@
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "nixos": {
-      "args": [],
       "command": "mcp-nixos"
     },
     "svelte": {
-      "args": ["-y", "@sveltejs/mcp"],
-      "command": "npx"
+      "command": "svelte-mcp"
     }
   },
   "plugins": {},

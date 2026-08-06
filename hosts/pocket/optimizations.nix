@@ -1,18 +1,5 @@
 { pkgs, ... }:
 {
-  boot = {
-    kernelParams = [
-      # General power saving
-      "ahci.mobile_lpm_policy=3"
-      "pcie_aspm=force"
-    ];
-  };
-
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
-  };
-
   # Keep battery work within the low-power firmware envelope to limit short
   # heat spikes and the fan ramping they cause.
   services.tlp.settings = {
@@ -40,20 +27,8 @@
     '';
   };
 
-  # Disable lid switch handling - https://codeberg.org/elloskelling/linux-gpd-pocket-4
-  services = {
-    logind.settings.Login = {
-      HandleLidSwitch = "ignore";
-      HandleLidSwitchDocked = "ignore";
-      HandleLidSwitchExternalPower = "ignore";
-    };
-    thermald.enable = true;
-  };
-
   environment.systemPackages = with pkgs; [
     acpi
-    intel-gpu-tools
     lm_sensors
-    powertop
   ];
 }

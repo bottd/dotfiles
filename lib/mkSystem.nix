@@ -65,6 +65,7 @@ systemBuilder {
       homeConfig
       { time.timeZone = "America/Chicago"; }
     ]
+    ++ inputs.nixpkgs.lib.optional (format == "nixos") ../system/common/nixos.nix
     ++ (if enableAVF then [
       inputs.nixos-avf.nixosModules.avf
       inputs.stylix.nixosModules.stylix

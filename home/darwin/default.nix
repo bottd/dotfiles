@@ -4,6 +4,7 @@
     inputs.mac-app-util.homeManagerModules.default
     ./karabiner
     ./libiconv.nix
+    ./sign-apps.nix
     ./wallpaper.nix
   ];
 

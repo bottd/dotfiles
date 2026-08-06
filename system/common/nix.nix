@@ -15,6 +15,8 @@
       ];
       max-jobs = "auto";
       cores = 0;
+      # Already the NixOS default; nix-darwin leaves it off.
+      sandbox = true;
       keep-outputs = true;
       keep-derivations = true;
       download-buffer-size = 536870912; # 512 MiB

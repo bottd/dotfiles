@@ -4,14 +4,22 @@
     ./oom-management.nix
   ];
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = true;
+        editor = false;
+        configurationLimit = 20;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+
+    kernel.sysctl = {
+      "fs.inotify.max_user_watches" = 524288;
+    };
   };
 
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 524288;
-  };
+  zramSwap.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 

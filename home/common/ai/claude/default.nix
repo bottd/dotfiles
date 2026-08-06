@@ -1,7 +1,10 @@
 { config, features, inputs, lib, pkgs, system, ... }:
+let
+  svelte-mcp = pkgs.callPackage ./svelte-mcp { };
+in
 {
   home = {
-    packages = [ pkgs.mcp-nixos inputs.claude-code.packages.${system}.default ];
+    packages = [ pkgs.mcp-nixos svelte-mcp inputs.claude-code.packages.${system}.default ];
 
     # Add native installer location to PATH on macOS
     sessionPath = lib.mkIf pkgs.stdenv.isDarwin [

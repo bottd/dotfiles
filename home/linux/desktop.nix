@@ -8,7 +8,7 @@ let
   tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;
   tresorit-launcher = pkgs.writeShellScriptBin "tresorit-fhs-launch" ''
     if [ ! -x "$HOME/.local/share/tresorit/tresorit" ]; then
-      printf '%s\n' "Tresorit is not installed. Run tresorit-install first." >&2
+      printf '%s\n' "Tresorit is not installed. Run 'nix run ~/dotfiles#tresorit-install' first." >&2
       exit 1
     fi
 

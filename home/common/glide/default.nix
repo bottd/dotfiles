@@ -24,10 +24,10 @@ in
     };
   };
 
-  home.file = {
-    ".config/glide" = {
-      source = config.lib.meta.createSymlink "home/common/glide/config";
-    };
-    ".local/share/glide-pages".source = pages;
+  xdg = {
+    configFile."glide/glide.ts".source =
+      config.lib.meta.createSymlink "home/common/glide/config/glide.ts";
+
+    dataFile."glide-pages".source = pages;
   };
 }
