@@ -12,13 +12,20 @@
   "model": "opus[1m]",
   "enabledPlugins": {
     "improve@improve": true,
-    "lazyweb@lazyweb": true
+    "lazyweb@lazyweb": true,
+    "impeccable@impeccable": true
   },
   "extraKnownMarketplaces": {
     "improve": {
       "source": {
         "source": "github",
         "repo": "shadcn/improve"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
       }
     }
   },
