@@ -6,6 +6,8 @@
     extraPackages = epkgs: [
       epkgs.nix-mode
       epkgs.nixfmt
+
+      epkgs.vterm
     ];
   };
 
