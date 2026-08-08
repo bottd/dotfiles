@@ -2,7 +2,7 @@
 {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk;
+    package = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.emacs else pkgs.emacs-pgtk;
     extraPackages = epkgs: [
       epkgs.nix-mode
       epkgs.nixfmt
@@ -11,4 +11,5 @@
     ];
   };
 
+  services.emacs.enable = true;
 }
