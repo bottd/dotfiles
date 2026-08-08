@@ -30,6 +30,8 @@ in
   programs.git.ignores = [
     ".claude/settings.local.json"
     "CLAUDE.local.md"
+    ".impeccable"
+    "DESIGN.md"
   ];
 
   xdg.mimeApps = lib.mkIf (features.desktopEnvironment != null && pkgs.stdenv.isLinux) {
