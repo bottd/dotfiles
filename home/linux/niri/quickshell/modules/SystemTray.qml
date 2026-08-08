@@ -22,8 +22,8 @@ RowLayout {
             readonly property string toolTipText: modelData.tooltipDescription ? itemName + "\n" + modelData.tooltipDescription : itemName
             readonly property bool needsAttention: modelData.status === Status.NeedsAttention
 
-            implicitWidth: 28
-            implicitHeight: 28
+            implicitWidth: root.theme.controlSize
+            implicitHeight: root.theme.controlSize
             radius: 4
             color: trayMouse.pressed ? root.theme.surfacePressed : (trayMouse.containsMouse || needsAttention ? root.theme.surfaceHover : "transparent")
             border.color: trayMouse.containsMouse ? root.theme.focusRing : (needsAttention ? root.theme.danger : "transparent")
@@ -34,8 +34,8 @@ RowLayout {
 
             IconImage {
                 anchors.centerIn: parent
-                implicitWidth: 18
-                implicitHeight: 18
+                implicitWidth: root.theme.iconSize
+                implicitHeight: root.theme.iconSize
                 source: modelData.icon
                 opacity: trayMouse.pressed ? 0.65 : 1
             }
@@ -47,6 +47,8 @@ RowLayout {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+                // An icon-only tray item's name exists nowhere but its tooltip.
+                onPressAndHold: trayTip.pinned = true
                 onClicked: function (mouse) {
                     if (modelData.hasMenu && (mouse.button === Qt.LeftButton || mouse.button === Qt.RightButton)) {
                         const point = root.parentWindow.contentItem.mapFromItem(parent, mouse.x, mouse.y);
@@ -59,6 +61,8 @@ RowLayout {
             }
 
             BarTooltip {
+                id: trayTip
+
                 anchorItem: trayItem
                 theme: root.theme
                 text: toolTipText

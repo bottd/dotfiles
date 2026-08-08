@@ -11,7 +11,7 @@ Item {
 
     readonly property real clampedValue: Math.max(0, Math.min(1, root.value))
 
-    implicitHeight: 28
+    implicitHeight: root.theme.controlSize
     activeFocusOnTab: true
     Accessible.role: Accessible.Slider
     Accessible.name: root.accessibleName

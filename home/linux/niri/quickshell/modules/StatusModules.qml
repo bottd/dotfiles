@@ -108,10 +108,14 @@ RowLayout {
         signal scrolled(bool increase)
 
         implicitWidth: label.implicitWidth + 12
-        implicitHeight: 28
+        implicitHeight: root.theme.controlSize
         radius: 4
-        color: buttonMouse.pressed ? root.theme.surfacePressed : (buttonMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
-        border.color: buttonMouse.containsMouse ? root.theme.focusRing : (control.tone === "neutral" || control.tone === "muted" ? root.theme.border : root.toneColor(control.tone))
+        // Hover feedback is gated on `interactive` so the battery chip stops
+        // presenting itself as a button that does nothing when clicked.
+        color: control.interactive && buttonMouse.pressed ? root.theme.surfacePressed : (control.interactive && buttonMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
+        // A toned border always survives hover — inspecting a warning used to
+        // erase the very cue being inspected. Hover is carried by the fill.
+        border.color: control.tone === "neutral" || control.tone === "muted" ? (control.interactive && buttonMouse.containsMouse ? root.theme.focusRing : root.theme.border) : root.toneColor(control.tone)
         border.width: 1
         Accessible.role: control.interactive ? Accessible.Button : Accessible.StaticText
         Accessible.name: control.description
@@ -126,6 +130,9 @@ RowLayout {
             font.pixelSize: root.theme.fontSize
         }
 
+        // Tone also carries a shape, not just a hue: circle positive, diamond
+        // warning, square danger. On the grayscale eink panel — and for anyone
+        // who can't separate amber from crimson — colour alone said nothing.
         Rectangle {
             visible: control.tone !== "neutral" && control.tone !== "muted"
             anchors.top: parent.top
@@ -133,7 +140,8 @@ RowLayout {
             anchors.margins: 3
             width: 5
             height: 5
-            radius: 3
+            radius: control.tone === "positive" ? 3 : (control.tone === "danger" ? 0 : 1)
+            rotation: control.tone === "warning" ? 45 : 0
             color: root.toneColor(control.tone)
         }
 
@@ -142,12 +150,16 @@ RowLayout {
 
             anchors.fill: parent
             hoverEnabled: true
-            acceptedButtons: control.interactive ? Qt.LeftButton : Qt.NoButton
+            acceptedButtons: Qt.LeftButton
             cursorShape: control.interactive ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: {
                 if (control.interactive)
                     control.activated();
+                else
+                    tip.pinned = !tip.pinned;
             }
+            onPressAndHold: tip.pinned = true
+            onExited: tip.pinned = false
             onWheel: function (wheel) {
                 if (control.wheelEnabled)
                     control.scrolled(wheel.angleDelta.y > 0);
@@ -157,6 +169,8 @@ RowLayout {
         }
 
         BarTooltip {
+            id: tip
+
             anchorItem: control
             theme: root.theme
             text: control.description

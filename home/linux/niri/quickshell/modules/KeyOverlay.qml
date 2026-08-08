@@ -20,11 +20,15 @@ PanelWindow {
     property bool journalStarted: false
     property string journalDate: ""
     property var confirmationItem: null
-    readonly property color dangerColor: root.theme.danger || root.theme.accent
+    // Guards against a double-click or fast double-tap: the confirm path refuses
+    // to fire until the armed visual has had time to land.
+    property double armedAt: 0
+    readonly property color dangerColor: root.theme.danger
     readonly property alias journalFocused: journalTerminal.activeFocus
     readonly property var applicationIndex: DesktopEntries.applications.values
     signal dismissed
     signal modeRequested(string mode)
+    signal shellActionRequested(string action)
 
     readonly property var menu: [
         {
@@ -87,6 +91,22 @@ PanelWindow {
                     label: "Airplane mode",
                     description: "Toggle all radios",
                     command: ["sh", "-c", "if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then rfkill block all; else rfkill unblock all; fi"]
+                },
+                // The bar deliberately never takes keyboard focus — a permanently
+                // focusable panel would steal keys from the focused window. So
+                // anything the bar can do by click also lives here, where the
+                // keyboard model already works.
+                {
+                    key: "v",
+                    label: "Mullvad VPN",
+                    description: "Toggle the VPN connection",
+                    shellAction: "mullvad"
+                },
+                {
+                    key: "n",
+                    label: "Network settings",
+                    description: "Open the connection editor",
+                    shellAction: "network"
                 }
             ]
         },
@@ -130,7 +150,7 @@ PanelWindow {
     anchors.bottom: true
     anchors.left: true
     anchors.right: true
-    implicitHeight: Math.min(360, root.screen.height * 0.45)
+    implicitHeight: Math.min(root.theme.drawerHeight, root.screen.height * 0.45)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     visible: root.presented
@@ -242,18 +262,36 @@ PanelWindow {
         root.confirmationItem = null;
     }
 
+    // `destructive` is an interaction contract, not a rendering hint. activate()
+    // can only ever ARM a destructive item — never fire it. Firing goes through
+    // confirmDestructive(), which is reachable only from a deliberate Enter/y on
+    // an already-armed item. That keeps every mouse path (including a
+    // double-click, which is one gesture) from reaching `systemctl poweroff`.
     function activate(item) {
         if (item.destructive) {
             if (root.confirmationItem !== item) {
+                root.clearDangerConfirmation();
                 root.confirmationItem = item;
+                root.armedAt = Date.now();
                 dangerConfirmationTimer.restart();
-                return;
             }
-            root.clearDangerConfirmation();
-        } else {
-            root.clearDangerConfirmation();
+            return;
         }
 
+        root.runItem(item);
+    }
+
+    function confirmDestructive() {
+        const item = root.confirmationItem;
+        if (!item || Date.now() - root.armedAt < 350)
+            return;
+
+        root.runItem(item);
+    }
+
+    // Clears the armed state itself so no caller has to remember the ordering.
+    function runItem(item) {
+        root.clearDangerConfirmation();
         if (item.items) {
             root.path = root.path.concat([item]);
             return;
@@ -261,6 +299,14 @@ PanelWindow {
 
         if (item.targetMode) {
             root.modeRequested(item.targetMode);
+            return;
+        }
+
+        // The shell owns these: the bar path wraps them in optimistic state and
+        // a settle poll, and a second raw invocation here would diverge from it.
+        if (item.shellAction) {
+            root.shellActionRequested(item.shellAction);
+            root.dismissed();
             return;
         }
 
@@ -291,7 +337,9 @@ PanelWindow {
     }
 
     function launchApplication(entry) {
-        recentState.apps = [entry.id].concat(recentState.apps.filter(id => id !== entry.id)).slice(0, 5);
+        // Keep more than the three shown: the display list filters out anything
+        // already pinned in COMMON, so a short history often left it empty.
+        recentState.apps = [entry.id].concat(recentState.apps.filter(id => id !== entry.id)).slice(0, 8);
         recentFile.writeAdapter();
         Quickshell.execDetached(root.theme.launcherCommand.concat([entry.id]));
         root.dismissed();
@@ -316,13 +364,31 @@ PanelWindow {
             return;
         }
 
+        const key = event.text;
+
+        // An armed item owns the keyboard until it resolves. Enter (or y) fires
+        // it; Escape cancels the arming and nothing else, so the menu stays put
+        // rather than popping a level as a side effect. Any other key disarms
+        // and falls through, so re-pressing the item's own key re-arms.
+        if (root.confirmationItem) {
+            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || key.toLowerCase() === "y") {
+                root.confirmDestructive();
+                event.accepted = true;
+                return;
+            }
+            root.clearDangerConfirmation();
+            if (event.key === Qt.Key_Escape) {
+                event.accepted = true;
+                return;
+            }
+        }
+
         if (event.key === Qt.Key_Escape || event.key === Qt.Key_Backspace) {
             root.goBack();
             event.accepted = true;
             return;
         }
 
-        const key = event.text;
         if (root.path.length === 0 && key.toLowerCase() === "j") {
             root.focusJournal();
             event.accepted = true;
@@ -422,7 +488,7 @@ PanelWindow {
         id: dangerConfirmationTimer
 
         interval: 3000
-        onTriggered: root.confirmationItem = null
+        onTriggered: root.clearDangerConfirmation()
     }
 
     FocusScope {
@@ -455,7 +521,7 @@ PanelWindow {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 height: 2
-                color: root.theme.accent
+                color: root.theme.border
             }
 
             ColumnLayout {
@@ -481,7 +547,7 @@ PanelWindow {
 
                             Text {
                                 text: "APPS"
-                                color: root.theme.accent
+                                color: root.theme.textPrimary
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -501,9 +567,11 @@ PanelWindow {
                                     required property var modelData
 
                                     Layout.fillWidth: true
-                                    implicitHeight: 30
+                                    implicitHeight: root.theme.rowHeight
                                     radius: 4
                                     color: commonMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: "Launch " + modelData.name
 
                                     RowLayout {
                                         anchors.fill: parent
@@ -512,8 +580,8 @@ PanelWindow {
                                         spacing: 8
 
                                         IconImage {
-                                            implicitWidth: 18
-                                            implicitHeight: 18
+                                            implicitWidth: root.theme.iconSize
+                                            implicitHeight: root.theme.iconSize
                                             source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
                                         }
 
@@ -538,7 +606,6 @@ PanelWindow {
                             }
 
                             Text {
-                                visible: root.recentApplications.length > 0 || recentState.apps.length === 0
                                 text: "RECENT"
                                 color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
@@ -552,9 +619,11 @@ PanelWindow {
                                     required property var modelData
 
                                     Layout.fillWidth: true
-                                    implicitHeight: 28
+                                    implicitHeight: root.theme.rowHeight
                                     radius: 4
                                     color: recentMouse.containsMouse ? root.theme.surfaceHover : "transparent"
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: "Launch " + modelData.name + ", recent"
 
                                     Text {
                                         anchors.fill: parent
@@ -577,9 +646,13 @@ PanelWindow {
                                 }
                             }
 
+                            // Recents are filtered against COMMON, so once the
+                            // pinned apps are also the most-used ones this list
+                            // empties out. It used to render nothing at all —
+                            // no heading, no rows, no message. Just a gap.
                             Text {
-                                visible: recentState.apps.length === 0
-                                text: "No drawer launches yet"
+                                visible: root.recentApplications.length === 0
+                                text: recentState.apps.length === 0 ? "No drawer launches yet" : "All recent launches are pinned above"
                                 color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
@@ -589,14 +662,44 @@ PanelWindow {
                                 Layout.fillHeight: true
                             }
 
-                            Text {
-                                text: "d  ALL APPLICATIONS"
-                                color: root.theme.accent
-                                font.family: root.theme.fontFamily
-                                font.pixelSize: root.theme.fontSize - 1
+                            Rectangle {
+                                Layout.fillWidth: true
+                                implicitHeight: root.theme.rowHeight
+                                radius: 4
+                                color: allAppsMouse.containsMouse ? root.theme.surfaceHover : "transparent"
+                                Accessible.role: Accessible.Button
+                                Accessible.name: "All applications"
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8
+                                    anchors.rightMargin: 8
+                                    spacing: 10
+
+                                    Text {
+                                        text: "d"
+                                        color: root.theme.accent
+                                        font.family: root.theme.fontFamily
+                                        font.pixelSize: root.theme.fontSize
+                                        font.bold: true
+                                    }
+
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: "ALL APPLICATIONS"
+                                        elide: Text.ElideRight
+                                        color: root.theme.textPrimary
+                                        font.family: root.theme.fontFamily
+                                        font.pixelSize: root.theme.fontSize - 1
+                                    }
+                                }
 
                                 MouseArea {
+                                    id: allAppsMouse
+
                                     anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
                                     onClicked: root.modeRequested("launcher")
                                 }
                             }
@@ -605,7 +708,7 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.accent
+                            color: root.theme.border
                         }
 
                         ColumnLayout {
@@ -616,7 +719,7 @@ PanelWindow {
 
                             Text {
                                 text: "HOTKEYS"
-                                color: root.theme.accent
+                                color: root.theme.textPrimary
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -629,9 +732,11 @@ PanelWindow {
                                     required property var modelData
 
                                     Layout.fillWidth: true
-                                    implicitHeight: 34
+                                    implicitHeight: root.theme.rowHeight
                                     radius: 4
                                     color: hotkeyMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: modelData.label + ", key " + modelData.key
 
                                     RowLayout {
                                         anchors.fill: parent
@@ -672,8 +777,11 @@ PanelWindow {
                                 font.pixelSize: root.theme.fontSize - 2
                             }
 
+                            // Every hotkey above already shows its own key, so
+                            // this block documents navigation instead of
+                            // repeating bindings in a third visual language.
                             Text {
-                                text: "a quick apps   d all apps   j journal"
+                                text: "Esc closes   Backspace goes back"
                                 color: root.theme.textPrimary
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize - 2
@@ -687,7 +795,7 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.accent
+                            color: root.theme.border
                         }
 
                         ColumnLayout {
@@ -698,7 +806,7 @@ PanelWindow {
 
                             Text {
                                 text: "DAILY JOURNAL"
-                                color: root.theme.accent
+                                color: root.theme.textPrimary
                                 font.family: root.theme.fontFamily
                                 font.pixelSize: root.theme.fontSize
                                 font.bold: true
@@ -767,6 +875,8 @@ PanelWindow {
                                     anchors.fill: parent
                                     visible: !root.journalFocused
                                     onClicked: root.focusJournal()
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: "Focus the daily journal, key j"
 
                                     Rectangle {
                                         anchors.left: parent.left
@@ -793,7 +903,7 @@ PanelWindow {
 
                             Text {
                                 Layout.fillWidth: true
-                                text: (root.journalDate || Qt.formatDate(root.now, "yyyy-MM-dd")) + ".norg" + (root.journalFocused ? "  /  SUPER hides" : "  /  j focuses")
+                                text: (root.journalDate || Qt.formatDate(root.now, "yyyy-MM-dd")) + ".norg" + (root.journalFocused ? "  /  Mod+Space hides" : "  /  j focuses")
                                 elide: Text.ElideRight
                                 color: root.theme.textMuted
                                 font.family: root.theme.fontFamily
@@ -804,13 +914,16 @@ PanelWindow {
                         Rectangle {
                             Layout.fillHeight: true
                             implicitWidth: 1
-                            color: root.theme.accent
+                            color: root.theme.border
                         }
 
                         Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 1.4
+                            // Was 1.4 — the second-widest pane on the surface, for
+                            // a non-interactive calendar answering a question the
+                            // bar clock answers a few pixels below it.
+                            Layout.preferredWidth: 1.0
 
                             ColumnLayout {
                                 anchors.fill: parent
@@ -819,7 +932,7 @@ PanelWindow {
                                 Text {
                                     Layout.alignment: Qt.AlignRight
                                     text: Qt.formatDate(root.now, "MMMM yyyy").toUpperCase()
-                                    color: root.theme.accent
+                                    color: root.theme.textPrimary
                                     font.family: root.theme.fontFamily
                                     font.pixelSize: root.theme.fontSize
                                     font.bold: true
@@ -856,7 +969,7 @@ PanelWindow {
                                             readonly property bool today: day === root.now.getDate()
 
                                             Layout.fillWidth: true
-                                            implicitHeight: 27
+                                            implicitHeight: root.theme.controlSize
                                             radius: 4
                                             color: today ? root.theme.accent : "transparent"
 
@@ -879,76 +992,104 @@ PanelWindow {
                         }
                     }
 
-                    Flow {
+                    ColumnLayout {
                         anchors.fill: parent
                         visible: root.mode === "commands" && root.path.length > 0
-                        spacing: 8
+                        spacing: 6
 
-                        Repeater {
-                            model: root.path.length > 0 ? root.activeItems : []
+                        // `path` was tracked but never drawn, so a submenu was an
+                        // untitled grid of tiles — no breadcrumb and no visible way
+                        // back, at exactly the moment (Power) context matters most.
+                        Text {
+                            text: root.path.map(entry => entry.label).join("  ›  ").toUpperCase()
+                            color: root.theme.textPrimary
+                            font.family: root.theme.fontFamily
+                            font.pixelSize: root.theme.fontSize
+                            font.bold: true
+                        }
 
-                            delegate: Rectangle {
-                                required property var modelData
-                                readonly property bool destructive: !!modelData.destructive
-                                readonly property bool confirming: root.confirmationItem === modelData
+                        Text {
+                            text: "Esc goes back"
+                            color: root.theme.textMuted
+                            font.family: root.theme.fontFamily
+                            font.pixelSize: root.theme.fontSize - 2
+                        }
 
-                                width: Math.max(destructive ? 240 : 150, commandLabel.implicitWidth + commandKey.implicitWidth + 42)
-                                height: 56
-                                radius: 6
-                                color: confirming ? root.dangerColor : (commandMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
-                                border.color: destructive ? root.dangerColor : (commandMouse.containsMouse ? root.theme.focusRing : root.theme.border)
-                                border.width: 1
-                                opacity: commandMouse.pressed ? 0.75 : 1
+                        Flow {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.topMargin: 4
+                            spacing: 8
 
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 12
-                                    anchors.rightMargin: 12
-                                    spacing: 10
+                            Repeater {
+                                model: root.path.length > 0 ? root.activeItems : []
 
-                                    Text {
-                                        id: commandKey
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    readonly property bool destructive: !!modelData.destructive
+                                    readonly property bool confirming: root.confirmationItem === modelData
 
-                                        text: modelData.key
-                                        color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.accent)
-                                        font.family: root.theme.fontFamily
-                                        font.pixelSize: root.theme.fontSize + 2
-                                        font.bold: true
-                                    }
+                                    width: Math.max(Math.round(root.theme.fontSize * (destructive ? 20 : 12.5)), commandLabel.implicitWidth + commandKey.implicitWidth + 42)
+                                    height: root.theme.cardHeight
+                                    radius: 6
+                                    color: confirming ? root.dangerColor : (commandMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
+                                    border.color: destructive ? root.dangerColor : (commandMouse.containsMouse ? root.theme.focusRing : root.theme.border)
+                                    border.width: 1
+                                    opacity: commandMouse.pressed ? 0.75 : 1
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: modelData.label + ", key " + modelData.key + (destructive ? ", destructive" : "")
+                                    Accessible.description: confirming ? "Armed. Press Enter to confirm, Escape to cancel." : (modelData.description || "")
 
-                                    ColumnLayout {
-                                        Layout.fillWidth: true
-                                        spacing: 1
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 12
+                                        anchors.rightMargin: 12
+                                        spacing: 10
 
                                         Text {
-                                            id: commandLabel
+                                            id: commandKey
 
-                                            Layout.fillWidth: true
-                                            text: modelData.label
-                                            elide: Text.ElideRight
-                                            color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.textPrimary)
+                                            text: modelData.key
+                                            color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.accent)
                                             font.family: root.theme.fontFamily
-                                            font.pixelSize: root.theme.fontSize
+                                            font.pixelSize: root.theme.fontSize + 2
+                                            font.bold: true
                                         }
 
-                                        Text {
+                                        ColumnLayout {
                                             Layout.fillWidth: true
-                                            text: confirming ? "Press " + modelData.key + " again to confirm" : (modelData.description || "")
-                                            elide: Text.ElideRight
-                                            color: confirming ? root.theme.textOnAccent : root.theme.textMuted
-                                            font.family: root.theme.fontFamily
-                                            font.pixelSize: root.theme.fontSize - 2
+                                            spacing: 1
+
+                                            Text {
+                                                id: commandLabel
+
+                                                Layout.fillWidth: true
+                                                text: modelData.label
+                                                elide: Text.ElideRight
+                                                color: confirming ? root.theme.textOnAccent : (destructive ? root.dangerColor : root.theme.textPrimary)
+                                                font.family: root.theme.fontFamily
+                                                font.pixelSize: root.theme.fontSize
+                                            }
+
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: confirming ? "Enter confirms  ·  Esc cancels" : (modelData.description || "")
+                                                elide: Text.ElideRight
+                                                color: confirming ? root.theme.textOnAccent : root.theme.textMuted
+                                                font.family: root.theme.fontFamily
+                                                font.pixelSize: root.theme.fontSize - 2
+                                            }
                                         }
                                     }
-                                }
 
-                                MouseArea {
-                                    id: commandMouse
+                                    MouseArea {
+                                        id: commandMouse
 
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.activate(modelData)
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.activate(modelData)
+                                    }
                                 }
                             }
                         }
@@ -964,6 +1105,10 @@ PanelWindow {
                         visible: root.mode === "launcher"
                         clip: true
                         spacing: 3
+                        // The search field sits at the bottom of a bottom-anchored
+                        // drawer, so results grow up toward the caret. Top-anchored
+                        // ordering put the best match furthest from where you type.
+                        verticalLayoutDirection: ListView.BottomToTop
                         model: root.filteredApplications
                         ScrollBar.vertical: ScrollBar {
                             policy: ScrollBar.AsNeeded
@@ -974,26 +1119,30 @@ PanelWindow {
 
                             required property var modelData
                             required property int index
+                            readonly property string subtitle: root.applicationSubtitle(modelData)
 
                             width: results.width
-                            height: 48
+                            height: root.theme.listRowHeight
                             radius: 5
                             color: index === root.selectedIndex ? root.theme.surfaceSelected : (resultMouse.containsMouse ? root.theme.surfaceHover : "transparent")
                             border.color: index === root.selectedIndex ? root.theme.focusRing : "transparent"
                             border.width: 1
+                            Accessible.role: Accessible.Button
+                            Accessible.name: modelData.name + (index === root.selectedIndex ? ", selected" : "")
+                            Accessible.description: resultRow.subtitle
 
                             IconImage {
                                 anchors.left: parent.left
                                 anchors.leftMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
-                                implicitWidth: 22
-                                implicitHeight: 22
+                                implicitWidth: root.theme.listIconSize
+                                implicitHeight: root.theme.listIconSize
                                 source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
                             }
 
                             ColumnLayout {
                                 anchors.left: parent.left
-                                anchors.leftMargin: 40
+                                anchors.leftMargin: 8 + root.theme.listIconSize + 10
                                 anchors.right: parent.right
                                 anchors.rightMargin: 18
                                 anchors.verticalCenter: parent.verticalCenter
@@ -1011,7 +1160,7 @@ PanelWindow {
                                 Text {
                                     Layout.fillWidth: true
                                     visible: text !== ""
-                                    text: root.applicationSubtitle(modelData)
+                                    text: resultRow.subtitle
                                     elide: Text.ElideRight
                                     color: root.theme.textMuted
                                     font.family: root.theme.fontFamily
@@ -1025,6 +1174,12 @@ PanelWindow {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
+                                // surfaceHover and surfaceSelected are the same
+                                // base16 slot, so a hovered row and the Enter
+                                // target used to paint identically while being
+                                // different rows. Pointing at a row now selects
+                                // it, which makes the two agree by construction.
+                                onEntered: root.selectedIndex = resultRow.index
                                 onClicked: root.launchApplication(modelData)
                             }
                         }
@@ -1049,6 +1204,9 @@ PanelWindow {
                     visible: root.mode === "launcher"
                     placeholderText: "Search applications"
                     selectByMouse: true
+                    Accessible.role: Accessible.EditableText
+                    Accessible.name: "Search applications"
+                    Accessible.description: root.filteredApplications.length + " results"
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
                     color: root.theme.textPrimary
@@ -1091,6 +1249,21 @@ PanelWindow {
                             event.accepted = true;
                         }
                     }
+                }
+
+                // The launcher supports five bindings and used to advertise none
+                // of them, so they were discoverable only by reading the source.
+                Text {
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 840
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: root.mode === "launcher"
+                    horizontalAlignment: Text.AlignHCenter
+                    text: "Up/Down or Ctrl-N/P select   Enter launches   Backspace returns   Esc closes"
+                    elide: Text.ElideRight
+                    color: root.theme.textMuted
+                    font.family: root.theme.fontFamily
+                    font.pixelSize: root.theme.fontSize - 2
                 }
             }
         }

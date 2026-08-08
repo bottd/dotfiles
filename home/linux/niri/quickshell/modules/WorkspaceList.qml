@@ -33,8 +33,8 @@ RowLayout {
 
             required property var modelData
 
-            implicitWidth: 28
-            implicitHeight: 28
+            implicitWidth: root.theme.controlSize
+            implicitHeight: root.theme.controlSize
             radius: 5
             color: modelData.is_urgent ? root.theme.danger : (modelData.is_focused ? root.theme.accent : (workspaceMouse.pressed ? root.theme.surfacePressed : (workspaceMouse.containsMouse ? root.theme.surfaceHover : root.theme.surfaceSelected)))
             border.color: workspaceMouse.containsMouse ? root.theme.focusRing : (modelData.is_urgent ? root.theme.danger : "transparent")
@@ -57,10 +57,13 @@ RowLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
+                onPressAndHold: wsTip.pinned = true
                 onClicked: root.focusWorkspace(modelData.idx)
             }
 
             BarTooltip {
+                id: wsTip
+
                 anchorItem: workspace
                 theme: root.theme
                 text: "Workspace " + modelData.idx + (modelData.is_urgent ? " · urgent" : "")

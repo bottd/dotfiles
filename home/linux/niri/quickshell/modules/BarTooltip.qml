@@ -10,8 +10,12 @@ PopupWindow {
     required property string text
     property bool show: false
     property bool shown: false
+    // Touch produces no hover, so on the pocket touchscreen a hover-only tooltip
+    // is unreachable — and for tray items this text is the only place the item's
+    // name appears at all. Call sites pin it from a long press.
+    property bool pinned: false
 
-    visible: root.shown && root.text !== ""
+    visible: (root.shown || root.pinned) && root.text !== ""
     grabFocus: false
     color: "transparent"
     implicitWidth: Math.min(label.implicitWidth + 16, 360)
@@ -43,6 +47,12 @@ PopupWindow {
 
         interval: 500
         onTriggered: root.shown = root.show
+    }
+
+    Timer {
+        running: root.pinned
+        interval: 4000
+        onTriggered: root.pinned = false
     }
 
     Rectangle {

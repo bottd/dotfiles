@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostName, features, theme, ... }:
+{ config, lib, pkgs, hostName, features, ... }:
 let
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
@@ -57,11 +57,6 @@ in
         import QtQuick
 
         QtObject {
-            readonly property color base00: "#${config.lib.stylix.colors.base00}"
-            readonly property color base01: "#${config.lib.stylix.colors.base01}"
-            readonly property color base02: "#${config.lib.stylix.colors.base02}"
-            readonly property color base03: "#${config.lib.stylix.colors.base03}"
-            readonly property color base05: "#${config.lib.stylix.colors.base05}"
             readonly property color background: "#${config.lib.stylix.colors.base00}"
             readonly property color surface: "#${config.lib.stylix.colors.base01}"
             readonly property color surfaceHover: "#${config.lib.stylix.colors.base02}"
@@ -69,15 +64,39 @@ in
             readonly property color surfacePressed: "#${config.lib.stylix.colors.base03}"
             readonly property color border: "#${config.lib.stylix.colors.base03}"
             readonly property color textPrimary: "#${config.lib.stylix.colors.base07}"
-            readonly property color textMuted: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base06 else config.lib.stylix.colors.base04}"
+            // base04 is base16's muted-foreground slot in both polarities. The old
+            // dark branch used base06, which melange doesn't define (see
+            // lib/stylixScheme.nix) — it was extrapolated off the gray ramp and
+            // landed 1.07:1 against base07, so "muted" text rendered at primary
+            // emphasis. base04 gives a real step down: 2.04:1 dark, 2.99:1 light.
+            readonly property color textMuted: "#${config.lib.stylix.colors.base04}"
             readonly property color accent: "#${config.lib.stylix.colors.base09}"
             readonly property color textOnAccent: "#${config.lib.stylix.colors.base00}"
             readonly property color focusRing: "#${config.lib.stylix.colors.base09}"
-            readonly property color statusPositive: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0B else config.lib.stylix.colors.base0D}"
-            readonly property color statusWarning: "#${if theme.appearance == "dark" then config.lib.stylix.colors.base0A else config.lib.stylix.colors.base0F}"
+            // base0B/base0A are base16's green/yellow slots. The old light branch
+            // used base0D (blue) and base0F (rose), which made "connected" read
+            // informational and put warning closer in hue to danger (base08) than
+            // to caution — at 2.80:1 on background, under the 3:1 non-text floor.
+            readonly property color statusPositive: "#${config.lib.stylix.colors.base0B}"
+            readonly property color statusWarning: "#${config.lib.stylix.colors.base0A}"
             readonly property color danger: "#${config.lib.stylix.colors.base08}"
             readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
             readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
+            // Every size in the shell derives from fontSize so the eink host
+            // (base 20) scales instead of overflowing a layout tuned for 12.
+            // The comments give the resolved value at fontSize 12.
+            readonly property int controlSize: Math.round(fontSize * 2.35)   // 28
+            readonly property int barHeight: Math.round(fontSize * 2.7)      // 32
+            readonly property int rowHeight: Math.round(fontSize * 2.5)      // 30
+            readonly property int listRowHeight: Math.round(fontSize * 4)    // 48
+            readonly property int cardHeight: Math.round(fontSize * 4.7)     // 56
+            readonly property int iconSize: Math.round(fontSize * 1.5)       // 18
+            readonly property int listIconSize: Math.round(fontSize * 1.85)  // 22
+            readonly property int drawerHeight: Math.round(fontSize * 30)    // 360
+            readonly property int overlayWidth: Math.round(fontSize * 20)    // 240
+            readonly property int overlayHeight: Math.round(fontSize * 8)    // 96
+            readonly property int overlayGap: Math.round(fontSize * 1.33)    // 16
+            readonly property int overlayEdgeMargin: Math.round(fontSize * 10) // 120
             readonly property bool animationsEnabled: ${lib.boolToString features.gui}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
             readonly property var launcherCommand: ${builtins.toJSON [

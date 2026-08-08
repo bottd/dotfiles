@@ -16,10 +16,10 @@ PanelWindow {
 
     anchors.bottom: true
     anchors.right: true
-    margins.bottom: 48
-    margins.right: 120
-    implicitWidth: 240
-    implicitHeight: 96
+    margins.bottom: root.theme.barHeight + root.theme.overlayGap
+    margins.right: root.theme.overlayEdgeMargin
+    implicitWidth: root.theme.overlayWidth
+    implicitHeight: root.theme.overlayHeight
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -46,8 +46,15 @@ PanelWindow {
         id: dismissTimer
 
         interval: 3000
-        running: root.visible
+        // Hold while the pointer is over the panel: it used to vanish
+        // under a stationary cursor mid-read, since only value changes
+        // restarted it.
+        running: root.visible && !popupHover.hovered
         onTriggered: root.dismissed()
+    }
+
+    HoverHandler {
+        id: popupHover
     }
 
     Rectangle {
@@ -73,8 +80,8 @@ PanelWindow {
                 Rectangle {
                     id: muteButton
 
-                    Layout.preferredWidth: 28
-                    Layout.preferredHeight: 28
+                    Layout.preferredWidth: root.theme.controlSize
+                    Layout.preferredHeight: root.theme.controlSize
                     radius: 4
                     color: muteMouse.pressed ? root.theme.surfacePressed : (muteMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
                     border.color: muteButton.activeFocus || muteMouse.containsMouse ? root.theme.focusRing : root.theme.border
@@ -117,7 +124,7 @@ PanelWindow {
 
             LevelSlider {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 28
+                Layout.preferredHeight: root.theme.controlSize
                 theme: root.theme
                 value: root.level
                 accessibleName: "Volume"

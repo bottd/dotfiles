@@ -13,14 +13,26 @@ ShellRoot {
 
     property bool drawerOpen: false
     property string drawerMode: "commands"
-    property string pendingDrawerMode: ""
     property var drawerScreen: null
     property bool volumeOpen: false
     property var volumeScreen: null
     property bool brightnessOpen: false
     property var brightnessScreen: null
     property var workspaces: []
+    // id -> title, mutated in place. WindowFocusChanged carries only an id, so a
+    // lookup table is needed; but nothing outside this file reads the window
+    // objects, and reassigning an N-element array on every title change (a
+    // terminal spinner emits several a second) invalidated every binding on it.
+    property var windowTitles: ({})
+    property int focusedWindowId: -1
     property string windowTitle: ""
+    // niri reports exactly one focused workspace globally, so this is the output
+    // the user is actually looking at. Deriving it from the event stream lets the
+    // drawer open synchronously instead of waiting on a `niri msg` subprocess.
+    readonly property string focusedOutput: {
+        const focused = root.workspaces.find(workspace => workspace.is_focused);
+        return focused ? focused.output : "";
+    }
     property var mullvadStatus: ({
             text: "",
             tone: "neutral",
@@ -34,7 +46,7 @@ ShellRoot {
     property string backlightText: ""
     property bool backlightAvailable: false
     property real brightnessLevel: 0
-    readonly property int barHeight: 32
+    readonly property int barHeight: shellTheme.barHeight
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
     readonly property real volumeLevel: root.audioReady ? root.audioSink.audio.volume : 0
@@ -59,16 +71,6 @@ ShellRoot {
         id: clock
 
         precision: SystemClock.Minutes
-    }
-
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        onTriggered: {
-            workspaceProcess.running = true;
-            windowProcess.running = true;
-        }
     }
 
     Timer {
@@ -118,6 +120,24 @@ ShellRoot {
         backlightRefreshTimer.restart();
     }
 
+    // Toggling the VPN takes a moment to settle. Without this the bar showed the
+    // old state for up to a full 5s poll, so the natural response was to click
+    // again — which toggled it straight back.
+    function toggleMullvad() {
+        root.mullvadStatus = {
+            text: root.mullvadStatus.text,
+            tone: "warning",
+            tooltip: "Switching Mullvad…"
+        };
+        Quickshell.execDetached(["waybar-mullvad", "toggle"]);
+        mullvadSettleTimer.ticks = 0;
+        mullvadSettleTimer.restart();
+    }
+
+    function openNetworkSettings() {
+        Quickshell.execDetached(["nm-connection-editor"]);
+    }
+
     function connectionTone(state) {
         if (state === "connected")
             return "positive";
@@ -135,42 +155,125 @@ ShellRoot {
             return;
         }
 
-        if (focusedOutputProcess.running) {
-            root.pendingDrawerMode = root.pendingDrawerMode === mode ? "" : mode;
+        root.drawerScreen = Quickshell.screens.find(screen => screen.name === root.focusedOutput) || Quickshell.screens[0];
+        root.drawerMode = mode;
+        root.drawerOpen = true;
+    }
+
+    // Paint the clicked workspace as focused immediately. niri confirms via the
+    // event stream a moment later; without this the chip trailed the user's own
+    // keystroke by up to a full poll interval.
+    function setWorkspaceFocus(id) {
+        root.workspaces = root.workspaces.map(workspace => Object.assign({}, workspace, {
+                is_focused: workspace.id === id
+            }));
+    }
+
+    function activateWorkspace(outputName, idx) {
+        const target = root.workspaces.find(workspace => workspace.output === outputName && workspace.idx === idx);
+        if (target)
+            root.setWorkspaceFocus(target.id);
+        Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", String(idx)]);
+    }
+
+    function handleNiriEvent(line) {
+        let event;
+        try {
+            event = JSON.parse(line);
+        } catch (error) {
             return;
         }
 
-        root.pendingDrawerMode = mode;
-        focusedOutputProcess.running = true;
-    }
+        niriEventRestartTimer.backoff = 1000;
 
-    Process {
-        id: workspaceProcess
-        command: ["niri", "msg", "-j", "workspaces"]
-        running: true
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    const parsed = JSON.parse(text);
-                    const value = Array.isArray(parsed) ? parsed : parsed.workspaces;
-                    if (Array.isArray(value))
-                        root.workspaces = value;
-                } catch (error) {}
+        if (event.WorkspacesChanged) {
+            root.workspaces = event.WorkspacesChanged.workspaces || [];
+            return;
+        }
+
+        if (event.WorkspaceActivated) {
+            if (event.WorkspaceActivated.focused)
+                root.setWorkspaceFocus(event.WorkspaceActivated.id);
+            return;
+        }
+
+        if (event.WorkspaceUrgencyChanged) {
+            const urgency = event.WorkspaceUrgencyChanged;
+            root.workspaces = root.workspaces.map(workspace => workspace.id === urgency.id ? Object.assign({}, workspace, {
+                    is_urgent: urgency.urgent
+                }) : workspace);
+            return;
+        }
+
+        if (event.WindowsChanged) {
+            const titles = {};
+            let focused = -1;
+            const windows = event.WindowsChanged.windows || [];
+            for (let index = 0; index < windows.length; ++index) {
+                titles[windows[index].id] = windows[index].title || "";
+                if (windows[index].is_focused)
+                    focused = windows[index].id;
+            }
+            root.windowTitles = titles;
+            root.focusedWindowId = focused;
+            root.windowTitle = focused >= 0 ? titles[focused] : "";
+            return;
+        }
+
+        if (event.WindowOpenedOrChanged) {
+            const changed = event.WindowOpenedOrChanged.window;
+            if (!changed)
+                return;
+
+            root.windowTitles[changed.id] = changed.title || "";
+            if (changed.is_focused)
+                root.focusedWindowId = changed.id;
+            if (changed.id === root.focusedWindowId)
+                root.windowTitle = changed.title || "";
+            return;
+        }
+
+        if (event.WindowFocusChanged) {
+            const focusedId = event.WindowFocusChanged.id;
+            root.focusedWindowId = focusedId === null || focusedId === undefined ? -1 : focusedId;
+            root.windowTitle = root.windowTitles[root.focusedWindowId] || "";
+            return;
+        }
+
+        if (event.WindowClosed) {
+            const closedId = event.WindowClosed.id;
+            delete root.windowTitles[closedId];
+            if (root.focusedWindowId === closedId) {
+                root.focusedWindowId = -1;
+                root.windowTitle = "";
             }
         }
     }
 
     Process {
-        id: windowProcess
-        command: ["niri", "msg", "-j", "focused-window"]
+        id: niriEventProcess
+
+        command: ["niri", "msg", "-j", "event-stream"]
         running: true
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    const value = JSON.parse(text);
-                    root.windowTitle = value ? (value.title || "") : "";
-                } catch (error) {}
-            }
+        stdout: SplitParser {
+            onRead: line => root.handleNiriEvent(line)
+        }
+        // The stream is the only source of workspace and window state, so a
+        // compositor restart must not leave the bar frozen on stale data.
+        onExited: niriEventRestartTimer.restart()
+    }
+
+    Timer {
+        id: niriEventRestartTimer
+
+        // Back off, so a compositor that never returns can't turn this into a
+        // 1 Hz fork loop. handleNiriEvent resets it once a line actually lands.
+        property int backoff: 1000
+
+        interval: niriEventRestartTimer.backoff
+        onTriggered: {
+            niriEventRestartTimer.backoff = Math.min(niriEventRestartTimer.backoff * 2, 30000);
+            niriEventProcess.running = true;
         }
     }
 
@@ -189,10 +292,13 @@ ShellRoot {
                         tooltip: value.tooltip || "Mullvad status unavailable"
                     };
                 } catch (error) {
+                    // Never put raw helper output in the bar: it has no bound,
+                    // and a multi-line stderr dump collapses the window title.
+                    // The label stays fixed; the detail goes to the tooltip.
                     root.mullvadStatus = {
-                        text: text.trim(),
+                        text: "󰖂 VPN unavailable",
                         tone: "danger",
-                        tooltip: "Mullvad status unavailable"
+                        tooltip: "Mullvad status unavailable" + (text.trim() ? " — " + text.trim().split("\n")[0] : "")
                     };
                 }
             }
@@ -254,25 +360,17 @@ ShellRoot {
         onTriggered: backlightProcess.running = true
     }
 
-    Process {
-        id: focusedOutputProcess
+    Timer {
+        id: mullvadSettleTimer
 
-        command: ["niri", "msg", "-j", "focused-output"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                if (root.pendingDrawerMode === "")
-                    return;
+        property int ticks: 0
 
-                let outputName = "";
-                try {
-                    outputName = JSON.parse(text).name || "";
-                } catch (error) {}
-
-                root.drawerScreen = Quickshell.screens.find(screen => screen.name === outputName) || Quickshell.screens[0];
-                root.drawerMode = root.pendingDrawerMode;
-                root.pendingDrawerMode = "";
-                root.drawerOpen = true;
-            }
+        interval: 700
+        repeat: true
+        onTriggered: {
+            mullvadProcess.running = true;
+            if (++mullvadSettleTimer.ticks >= 5)
+                mullvadSettleTimer.stop();
         }
     }
 
@@ -329,6 +427,12 @@ ShellRoot {
         now: clock.date
         onDismissed: root.drawerOpen = false
         onModeRequested: mode => root.drawerMode = mode
+        onShellActionRequested: action => {
+            if (action === "mullvad")
+                root.toggleMullvad();
+            else if (action === "network")
+                root.openNetworkSettings();
+        }
     }
 
     Variants {
@@ -366,8 +470,17 @@ ShellRoot {
             Rectangle {
                 anchors.fill: parent
                 color: shellTheme.background
-                border.color: shellTheme.border
-                border.width: 1
+
+                // Only the top edge is ever visible — the other three sit against
+                // the screen bezel, so a four-sided border drew three lines nobody
+                // could see and stole a pixel of height from the content.
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: 1
+                    color: shellTheme.border
+                }
 
                 RowLayout {
                     anchors.fill: parent
@@ -379,7 +492,7 @@ ShellRoot {
                         workspaces: root.workspaces
                         screenName: bar.screen.name
                         theme: shellTheme
-                        onFocusWorkspace: index => Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", String(index)])
+                        onFocusWorkspace: index => root.activateWorkspace(bar.screen.name, index)
                     }
 
                     Text {
@@ -405,8 +518,8 @@ ShellRoot {
                         now: clock.date
                         theme: shellTheme
                         onAudioClicked: root.toggleVolume(bar.screen)
-                        onMullvadClicked: Quickshell.execDetached(["waybar-mullvad", "toggle"])
-                        onCellularClicked: Quickshell.execDetached(["nm-connection-editor"])
+                        onMullvadClicked: root.toggleMullvad()
+                        onCellularClicked: root.openNetworkSettings()
                         onBacklightClicked: root.toggleBrightness(bar.screen)
                         onBacklightWheel: increase => root.adjustBrightness(increase)
                     }
