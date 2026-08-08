@@ -9,6 +9,7 @@
     ./bitwarden.nix
     ./cli.nix
     ./direnv.nix
+    ./emacs
     ./git.nix
     ./jujutsu.nix
     ./language.nix
