@@ -86,12 +86,6 @@
     (niri-action "consume-or-expel-window-left" "--id" (str (:id w)))
     (apply-heights! (:workspace_id w))))
 
-;; The typed niri config can't set a per-output default-column-width, so we
-;; widen the portrait column to full width here. set-column-width has no --id;
-;; it acts on the *focused* column, so only fire it when this window is focused
-;; (else we'd resize whatever column is focused on the landscape monitor).
-;; ponytail: a background-opened portrait window stays at default width until
-;; it's focused-and-changed — fine, the common open-here case is focused.
 (defn widen! [w]
   (when (:is_focused w)
     (niri-action "set-column-width" "100%")))

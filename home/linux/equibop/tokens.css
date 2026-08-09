@@ -1,0 +1,60 @@
+/* ponytail: Discord's in-app Appearance has to match theme.appearance. It is
+   account-synced, so Nix cannot set it, and every token neither stylix nor
+   this file maps falls back to whatever polarity the app is in.
+
+   stylix maps only Discord's legacy design tokens (--text-normal, ...); the
+   current UI reads a renamed set. !important is mandatory: Discord sets these
+   on compound selectors like `.theme-dark.visual-refresh`, which outranks the
+   0-1-0 list below. Foreground stays on base04/base05, never base06 -- some
+   schemes reachable from lib/stylixScheme.nix use base06 as an accent rather
+   than a brighter gray (catppuccin-latte's is 2.34:1 on its own base00). */
+
+.theme-light,
+.theme-dark,
+.theme-darker,
+.theme-midnight,
+.visual-refresh {
+  --text-default: var(--base05) !important;
+  --text-strong: var(--base05) !important;
+  --text-subtle: var(--base04) !important;
+  --text-subdued: var(--base04) !important;
+  /* stylix maps this to base05, same as default text; base04 restores hierarchy */
+  --text-muted: var(--base04) !important;
+  --text-faint: var(--base03) !important;
+  --text-invert: var(--base00) !important;
+  --text-danger: var(--base08) !important;
+  --text-feedback-critical: var(--base08) !important;
+  --text-feedback-info: var(--base0D) !important;
+  --text-link-low-saturation: var(--base0D) !important;
+
+  /* ramp slots stylix leaves unmapped; Equicord plugin CSS colours text with them */
+  --white-360: var(--base05) !important;
+  --white-600: var(--base05) !important;
+  --primary-330: var(--base04) !important;
+  --primary-400: var(--base04) !important;
+
+  --interactive-icon-default: var(--base04) !important;
+  --interactive-icon-hover: var(--base05) !important;
+  --interactive-icon-active: var(--base05) !important;
+  --interactive-text-default: var(--base05) !important;
+  --interactive-text-hover: var(--base05) !important;
+  --interactive-background-hover: var(--base01) !important;
+
+  --input-color: var(--base05) !important;
+  --input-placeholder-color: var(--base03) !important;
+  --input-background-default: var(--base02) !important;
+  --input-border: var(--base02) !important;
+  --input-border-default: var(--base02) !important;
+  --button-color: var(--base05) !important;
+  --button-primary-color: var(--base05) !important;
+  --button-primary-hover-color: var(--base05) !important;
+
+  --background-base-lower-alt: var(--base00) !important;
+  --background-mod-muted: var(--base01) !important;
+  --background-mod-normal: var(--base02) !important;
+  --background-mod-strong: var(--base02) !important;
+  --border-subtle: var(--base02) !important;
+  --border-normal: var(--base02) !important;
+
+  --channeltabs-white: var(--base05) !important;
+}

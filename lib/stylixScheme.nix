@@ -1,13 +1,5 @@
 { pkgs, appearance, scheme }:
 let
-  # ponytail: melange ships no flake and no base16 scheme (not in
-  # base16-schemes, not in tinted-theming/schemes), and its own
-  # melange_{dark,light}.json export has a trailing comma so fromJSON rejects
-  # it. So the palette is transcribed from savq/melange-nvim's
-  # lua/melange/palettes/{dark,light}.lua: a.{bg,float,sel,ui,com,fg} ->
-  # base00-base05, b.* -> base08/0A-0E, c.{yellow,red} -> base09/base0F.
-  # base06/base07 are extrapolated off the gray ramp — melange defines no
-  # colors for those slots.
   melange = {
     dark = {
       base00 = "292522";
