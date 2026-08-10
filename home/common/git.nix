@@ -1,19 +1,24 @@
 { pkgs, ... }: {
-  programs.git = {
-    enable = true;
-    settings = {
-      user.email = "bottd@users.noreply.github.com";
-      push = {
-        autoSetupRemote = true;
+  programs = {
+    git = {
+      enable = true;
+      settings = {
+        user.email = "bottd@users.noreply.github.com";
+        push = {
+          autoSetupRemote = true;
+        };
+        init.defaultBranch = "main";
+        merge.conflictstyle = "diff3";
+        diff.colorMoved = "default";
       };
-      init.defaultBranch = "main";
-      merge.conflictstyle = "diff3";
-      diff.colorMoved = "default";
+      ignores = [
+        ".DS_Store"
+      ];
     };
-  };
 
-  programs.difftastic = {
-    enable = true;
+    difftastic = {
+      enable = true;
+    };
   };
 
   home.packages = with pkgs; [

@@ -7,7 +7,7 @@
     "pr": ""
   },
   "permissions": {
-    "allow": ["mcp__nixos__*", "mcp__svelte__*"]
+    "allow": ["mcp__nixos__*"]
   },
   "model": "opus[1m]",
   "enabledPlugins": {
@@ -43,9 +43,6 @@
   "mcpServers": {
     "nixos": {
       "command": "mcp-nixos"
-    },
-    "svelte": {
-      "command": "svelte-mcp"
     }
   },
   "plugins": {},
