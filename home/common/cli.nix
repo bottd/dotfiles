@@ -12,7 +12,6 @@
     fd
     gcc
     gnumake
-    himalaya
     jq
     notmuch
     readline
