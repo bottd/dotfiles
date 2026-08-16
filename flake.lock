@@ -203,11 +203,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765835352,
-        "narHash": "sha256-XswHlK/Qtjasvhd1nOa1e8MgZ8GS//jBoTqWtrS1Giw=",
+        "lastModified": 1785627969,
+        "narHash": "sha256-4dtXQk/NMePegK/nWp5NSeuZKLATItOq61lpEvmXqGw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "a34fae9c08a15ad73f295041fec82323541400a9",
+        "rev": "427bf4bd9435fdf21321c8cc628c24efc14c0f7a",
         "type": "github"
       },
       "original": {
@@ -824,11 +824,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1786404789,
-        "narHash": "sha256-1vIFoWic+iPlhv5NZimy1k5ikFgITiezQxAltR0756c=",
+        "lastModified": 1786793596,
+        "narHash": "sha256-gif52G1Z57qQrvkHiwWHvn42qNkh6engloF2ZdTW950=",
         "owner": "different-name",
         "repo": "steam-config-nix",
-        "rev": "02517f006079a6a3f16bae5982e72a2a48883742",
+        "rev": "30dc17418e7aff0b78ee14ef6c451b5f3422e792",
         "type": "github"
       },
       "original": {
