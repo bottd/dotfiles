@@ -13,7 +13,8 @@
   "enabledPlugins": {
     "improve@improve": true,
     "lazyweb@lazyweb": true,
-    "impeccable@impeccable": true
+    "impeccable@impeccable": true,
+    "humanizer@humanizer": true
   },
   "extraKnownMarketplaces": {
     "improve": {
@@ -26,6 +27,12 @@
       "source": {
         "source": "github",
         "repo": "pbakaus/impeccable"
+      }
+    },
+    "humanizer": {
+      "source": {
+        "source": "github",
+        "repo": "blader/humanizer"
       }
     }
   },
