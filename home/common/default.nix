@@ -26,5 +26,7 @@
     ./browser.nix
     ./ghostty.nix
     ./glide
+  ] ++ lib.optionals features.gaming [
+    ./games
   ];
 }

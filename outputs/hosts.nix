@@ -57,7 +57,7 @@ in
         system = "aarch64-darwin";
         username = "drakebott";
         format = "darwin";
-        features.desktopEnvironment = "macos";
+        features = { desktopEnvironment = "macos"; gaming = true; };
         theme = { appearance = "light"; baseFontSize = 12; };
       };
   };
