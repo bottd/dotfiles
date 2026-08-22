@@ -59,8 +59,7 @@ systemBuilder {
     [
       path
       ../system/users
-      ../system/common/nix.nix
-      ../system/common/nixpkgs.nix
+      ../system/common
       homeManagerModule
       homeConfig
       { time.timeZone = "America/Chicago"; }
