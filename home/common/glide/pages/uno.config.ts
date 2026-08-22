@@ -1,21 +1,20 @@
-import { defineConfig, presetWind3 } from "unocss";
+import { defineConfig, presetAttributify, presetWind3 } from "unocss";
 import stylixPalette from "./stylix-palette.json" with { type: "json" };
 
 export default defineConfig({
-  presets: [presetWind3()],
+  presets: [presetAttributify(), presetWind3()],
   shortcuts: {
     "hn-frame": "overflow-hidden rounded-[3px] shadow-xl",
     "hn-page":
-      "flex h-full min-h-0 flex-col border border-base03 bg-[#f6f6ef] text-[13px] text-black sm:min-h-[390px]",
+      "flex h-full min-h-0 flex-col border border-base03 bg-[#f6f6ef] text-[13px] text-black sm:min-h-[390px] lg:min-h-0",
     "hn-header":
       "flex min-h-7 items-center whitespace-nowrap bg-[#ff6600] p-0.5 [&_a]:text-black [&_a]:no-underline",
     "hn-logo":
       "mr-1.25 grid h-5 w-5 place-items-center border border-white text-[13px] !text-white",
     "hn-name": "mr-1.75 font-bold",
-    "hn-content":
-      "min-h-0 flex-1 px-1.75 pb-3 pt-3 sm:px-2 sm:pb-3.5 sm:pt-3.5",
+    "hn-content": "min-h-0 flex-1 px-1.75 py-2 sm:px-2 sm:py-3.5 lg:py-2",
     "story-list":
-      "m-0 grid h-full content-between list-none gap-2.75 p-0 sm:gap-2.25",
+      "m-0 grid h-full content-between list-none gap-2.75 p-0 sm:gap-2.25 lg:gap-0.5",
     story: "grid grid-cols-[24px_minmax(0,1fr)]",
     rank: "pt-px text-right text-[#5f5f5f]",
     "story-main": "min-w-0",
@@ -26,7 +25,7 @@ export default defineConfig({
     "story-host":
       "ml-1.25 hidden flex-auto truncate whitespace-nowrap text-[11px] text-[#5f5f5f] sm:block",
     "story-meta":
-      "mb-0 ml-1.25 mt-1 flex flex-wrap items-center gap-x-1.5 text-[11px] leading-4 text-[#5f5f5f] [&_a]:text-inherit [&_a]:underline-offset-2 [&_a:hover]:underline",
+      "mb-0 ml-1.25 mt-1 flex flex-wrap items-center gap-x-1.5 text-[11px] leading-4 text-[#5f5f5f] lg:mt-0 lg:leading-3.5 [&_a]:text-inherit [&_a]:underline-offset-2 [&_a:hover]:underline",
     "story-loading": "min-h-7.5",
     "loading-block":
       "mt-0.75 block h-2.5 w-[min(78%,480px)] animate-pulse bg-[#e4e4dc] motion-reduce:animate-none",
@@ -57,7 +56,7 @@ export default defineConfig({
     "wiki-nav":
       "flex flex-wrap gap-x-3 gap-y-1 border-b border-[#c8ccd1] bg-[#f8f9fa] px-3 py-2 text-[10px] [&_a]:text-[#36c] [&_a]:no-underline [&_a:hover]:underline",
     "wiki-feature":
-      "m-3 flex flex-1 flex-col border border-[#a3bfb1] bg-[#f5fffa]",
+      "m-3 flex min-h-0 flex-1 flex-col overflow-hidden border border-[#a3bfb1] bg-[#f5fffa]",
     "wiki-feature-heading":
       "flex items-center justify-between border-b border-[#a3bfb1] bg-[#cef2e0] px-2.5 py-1 font-[Georgia] text-[14px] font-bold text-black [&_a]:grid [&_a]:h-4 [&_a]:w-4 [&_a]:place-items-center [&_a]:rounded-full [&_a]:border [&_a]:border-[#72777d] [&_a]:font-sans [&_a]:text-[10px] [&_a]:text-[#36c] [&_a]:no-underline",
     "wiki-feature-loading":
@@ -65,7 +64,7 @@ export default defineConfig({
     "wiki-feature-error":
       "grid min-h-44 place-content-center justify-items-center gap-3 p-4 text-center text-[11px] [&_p]:m-0 [&_button]:cursor-pointer [&_button]:border [&_button]:border-[#72777d] [&_button]:bg-[#f8f9fa] [&_button]:px-3 [&_button]:py-1.5 [&_button]:font-semibold [&_button]:text-[#202122] [&_button:hover]:bg-white",
     "wiki-article":
-      "grid flex-1 content-start gap-3 p-3 text-[11px] leading-4 lg:grid-cols-[112px_minmax(0,1fr)]",
+      "grid min-h-0 flex-1 content-start gap-3 overflow-hidden p-3 text-[11px] leading-4 lg:grid-cols-[112px_minmax(0,1fr)]",
     "wiki-article-image":
       "h-28 overflow-hidden border border-[#c8ccd1] bg-white p-1 lg:h-24",
     "wiki-image-fallback":
@@ -75,7 +74,7 @@ export default defineConfig({
     "wiki-article-description":
       "m-0 mt-1 line-clamp-2 text-[10px] italic text-[#54595d]",
     "wiki-article-extract":
-      "m-0 mt-2 line-clamp-7 text-[#202122] lg:line-clamp-12",
+      "m-0 mt-2 line-clamp-7 text-[#202122] lg:line-clamp-3",
     "wiki-read-more":
       "mt-2 inline-block text-[10px] text-[#36c] no-underline hover:underline",
     widget: "rounded-[3px] shadow-xl",

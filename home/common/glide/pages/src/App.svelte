@@ -35,6 +35,7 @@
   };
 
   const hackerNewsApi = "https://hacker-news.firebaseio.com/v0";
+  const hackerNewsStoryCount = 10;
   const astronomyPictureApi =
     "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true";
   const mediaSites = [
@@ -130,7 +131,7 @@
 
       const ids = (await topResponse.json()) as number[];
       const loadedStories = await Promise.all(
-        ids.slice(0, 12).map(async (id) => {
+        ids.slice(0, hackerNewsStoryCount).map(async (id) => {
           const response = await fetch(`${hackerNewsApi}/item/${id}.json`, {
             signal,
           });
@@ -287,12 +288,26 @@
   });
 </script>
 
-<main class="min-h-screen bg-base00 px-4 py-5 text-base07 sm:px-6 sm:py-8">
-  <div class="mx-auto max-w-[1180px]">
+<main
+  min-h="screen lg:0"
+  h="lg:screen"
+  overflow="lg:hidden"
+  bg="base00"
+  p="x-4 y-5 sm:x-6 sm:y-8 lg:y-5"
+  text="base07"
+>
+  <div
+    h="lg:full"
+    min-h="lg:0"
+    max-w="[1180px]"
+    m="x-auto"
+    grid="~ lg:rows-[clamp(380px,50vh,430px)_minmax(0,1fr)] lg:gap-4"
+  >
     <h1 class="sr-only">New tab</h1>
-    <div class="grid gap-4 lg:grid-cols-3">
+    <div h="lg:full" min-h="lg:0" grid="~ lg:cols-3" gap="4">
       <section
-        class="hn-frame min-w-0"
+        class="hn-frame"
+        min-w="0"
         aria-labelledby="hacker-news-title"
         aria-busy={loading}
       >
@@ -303,7 +318,7 @@
               href="https://news.ycombinator.com/"
               aria-label="Hacker News home">Y</a
             >
-            <h2 class="m-0 text-[13px] leading-none">
+            <h2 m="0" text="[13px]" leading="none">
               <a
                 class="hn-name"
                 id="hacker-news-title"
@@ -328,7 +343,7 @@
                 aria-label="Loading top Hacker News stories"
                 aria-hidden="true"
               >
-                {#each Array(12) as _, index}
+                {#each Array(hackerNewsStoryCount) as _, index}
                   <li class="story story-loading">
                     <span class="rank">{index + 1}.</span>
                     <div class="story-main">
@@ -398,7 +413,7 @@
               href="https://en.wikipedia.org/wiki/Main_Page"
             >
               <span class="wiki-mark" aria-hidden="true">W</span>
-              <span class="min-w-0">
+              <span min-w="0">
                 <h2 id="wiki-title" class="wiki-wordmark">Wikipedia</h2>
                 <span class="wiki-tagline">The Free Encyclopedia</span>
               </span>
@@ -455,17 +470,27 @@
               </span>
               <div class="wiki-feature-loading" aria-hidden="true">
                 <div
-                  class="h-28 animate-pulse bg-[#eaecf0] motion-reduce:animate-none"
+                  h="28"
+                  animate="pulse motion-reduce:none"
+                  bg="[#eaecf0]"
                 ></div>
-                <div class="grid content-start gap-2">
+                <div grid="~" content="start" gap="2">
                   <span
-                    class="h-4 w-3/4 animate-pulse bg-[#c8ccd1] motion-reduce:animate-none"
+                    h="4"
+                    w="3/4"
+                    animate="pulse motion-reduce:none"
+                    bg="[#c8ccd1]"
                   ></span>
                   <span
-                    class="h-2.5 animate-pulse bg-[#eaecf0] motion-reduce:animate-none"
+                    h="2.5"
+                    animate="pulse motion-reduce:none"
+                    bg="[#eaecf0]"
                   ></span>
                   <span
-                    class="h-2.5 w-5/6 animate-pulse bg-[#eaecf0] motion-reduce:animate-none"
+                    h="2.5"
+                    w="5/6"
+                    animate="pulse motion-reduce:none"
+                    bg="[#eaecf0]"
                   ></span>
                 </div>
               </div>
@@ -481,7 +506,9 @@
                 <div class="wiki-article-image">
                   {#if wikipediaArticle.thumbnail}
                     <img
-                      class="h-full w-full object-cover"
+                      h="full"
+                      w="full"
+                      object="cover"
                       src={wikipediaArticle.thumbnail.source}
                       alt=""
                     />
@@ -489,7 +516,7 @@
                     <div class="wiki-image-fallback" aria-hidden="true">W</div>
                   {/if}
                 </div>
-                <div class="min-w-0">
+                <div min-w="0">
                   <h3 class="wiki-article-title">
                     <a href={wikipediaArticle.content_urls.desktop.page}>
                       {wikipediaArticleTitle(wikipediaArticle)}
@@ -516,11 +543,15 @@
         </section>
 
         <section
-          class="widget overflow-hidden border border-base02 bg-base01"
+          class="widget"
+          h="lg:full"
+          overflow="hidden"
+          border="~ base02"
+          bg="base01"
           aria-labelledby="media-title"
         >
-          <div class="border-b border-base02 px-5 py-4">
-            <h2 id="media-title" class="m-0 text-base font-medium text-base07">
+          <div border="b base02" p="x-5 y-4">
+            <h2 id="media-title" m="0" text="base base07" font="medium">
               Media
             </h2>
           </div>
@@ -528,7 +559,7 @@
             {#each mediaSites as site (site.href)}
               <a class="media-link" href={site.href}>
                 <img class="media-favicon" src={site.favicon} alt="" />
-                <span class="min-w-0">
+                <span min-w="0">
                   <span class="media-heading">
                     <strong class="media-name">{site.title}</strong>
                     <span class="arrow" aria-hidden="true">↗</span>
@@ -547,7 +578,14 @@
     </div>
 
     <section
-      class="widget relative mt-4 h-[clamp(360px,56vh,620px)] overflow-hidden border border-base03 bg-base01"
+      class="widget"
+      relative
+      min-h="lg:0"
+      h="[clamp(360px,56vh,620px)] lg:full"
+      m="t-4 lg:t-0"
+      overflow="hidden"
+      border="~ base03"
+      bg="base01"
       aria-labelledby="astronomy-picture-title"
       aria-busy={astronomyPictureLoading}
     >
@@ -559,27 +597,53 @@
           Loading NASA astronomy picture of the day
         </span>
         <div
-          class="h-full w-full animate-pulse bg-gradient-to-br from-base01 via-base02 to-base00 motion-reduce:animate-none"
+          h="full"
+          w="full"
+          animate="pulse motion-reduce:none"
+          bg="gradient-to-br"
+          from="base01"
+          via="base02"
+          to="base00"
           aria-hidden="true"
         ></div>
       {:else if astronomyPictureError || !astronomyPicture}
         <div
-          class="grid h-full place-content-center justify-items-center gap-3 bg-gradient-to-br from-base01 via-base02 to-base00 px-6 text-center"
+          h="full"
+          grid="~"
+          place-content="center"
+          justify-items="center"
+          gap="3"
+          bg="gradient-to-br"
+          from="base01"
+          via="base02"
+          to="base00"
+          p="x-6"
+          text="center"
           role="status"
         >
-          <p class="m-0 text-sm text-base07">
+          <p m="0" text="sm base07">
             NASA's astronomy picture could not be reached.
           </p>
-          <div class="flex flex-wrap justify-center gap-3">
+          <div flex="~ wrap" justify="center" gap="3">
             <button
-              class="cursor-pointer border border-base0D bg-base00 px-3 py-1.5 text-xs text-base0D hover:bg-base03 hover:text-base07 focus-visible:outline-2 focus-visible:outline-base0D focus-visible:outline-offset-2"
+              cursor="pointer"
+              border="~ base0D"
+              bg="base00 hover:base03"
+              p="x-3 y-1.5"
+              text="xs base0D hover:base07"
+              outline="focus-visible:2 focus-visible:base0D focus-visible:offset-2"
               type="button"
               onclick={loadAstronomyPicture}
             >
               Try again
             </button>
             <a
-              class="border border-base0E bg-base00 px-3 py-1.5 text-xs text-base0E no-underline hover:bg-base03 hover:text-base07 focus-visible:outline-2 focus-visible:outline-base0E focus-visible:outline-offset-2"
+              border="~ base0E"
+              bg="base00 hover:base03"
+              p="x-3 y-1.5"
+              text="xs base0E hover:base07"
+              decoration="none"
+              outline="focus-visible:2 focus-visible:base0E focus-visible:offset-2"
               href="https://apod.nasa.gov/apod/astropix.html"
             >
               Open NASA APOD
@@ -588,39 +652,70 @@
         </div>
       {:else}
         <a
-          class="block h-full bg-cover bg-center bg-no-repeat focus-visible:outline-2 focus-visible:outline-base0D focus-visible:outline-offset--2"
+          block
+          h="full"
+          bg="cover center no-repeat"
+          outline="focus-visible:2 focus-visible:base0D focus-visible:offset--2"
           href={astronomyPictureTarget(astronomyPicture)}
           aria-label={`${astronomyPicture.media_type === "video" ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
           style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
         >
           {#if astronomyPicture.media_type === "video"}
             <span
-              class="pointer-events-none absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/70 bg-black/70 text-2xl text-white shadow-xl"
+              pointer-events="none"
+              absolute
+              left="1/2"
+              top="1/2"
+              h="16"
+              w="16"
+              translate="x--1/2 y--1/2"
+              grid="~"
+              place-items="center"
+              rounded="full"
+              border="~ white/70"
+              bg="black/70"
+              text="2xl white"
+              shadow="xl"
               aria-hidden="true">▶</span
             >
           {/if}
         </a>
         <div
-          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/65 to-transparent px-5 pb-5 pt-28 text-white sm:px-7 sm:pb-7"
+          pointer-events="none"
+          absolute
+          inset="x-0"
+          bottom="0"
+          bg="gradient-to-t"
+          from="black/95"
+          via="black/65"
+          to="transparent"
+          p="x-5 b-5 t-24 sm:x-7"
+          text="white"
         >
           <p
-            class="m-0 text-[10px] font-semibold tracking-[0.18em] text-base0D uppercase"
+            m="0"
+            text="[10px] base0D"
+            font="semibold"
+            tracking="[0.18em]"
+            uppercase
           >
             NASA astronomy picture of the day · {astronomyPictureDate(
               astronomyPicture.date,
             )}
           </p>
-          <h3
-            class="m-0 mt-2 text-2xl font-medium tracking-[-0.025em] text-white sm:text-3xl"
-          >
+          <h3 m="0 t-2" text="2xl white" font="medium" tracking="[-0.025em]">
             {astronomyPicture.title}
           </h3>
           <p
-            class="m-0 mt-2 max-w-3xl line-clamp-3 text-xs leading-5 text-white/85 sm:text-sm"
+            m="0 t-2"
+            max-w="3xl"
+            line-clamp="2"
+            text="xs white/85 sm:sm"
+            leading="5"
           >
             {astronomyPicture.explanation}
           </p>
-          <p class="m-0 mt-3 text-[11px] text-white/75">
+          <p m="0 t-2" text="[11px] white/75">
             {astronomyPicture.copyright
               ? `Image: ${astronomyPicture.copyright}`
               : "Image: NASA"}
