@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, ... }:
+{ config, inputs, pkgs, seo, ... }:
 let
   colors = config.lib.stylix.colors;
   hex = color: "#${color}";
@@ -9,6 +9,11 @@ in
   home.file = {
     ".config/opencode/opencode.json".text = builtins.toJSON {
       "$schema" = "https://opencode.ai/config.json";
+      mcp.seo = {
+        type = "local";
+        command = [ "${seo}/bin/seo" "mcp" "serve" ];
+        enabled = true;
+      };
       permission.external_directory = {
         "/nix/store/**" = "allow";
         "~/dotfiles/**" = "allow";

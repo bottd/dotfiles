@@ -47,11 +47,6 @@
   },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "mcpServers": {
-    "nixos": {
-      "command": "mcp-nixos"
-    }
-  },
   "plugins": {},
   "preferNativeInstaller": false
 }

@@ -8,5 +8,6 @@
     ./apps.nix
     ./formatter.nix
     ./hosts.nix
+    ./packages.nix
   ];
 }
