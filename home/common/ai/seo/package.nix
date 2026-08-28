@@ -3,10 +3,9 @@
 , importNpmLock
 , makeWrapper
 , nodejs_22
+, nodejs-slim_22
 }:
 let
-  nodejs = nodejs_22;
-
   npmRoot = ./npm;
 
   # The pin lives in npm/package.json so `npm install --package-lock-only`
@@ -14,14 +13,25 @@ let
   version = (lib.importJSON (npmRoot + "/package.json")).dependencies.seo;
 
   nodeModules = importNpmLock.buildNodeModules {
-    inherit npmRoot nodejs;
+    inherit npmRoot;
+    nodejs = nodejs_22;
     derivationArgs = {
       pname = "seo-node-modules";
       inherit version;
+
       # The lock is generated with --legacy-peer-deps (the only auto-installed
       # peer is typescript, which pulls ~20 platform binaries the CLI never
       # loads); npm install has to agree or it goes looking for them online.
       npmInstallFlags = [ "--legacy-peer-deps" ];
+
+      # npm rewrites every `resolved` in .package-lock.json to a store path, so
+      # keeping the file pins all 240 source tarballs as runtime references.
+      # Sourcemaps and type declarations are dead weight too: the wrapper never
+      # passes --enable-source-maps, and nothing type-checks against the store.
+      postInstall = ''
+        rm -f $out/node_modules/.package-lock.json
+        find $out/node_modules \( -name '*.map' -o -name '*.d.ts' \) -delete
+      '';
     };
   };
 
@@ -38,8 +48,9 @@ stdenvNoCC.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin
-    makeWrapper ${lib.getExe nodejs} $out/bin/seo \
+    # nodejs-slim drops npm and corepack; the CLI resolves npm from PATH when it
+    # installs an optional research provider, never from its own interpreter.
+    makeWrapper ${lib.getExe nodejs-slim_22} $out/bin/seo \
       --add-flags ${seoModule}/dist/cli.js \
       --set-default NO_UPDATE_NOTIFIER 1
 
@@ -48,21 +59,15 @@ stdenvNoCC.mkDerivation {
     # resolve back through node_modules.
     mkdir -p $out/share/seo
     cp -R ${seoModule}/skills $out/share/seo/skills
-    chmod -R u+w $out/share/seo
 
     runHook postInstall
   '';
-
-  passthru = {
-    inherit nodejs nodeModules;
-    skills = "share/seo/skills";
-  };
 
   meta = {
     description = "SEO audits, search opportunities, and competitor research as a local CLI and MCP server";
     homepage = "https://github.com/iannuttall/seo";
     license = lib.licenses.asl20;
     mainProgram = "seo";
-    platforms = lib.platforms.darwin ++ lib.platforms.linux;
+    platforms = lib.platforms.unix;
   };
 }

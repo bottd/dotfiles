@@ -1,4 +1,7 @@
-{ seo, ... }:
+{ pkgs, ... }:
+let
+  seo = pkgs.callPackage ./package.nix { };
+in
 {
   home = {
     packages = [ seo ];

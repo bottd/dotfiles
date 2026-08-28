@@ -1,5 +1,6 @@
-{ config, inputs, pkgs, seo, ... }:
+{ config, inputs, pkgs, ... }:
 let
+  seo = pkgs.callPackage ../seo/package.nix { };
   colors = config.lib.stylix.colors;
   hex = color: "#${color}";
 in
