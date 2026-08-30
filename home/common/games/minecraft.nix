@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   home.packages = with pkgs; [
     (prismlauncher.override {
@@ -6,8 +6,8 @@
         temurin-bin-25
         temurin-bin-21
         temurin-bin-17
-        temurin-bin-8
-      ];
+      ]
+      ++ lib.optional stdenv.isLinux temurin-bin-8;
     })
   ];
 
