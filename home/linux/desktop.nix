@@ -52,7 +52,6 @@ in
       sioyek
       tresorit-fhs
       tresorit-launcher
-      equibop
       signal-desktop
     ];
   };
@@ -84,23 +83,9 @@ in
     dataFile."applications/tresorit-fhs.desktop".source = tresorit-desktop-entry;
 
     configFile = {
-      "equibop/settings.json".source = config.lib.meta.createSymlink "home/linux/equibop/settings.json";
-
-      "equibop/settings/quickCss.css".text =
-        config.stylix.targets.vencord.themeBody
-        + builtins.readFile ./equibop/tokens.css;
       "autostart/tresorit-fhs.desktop".source = tresorit-desktop-entry;
 
       "mimeapps.list".force = true;
-    };
-
-    desktopEntries.discord = {
-      name = "Discord";
-      genericName = "Internet Messenger";
-      exec = "equibop %U";
-      icon = "discord";
-      categories = [ "Network" "InstantMessaging" "Chat" ];
-      type = "Application";
     };
 
     mimeApps.defaultApplications = {

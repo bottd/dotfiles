@@ -4,6 +4,7 @@
     ./theme.nix
   ] ++ lib.optionals features.gui [
     ./desktop.nix
+    ./equibop
     ./mpv
   ] ++ lib.optionals features.gaming [
     ./games
