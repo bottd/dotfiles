@@ -9,6 +9,7 @@
                                    :fennel [:fnlfmt]
                                    :clojure [:cljfmt]
                                    :babashka [:cljfmt]
+                                   :janet [:janet-format]
                                    :css [:prettierd :prettier]
                                    :html [:prettierd :prettier]
                                    :json [:prettierd :prettier]

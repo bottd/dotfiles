@@ -7,4 +7,4 @@
          {1 :<leader>w
           :group :windows
           :proxy :<c-w>
-          :expand #(. (require :which-key.extras) :expand.win)}])
+          :expand #((. (require :which-key.extras) :expand :win))}])

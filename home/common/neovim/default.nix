@@ -25,6 +25,9 @@ let
           (shell {:out :write :out-file target} "fennel" "--compile" (str file))))
     '';
 
+  spork = pkgs.callPackage ./janet/spork.nix { };
+  janet-lsp = pkgs.callPackage ./janet/janet-lsp.nix { inherit spork; };
+
   afterCompiled = pkgs.runCommand "nvim-after"
     {
       nativeBuildInputs = [ pkgs.luajitPackages.fennel ];
@@ -82,6 +85,11 @@ in
 
       # java
       temurin-bin-21
+
+      # janet
+      janet
+      spork
+      janet-lsp
     ];
 
     sessionVariables = {

@@ -6,8 +6,16 @@
     "commit": "",
     "pr": ""
   },
+  "includeGitInstructions": false,
   "permissions": {
-    "allow": ["mcp__nixos__*"]
+    "allow": ["mcp__nixos__*"],
+    "deny": [
+      "Bash(git commit)",
+      "Bash(git commit:*)",
+      "Bash(git -c:*)",
+      "Bash(git revert:*)",
+      "Bash(git cherry-pick:*)"
+    ]
   },
   "model": "opus[1m]",
   "enabledPlugins": {
