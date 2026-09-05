@@ -38,7 +38,15 @@
   --interactive-icon-active: var(--base05) !important;
   --interactive-text-default: var(--base05) !important;
   --interactive-text-hover: var(--base05) !important;
+  /* unread and selected channel/DM names in the sidebar. Discord's own value is
+     polarity-dependent (neutral-1 under .theme-dark, neutral-76 under
+     .theme-light), so leaving it unmapped renders dark-on-dark whenever the
+     app's Appearance disagrees with the stylix palette. */
+  --interactive-text-active: var(--base05) !important;
   --interactive-background-hover: var(--base01) !important;
+  /* pill behind the open channel; same polarity trap as -text-active above */
+  --interactive-background-selected: var(--base02) !important;
+  --interactive-background-active: var(--base02) !important;
 
   --input-color: var(--base05) !important;
   --input-placeholder-color: var(--base03) !important;
