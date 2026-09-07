@@ -38,7 +38,7 @@ _:
 
       git_branch = {
         style = "base08";
-        format = " [$symbol$branch]($style)";
+        format = " [$branch]($style)";
       };
 
       cmd_duration.format = "[took $duration](yellow)";
