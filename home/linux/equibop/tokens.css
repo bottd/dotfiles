@@ -48,6 +48,11 @@
   --interactive-background-selected: var(--base02) !important;
   --interactive-background-active: var(--base02) !important;
 
+  --reaction-text-default: var(--base04) !important;
+  --reaction-text-hover: var(--base05) !important;
+  --reaction-text-active: var(--base05) !important;
+  --reaction-text-reacted-default: var(--base0B) !important;
+
   --input-color: var(--base05) !important;
   --input-placeholder-color: var(--base03) !important;
   --input-background-default: var(--base02) !important;
