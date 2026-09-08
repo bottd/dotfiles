@@ -1,73 +1,99 @@
-/* ponytail: Discord's in-app Appearance has to match theme.appearance. It is
-   account-synced, so Nix cannot set it, and every token neither stylix nor
-   this file maps falls back to whatever polarity the app is in.
-
-   stylix maps only Discord's legacy design tokens (--text-normal, ...); the
-   current UI reads a renamed set. !important is mandatory: Discord sets these
-   on compound selectors like `.theme-dark.visual-refresh`, which outranks the
-   0-1-0 list below. Foreground stays on base04/base05, never base06 -- some
-   schemes reachable from lib/stylixScheme.nix use base06 as an accent rather
-   than a brighter gray (catppuccin-latte's is 2.34:1 on its own base00). */
-
 .theme-light,
 .theme-dark,
 .theme-darker,
 .theme-midnight,
 .visual-refresh {
-  --text-default: var(--base05) !important;
-  --text-strong: var(--base05) !important;
-  --text-subtle: var(--base04) !important;
-  --text-subdued: var(--base04) !important;
-  /* stylix maps this to base05, same as default text; base04 restores hierarchy */
-  --text-muted: var(--base04) !important;
-  --text-faint: var(--base03) !important;
-  --text-invert: var(--base00) !important;
   --text-danger: var(--base08) !important;
+  --text-default: var(--base05) !important;
+  --text-faint: var(--base03) !important;
   --text-feedback-critical: var(--base08) !important;
   --text-feedback-info: var(--base0D) !important;
+  --text-invert: var(--base00) !important;
   --text-link-low-saturation: var(--base0D) !important;
+  --text-muted: var(--base04) !important;
+  --text-status-online: var(--base0B) !important;
+  --text-strong: var(--base05) !important;
+  --text-subtle: var(--base04) !important;
 
-  /* ramp slots stylix leaves unmapped; Equicord plugin CSS colours text with them */
-  --white-360: var(--base05) !important;
-  --white-600: var(--base05) !important;
-  --primary-330: var(--base04) !important;
-  --primary-400: var(--base04) !important;
+  --text-code: var(--base05) !important;
+  --text-code-addition: var(--base0B) !important;
+  --text-code-attribute: var(--base0D) !important;
+  --text-code-builtin: var(--base09) !important;
+  --text-code-bullet: var(--base0D) !important;
+  --text-code-comment: var(--base03) !important;
+  --text-code-decorator: var(--base09) !important;
+  --text-code-deletion: var(--base08) !important;
+  --text-code-error: var(--base08) !important;
+  --text-code-escape: var(--base0E) !important;
+  --text-code-keyword: var(--base08) !important;
+  --text-code-link: var(--base0D) !important;
+  --text-code-namespace: var(--base0D) !important;
+  --text-code-number: var(--base09) !important;
+  --text-code-operator: var(--base08) !important;
+  --text-code-property: var(--base0C) !important;
+  --text-code-regexp: var(--base0B) !important;
+  --text-code-section: var(--base08) !important;
+  --text-code-string: var(--base0B) !important;
+  --text-code-tag: var(--base0E) !important;
+  --text-code-title: var(--base0D) !important;
+  --text-code-type: var(--base0E) !important;
+  --text-code-variable: var(--base05) !important;
 
+  --icon-default: var(--base05) !important;
+  --icon-feedback-critical: var(--base08) !important;
+  --icon-feedback-info: var(--base0D) !important;
+  --icon-feedback-positive: var(--base0B) !important;
+  --icon-feedback-warning: var(--base0A) !important;
+  --icon-muted: var(--base04) !important;
+  --icon-strong: var(--base05) !important;
+  --icon-subtle: var(--base04) !important;
+
+  --interactive-background-active: var(--base02) !important;
+  --interactive-background-hover: var(--base01) !important;
+  --interactive-background-selected: var(--base02) !important;
+  --interactive-icon-active: var(--base05) !important;
   --interactive-icon-default: var(--base04) !important;
   --interactive-icon-hover: var(--base05) !important;
-  --interactive-icon-active: var(--base05) !important;
+  --interactive-text-active: var(--base05) !important;
   --interactive-text-default: var(--base05) !important;
   --interactive-text-hover: var(--base05) !important;
-  /* unread and selected channel/DM names in the sidebar. Discord's own value is
-     polarity-dependent (neutral-1 under .theme-dark, neutral-76 under
-     .theme-light), so leaving it unmapped renders dark-on-dark whenever the
-     app's Appearance disagrees with the stylix palette. */
-  --interactive-text-active: var(--base05) !important;
-  --interactive-background-hover: var(--base01) !important;
-  /* pill behind the open channel; same polarity trap as -text-active above */
-  --interactive-background-selected: var(--base02) !important;
-  --interactive-background-active: var(--base02) !important;
 
-  --reaction-text-default: var(--base04) !important;
-  --reaction-text-hover: var(--base05) !important;
-  --reaction-text-active: var(--base05) !important;
-  --reaction-text-reacted-default: var(--base0B) !important;
+  --button-outline-primary-text: var(--base05) !important;
+  --control-critical-secondary-text-active: var(--base08) !important;
+  --control-critical-secondary-text-default: var(--base08) !important;
+  --control-critical-secondary-text-hover: var(--base08) !important;
+  --control-icon-only-icon-active: var(--base05) !important;
+  --control-icon-only-icon-default: var(--base04) !important;
+  --control-icon-only-icon-hover: var(--base05) !important;
+  --control-secondary-text-active: var(--base05) !important;
+  --control-secondary-text-default: var(--base05) !important;
+  --control-secondary-text-hover: var(--base05) !important;
 
-  --input-color: var(--base05) !important;
-  --input-placeholder-color: var(--base03) !important;
   --input-background-default: var(--base02) !important;
   --input-border: var(--base02) !important;
   --input-border-default: var(--base02) !important;
-  --button-color: var(--base05) !important;
-  --button-primary-color: var(--base05) !important;
-  --button-primary-hover-color: var(--base05) !important;
+  --input-placeholder-text-default: var(--base03) !important;
+  --input-text-default: var(--base05) !important;
+
+  --reaction-text-active: var(--base05) !important;
+  --reaction-text-default: var(--base04) !important;
+  --reaction-text-hover: var(--base05) !important;
+  --reaction-text-reacted-default: var(--base0B) !important;
+
+  --notice-text-critical: var(--base08) !important;
+  --notice-text-warning: var(--base0A) !important;
+
+  --primary-330: var(--base04) !important;
+  --primary-400: var(--base04) !important;
+  --white-360: var(--base05) !important;
+  --white-600: var(--base05) !important;
 
   --background-base-lower-alt: var(--base00) !important;
   --background-mod-muted: var(--base01) !important;
   --background-mod-normal: var(--base02) !important;
   --background-mod-strong: var(--base02) !important;
-  --border-subtle: var(--base02) !important;
   --border-normal: var(--base02) !important;
+  --border-subtle: var(--base02) !important;
 
   --channeltabs-white: var(--base05) !important;
 }
