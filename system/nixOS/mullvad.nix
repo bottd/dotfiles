@@ -7,6 +7,6 @@
     package = pkgs.mullvad-vpn;
   };
 
-  # `waybar-mullvad login` (scripts/waybar/mullvad.clj) logs in with the
+  # `waybar-mullvad login` (scripts/waybar/mullvad.janet) logs in with the
   # account number from Bitwarden.
 }

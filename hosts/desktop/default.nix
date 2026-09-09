@@ -14,9 +14,11 @@ in
     openFirewall = true;
   };
 
-  services = {
-    ddccontrol.enable = true;
+  # Not services.ddccontrol: its ddcci kernel module can't auto-probe displays
+  # since Linux 6.8, so it binds nothing.
+  hardware.i2c.enable = true;
 
+  services = {
     sunshine = {
       enable = true;
       autoStart = false;
@@ -30,6 +32,9 @@ in
   };
 
   environment.systemPackages = with pkgs; [
+    # For probing DDC by hand. The `brightness` script gets its own copy from
+    # scripts/brightness.nix and does not depend on this one.
+    ddcutil
     moonlight-qt
     shurectl
   ];

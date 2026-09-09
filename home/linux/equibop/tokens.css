@@ -80,6 +80,8 @@
   --reaction-text-hover: var(--base05) !important;
   --reaction-text-reacted-default: var(--base0B) !important;
 
+  --notice-background-critical: var(--base01) !important;
+  --notice-background-warning: var(--base01) !important;
   --notice-text-critical: var(--base08) !important;
   --notice-text-warning: var(--base0A) !important;
 
@@ -88,12 +90,30 @@
   --white-360: var(--base05) !important;
   --white-600: var(--base05) !important;
 
+  --user-profile-activity-toolbar-background: var(--base01) !important;
+  --user-profile-border: var(--base02) !important;
+  --user-profile-note-background-focus: var(--base02) !important;
+  --user-profile-overlay-background: var(--base01) !important;
+  --user-profile-toolbar-background: var(--base01) !important;
+  --user-profile-toolbar-border: var(--base02) !important;
+
+  --app-frame-background: var(--base00) !important;
   --background-base-lower-alt: var(--base00) !important;
   --background-mod-muted: var(--base01) !important;
   --background-mod-normal: var(--base02) !important;
   --background-mod-strong: var(--base02) !important;
   --border-normal: var(--base02) !important;
   --border-subtle: var(--base02) !important;
+  --card-background-default: var(--base01) !important;
+  --card-primary-pressed-bg: var(--base02) !important;
+  --custom-poll-style-image-background: var(--base01) !important;
+  --embed-background: var(--base01) !important;
+  --embed-background-alternate: var(--base01) !important;
+  --scrollbar-auto-scrollbar-color-thumb: var(--base03) !important;
+  --scrollbar-auto-scrollbar-color-track: var(--base01) !important;
+  --slider-track-background: var(--base02) !important;
+  --spine-default: var(--base02) !important;
+  --spoiler-revealed-background: var(--base01) !important;
 
   --channeltabs-white: var(--base05) !important;
 }

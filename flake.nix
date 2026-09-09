@@ -48,7 +48,8 @@
     };
     glide = {
       url = "github:glide-browser/glide.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # glide's package.nix needs ffmpeg_9, which nixos-26.05 doesn't carry.
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.home-manager.follows = "home-manager";
     };
     niri.url = "github:sodiboo/niri-flake";

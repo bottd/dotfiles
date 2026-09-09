@@ -43,9 +43,14 @@ ShellRoot {
             tone: "neutral",
             tooltip: ""
         })
-    property string backlightText: ""
+    readonly property string backlightText: root.backlightAvailable ? "󰃟 " + Math.round(root.brightnessLevel * 100) + "%" : ""
     property bool backlightAvailable: false
-    property real brightnessLevel: 0
+    property real measuredBrightnessLevel: 0
+    // Keep the requested value visible until a current readback settles it.
+    property real requestedBrightnessLevel: -1
+    property int brightnessRequestGeneration: 0
+    property var pendingBrightnessCommands: []
+    readonly property real brightnessLevel: root.requestedBrightnessLevel >= 0 ? root.requestedBrightnessLevel : root.measuredBrightnessLevel
     readonly property int barHeight: shellTheme.barHeight
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
@@ -80,7 +85,10 @@ ShellRoot {
         onTriggered: {
             mullvadProcess.running = true;
             cellularProcess.running = true;
-            backlightProcess.running = true;
+            // The keybinds write brightness behind the bar's back, so this poll
+            // is the only thing that notices. It has to stand down around our
+            // own writes, which it would otherwise read back mid-flight.
+            root.refreshBrightness();
         }
     }
 
@@ -105,19 +113,41 @@ ShellRoot {
         if (!root.backlightAvailable)
             return;
 
-        root.brightnessLevel = Math.max(0, Math.min(1, level));
-        root.backlightText = "󰃟 " + Math.round(root.brightnessLevel * 100) + "%";
-        Quickshell.execDetached(["brightnessctl", "--class=backlight", "set", Math.round(root.brightnessLevel * 100) + "%"]);
+        root.brightnessRequestGeneration++;
+        root.requestedBrightnessLevel = Math.max(0, Math.min(1, level));
+        // A newer slider target supersedes only commands that have not started.
+        root.pendingBrightnessCommands = [["brightness", "set", String(Math.round(root.requestedBrightnessLevel * 100))]];
+        brightnessCommitTimer.restart();
     }
 
     function adjustBrightness(increase) {
         if (!root.backlightAvailable)
             return;
 
-        root.brightnessLevel = Math.max(0, Math.min(1, root.brightnessLevel + (increase ? 0.05 : -0.05)));
-        root.backlightText = "󰃟 " + Math.round(root.brightnessLevel * 100) + "%";
-        Quickshell.execDetached(["brightnessctl", "--class=backlight", "set", increase ? "5%+" : "5%-"]);
-        backlightRefreshTimer.restart();
+        root.brightnessRequestGeneration++;
+        root.requestedBrightnessLevel = Math.max(0, Math.min(1, root.brightnessLevel + (increase ? 0.05 : -0.05)));
+        // Preserve each relative step: rounding and clamping make order matter.
+        root.pendingBrightnessCommands = root.pendingBrightnessCommands.concat([["brightness", increase ? "up" : "down"]]);
+        root.commitBrightness();
+    }
+
+    function commitBrightness() {
+        if (brightnessCommitTimer.running || brightnessWriteProcess.running || root.pendingBrightnessCommands.length === 0)
+            return;
+
+        brightnessWriteProcess.command = root.pendingBrightnessCommands[0];
+        root.pendingBrightnessCommands = root.pendingBrightnessCommands.slice(1);
+        brightnessWriteProcess.running = true;
+    }
+
+    function refreshBrightness() {
+        if (brightnessCommitTimer.running || brightnessWriteProcess.running || root.pendingBrightnessCommands.length > 0 || backlightProcess.running)
+            return;
+
+        // Capture before launch: onStarted can arrive after a slider request.
+        backlightProcess.requestGeneration = root.brightnessRequestGeneration;
+        backlightProcess.output = "";
+        backlightProcess.running = true;
     }
 
     // Toggling the VPN takes a moment to settle. Without this the bar showed the
@@ -336,28 +366,59 @@ ShellRoot {
 
     Process {
         id: backlightProcess
-        command: ["sh", "-c", "brightnessctl --class=backlight -m 2>/dev/null"]
-        running: true
+
+        property int requestGeneration: -1
+        property string output: ""
+
+        command: ["brightness", "get"]
+        Component.onCompleted: root.refreshBrightness()
         stdout: StdioCollector {
-            onStreamFinished: {
-                const line = text.trim().split("\n")[0] || "";
-                const fields = line.split(",");
-                // Machine output is device,class,current,percentage,max.
-                const percentage = fields.length >= 5 ? parseInt(fields[3], 10) : NaN;
+            onStreamFinished: backlightProcess.output = text
+        }
+        // runningChanged follows streamFinished, and also covers failed starts
+        // (which emit neither streamFinished nor exited).
+        onRunningChanged: {
+            if (running)
+                return;
+
+            if (backlightProcess.requestGeneration === root.brightnessRequestGeneration && !brightnessCommitTimer.running && !brightnessWriteProcess.running && root.pendingBrightnessCommands.length === 0) {
+                const percentage = parseInt(backlightProcess.output, 10);
                 root.backlightAvailable = Number.isFinite(percentage);
-                root.backlightText = root.backlightAvailable ? "󰃟 " + percentage + "%" : "";
-                root.brightnessLevel = root.backlightAvailable ? percentage / 100 : 0;
+                root.measuredBrightnessLevel = root.backlightAvailable ? percentage / 100 : 0;
+                root.requestedBrightnessLevel = -1;
                 if (!root.backlightAvailable)
                     root.brightnessOpen = false;
             }
+
+            // A write may have finished while this stale read was still running.
+            // A current read clears the target even when the device is absent.
+            if (root.requestedBrightnessLevel >= 0)
+                root.refreshBrightness();
         }
     }
 
+    // A slider drag emits one move per mouse event, and on a DDC/CI host each
+    // one is a round trip over i2c. Waiting out an in-flight write rather than
+    // stacking a second one keeps at most one ddcutil per bus in the air.
     Timer {
-        id: backlightRefreshTimer
+        id: brightnessCommitTimer
 
-        interval: 250
-        onTriggered: backlightProcess.running = true
+        interval: 120
+        onTriggered: root.commitBrightness()
+    }
+
+    // Reading back while a write is still in flight returns the old value and
+    // snaps the indicator backwards, so the read waits for the write to exit
+    // rather than for a guessed delay.
+    Process {
+        id: brightnessWriteProcess
+
+        onRunningChanged: {
+            if (!running) {
+                root.commitBrightness();
+                root.refreshBrightness();
+            }
+        }
     }
 
     Timer {

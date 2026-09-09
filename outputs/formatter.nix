@@ -5,11 +5,14 @@
     let
       inherit (pkgs) lib;
       scripts = import ../scripts { inherit pkgs; };
+      janetModules = pkgs.callPackage ../packages/janet { };
+      checkJanet = pkgs.callPackage ../lib/checkJanet.nix { };
 
       # Scripts carrying a `selftest` subcommand run it here — an unrun check
       # rots. Runs the packaged bin, so the wrapper that actually ships is what
       # gets exercised.
       selftest = name: pkgs.runCommand "${name}-selftest" { } ''
+        export HOME="$TMPDIR"
         ${lib.getExe scripts.${name}} selftest
         touch $out
       '';
@@ -40,10 +43,10 @@
             options = [ "--fix" ];
             includes = [ "*.fnl" ];
           };
-          cljfmt = {
-            command = "${pkgs.cljfmt}/bin/cljfmt";
-            options = [ "fix" ];
-            includes = [ "*.clj" "*.cljs" "*.cljc" "*.edn" "*.bb" ];
+          janet-format = {
+            command = "${janetModules}/bin/janet-format";
+            options = [ "-n" "-f" ];
+            includes = [ "*.janet" ];
           };
           qmlformat = {
             command = "${pkgs.qt6Packages.qtdeclarative}/bin/qmlformat";
@@ -56,17 +59,19 @@
       checks = {
         formatting = config.treefmt.build.check self;
 
-        # One invocation per file: these are namespace-less babashka scripts, so
-        # linting them together collapses them into a single `user` namespace and
-        # every shared require reads as a duplicate.
-        clj-kondo = pkgs.runCommand "clj-kondo-lint" { } ''
+        janet = pkgs.runCommand "janet-lint" { } ''
           export HOME="$TMPDIR"
-          for f in $(find ${../scripts} -name '*.clj'); do
-            ${lib.getExe pkgs.clj-kondo} --lint "$f"
-          done
+          ${lib.concatMapStringsSep "\n"
+            (file: "${checkJanet} ${lib.escapeShellArg "${file}"}")
+            (lib.filter (file: lib.hasSuffix ".janet" (toString file))
+              (lib.filesystem.listFilesRecursive ../scripts)
+            ++ [ ../home/common/neovim/compile-after.janet ])}
           touch $out
         '';
-      } // lib.genAttrs [ "darwin-sign-apps" "waybar-mullvad" ] selftest;
+        script-commands = import ../tests/scripts.nix { inherit pkgs; };
+        janet-compiler = import ../tests/janet-compiler.nix { inherit pkgs; };
+        nvim-after = pkgs.callPackage ../home/common/neovim/compile-after.nix { };
+      } // lib.genAttrs [ "brightness" "darwin-sign-apps" "niri-layout" "waybar-mullvad" ] selftest;
 
       pre-commit.settings.hooks = {
         treefmt.enable = true;
@@ -79,11 +84,12 @@
         buildInputs = with pkgs; [
           git
           fnlfmt
-          cljfmt
-          clj-kondo
+          janet
+          janetModules
           nodejs
           pnpm
         ] ++ config.pre-commit.settings.enabledPackages;
+        JANET_PATH = "${janetModules}/lib";
       };
     };
 }

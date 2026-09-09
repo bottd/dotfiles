@@ -26,7 +26,10 @@ jobs:
 
   checks:
     name: Flake checks
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runner: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - name: Checkout code
@@ -36,9 +39,7 @@ jobs:
         uses: ./.github/actions/setup-nix
 
       - name: Build checks
-        run:
-          nix build -L .#checks.x86_64-linux.formatting
-          .#checks.x86_64-linux.clj-kondo
+        run: nix flake check -L
 
   check-arm-linux:
     name: Check aarch64-linux config

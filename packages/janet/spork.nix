@@ -21,6 +21,13 @@ stdenv.mkDerivation (finalAttrs: {
 
   dontConfigure = true;
 
+  # treefmt's --fail-on-change also notices mtime-only rewrites.
+  postPatch = ''
+    substituteInPlace spork/fmt.janet \
+      --replace-fail '(spit file out)' \
+                     '(unless (= (string source) (string out)) (spit file out))'
+  '';
+
   installPhase = ''
     runHook preInstall
 
@@ -35,6 +42,16 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstallCheck
 
     $out/bin/janet-format --help > /dev/null
+
+    printf '(def x  1)\n' > format-fixture.janet
+    printf '(def x 1)\n' > expected.janet
+    $out/bin/janet-format -n -f format-fixture.janet
+    cmp format-fixture.janet expected.janet
+    touch -t 200001010000 format-fixture.janet
+    touch -r format-fixture.janet expected.janet
+    $out/bin/janet-format -n -f format-fixture.janet
+    test ! format-fixture.janet -nt expected.janet
+    cmp format-fixture.janet expected.janet
 
     runHook postInstallCheck
   '';

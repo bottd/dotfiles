@@ -9,31 +9,11 @@ let
 
   # nvim sources ftdetect/ftplugin as *.{vim,lua} only, so the fnl sources get
   # compiled here rather than at runtime. A syntax error fails the switch.
-  compileAfter = pkgs.writers.writeBabashka "compile-after" { } #clojure
-    ''
-      (require '[ babashka.fs :as fs ]
-        '[ babashka.process :refer [ shell ] ]
-        '[ clojure.string :as str ])
+  afterCompiled = pkgs.callPackage ./compile-after.nix { };
 
-      (
-        let
-          [[src out] *command-line-args*]
-          (doseq [file (fs/glob src "**.fnl")
-          :let [target (fs/file out (str/replace (str (fs/relativize src file))
-          #"\.fnl$" ".lua"))]]
-          (fs/create-dirs (fs/parent target))
-          (shell {:out :write :out-file target} "fennel" "--compile" (str file))))
-    '';
-
-  spork = pkgs.callPackage ./janet/spork.nix { };
+  spork = pkgs.callPackage ../../../packages/janet/spork.nix { };
   janet-lsp = pkgs.callPackage ./janet/janet-lsp.nix { inherit spork; };
 
-  afterCompiled = pkgs.runCommand "nvim-after"
-    {
-      nativeBuildInputs = [ pkgs.luajitPackages.fennel ];
-    } ''
-    ${compileAfter} ${./after} $out
-  '';
 in
 {
   home = {
@@ -183,8 +163,6 @@ in
       '';
   };
 }
-
-
 
 
 

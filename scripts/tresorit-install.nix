@@ -1,4 +1,4 @@
-{ fetchurl, writers }:
+{ fetchurl, writeJanet }:
 let
   # Pinned so the initial install seed is reproducible. The proprietary client
   # self-updates afterwards, so this only fixes what lands on first run.
@@ -8,8 +8,8 @@ let
     hash = "sha256-6PGp83mFSJSlBmycKyIYS+kU9lZpVWZ8FZccukdjyUM=";
   };
 in
-writers.writeBabashkaBin "tresorit-install" { }
+writeJanet "tresorit-install" { }
   (builtins.replaceStrings
     [ "@tresorit-installer@" ]
     [ "${installer}" ]
-    (builtins.readFile ./tresorit-install.clj))
+    (builtins.readFile ./tresorit-install.janet))
