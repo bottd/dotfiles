@@ -1,64 +1,26 @@
-# Brightness for whatever kind of display the host has: internal panels expose
-# /sys/class/backlight and go through brightnessctl, desktop monitors have no
-# such device and are driven over DDC/CI on the i2c bus instead.
-#
-#   brightness           # current percentage, or nothing if nothing answers
-#   brightness up
-#   brightness down
-#   brightness set 40
-
 (import spork/sh :as shell)
 (import spork/path)
 (import cmd)
 
 (def step 5)
-# VCP 0x10 is the DDC/CI brightness register.
 (def vcp-brightness "10")
 (def backlight-dir "/sys/class/backlight")
 (def cache-seconds 60)
 
 (defn with-lock [lock-path f]
   (with [lock (file/open lock-path :an)]
-    # flock locks the inherited open-file description; our handle keeps it held.
-    # Keep the lock file itself: unlinking it would split concurrent lock users.
     (os/execute ["flock" "--exclusive" "0"] :px {:in lock})
     (f)))
 
-(defn exec [& args]
-  # Drain both streams while waiting, and retain output verbatim for the parsers.
-  (with [proc (os/spawn args :p {:out :pipe :err :pipe})]
-    (def [out err status]
-      (ev/gather (ev/read (proc :out) :all)
-                 (ev/read (proc :err) :all)
-                 (os/proc-wait proc)))
-    {:status status :out (string (or out "")) :err (string (or err ""))}))
-
-# nil rather than an error: "nothing answered" is ordinary here.
 (defn sh [& args]
   (try
-    (let [result ((dyn :brightness-exec exec) ;args)]
+    (let [result ((dyn :brightness-exec shell/exec-slurp-all) ;args)]
       (when (zero? (result :status)) (result :out)))
     ([_] nil)))
 
-(defn unbox [value]
-  (try (int/to-number value) ([_] value)))
-
-(defn as-number [value]
-  (if (number? value) value (scan-number (string value) 10)))
-
-(defn parse-long [value]
+(defn parse-integer [value]
   (when (and value (peg/match '(* (? (set "+-")) :d+ -1) value))
-    # Keep large integers boxed rather than losing digits in Janet's doubles.
-    (try (unbox (int/s64 value)) ([_] nil))))
-
-# Java Math.round chooses the upper integer at ties, including negative ties.
-(defn round [value]
-  (cond
-    (nan? value) 0
-    (>= value 9223372036854775808) (int/s64 "9223372036854775807")
-    (<= value -9223372036854775808) (int/s64 "-9223372036854775808")
-    (let [lower (math/floor value)]
-      (unbox (int/s64 (string/format "%.0f" (+ lower (if (>= (- value lower) 0.5) 1 0))))))))
+    (scan-number value)))
 
 (defn split-lines [out]
   (string/split "\n" (string/replace-all "\r\n" "\n" (or out ""))))
@@ -67,11 +29,10 @@
   (def dir (dyn :brightness-backlight-dir backlight-dir))
   (and (= :directory (os/stat dir :mode)) (pos? (length (os/dir dir)))))
 
-# `brightnessctl -m` is device,class,current,percentage,max.
 (defn parse-backlight [out]
   (when out
     (when-let [percent (get (string/split "," (first (split-lines out))) 3)]
-      (parse-long (string/replace-all "%" "" percent)))))
+      (parse-integer (string/replace-all "%" "" percent)))))
 
 (defn parse-buses [out]
   (keep (fn [line]
@@ -81,21 +42,18 @@
                    line)))
         (split-lines out)))
 
-# Maxima vary by monitor, so carry it alongside the percentage.
 (defn parse-vcp [out]
   (when-let [[current maximum]
              (peg/match
                '{:main (* (to :vcp) :vcp)
                  :vcp (* "VCP" :s+ :S+ :s+ "C" :s+ (<- :d+) :s+ (<- :d+))}
                (or out ""))]
-    (def current (parse-long current))
-    (def maximum (parse-long maximum))
-    (when (zero? maximum) (error "Divide by zero"))
-    {:current current :maximum maximum
-     :percent (round (/ (* 100.0 (as-number current)) (as-number maximum)))}))
+    (def current (parse-integer current))
+    (def maximum (parse-integer maximum))
+    (unless (zero? maximum)
+      {:current current :maximum maximum
+       :percent (math/round (/ (* 100 current) maximum))})))
 
-# The DRM connector's ddc/i2c-dev bus is not necessarily the one ddcutil
-# speaks on, so detect is the only answer.
 (defn buses []
   (def cache (dyn :brightness-bus-cache))
   (with-lock (string cache ".lock")
@@ -107,26 +65,21 @@
       (if (and age (<= 0 age) (< age cache-seconds))
         cached
         (let [found (parse-buses (sh "ddcutil" "detect" "--brief"))
-              # Retain sleeping monitors, but retry discovery at most once a minute.
               buses (if (empty? found) (or cached @[]) found)
-              temp (shell/exec-slurp "mktemp" (string cache ".XXXXXXXX"))]
+              temp (string cache ".tmp")]
           (defer (when (os/lstat temp) (os/rm temp))
             (spit temp (string/join buses "\n"))
             (os/rename temp cache))
           buses)))))
 
-# In parallel: sequentially this is slow enough to feel like lag on a held key.
 (defn on-buses [f]
   (ev/go-gather
     (map (fn [bus]
            (fn []
-             # Cover the entire callback, including a write's read-modify-write.
              (with-lock (string (dyn :brightness-bus-cache) ".bus-" bus ".lock")
                (fn [] (f bus)))))
          (buses))))
 
-# Only a write invalidates. Polling a sleeping monitor must not turn every
-# `get` into a ~1s bus scan. One answering monitor is enough to keep the cache.
 (defn on-buses! [f]
   (def results (on-buses f))
   (unless (some |(not (nil? $)) results)
@@ -138,22 +91,13 @@
 (defn ddc-read [bus]
   (parse-vcp (sh "ddcutil" "--bus" bus "getvcp" vcp-brightness "--brief")))
 
-# setvcp takes a raw value, so each display has to report its own maximum.
 (defn ddc-write [bus percent-fn &opt delta]
   (when-let [{:current current :maximum maximum :percent percent} (ddc-read bus)]
-    (def target (int/s64 (min 100 (max 0 (as-number (percent-fn percent))))))
-    (def raw (* target (int/s64 maximum)))
-    # Janet's boxed arithmetic wraps; Clojure's integer multiplication throws.
-    (when (and (not= target (int/s64 0)) (not= (/ raw target) (int/s64 maximum)))
-      (error "long overflow"))
-    (def raw (round (/ (as-number raw) 100.0)))
-    # Relative steps must move even when percentage rounding lands on the old value.
-    # Absolute `set` retains its nearest-integer rounding.
+    (def target (min 100 (max 0 (percent-fn percent))))
+    (def raw (math/round (/ (* target maximum) 100)))
     (def raw (cond
-               (and delta (pos? delta))
-               (min (as-number maximum) (max (as-number raw) (inc (as-number current))))
-               (and delta (neg? delta))
-               (max 0 (min (as-number raw) (dec (as-number current))))
+               (and delta (pos? delta)) (min maximum (max raw (inc current)))
+               (and delta (neg? delta)) (max 0 (min raw (dec current)))
                raw))
     (sh "ddcutil" "--bus" bus "setvcp" vcp-brightness (string raw))))
 
@@ -167,16 +111,9 @@
     (sh "brightnessctl" "--class=backlight" "set" ctl-arg)
     (on-buses! |(ddc-write $ percent-fn delta))))
 
-# brightnessctl steps natively while DDC has to read-add-write. Derive both
-# forms from the one delta to keep them from drifting apart.
 (defn adjust [delta]
   (apply-brightness (string (math/abs delta) "%" (if (pos? delta) "+" "-"))
-                    (fn [percent]
-                      (def previous (int/s64 percent))
-                      (def target (+ previous (int/s64 delta)))
-                      (when (if (pos? delta) (< target previous) (> target previous))
-                        (error "long overflow"))
-                      (unbox target))
+                    (fn [percent] (+ percent delta))
                     delta))
 
 (defn selftest []
@@ -195,19 +132,13 @@
   (assert (deep= {:current 45 :maximum 100 :percent 45} (parse-vcp "VCP 10 C 45 100")))
   (assert (deep= {:current 5 :maximum 10 :percent 50} (parse-vcp "VCP 10 C 5 10")))
   (assert (nil? (parse-vcp "DDC communication failed")))
+  (assert (nil? (parse-vcp "VCP 10 C 0 0")))
   (assert (deep= {:current 1 :maximum 8 :percent 13} (parse-vcp "VCP 10 C 1 8")))
-  (each [value expected] [[4.5 5] [-4.5 -4] [0.49999999999999994 0]]
-    (assert (= expected (round value))))
-  (each value ["1.5" "1e2" "0xff" " 40" "40 " "9223372036854775808" "-9223372036854775809"]
-    (assert (nil? (parse-long value))))
-  (assert (= 1 (parse-long "+001")))
-  (each value ["9223372036854775807" "-9223372036854775808" "9007199254740993"]
-    (assert (= value (string (parse-long value)))))
-  (assert (= "9223372036854775807" (string (round math/inf))))
-  (assert (= "-9223372036854775808" (string (round (- math/inf)))))
-  (assert (= 0 (round math/nan)))
+  (each value ["1.5" "1e2" "0xff" " 40" "40 " "" "-"]
+    (assert (nil? (parse-integer value))))
+  (assert (= 1 (parse-integer "+001")))
+  (assert (= -7 (parse-integer "-7")))
 
-  # Only this private cache/backlight fixture is written; every device command is stubbed.
   (def temp (shell/exec-slurp "mktemp" "-d"
                               (path/join (os/getenv "TMPDIR" "/tmp") "brightness-selftest-XXXXXXXX")))
   (defer (shell/rm temp)
@@ -240,7 +171,6 @@
       (assert (= "6\n8" (string (slurp cache))))
       (array/clear calls)
       (adjust (- step))
-      # Independent buses may finish in either order.
       (assert (deep= @[(tuple "ddcutil" "--bus" "6" "setvcp" "10" "4")
                        (tuple "ddcutil" "--bus" "8" "setvcp" "10" "4")]
                      (sorted-by |(get $ 2) (filter |(= "setvcp" (get $ 3)) calls))))
@@ -294,10 +224,10 @@
              "down" (cmd/fn "Decrease brightness by five percentage points." [] (adjust (- step)))
              "set" (cmd/fn "Set brightness, clamped to 0-100 percent."
                            [percent (required ["PERCENT" (fn [value]
-                                                           (or (parse-long value)
+                                                           (or (parse-integer value)
                                                                (error "expected a decimal integer")))])
                             -- (escape)]
-                           (def percent (min 100 (max 0 (as-number percent))))
+                           (def percent (min 100 (max 0 percent)))
                            (apply-brightness (string percent "%") (fn [_] percent)))
              "selftest" (cmd/fn "Run the built-in checks." [] (selftest))))
 
@@ -307,15 +237,14 @@
     (cond
       (nil? command) ["get"]
       (or (= command "--help") (= command "-h")) ["help" ;(drop 1 args)]
-      # cmd treats negative positionals as flags; retain `brightness set -10`.
       (and (= command "set") argument
-           (string/has-prefix? "-" argument) (parse-long argument))
+           (string/has-prefix? "-" argument) (parse-integer argument))
       ["set" "--" ;(drop 1 args)]
       args))
-  # `ddcutil detect` costs about a second, so remember which buses answered.
-  # Resolve the account via id, not the caller-controlled USER environment variable.
   (with-dyns [:args ["brightness" ;args]
               :brightness-bus-cache
-              (path/join (os/getenv "XDG_RUNTIME_DIR" "/tmp")
-                         (string "brightness-ddc-buses-" (shell/exec-slurp "id" "-un")))]
+              (if-let [runtime (os/getenv "XDG_RUNTIME_DIR")]
+                (path/join runtime "brightness-ddc-buses")
+                (path/join "/tmp" (string "brightness-ddc-buses-"
+                                          (shell/exec-slurp "id" "-un"))))]
     (cmd/run commands args)))

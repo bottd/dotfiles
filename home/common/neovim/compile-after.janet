@@ -1,3 +1,4 @@
+(import spork/misc)
 (import spork/path)
 (import spork/sh)
 
@@ -10,7 +11,7 @@
           (walk source)
           (when (string/has-suffix? ".fnl" name)
             (def relative (path/relpath src source))
-            (def target (path/join out (string (string/slice relative 0 (- (length relative) 4)) ".lua")))
+            (def target (path/join out (string (misc/trim-suffix ".fnl" relative) ".lua")))
             (sh/create-dirs (path/dirname target))
             (with [output (file/open target :w)]
               (os/execute ["fennel" "--compile" source] :px {:out output})))))))

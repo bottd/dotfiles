@@ -1,5 +1,3 @@
-//@ pragma UseQApplication
-
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -19,16 +17,9 @@ ShellRoot {
     property bool brightnessOpen: false
     property var brightnessScreen: null
     property var workspaces: []
-    // id -> title, mutated in place. WindowFocusChanged carries only an id, so a
-    // lookup table is needed; but nothing outside this file reads the window
-    // objects, and reassigning an N-element array on every title change (a
-    // terminal spinner emits several a second) invalidated every binding on it.
     property var windowTitles: ({})
     property int focusedWindowId: -1
     property string windowTitle: ""
-    // niri reports exactly one focused workspace globally, so this is the output
-    // the user is actually looking at. Deriving it from the event stream lets the
-    // drawer open synchronously instead of waiting on a `niri msg` subprocess.
     readonly property string focusedOutput: {
         const focused = root.workspaces.find(workspace => workspace.is_focused);
         return focused ? focused.output : "";
@@ -46,11 +37,11 @@ ShellRoot {
     readonly property string backlightText: root.backlightAvailable ? "󰃟 " + Math.round(root.brightnessLevel * 100) + "%" : ""
     property bool backlightAvailable: false
     property real measuredBrightnessLevel: 0
-    // Keep the requested value visible until a current readback settles it.
     property real requestedBrightnessLevel: -1
     property int brightnessRequestGeneration: 0
     property var pendingBrightnessCommands: []
     readonly property real brightnessLevel: root.requestedBrightnessLevel >= 0 ? root.requestedBrightnessLevel : root.measuredBrightnessLevel
+    readonly property bool brightnessBusy: brightnessCommitTimer.running || brightnessWriteProcess.running || root.pendingBrightnessCommands.length > 0
     readonly property int barHeight: shellTheme.barHeight
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool audioReady: root.audioSink && root.audioSink.ready && root.audioSink.audio
@@ -85,11 +76,15 @@ ShellRoot {
         onTriggered: {
             mullvadProcess.running = true;
             cellularProcess.running = true;
-            // The keybinds write brightness behind the bar's back, so this poll
-            // is the only thing that notices. It has to stand down around our
-            // own writes, which it would otherwise read back mid-flight.
-            root.refreshBrightness();
         }
+    }
+
+    Timer {
+        interval: root.brightnessOpen ? 2000 : 45000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.refreshBrightness()
     }
 
     function toggleVolume(screen) {
@@ -115,7 +110,6 @@ ShellRoot {
 
         root.brightnessRequestGeneration++;
         root.requestedBrightnessLevel = Math.max(0, Math.min(1, level));
-        // A newer slider target supersedes only commands that have not started.
         root.pendingBrightnessCommands = [["brightness", "set", String(Math.round(root.requestedBrightnessLevel * 100))]];
         brightnessCommitTimer.restart();
     }
@@ -126,7 +120,6 @@ ShellRoot {
 
         root.brightnessRequestGeneration++;
         root.requestedBrightnessLevel = Math.max(0, Math.min(1, root.brightnessLevel + (increase ? 0.05 : -0.05)));
-        // Preserve each relative step: rounding and clamping make order matter.
         root.pendingBrightnessCommands = root.pendingBrightnessCommands.concat([["brightness", increase ? "up" : "down"]]);
         root.commitBrightness();
     }
@@ -141,18 +134,14 @@ ShellRoot {
     }
 
     function refreshBrightness() {
-        if (brightnessCommitTimer.running || brightnessWriteProcess.running || root.pendingBrightnessCommands.length > 0 || backlightProcess.running)
+        if (root.brightnessBusy || backlightProcess.running)
             return;
 
-        // Capture before launch: onStarted can arrive after a slider request.
         backlightProcess.requestGeneration = root.brightnessRequestGeneration;
         backlightProcess.output = "";
         backlightProcess.running = true;
     }
 
-    // Toggling the VPN takes a moment to settle. Without this the bar showed the
-    // old state for up to a full 5s poll, so the natural response was to click
-    // again — which toggled it straight back.
     function toggleMullvad() {
         root.mullvadStatus = {
             text: root.mullvadStatus.text,
@@ -190,9 +179,6 @@ ShellRoot {
         root.drawerOpen = true;
     }
 
-    // Paint the clicked workspace as focused immediately. niri confirms via the
-    // event stream a moment later; without this the chip trailed the user's own
-    // keystroke by up to a full poll interval.
     function setWorkspaceFocus(id) {
         root.workspaces = root.workspaces.map(workspace => Object.assign({}, workspace, {
                 is_focused: workspace.id === id
@@ -288,16 +274,12 @@ ShellRoot {
         stdout: SplitParser {
             onRead: line => root.handleNiriEvent(line)
         }
-        // The stream is the only source of workspace and window state, so a
-        // compositor restart must not leave the bar frozen on stale data.
         onExited: niriEventRestartTimer.restart()
     }
 
     Timer {
         id: niriEventRestartTimer
 
-        // Back off, so a compositor that never returns can't turn this into a
-        // 1 Hz fork loop. handleNiriEvent resets it once a line actually lands.
         property int backoff: 1000
 
         interval: niriEventRestartTimer.backoff
@@ -322,9 +304,6 @@ ShellRoot {
                         tooltip: value.tooltip || "Mullvad status unavailable"
                     };
                 } catch (error) {
-                    // Never put raw helper output in the bar: it has no bound,
-                    // and a multi-line stderr dump collapses the window title.
-                    // The label stays fixed; the detail goes to the tooltip.
                     root.mullvadStatus = {
                         text: "󰖂 VPN unavailable",
                         tone: "danger",
@@ -371,17 +350,14 @@ ShellRoot {
         property string output: ""
 
         command: ["brightness", "get"]
-        Component.onCompleted: root.refreshBrightness()
         stdout: StdioCollector {
             onStreamFinished: backlightProcess.output = text
         }
-        // runningChanged follows streamFinished, and also covers failed starts
-        // (which emit neither streamFinished nor exited).
         onRunningChanged: {
             if (running)
                 return;
 
-            if (backlightProcess.requestGeneration === root.brightnessRequestGeneration && !brightnessCommitTimer.running && !brightnessWriteProcess.running && root.pendingBrightnessCommands.length === 0) {
+            if (backlightProcess.requestGeneration === root.brightnessRequestGeneration && !root.brightnessBusy) {
                 const percentage = parseInt(backlightProcess.output, 10);
                 root.backlightAvailable = Number.isFinite(percentage);
                 root.measuredBrightnessLevel = root.backlightAvailable ? percentage / 100 : 0;
@@ -390,16 +366,11 @@ ShellRoot {
                     root.brightnessOpen = false;
             }
 
-            // A write may have finished while this stale read was still running.
-            // A current read clears the target even when the device is absent.
             if (root.requestedBrightnessLevel >= 0)
                 root.refreshBrightness();
         }
     }
 
-    // A slider drag emits one move per mouse event, and on a DDC/CI host each
-    // one is a round trip over i2c. Waiting out an in-flight write rather than
-    // stacking a second one keeps at most one ddcutil per bus in the air.
     Timer {
         id: brightnessCommitTimer
 
@@ -407,9 +378,6 @@ ShellRoot {
         onTriggered: root.commitBrightness()
     }
 
-    // Reading back while a write is still in flight returns the old value and
-    // snaps the indicator backwards, so the read waits for the write to exit
-    // rather than for a guessed delay.
     Process {
         id: brightnessWriteProcess
 
@@ -532,9 +500,6 @@ ShellRoot {
                 anchors.fill: parent
                 color: shellTheme.background
 
-                // Only the top edge is ever visible — the other three sit against
-                // the screen bezel, so a four-sided border drew three lines nobody
-                // could see and stole a pixel of height from the content.
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right

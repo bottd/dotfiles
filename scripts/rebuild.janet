@@ -9,15 +9,11 @@
   (def description "Pull the dotfiles repository and switch this host's configuration.")
   (def flags ["light" {:kind :flag :help "Use and save the light appearance."}
               "dark" {:kind :flag :help "Use and save the dark appearance."}])
+  (def wants-help (some |(or (= $ "--help") (= $ "-h")) args))
   (def options
-    (with-dyns [:out stderr]
-      (argparse/argparse description :args ["rebuild" ;args] ;flags
-                         "help" {:kind :flag :short "h" :short-circuit true
-                                 :help "Show this help message."})))
-  (unless options (os/exit 2))
-  (when (options "help")
-    (argparse/argparse description :args ["rebuild" "--help"] ;flags)
-    (os/exit 0))
+    (with-dyns [:out (if wants-help stdout stderr)]
+      (argparse/argparse description :args ["rebuild" ;args] ;flags)))
+  (unless options (os/exit (if wants-help 0 2)))
   (def home (os/getenv "HOME"))
   (def state-home (os/getenv "XDG_STATE_HOME" ""))
   (def appearance-file
@@ -34,11 +30,7 @@
   (def config (if appearance (string host "-" appearance) host))
   (def cmd (if (= host "macbook") "darwin-rebuild" "nixos-rebuild"))
   (def flake-dir (path/join home "dotfiles"))
-  (def cwd (os/cwd))
-  (defer (os/cd cwd)
-    (os/cd flake-dir)
-    # Preserve the existing policy: a failed pull does not stop the rebuild.
-    (sh/exec "git" "pull" "--rebase" "--quiet"))
+  (os/execute ["git" "pull" "--rebase" "--quiet"] :p {:cd flake-dir})
   (sh/exec-fail "sudo" cmd "switch" "--flake" (string flake-dir "#" config))
   (when flag-appearance
     (sh/create-dirs (path/dirname appearance-file))

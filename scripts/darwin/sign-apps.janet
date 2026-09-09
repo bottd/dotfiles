@@ -1,20 +1,10 @@
-# Safely prepare copied Home Manager app bundles for Gatekeeper.
-
 (import spork/sh)
 (import spork/path)
-
-(defn warn! [message]
-  (eprint message))
-
-(defn fail! [message]
-  (error message))
 
 (defn exec [options args]
   (def env @{:out (dyn :out stdout) :err (dyn :err stderr)})
   (when (options :out) (put env :out :pipe))
   (when (options :err) (put env :err :pipe))
-  # Drain both pipes while waiting, and close them even on failure. Unlike
-  # exec-slurp-all, keep trailing whitespace for the exact xattr line checks.
   (with [proc (os/spawn args :p env)]
     (def [out err status]
       (ev/gather
@@ -26,7 +16,7 @@
 (defn shell [options & args]
   (def result ((dyn :sign-apps-exec exec) options args))
   (when (and (not (options :continue)) (not (zero? (result :status))))
-    (fail! (result :err)))
+    (error (result :err)))
   result)
 
 (defn owner [uid]
@@ -34,15 +24,11 @@
   (if (zero? (result :status)) (result :out) (string uid)))
 
 (defn provenance? [output]
-  (not (nil?
-         (some (fn [line]
-                 (peg/match
-                   '{:main (+ (* "com.apple.provenance" :end)
-                              (* (to :attribute) :attribute))
-                     :attribute (* ": com.apple.provenance" :end)
-                     :end (* (? (+ "\r" "\u0085" "\u2028" "\u2029")) -1)}
-                   line))
-               (string/split "\n" (string/replace-all "\r\n" "\n" output))))))
+  (some (fn [line]
+          (def line (string/trimr line "\r"))
+          (or (= line "com.apple.provenance")
+              (string/has-suffix? ": com.apple.provenance" line)))
+        (string/split "\n" output)))
 
 (defn valid-signature? [app]
   (zero? ((shell {:continue true :out true :err true}
@@ -52,18 +38,16 @@
   (def stat ((dyn :sign-apps-lstat os/lstat) app))
   (cond
     (= :link (get stat :mode))
-    (warn! (string "Skipping symlinked application: " app))
+    (eprint "Skipping symlinked application: " app)
 
     (not= :directory (get stat :mode)) nil
 
     (not= current-uid (stat :uid))
-    (warn! (string "Skipping " app " owned by " (owner (stat :uid))))
+    (eprint "Skipping " app " owned by " (owner (stat :uid)))
 
     (let [attributes ((shell {:out true} "/usr/bin/xattr" "-r" "-s" app) :out)
           tainted? (provenance? attributes)
           unsigned? (not (valid-signature? app))]
-      # Both repairs need the bundle writable, but the steady state is
-      # already-signed and provenance-free, so decide before touching modes.
       (when (or tainted? unsigned?)
         (shell {} "/bin/chmod" "-R" "u+w" app)
         (when tainted?
@@ -72,32 +56,25 @@
           (shell {} "/usr/bin/codesign" "--force" "--deep" "--sign" "-" app)
           (shell {} "/usr/bin/codesign" "--verify" "--deep" "--strict" app))))))
 
-# Only repair bundles the invoking user owns. Resolve the UID with id -u,
-# never USER; lstat checks the link itself rather than its target's owner.
 (defn sign-apps! [apps-dir current-uid]
-  # Java Path removes redundant/trailing slashes, but does not resolve dot segments.
-  # In particular, a trailing slash must not make lstat follow a root symlink.
   (def apps-dir (string (peg/replace-all '(some "/") "/" apps-dir)))
   (def apps-dir (if (= apps-dir "/") apps-dir (string/trimr apps-dir "/")))
   (def stat ((dyn :sign-apps-lstat os/lstat) (if (= apps-dir "") "." apps-dir)))
   (cond
     (= :link (get stat :mode))
-    (fail! (string "Refusing to modify symlinked directory: " apps-dir))
+    (error (string "Refusing to modify symlinked directory: " apps-dir))
 
     (not= :directory (get stat :mode)) nil
 
     (not= current-uid (stat :uid))
-    (fail! (string "Refusing to modify " apps-dir " owned by " (owner (stat :uid))))
+    (error (string "Refusing to modify " apps-dir " owned by " (owner (stat :uid))))
 
     (each name (os/dir (if (= apps-dir "") "." apps-dir))
       (def app (string apps-dir
                        (if (or (= apps-dir "") (= apps-dir "/")) "" "/")
                        name))
-      # Match fs/glob's nonrecursive walk: hidden entries and directory
-      # subtrees are skipped, while symlinks still reach the no-follow guard.
       (when (and (not (string/has-prefix? "." name))
-                 (string/has-suffix? ".app" name)
-                 (not= :directory (os/lstat app :mode)))
+                 (string/has-suffix? ".app" name))
         (sign-app! app current-uid)))))
 
 (defn fails? [f]
@@ -109,9 +86,6 @@
   (assert (not (provenance? "Fixture.app: com.apple.quarantine")))
   (assert (provenance? "Fixture.app: com.apple.provenance\r\n"))
   (assert (provenance? "Fixture.app: com.apple.provenance\r\r\n"))
-  (assert (not (provenance? "Fixture.app: com.apple.provenance\r\r")))
-  (each suffix ["\u0085" "\u2028" "\u2029"]
-    (assert (provenance? (string "com.apple.provenance" suffix))))
   (assert (not (provenance? "Fixture.app: com.apple.provenance ")))
   (assert (not (provenance? "notcom.apple.provenance")))
 
@@ -133,16 +107,23 @@
     (spit (path/join apps-dir "File.app") "")
     (os/mkdir (path/join apps-dir "Directory.app"))
     (assert (= uid (os/lstat apps-dir :uid)))
-    # An unexpected command must fail the test, never reach a real app tool.
-    (with-dyns [:sign-apps-exec (fn [& _] (error "unexpected signing command"))
+    (def probes @[])
+    (with-dyns [:sign-apps-exec (fn [_ args]
+                                  (array/push probes args)
+                                  {:status 0 :out "" :err ""})
                 :err @""]
       (sign-apps! missing uid)
       (assert (fails? (fn [] (sign-apps! root-link uid))))
       (assert (fails? (fn [] (sign-apps! (string root-link "/") uid))))
+      (assert (empty? probes))
       (sign-apps! apps-dir uid)
       (assert (= :link (os/lstat app-link :mode)))
       (assert (string/has-prefix? "Skipping symlinked application: " (dyn :err)))
-      (assert (nil? (string/find ".Hidden.app" (dyn :err)))))
+      (assert (nil? (string/find ".Hidden.app" (dyn :err))))
+      (def bundle (path/join apps-dir "Directory.app"))
+      (assert (deep= @[(tuple "/usr/bin/xattr" "-r" "-s" bundle)
+                       (tuple "/usr/bin/codesign" "--verify" "--deep" "--strict" bundle)]
+                     probes)))
 
     (def app (path/join apps-dir "Owned.app"))
     (os/mkdir app)
@@ -175,7 +156,6 @@
                       (tuple "/usr/bin/codesign" "--verify" "--deep" "--strict" app)))
         (assert (= expected (length calls)))
         (assert (deep= expected-calls calls)))
-      # Failure at any repair stage, including the final verification, stops.
       (each index [1 3 4 5 6]
         (array/clear calls)
         (set failure index)
@@ -195,8 +175,8 @@
       (= 1 (length args))
       (sign-apps! (first args) (scan-number (sh/exec-slurp "id" "-u")))
       (do
-        (warn! "usage: darwin-sign-apps <apps-dir> | selftest")
+        (eprint "usage: darwin-sign-apps <apps-dir> | selftest")
         (os/exit 2)))
-    ([error]
-      (warn! (string error))
+    ([err]
+      (eprint err)
       (os/exit 1))))

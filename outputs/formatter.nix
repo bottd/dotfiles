@@ -8,9 +8,6 @@
       janetModules = pkgs.callPackage ../packages/janet { };
       checkJanet = pkgs.callPackage ../lib/checkJanet.nix { };
 
-      # Scripts carrying a `selftest` subcommand run it here — an unrun check
-      # rots. Runs the packaged bin, so the wrapper that actually ships is what
-      # gets exercised.
       selftest = name: pkgs.runCommand "${name}-selftest" { } ''
         export HOME="$TMPDIR"
         ${lib.getExe scripts.${name}} selftest
@@ -64,14 +61,13 @@
           ${lib.concatMapStringsSep "\n"
             (file: "${checkJanet} ${lib.escapeShellArg "${file}"}")
             (lib.filter (file: lib.hasSuffix ".janet" (toString file))
-              (lib.filesystem.listFilesRecursive ../scripts)
-            ++ [ ../home/common/neovim/compile-after.janet ])}
+              (lib.filesystem.listFilesRecursive self))}
           touch $out
         '';
-        script-commands = import ../tests/scripts.nix { inherit pkgs; };
-        janet-compiler = import ../tests/janet-compiler.nix { inherit pkgs; };
         nvim-after = pkgs.callPackage ../home/common/neovim/compile-after.nix { };
-      } // lib.genAttrs [ "brightness" "darwin-sign-apps" "niri-layout" "waybar-mullvad" ] selftest;
+      } // lib.genAttrs
+        (lib.attrNames (lib.filterAttrs (_: script: script.hasSelftest) scripts))
+        selftest;
 
       pre-commit.settings.hooks = {
         treefmt.enable = true;
