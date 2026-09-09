@@ -54,6 +54,17 @@
       {:current current :maximum maximum
        :percent (math/round (/ (* 100 current) maximum))})))
 
+(defn runtime-dir []
+  (or (os/getenv "XDG_RUNTIME_DIR")
+      (let [uid (scan-number (shell/exec-slurp "id" "-u"))
+            dir (path/join (dyn :brightness-tmp-dir "/tmp") (string "brightness-" uid))]
+        (os/mkdir dir)
+        (def info (os/lstat dir))
+        (unless (and (= :directory (get info :mode)) (= uid (get info :uid)))
+          (error (string dir " is not a directory owned by uid " uid)))
+        (os/chmod dir 8r700)
+        dir)))
+
 (defn buses []
   (def cache (dyn :brightness-bus-cache))
   (with-lock (string cache ".lock")
@@ -144,6 +155,23 @@
   (defer (shell/rm temp)
     (def cache (path/join temp "buses"))
     (def panel (path/join temp "backlight"))
+
+    (def saved-runtime (os/getenv "XDG_RUNTIME_DIR"))
+    (defer (os/setenv "XDG_RUNTIME_DIR" saved-runtime)
+      (os/setenv "XDG_RUNTIME_DIR" (path/join temp "xdg"))
+      (assert (= (path/join temp "xdg") (runtime-dir)))
+      (os/setenv "XDG_RUNTIME_DIR" nil)
+      (with-dyns [:brightness-tmp-dir temp]
+        (def uid (scan-number (shell/exec-slurp "id" "-u")))
+        (def dir (path/join temp (string "brightness-" uid)))
+        (assert (= dir (runtime-dir)))
+        (assert (= dir (runtime-dir)))
+        (assert (= "rwx------" (os/lstat dir :permissions)))
+        (assert (= uid (os/lstat dir :uid)))
+        (os/rmdir dir)
+        (spit dir "")
+        (assert (not (first (protect (runtime-dir)))))
+        (os/rm dir)))
     (def calls @[])
     (var failing false)
     (var detected "I2C bus: /dev/i2c-6\nI2C bus: /dev/i2c-8")
@@ -242,9 +270,5 @@
       ["set" "--" ;(drop 1 args)]
       args))
   (with-dyns [:args ["brightness" ;args]
-              :brightness-bus-cache
-              (if-let [runtime (os/getenv "XDG_RUNTIME_DIR")]
-                (path/join runtime "brightness-ddc-buses")
-                (path/join "/tmp" (string "brightness-ddc-buses-"
-                                          (shell/exec-slurp "id" "-un"))))]
+              :brightness-bus-cache (path/join (runtime-dir) "brightness-ddc-buses")]
     (cmd/run commands args)))
