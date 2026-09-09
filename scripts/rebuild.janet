@@ -9,11 +9,16 @@
   (def description "Pull the dotfiles repository and switch this host's configuration.")
   (def flags ["light" {:kind :flag :help "Use and save the light appearance."}
               "dark" {:kind :flag :help "Use and save the dark appearance."}])
-  (def wants-help (some |(or (= $ "--help") (= $ "-h")) args))
+  (def report @"")
   (def options
-    (with-dyns [:out (if wants-help stdout stderr)]
+    (with-dyns [:out report]
       (argparse/argparse description :args ["rebuild" ;args] ;flags)))
-  (unless options (os/exit (if wants-help 0 2)))
+  (unless options
+    (def failed (string/has-prefix? "usage error:" report))
+    (def stream (if failed stderr stdout))
+    (file/write stream report)
+    (file/flush stream)
+    (os/exit (if failed 2 0)))
   (def home (os/getenv "HOME"))
   (def state-home (os/getenv "XDG_STATE_HOME" ""))
   (def appearance-file
