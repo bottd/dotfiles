@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, ... }:
+{ config, inputs, pkgs, nixpkgs-unstable, ... }:
 let
   pages = pkgs.callPackage ./pages {
     stylixPalette = config.lib.stylix.colors;
@@ -9,6 +9,12 @@ in
 
   programs.glide-browser = {
     enable = true;
+
+    package = nixpkgs-unstable.wrapFirefox
+      (inputs.glide.packages.${pkgs.stdenv.hostPlatform.system}.glide-browser-bin-unwrapped.override {
+        inherit (config.programs.glide-browser) policies;
+      })
+      { pname = "glide-browser-bin"; };
 
     policies.SearchEngines = {
       Default = "Kagi";
