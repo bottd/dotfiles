@@ -35,6 +35,10 @@ const addons: Addon[] = [
   {
     url: "https://addons.mozilla.org/firefox/downloads/latest/remove-youtube-s-suggestions/latest.xpi",
   },
+  {
+    url: "https://addons.mozilla.org/firefox/downloads/latest/per-tab-volume-control-xpi/latest.xpi",
+    private_browsing_allowed: true,
+  },
 ];
 
 addons.forEach(({ url, ...options }) => glide.addons.install(url, options));
