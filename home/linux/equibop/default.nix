@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (config.lib.stylix) colors;
+
+  scripts = import ../../../scripts { inherit pkgs; };
 
   # Equibop derives the splash's --fg-semi-trans from splashColor by string
   # surgery -- `replace("rgb(", "rgba(").replace(")", ", 0.2)")` -- so a hex
@@ -33,9 +35,21 @@ in
         trayMainOverride = false;
       };
 
-      "equibop/settings/quickCss.css".text =
-        config.stylix.targets.vencord.themeBody
-        + builtins.readFile ./tokens.css;
+      # Concatenated in a derivation rather than with `.text` so the generated
+      # ramp doesn't force an import-from-derivation during evaluation.
+      # Order matters: the ramp resets the primitives every semantic token is
+      # derived from, then tokens.css corrects the handful of tokens that don't
+      # read from the neutral ramp at all.
+      "equibop/settings/quickCss.css".source =
+        pkgs.runCommand "equibop-quickcss.css"
+          {
+            themeBody = config.stylix.targets.vencord.themeBody;
+            passAsFile = [ "themeBody" ];
+          } ''
+          cat "$themeBodyPath" > $out
+          ${lib.getExe scripts.discord-ramp} ${colors.base00} ${config.stylix.polarity} >> $out
+          cat ${./tokens.css} >> $out
+        '';
     };
 
     desktopEntries.discord = {

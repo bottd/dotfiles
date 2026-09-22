@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ lib, pkgs, username, ... }:
 {
   imports = [
     ./oom-management.nix
@@ -7,7 +7,9 @@
   boot = {
     loader = {
       systemd-boot = {
-        enable = true;
+        # mkDefault so a host can swap loaders: desktop boots GRUB for the
+        # minegrub theme, and only one loader can own the ESP.
+        enable = lib.mkDefault true;
         editor = false;
         configurationLimit = 20;
       };
