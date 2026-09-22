@@ -57,6 +57,10 @@
       url = "github:Davi-S/sddm-theme-minesddm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    minegrub-world-sel-theme = {
+      url = "github:Lxtharia/minegrub-world-sel-theme";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util = {
       # Pinned to nixos-25.11 (sbcl 2.5.10) instead of following our nixos-26.05:
       # 26.05's sbcl 2.6.4 breaks cl-nix-lite's fare-quasiquote build

@@ -24,7 +24,8 @@
     fsType = "ext4";
   };
 
-  fileSystems."/boot" = {
+  # Keep /boot on ext4 for GRUB; only EFI executables need the small ESP.
+  fileSystems."/boot/efi" = {
     device = "/dev/disk/by-uuid/79E7-FDB4";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];

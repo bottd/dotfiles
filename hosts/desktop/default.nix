@@ -7,6 +7,7 @@ in
     ./hardware-configuration.nix
     ../../system/common/linux
     ../../system/nixOS/jellyfin.nix
+    ./boot.nix
   ];
 
   programs.alvr = {

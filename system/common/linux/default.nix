@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ lib, pkgs, username, ... }:
 {
   imports = [
     ./oom-management.nix
@@ -7,7 +7,7 @@
   boot = {
     loader = {
       systemd-boot = {
-        enable = true;
+        enable = lib.mkDefault true;
         editor = false;
         configurationLimit = 20;
       };
