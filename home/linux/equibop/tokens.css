@@ -1,14 +1,4 @@
-/* What's left after scripts/discord-ramp.janet took over the greyscale.
-   Surface tokens are gone from here: the ramp reaches them at the primitive
-   layer and lands within a point of what they were pinned to (neutral-64,
-   which drives cards and embeds, resolves to 17.88% lightness against base01's
-   18.82%). Foreground tokens stayed. The ramp takes hue and saturation from
-   base00 alone, so it cannot reproduce a scheme whose foreground greys are
-   more saturated than its background: under melange dark it would render
-   --text-default at 95.1% lightness and 9.3% saturation where base05 is 88.4%
-   at 38%, i.e. brighter and visibly flatter. Everything below is either a
-   foreground grey, a chromatic token the greyscale ramp can't reach, or a rule
-   rather than a token. */
+/* Foreground, accent, and surface overrides supplement the generated neutral ramp. */
 .theme-light,
 .theme-dark,
 .theme-darker,
@@ -105,10 +95,7 @@
 
   --channeltabs-white: var(--base05) !important;
 
-  /* ```ansi codeblocks. These resolve to chromatic primitives (--blue-new-31,
-     --illo-green-50 and friends), so the greyscale ramp never reaches them.
-     Standard base16 terminal mapping: normal on base08-base0E, bright reusing
-     the same hues, with base00/base03/base05/base07 for the greys. */
+  /* ANSI codeblocks use chromatic primitives outside the neutral ramp. */
   --ansi-black: var(--base00) !important;
   --ansi-red: var(--base08) !important;
   --ansi-green: var(--base0B) !important;
@@ -127,13 +114,7 @@
   --ansi-bright-white: var(--base07) !important;
 }
 
-/* Stylix paints the selection highlight base02-on-base00, which under melange
-   is a 1.36:1 (dark) / 1.23:1 (light) contrast step -- effectively invisible,
-   and worse again over base01 surfaces like embeds and cards. Discord ships no
-   ::selection rule of its own (confirmed across all 522 preloaded and lazy CSS
-   chunks), so stylix's is the only one in play and this simply replaces it.
-   base0D-on-base00 stays legible in both polarities: base0D is light against a
-   dark base00 and dark against a light one, so the base00 text flips with it. */
+/* Increase selection contrast over Stylix's base02 highlight. */
 ::selection {
   background-color: var(--base0D) !important;
   color: var(--base00) !important;
