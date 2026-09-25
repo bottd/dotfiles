@@ -6,6 +6,7 @@
     ./desktop.nix
     ./equibop
     ./mpv
+    ./tailscale.nix
   ] ++ lib.optionals features.gaming [
     ./games
   ] ++ lib.optionals (features.desktopEnvironment == "niri") [
