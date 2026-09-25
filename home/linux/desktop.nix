@@ -33,7 +33,6 @@ in
 {
   home = {
     packages = with pkgs; [
-      bitwarden-desktop
       chromium
       filezilla
       flashprint
