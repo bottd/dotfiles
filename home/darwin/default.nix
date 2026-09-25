@@ -5,6 +5,7 @@
     ./karabiner
     ./libiconv.nix
     ./sign-apps.nix
+    ./tailscale.nix
     ./wallpaper.nix
   ];
 

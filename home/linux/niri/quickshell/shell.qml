@@ -24,7 +24,7 @@ ShellRoot {
         const focused = root.workspaces.find(workspace => workspace.is_focused);
         return focused ? focused.output : "";
     }
-    property var mullvadStatus: ({
+    property var vpnStatus: ({
             text: "",
             tone: "neutral",
             tooltip: ""
@@ -74,7 +74,7 @@ ShellRoot {
         running: true
         repeat: true
         onTriggered: {
-            mullvadProcess.running = true;
+            vpnProcess.running = true;
             cellularProcess.running = true;
         }
     }
@@ -142,15 +142,15 @@ ShellRoot {
         backlightProcess.running = true;
     }
 
-    function toggleMullvad() {
-        root.mullvadStatus = {
-            text: root.mullvadStatus.text,
+    function toggleVpn() {
+        root.vpnStatus = {
+            text: root.vpnStatus.text,
             tone: "warning",
-            tooltip: "Switching Mullvad…"
+            tooltip: "Switching exit node…"
         };
-        Quickshell.execDetached(["waybar-mullvad", "toggle"]);
-        mullvadSettleTimer.ticks = 0;
-        mullvadSettleTimer.restart();
+        Quickshell.execDetached(["vpn", "toggle"]);
+        vpnSettleTimer.ticks = 0;
+        vpnSettleTimer.restart();
     }
 
     function openNetworkSettings() {
@@ -290,24 +290,24 @@ ShellRoot {
     }
 
     Process {
-        id: mullvadProcess
-        command: ["waybar-mullvad"]
+        id: vpnProcess
+        command: ["vpn"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
                     const value = JSON.parse(text);
                     const state = value.class || "daemon-down";
-                    root.mullvadStatus = {
+                    root.vpnStatus = {
                         text: value.text || "",
                         tone: root.connectionTone(state),
-                        tooltip: value.tooltip || "Mullvad status unavailable"
+                        tooltip: value.tooltip || "VPN status unavailable"
                     };
                 } catch (error) {
-                    root.mullvadStatus = {
+                    root.vpnStatus = {
                         text: "󰖂 VPN unavailable",
                         tone: "danger",
-                        tooltip: "Mullvad status unavailable" + (text.trim() ? " — " + text.trim().split("\n")[0] : "")
+                        tooltip: "VPN status unavailable" + (text.trim() ? " — " + text.trim().split("\n")[0] : "")
                     };
                 }
             }
@@ -390,16 +390,16 @@ ShellRoot {
     }
 
     Timer {
-        id: mullvadSettleTimer
+        id: vpnSettleTimer
 
         property int ticks: 0
 
         interval: 700
         repeat: true
         onTriggered: {
-            mullvadProcess.running = true;
-            if (++mullvadSettleTimer.ticks >= 5)
-                mullvadSettleTimer.stop();
+            vpnProcess.running = true;
+            if (++vpnSettleTimer.ticks >= 5)
+                vpnSettleTimer.stop();
         }
     }
 
@@ -457,8 +457,8 @@ ShellRoot {
         onDismissed: root.drawerOpen = false
         onModeRequested: mode => root.drawerMode = mode
         onShellActionRequested: action => {
-            if (action === "mullvad")
-                root.toggleMullvad();
+            if (action === "vpn")
+                root.toggleVpn();
             else if (action === "network")
                 root.openNetworkSettings();
         }
@@ -537,14 +537,14 @@ ShellRoot {
 
                     Modules.StatusModules {
                         audioStatus: root.audioStatus
-                        mullvadStatus: root.mullvadStatus
+                        vpnStatus: root.vpnStatus
                         cellularStatus: root.cellularStatus
                         backlightText: root.backlightText
                         battery: root.battery
                         now: clock.date
                         theme: shellTheme
                         onAudioClicked: root.toggleVolume(bar.screen)
-                        onMullvadClicked: root.toggleMullvad()
+                        onVpnClicked: root.toggleVpn()
                         onCellularClicked: root.openNetworkSettings()
                         onBacklightClicked: root.toggleBrightness(bar.screen)
                         onBacklightWheel: increase => root.adjustBrightness(increase)

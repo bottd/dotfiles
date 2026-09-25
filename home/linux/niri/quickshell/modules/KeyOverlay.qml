@@ -98,9 +98,9 @@ PanelWindow {
                 // keyboard model already works.
                 {
                     key: "v",
-                    label: "Mullvad VPN",
-                    description: "Toggle the VPN connection",
-                    shellAction: "mullvad"
+                    label: "VPN exit node",
+                    description: "Toggle the Tailscale exit node",
+                    shellAction: "vpn"
                 },
                 {
                     key: "n",

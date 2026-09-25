@@ -22,6 +22,7 @@
     };
 
     NSGlobalDomain = {
+      _HIHideMenuBar = false;
       "com.apple.swipescrolldirection" = false;
       "com.apple.sound.beep.feedback" = 0;
     };

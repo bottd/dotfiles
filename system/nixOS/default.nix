@@ -14,7 +14,7 @@
     ./cli.nix
     ./graphics.nix
     ./keyring.nix
-    ./mullvad.nix
+    ./tailscale.nix
     ./printing.nix
     ../common/stylix.nix
   ] ++ lib.optionals features.gaming [

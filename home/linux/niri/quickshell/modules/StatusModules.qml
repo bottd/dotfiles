@@ -6,14 +6,14 @@ RowLayout {
     id: root
 
     required property var audioStatus
-    required property var mullvadStatus
+    required property var vpnStatus
     required property var cellularStatus
     required property string backlightText
     required property var battery
     required property date now
     required property var theme
     signal audioClicked
-    signal mullvadClicked
+    signal vpnClicked
     signal cellularClicked
     signal backlightClicked
     signal backlightWheel(bool increase)
@@ -187,11 +187,11 @@ RowLayout {
     }
 
     StatusButton {
-        visible: root.mullvadStatus.text !== ""
-        text: root.mullvadStatus.text || ""
-        description: root.mullvadStatus.tooltip || "Toggle Mullvad VPN"
-        tone: root.mullvadStatus.tone || "neutral"
-        onActivated: root.mullvadClicked()
+        visible: root.vpnStatus.text !== ""
+        text: root.vpnStatus.text || ""
+        description: root.vpnStatus.tooltip || "Toggle VPN exit node"
+        tone: root.vpnStatus.tone || "neutral"
+        onActivated: root.vpnClicked()
     }
 
     StatusButton {
