@@ -16,7 +16,7 @@ let
   '';
 in
 {
-  home.packages = [ pkgs.mpv ];
+  programs.mpv.enable = true;
 
   xdg.configFile = {
     "mpv/scripts/mpv-cut/main.lua".source = "${mpv-cut-src}/main.lua";

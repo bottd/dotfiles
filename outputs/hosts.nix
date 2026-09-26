@@ -2,11 +2,17 @@
 let
   inherit (import ../lib { inherit inputs; }) mkSystem;
 
-  mkWithVariants = name: args: {
-    "${name}" = mkSystem args;
-    "${name}-dark" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "dark"; }; });
-    "${name}-light" = mkSystem (args // { theme = (args.theme or { }) // { appearance = "light"; }; });
-  };
+  # The bare name is the light variant; share its evaluation.
+  mkWithVariants = name: args:
+    let
+      withAppearance = appearance: mkSystem (args // { theme = (args.theme or { }) // { inherit appearance; }; });
+      light = withAppearance "light";
+    in
+    {
+      "${name}" = light;
+      "${name}-dark" = withAppearance "dark";
+      "${name}-light" = light;
+    };
 
   baseSystem = {
     system = "x86_64-linux";
@@ -24,20 +30,15 @@ in
           hostName = "desktop";
           autologin = true;
           features = baseSystem.features // { gaming = true; };
-          theme = (baseSystem.theme or { }) // { appearance = "light"; };
         })
-      // mkWithVariants "eink" {
+      // mkWithVariants "eink" (baseSystem // {
         hostName = "eink";
-        system = "x86_64-linux";
-        username = "drakeb";
-        format = "nixos";
-        features = { desktopEnvironment = "niri"; gui = false; };
-        theme = { appearance = "light"; baseFontSize = 20; scheme = "primer"; };
+        features = baseSystem.features // { gui = false; };
+        theme = { baseFontSize = 20; scheme = "primer"; };
         autologin = true;
-      }
+      })
       // mkWithVariants "pocket" (baseSystem // {
         hostName = "pocket";
-        theme = (baseSystem.theme or { }) // { appearance = "light"; };
       })
       // {
         android = mkSystem {
@@ -58,7 +59,7 @@ in
         username = "drakebott";
         format = "darwin";
         features = { desktopEnvironment = "macos"; gaming = true; };
-        theme = { appearance = "light"; baseFontSize = 12; };
+        theme.baseFontSize = 12;
       };
   };
 }

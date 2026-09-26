@@ -1,22 +1,21 @@
 (local conform (require :conform))
 (local util (require :conform.util))
 
-(conform.setup {:format_on_save {:timeout_ms 500 :lsp_fallback true}
+(conform.setup {:format_on_save {:timeout_ms 500 :lsp_format :fallback}
                 :formatters_by_ft {:* [:treefmt]
                                    :lua [:stylua]
                                    :rust [:rustfmt]
                                    :toml [:taplo]
                                    :fennel [:fnlfmt]
                                    :clojure [:cljfmt]
-                                   :babashka [:cljfmt]
                                    :janet [:janet-format]
-                                   :css [:prettierd :prettier]
-                                   :html [:prettierd :prettier]
-                                   :json [:prettierd :prettier]
-                                   :svelte [:prettierd :prettier]
-                                   :javascript [:prettierd :prettier]
-                                   :typescript [:prettierd :prettier]
-                                   :typescriptreact [:prettierd :prettier]}
+                                   :css [:prettierd]
+                                   :html [:prettierd]
+                                   :json [:prettierd]
+                                   :svelte [:prettierd]
+                                   :javascript [:prettierd]
+                                   :typescript [:prettierd]
+                                   :typescriptreact [:prettierd]}
                 :formatters {:treefmt {:command :treefmt
                                        :stdin true
                                        :args [:--stdin :$FILENAME]

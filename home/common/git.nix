@@ -16,6 +16,8 @@
       ];
     };
 
+    lazygit.enable = true;
+
     difftastic = {
       enable = true;
     };
@@ -24,7 +26,6 @@
   home.packages = with pkgs; [
     gh
     git-filter-repo
-    lazygit
   ];
 
 }

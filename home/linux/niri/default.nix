@@ -37,8 +37,9 @@ in
   # NixOS module here); it owns the window border + cursor colors, so we don't
   # set focus-ring/border/cursor below.
 
+  programs.swaylock.enable = true;
+
   home.packages = with pkgs; [
-    swaylock
     brightnessctl
     playerctl
     quickshell

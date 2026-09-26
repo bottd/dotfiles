@@ -1,12 +1,10 @@
 # niri extras for the eink box (e-ink monitor), ported from the old sway
 # setup. No outputs block: connector name unconfirmed, niri auto-configures;
 # pin one down with `niri msg outputs` if needed.
-{ config, pkgs, ... }:
+{ config, ... }:
 {
-  home.packages = with pkgs; [
-    foliate
-    zathura
-  ];
+  programs.foliate.enable = true;
+  programs.zathura.enable = true;
 
   programs.niri.settings = {
     # E-ink: animations just smear into ghosting.

@@ -3,7 +3,7 @@
 , ...
 }: {
   # Set Git commit hash for darwin-version.
-  system.configurationRevision = inputs.rev or inputs.dirtyRev or null;
+  system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
 
   # Required by nix-darwin for user-scoped options
   system.primaryUser = username;

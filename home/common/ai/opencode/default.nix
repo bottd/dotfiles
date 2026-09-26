@@ -1,15 +1,18 @@
 { config, inputs, pkgs, ... }:
 let
   seo = pkgs.callPackage ../seo/package.nix { };
-  colors = config.lib.stylix.colors;
-  hex = color: "#${color}";
+  colors = config.lib.stylix.colors.withHashtag;
 in
 {
-  home.packages = [ inputs.opencode.packages.${pkgs.system}.opencode ];
+  # stylix's opencode target assumes a dark scheme: its `light` variant maps
+  # background to base06, so a light scheme renders dark-on-dark once opencode
+  # detects a light terminal. Use one mode-independent palette instead.
+  stylix.targets.opencode.enable = false;
 
-  home.file = {
-    ".config/opencode/opencode.json".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/config.json";
+  programs.opencode = {
+    enable = true;
+    package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
+    settings = {
       mcp.seo = {
         type = "local";
         command = [ "${seo}/bin/seo" "mcp" "serve" ];
@@ -27,49 +30,45 @@ in
         "~/.config/opencode/**" = "allow";
       };
     };
-    ".config/opencode/tui.json".text = builtins.toJSON { "$schema" = "https://opencode.ai/tui.json"; theme = "stylix"; };
-    ".config/opencode/themes/stylix.json" = {
-      text = builtins.toJSON {
-        "$schema" = "https://opencode.ai/theme.json";
-        theme = {
-          primary = hex colors.base0D;
-          secondary = hex colors.base0E;
-          accent = hex colors.base0C;
-          text = hex colors.base07;
-          textMuted = hex colors.base04;
-          background = hex colors.base00;
-          error = hex colors.base08;
-          warning = hex colors.base0A;
-          success = hex colors.base0B;
-          info = hex colors.base0D;
-          backgroundPanel = hex colors.base01;
-          backgroundElement = hex colors.base02;
-          border = hex colors.base03;
-          borderActive = hex colors.base0D;
-          borderSubtle = hex colors.base02;
-          diffAdded = hex colors.base0B;
-          diffRemoved = hex colors.base08;
-          diffContext = hex colors.base04;
-          markdownHeading = hex colors.base0E;
-          markdownLink = hex colors.base0D;
-          markdownLinkText = hex colors.base0C;
-          markdownCode = hex colors.base0B;
-          markdownBlockQuote = hex colors.base05;
-          markdownEmph = hex colors.base0A;
-          markdownStrong = hex colors.base07;
-          markdownHorizontalRule = hex colors.base03;
-          markdownListItem = hex colors.base0C;
-          syntaxComment = hex colors.base04;
-          syntaxKeyword = hex colors.base0E;
-          syntaxFunction = hex colors.base0D;
-          syntaxVariable = hex colors.base08;
-          syntaxString = hex colors.base0B;
-          syntaxNumber = hex colors.base09;
-          syntaxType = hex colors.base0A;
-          syntaxOperator = hex colors.base0C;
-          syntaxPunctuation = hex colors.base05;
-        };
-      };
+
+    tui.theme = "stylix";
+    themes.stylix.theme = with colors; {
+      primary = base0D;
+      secondary = base0E;
+      accent = base0C;
+      text = base07;
+      textMuted = base04;
+      background = base00;
+      error = base08;
+      warning = base0A;
+      success = base0B;
+      info = base0D;
+      backgroundPanel = base01;
+      backgroundElement = base02;
+      border = base03;
+      borderActive = base0D;
+      borderSubtle = base02;
+      diffAdded = base0B;
+      diffRemoved = base08;
+      diffContext = base04;
+      markdownHeading = base0E;
+      markdownLink = base0D;
+      markdownLinkText = base0C;
+      markdownCode = base0B;
+      markdownBlockQuote = base05;
+      markdownEmph = base0A;
+      markdownStrong = base07;
+      markdownHorizontalRule = base03;
+      markdownListItem = base0C;
+      syntaxComment = base04;
+      syntaxKeyword = base0E;
+      syntaxFunction = base0D;
+      syntaxVariable = base08;
+      syntaxString = base0B;
+      syntaxNumber = base09;
+      syntaxType = base0A;
+      syntaxOperator = base0C;
+      syntaxPunctuation = base05;
     };
   };
 }
