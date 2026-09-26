@@ -73,6 +73,7 @@
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr.url = "github:herdrdev/herdr";
   };
 
   outputs = inputs @ { flake-parts, ... }:

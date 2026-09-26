@@ -25,6 +25,7 @@ in
         "~/workspace/**" = "allow";
         "~/loam/**" = "allow";
         "~/remote/**" = "allow";
+        "~/.cargo/registry/**" = "allow";
         "~/.claude/**" = "allow";
         "~/.codex/**" = "allow";
         "~/.config/opencode/**" = "allow";

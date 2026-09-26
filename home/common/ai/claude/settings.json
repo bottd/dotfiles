@@ -9,7 +9,7 @@
   },
   "includeGitInstructions": false,
   "permissions": {
-    "allow": ["mcp__nixos__*"],
+    "allow": ["mcp__nixos__*", "Read(~/.cargo/registry/**)"],
     "deny": [
       "Bash(git commit)",
       "Bash(git commit:*)",
@@ -51,7 +51,14 @@
       "allowWrite": [".", "~/loam"],
       "denyWrite": ["/"],
       "denyRead": ["~/"],
-      "allowRead": [".", "~/dotfiles", "~/workspace", "~/loam", "~/remote"]
+      "allowRead": [
+        ".",
+        "~/dotfiles",
+        "~/workspace",
+        "~/loam",
+        "~/remote",
+        "~/.cargo/registry"
+      ]
     }
   },
   "tui": "fullscreen",
