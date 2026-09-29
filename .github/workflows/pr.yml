@@ -3,81 +3,106 @@ name: Pull Request
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group:
+    flake-${{ github.workflow }}-${{ github.event.pull_request.number ||
+    github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
-  check-x86-linux:
-    name: Check x86_64-linux configs
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        config: [desktop, eink, pocket]
-
+  inventory:
+    name: Discover native build targets
+    runs-on: ubuntu-24.04
+    outputs:
+      hosts: ${{ steps.matrix.outputs.hosts }}
+      platforms: ${{ steps.matrix.outputs.platforms }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Build ${{ matrix.config }} configuration
-        run:
-          nix build .#nixosConfigurations.${{ matrix.config
-          }}.config.system.build.toplevel --dry-run
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-nix
+      - name: Read typed host inventory
+        id: matrix
+        run: |
+          hosts=$(nix eval --no-update-lock-file --json .#ci.hosts)
+          platforms=$(nix eval --no-update-lock-file --json .#ci.platforms)
+          printf 'hosts=%s\nplatforms=%s\n' "$hosts" "$platforms" >> "$GITHUB_OUTPUT"
 
   checks:
-    name: Flake checks
+    name: Checks and packages (${{ matrix.system }})
+    needs: inventory
     strategy:
-      matrix:
-        runner: [ubuntu-latest, macos-latest]
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory.outputs.platforms) }}
     runs-on: ${{ matrix.runner }}
-
+    timeout-minutes: 120
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Build checks
-        run: nix flake check -L
-
-  check-arm-linux:
-    name: Check aarch64-linux config
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Build android configuration
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-nix
+      - name: Verify native runner
+        env:
+          EXPECTED_SYSTEM: ${{ matrix.system }}
         run:
-          nix build .#nixosConfigurations.android.config.system.build.toplevel
-          --dry-run
+          test "$(nix eval --impure --raw --expr builtins.currentSystem)" =
+          "$EXPECTED_SYSTEM"
+      - name: Run native flake checks
+        run: nix flake check --no-update-lock-file -L
+      - name: Build maintained packages and development shell
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: |
+          targets=(".#devShells.$SYSTEM.default")
+          packages=$(nix eval --no-update-lock-file --json ".#packages.$SYSTEM" --apply builtins.attrNames | jq -r '.[]')
+          while IFS= read -r package; do
+            targets+=(".#packages.$SYSTEM.$package")
+          done <<< "$packages"
+          nix build --no-link --no-update-lock-file -L "${targets[@]}"
 
-  check-darwin:
-    name: Check aarch64-darwin config
-    runs-on: macos-latest
-
+  build-hosts:
+    name: Build ${{ matrix.name }} (${{ matrix.system }})
+    needs: inventory
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory.outputs.hosts) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 180
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Build macbook configuration
-        run: nix build .#darwinConfigurations.macbook.system --dry-run
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-nix
+      - name: Verify native runner
+        env:
+          EXPECTED_SYSTEM: ${{ matrix.system }}
+        run:
+          test "$(nix eval --impure --raw --expr builtins.currentSystem)" =
+          "$EXPECTED_SYSTEM"
+      - name: Build host and appearance variants
+        env:
+          BUILD_TARGETS: ${{ toJSON(matrix.targets) }}
+        run: |
+          targets=()
+          while IFS= read -r target; do
+            targets+=(".#$target")
+          done < <(jq -r '.[]' <<< "$BUILD_TARGETS")
+          nix build --no-link --no-update-lock-file -L "${targets[@]}"
 
   auto-merge:
-    needs: [checks, check-x86-linux, check-arm-linux, check-darwin]
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'automated')
+    needs: [checks, build-hosts]
+    runs-on: ubuntu-24.04
+    if:
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'automated')
     permissions:
       contents: write
       pull-requests: write
-
     steps:
       - name: Enable auto-merge
         run: gh pr merge --auto --squash "$PR_URL"

@@ -1,8 +1,9 @@
-{ config
-, pkgs
-, inputs
-, system
-, ...
+{
+  config,
+  pkgs,
+  inputs,
+  system,
+  ...
 }:
 let
   tresorit-fhs = inputs.nix-tresorit.packages.${system}.default;

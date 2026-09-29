@@ -1,4 +1,8 @@
-{ lib, callPackage, janet }:
+{
+  lib,
+  callPackage,
+  janet,
+}:
 let
   modules = callPackage ../packages/janet { };
 in

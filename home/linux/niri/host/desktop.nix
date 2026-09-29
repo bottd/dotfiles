@@ -11,17 +11,29 @@ in
   programs.niri.settings = {
     outputs = {
       "DP-1" = {
-        mode = { width = 2560; height = 1440; };
+        mode = {
+          width = 2560;
+          height = 1440;
+        };
         scale = 1.0;
-        position = { x = 0; y = 282; };
+        position = {
+          x = 0;
+          y = 282;
+        };
       };
 
       # Portrait output; niri-layout (scripts/) drives its vertical layout.
       "DP-3" = {
-        mode = { width = 2560; height = 1440; };
+        mode = {
+          width = 2560;
+          height = 1440;
+        };
         scale = 1.0;
         transform.rotation = 270;
-        position = { x = 2560; y = 0; };
+        position = {
+          x = 2560;
+          y = 0;
+        };
       };
     };
   };

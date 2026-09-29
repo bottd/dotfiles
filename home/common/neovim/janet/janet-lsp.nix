@@ -1,10 +1,11 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, git
-, janet
-, jpm
-, spork
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  git,
+  janet,
+  jpm,
+  spork,
 }:
 
 let
@@ -34,7 +35,10 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-lJzTQmjQyyWq+HYEInJuPdcxUwz+KybI5jl0pj9jtIs=";
   };
 
-  nativeBuildInputs = [ janet jpm ];
+  nativeBuildInputs = [
+    janet
+    jpm
+  ];
   buildInputs = [ janet ];
 
   dontConfigure = true;

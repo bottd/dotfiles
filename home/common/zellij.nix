@@ -1,8 +1,16 @@
-{ pkgs, lib, nixpkgs-unstable, ... }:
 {
-  home.packages = lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-    wl-clipboard
-  ]);
+  pkgs,
+  lib,
+  nixpkgs-unstable,
+  ...
+}:
+{
+  home.packages = lib.optionals pkgs.stdenv.isLinux (
+    with pkgs;
+    [
+      wl-clipboard
+    ]
+  );
 
   programs.zellij = {
     enable = true;

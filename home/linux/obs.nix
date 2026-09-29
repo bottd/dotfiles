@@ -14,7 +14,10 @@
     exec = "env QT_QPA_PLATFORM=xcb QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=1 obs";
     icon = "com.obsproject.Studio";
     terminal = false;
-    categories = [ "AudioVideo" "Recorder" ];
+    categories = [
+      "AudioVideo"
+      "Recorder"
+    ];
     settings.StartupWMClass = "obs";
   };
 }

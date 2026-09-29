@@ -1,11 +1,17 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (config.lib.stylix) colors;
 
   scripts = import ../../../scripts { inherit pkgs; };
 
   # Equibop derives splash transparency by replacing rgb() with rgba().
-  toRgb = name: "rgb(${colors."${name}-rgb-r"}, ${colors."${name}-rgb-g"}, ${colors."${name}-rgb-b"})";
+  toRgb =
+    name: "rgb(${colors."${name}-rgb-r"}, ${colors."${name}-rgb-g"}, ${colors."${name}-rgb-b"})";
 in
 {
   home.packages = [ pkgs.equibop ];
@@ -21,7 +27,10 @@ in
         arRPC = false;
         splashColor = toRgb "base05";
         splashBackground = toRgb "base00";
-        spellCheckLanguages = [ "en-US" "en" ];
+        spellCheckLanguages = [
+          "en-US"
+          "en"
+        ];
         tray = true;
         trayColor = "";
         trayMainOverride = false;
@@ -33,11 +42,12 @@ in
           {
             themeBody = config.stylix.targets.vencord.themeBody;
             passAsFile = [ "themeBody" ];
-          } ''
-          cat "$themeBodyPath" > $out
-          ${lib.getExe scripts.discord-ramp} ${colors.base00} ${config.stylix.polarity} >> $out
-          cat ${./tokens.css} >> $out
-        '';
+          }
+          ''
+            cat "$themeBodyPath" > $out
+            ${lib.getExe scripts.discord-ramp} ${colors.base00} ${config.stylix.polarity} >> $out
+            cat ${./tokens.css} >> $out
+          '';
     };
 
     desktopEntries.discord = {
@@ -45,7 +55,11 @@ in
       genericName = "Internet Messenger";
       exec = "equibop %U";
       icon = "discord";
-      categories = [ "Network" "InstantMessaging" "Chat" ];
+      categories = [
+        "Network"
+        "InstantMessaging"
+        "Chat"
+      ];
       type = "Application";
     };
   };

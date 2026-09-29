@@ -18,8 +18,7 @@
       "application/x-extension-shtml"
       "application/x-extension-xhtml"
       "application/x-extension-xht"
-    ]
-      (_: "glide.desktop");
+    ] (_: "glide.desktop");
   };
 
   home.activation.defaultBrowser = lib.mkIf pkgs.stdenv.isDarwin (

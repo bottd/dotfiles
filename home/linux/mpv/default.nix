@@ -7,13 +7,15 @@ let
     hash = "sha256-QJOEC+uoQPSkl5hR9cE6PGS+sxfDLYvSZYE6HjQmxoI=";
   };
 
-  mpv-cut-config = pkgs.runCommand "mpv-cut-config.lua"
-    {
-      nativeBuildInputs = [ pkgs.luaPackages.fennel ];
-    } ''
-    fennel --compile --globals mp,utils,ACTIONS,ACTION,KEY_CUT,KEY_CANCEL_CUT,KEY_BOOKMARK_ADD,KEY_CYCLE_ACTION \
-      ${./config.fnl} > $out
-  '';
+  mpv-cut-config =
+    pkgs.runCommand "mpv-cut-config.lua"
+      {
+        nativeBuildInputs = [ pkgs.luaPackages.fennel ];
+      }
+      ''
+        fennel --compile --globals mp,utils,ACTIONS,ACTION,KEY_CUT,KEY_CANCEL_CUT,KEY_BOOKMARK_ADD,KEY_CYCLE_ACTION \
+          ${./config.fnl} > $out
+      '';
 in
 {
   programs.mpv = {

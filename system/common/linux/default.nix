@@ -1,4 +1,9 @@
-{ lib, pkgs, username, ... }:
+{
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 {
   imports = [
     ./oom-management.nix
@@ -25,7 +30,10 @@
 
   networking.networkmanager.enable = true;
 
-  nix.settings.trusted-users = [ "root" username ];
+  nix.settings.trusted-users = [
+    "root"
+    username
+  ];
 
   virtualisation.docker.enable = true;
 

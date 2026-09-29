@@ -8,8 +8,8 @@ let
     hash = "sha256-6PGp83mFSJSlBmycKyIYS+kU9lZpVWZ8FZccukdjyUM=";
   };
 in
-writeJanet "tresorit-install" { }
-  (builtins.replaceStrings
-    [ "@tresorit-installer@" ]
-    [ "${installer}" ]
-    (builtins.readFile ./tresorit-install.janet))
+writeJanet "tresorit-install" { } (
+  builtins.replaceStrings [ "@tresorit-installer@" ] [ "${installer}" ] (
+    builtins.readFile ./tresorit-install.janet
+  )
+)

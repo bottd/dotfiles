@@ -1,7 +1,18 @@
-{ config, features, inputs, lib, pkgs, system, ... }:
+{
+  config,
+  features,
+  inputs,
+  lib,
+  pkgs,
+  system,
+  ...
+}:
 {
   home = {
-    packages = [ pkgs.mcp-nixos inputs.claude-code.packages.${system}.default ];
+    packages = [
+      pkgs.mcp-nixos
+      inputs.claude-code.packages.${system}.default
+    ];
 
     # Add native installer location to PATH on macOS
     sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
@@ -17,10 +28,7 @@
     };
 
     shellAliases = {
-      claudepb =
-        if pkgs.stdenv.isDarwin
-        then ''claude "$(pbpaste)"''
-        else ''claude "$(wl-paste)"'';
+      claudepb = if pkgs.stdenv.isDarwin then ''claude "$(pbpaste)"'' else ''claude "$(wl-paste)"'';
     };
   };
 

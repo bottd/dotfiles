@@ -1,16 +1,25 @@
-{ config
-, lib
-, modulesPath
-, inputs
-, ...
-}: {
+{
+  config,
+  lib,
+  modulesPath,
+  inputs,
+  ...
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.nixos-hardware.nixosModules.gpd-pocket-4
   ];
 
   boot = {
-    initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
+    initrd.availableKernelModules = [
+      "nvme"
+      "xhci_pci"
+      "thunderbolt"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
+    ];
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
@@ -24,7 +33,10 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/0E56-287C";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   swapDevices = [ ];

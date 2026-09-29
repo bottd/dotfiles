@@ -1,34 +1,38 @@
 { inputs, mkSpecialArgs, ... }:
-{ hostName
-, system
-, username
-, format
-, theme ? { }
-, features ? { }
-, extraHomeModules ? [ ]
-, autologin ? false
-, enableAVF ? false
+host@{
+  hostName,
+  system,
+  username,
+  format,
+  extraHomeModules,
+  extraSystemModules,
+  autologin,
+  enableAVF,
+  stateVersion,
+  ...
 }:
 let
   path = ../hosts/${hostName};
 
   systemBuilder =
-    if format == "nixos"
-    then inputs.nixpkgs.lib.nixosSystem
-    else if format == "darwin"
-    then inputs.nix-darwin.lib.darwinSystem
-    else throw "Unsupported system format: ${format}";
+    if format == "nixos" then
+      inputs.nixpkgs.lib.nixosSystem
+    else if format == "darwin" then
+      inputs.nix-darwin.lib.darwinSystem
+    else
+      throw "Unsupported system format: ${format}";
 
   homeManagerModule =
-    if format == "nixos"
-    then inputs.home-manager.nixosModules.home-manager
-    else inputs.home-manager.darwinModules.home-manager;
+    if format == "nixos" then
+      inputs.home-manager.nixosModules.home-manager
+    else
+      inputs.home-manager.darwinModules.home-manager;
 
-  sharedArgs = mkSpecialArgs {
-    inherit system username hostName theme features;
+  sharedArgs = mkSpecialArgs host;
+
+  specialArgs = sharedArgs // {
+    inherit autologin;
   };
-
-  specialArgs = sharedArgs // { inherit autologin; };
 
   homeConfig = {
     home-manager = {
@@ -37,17 +41,21 @@ let
       extraSpecialArgs = sharedArgs;
 
       users.${username} = {
-        imports =
-          [
-            ../home.nix
-            ../home/common
-          ]
-          ++ (if format == "nixos" then [
-            ../home/linux
-          ] else [
-            ../home/darwin
-          ])
-          ++ extraHomeModules;
+        imports = [
+          ../home.nix
+          ../home/common
+        ]
+        ++ (
+          if format == "nixos" then
+            [
+              ../home/linux
+            ]
+          else
+            [
+              ../home/darwin
+            ]
+        )
+        ++ extraHomeModules;
       };
     };
   };
@@ -55,33 +63,38 @@ in
 systemBuilder {
   inherit system;
   inherit specialArgs;
-  modules =
-    [
-      path
-      ../system/users
-      ../system/common
-      homeManagerModule
-      homeConfig
-      { time.timeZone = "America/Chicago"; }
-    ]
-    ++ inputs.nixpkgs.lib.optional (format == "nixos") ../system/common/nixos.nix
-    ++ (if enableAVF then [
-      inputs.nixos-avf.nixosModules.avf
-      inputs.stylix.nixosModules.stylix
-      ../system/common/stylix.nix
-      (_: {
-        system.stateVersion = "25.05";
-        stylix.targets.grub.enable = false;
-      })
-    ]
-    else if format == "nixos" then [
-      inputs.stylix.nixosModules.stylix
-      ../system/nixOS
-      (_: { system.stateVersion = "25.05"; })
-    ]
-    else [
-      inputs.stylix.darwinModules.stylix
-      ../system/common/darwin
-      (_: { system.stateVersion = 6; })
-    ]);
+  modules = [
+    path
+    ../system/users
+    ../system/common
+    homeManagerModule
+    homeConfig
+    {
+      time.timeZone = "America/Chicago";
+      system.stateVersion = stateVersion.system;
+    }
+  ]
+  ++ extraSystemModules
+  ++ inputs.nixpkgs.lib.optional (format == "nixos") ../system/common/nixos.nix
+  ++ (
+    if enableAVF then
+      [
+        inputs.nixos-avf.nixosModules.avf
+        inputs.stylix.nixosModules.stylix
+        ../system/common/stylix.nix
+        (_: {
+          stylix.targets.grub.enable = false;
+        })
+      ]
+    else if format == "nixos" then
+      [
+        inputs.stylix.nixosModules.stylix
+        ../system/nixOS
+      ]
+    else
+      [
+        inputs.stylix.darwinModules.stylix
+        ../system/common/darwin
+      ]
+  );
 }

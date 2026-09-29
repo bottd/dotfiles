@@ -57,7 +57,7 @@
                 :lua_ls
                 :clojure_lsp
                 :janet_lsp
-                :nil_ls])
+                :nixd])
 
 (vim.lsp.enable servers)
 

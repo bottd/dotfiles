@@ -31,13 +31,15 @@
 
       minegrub-world-sel = {
         enable = true;
-        customIcons = [{
-          # Must match the menuentry class, not the hostname.
-          name = "nixos";
-          lineTop = with config.system.nixos; "${distroName} ${codeName} (${release})";
-          lineBottom = with config.system.nixos; "Survival Mode, No Cheats, Version: ${release}";
-          imgName = "nixos";
-        }];
+        customIcons = [
+          {
+            # Must match the menuentry class, not the hostname.
+            name = "nixos";
+            lineTop = with config.system.nixos; "${distroName} ${codeName} (${release})";
+            lineBottom = with config.system.nixos; "Survival Mode, No Cheats, Version: ${release}";
+            imgName = "nixos";
+          }
+        ];
       };
     };
   };

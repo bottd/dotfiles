@@ -76,9 +76,10 @@
     herdr.url = "github:herdrdev/herdr";
   };
 
-  outputs = inputs @ { flake-parts, ... }:
+  outputs =
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      inherit (import ./lib { inherit inputs; }) systems;
 
       imports = [
         ./outputs

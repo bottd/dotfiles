@@ -1,11 +1,19 @@
-{ pkgs, config, nixpkgs-unstable, theme, ... }:
+{
+  pkgs,
+  config,
+  nixpkgs-unstable,
+  theme,
+  ...
+}:
 let
-  luarocksArch = {
-    "aarch64-darwin" = "macosx-aarch64";
-    "x86_64-darwin" = "macosx-x86_64";
-    "x86_64-linux" = "linux-x86_64";
-    "aarch64-linux" = "linux-aarch64";
-  }.${pkgs.stdenv.hostPlatform.system} or "unknown-${pkgs.stdenv.hostPlatform.system}";
+  luarocksArch =
+    {
+      "aarch64-darwin" = "macosx-aarch64";
+      "x86_64-darwin" = "macosx-x86_64";
+      "x86_64-linux" = "linux-x86_64";
+      "aarch64-linux" = "linux-aarch64";
+    }
+    .${pkgs.stdenv.hostPlatform.system} or "unknown-${pkgs.stdenv.hostPlatform.system}";
 
   # nvim sources ftdetect/ftplugin as *.{vim,lua} only, so the fnl sources get
   # compiled here rather than at runtime. A syntax error fails the switch.
@@ -16,6 +24,8 @@ let
 
 in
 {
+  imports = [ ./nixd.nix ];
+
   home = {
     file = {
       ".config/nvim/after" = {
@@ -163,8 +173,3 @@ in
       '';
   };
 }
-
-
-
-
-

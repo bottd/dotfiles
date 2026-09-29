@@ -1,4 +1,11 @@
-{ config, lib, pkgs, hostName, features, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  hostName,
+  features,
+  ...
+}:
 let
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
@@ -39,16 +46,19 @@ in
 
   programs.swaylock.enable = true;
 
-  home.packages = with pkgs; [
-    brightnessctl
-    playerctl
-    quickshell
-    xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
-  ] ++ lib.optionals features.gui [
-    pavucontrol
-    networkmanagerapplet # nm-connection-editor for the bar's on-click
-    xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
-  ];
+  home.packages =
+    with pkgs;
+    [
+      brightnessctl
+      playerctl
+      quickshell
+      xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
+    ]
+    ++ lib.optionals features.desktopApps [
+      pavucontrol
+      networkmanagerapplet # nm-connection-editor for the bar's on-click
+      xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
+    ];
 
   xdg.configFile = {
     "quickshell/shell.qml".source = ./quickshell/shell.qml;
@@ -98,17 +108,19 @@ in
             readonly property int overlayHeight: Math.round(fontSize * 8)    // 96
             readonly property int overlayGap: Math.round(fontSize * 1.33)    // 16
             readonly property int overlayEdgeMargin: Math.round(fontSize * 10) // 120
-            readonly property bool animationsEnabled: ${lib.boolToString features.gui}
+            readonly property bool animationsEnabled: ${lib.boolToString features.animations}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
-            readonly property var launcherCommand: ${builtins.toJSON [
-              "${pkgs.systemd}/bin/systemd-run"
-              "--user"
-              "--scope"
-              "--quiet"
-              "--collect"
-              "--"
-              "${pkgs.gtk3}/bin/gtk-launch"
-            ]}
+            readonly property var launcherCommand: ${
+              builtins.toJSON [
+                "${pkgs.systemd}/bin/systemd-run"
+                "--user"
+                "--scope"
+                "--quiet"
+                "--collect"
+                "--"
+                "${pkgs.gtk3}/bin/gtk-launch"
+              ]
+            }
         }
       '';
     };
@@ -137,6 +149,7 @@ in
     # writes into `settings` — setting `config` would override it wholesale.
     # niri reloads on rebuild-switch; no restart needed.
     niri.settings = {
+      animations.enable = features.animations;
       input = {
         keyboard.xkb.layout = "us";
         touchpad = {
@@ -177,112 +190,162 @@ in
 
       # niri-layout (scripts/) rebalances landscape workspaces to even column
       # widths and turns portrait outputs into one vertical scrolling column.
-      # Skipped on headless.
-      spawn-at-startup = lib.optionals features.gui [
+      # Reduced desktops (e-ink) do not need these background helpers.
+      spawn-at-startup = lib.optionals features.desktopApps [
         { argv = [ "niri-layout" ]; }
-        { argv = [ "nm-applet" "--indicator" ]; }
+        {
+          argv = [
+            "nm-applet"
+            "--indicator"
+          ];
+        }
       ];
 
       prefer-no-csd = true;
       screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
       hotkey-overlay.skip-at-startup = true;
 
-      window-rules = [{
-        geometry-corner-radius =
-          let r = 6.0; in { top-left = r; top-right = r; bottom-left = r; bottom-right = r; };
-        clip-to-geometry = true;
-      }];
+      window-rules = [
+        {
+          geometry-corner-radius =
+            let
+              r = 6.0;
+            in
+            {
+              top-left = r;
+              top-right = r;
+              bottom-left = r;
+              bottom-right = r;
+            };
+          clip-to-geometry = true;
+        }
+      ];
 
-      binds = with config.lib.niri.actions; {
-        "Mod+Shift+Slash".action = show-hotkey-overlay;
+      binds =
+        with config.lib.niri.actions;
+        {
+          "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-        "Mod+Return".action = spawn "ghostty";
-        "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
-        "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
-        # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
-        "XF86Tools" = {
-          repeat = false;
-          action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
-        };
-        "Mod+Q".action = close-window;
-        "Mod+Alt+L".action = spawn "swaylock";
+          "Mod+Return".action = spawn "ghostty";
+          "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
+          "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+          # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
+          "XF86Tools" = {
+            repeat = false;
+            action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+          };
+          "Mod+Q".action = close-window;
+          "Mod+Alt+L".action = spawn "swaylock";
 
-        # Focus (vim keys)
-        "Mod+H".action = focus-column-left;
-        "Mod+L".action = focus-column-right;
-        "Mod+J".action = focus-window-down;
-        "Mod+K".action = focus-window-up;
+          # Focus (vim keys)
+          "Mod+H".action = focus-column-left;
+          "Mod+L".action = focus-column-right;
+          "Mod+J".action = focus-window-down;
+          "Mod+K".action = focus-window-up;
 
-        # Move
-        "Mod+Shift+H".action = move-column-left;
-        "Mod+Shift+L".action = move-column-right;
-        "Mod+Shift+J".action = move-window-down;
-        "Mod+Shift+K".action = move-window-up;
+          # Move
+          "Mod+Shift+H".action = move-column-left;
+          "Mod+Shift+L".action = move-column-right;
+          "Mod+Shift+J".action = move-window-down;
+          "Mod+Shift+K".action = move-window-up;
 
-        # Monitors (desktop is dual-head)
-        "Mod+Ctrl+H".action = focus-monitor-left;
-        "Mod+Ctrl+L".action = focus-monitor-right;
-        "Mod+Shift+Ctrl+H".action = move-window-to-monitor-left;
-        "Mod+Shift+Ctrl+L".action = move-window-to-monitor-right;
+          # Monitors (desktop is dual-head)
+          "Mod+Ctrl+H".action = focus-monitor-left;
+          "Mod+Ctrl+L".action = focus-monitor-right;
+          "Mod+Shift+Ctrl+H".action = move-window-to-monitor-left;
+          "Mod+Shift+Ctrl+L".action = move-window-to-monitor-right;
 
-        "Mod+Home".action = focus-column-first;
-        "Mod+End".action = focus-column-last;
+          "Mod+Home".action = focus-column-first;
+          "Mod+End".action = focus-column-last;
 
-        "Mod+U".action = focus-workspace-down;
-        "Mod+I".action = focus-workspace-up;
+          "Mod+U".action = focus-workspace-down;
+          "Mod+I".action = focus-workspace-up;
 
-        # Sizing / layout
-        "Mod+F".action = maximize-column;
-        "Mod+Shift+F".action = fullscreen-window;
-        "Mod+C".action = center-column;
-        "Mod+R".action = switch-preset-column-width;
-        "Mod+Minus".action = set-column-width "-10%";
-        "Mod+Equal".action = set-column-width "+10%";
-        "Mod+Comma".action = consume-window-into-column;
-        "Mod+Period".action = expel-window-from-column;
-        # Mod+Space opens the native Quickshell command overlay, so floating-focus lives on Mod+Tab.
-        "Mod+Tab".action = switch-focus-between-floating-and-tiling;
-        "Mod+Shift+Space".action = toggle-window-floating;
+          # Sizing / layout
+          "Mod+F".action = maximize-column;
+          "Mod+Shift+F".action = fullscreen-window;
+          "Mod+C".action = center-column;
+          "Mod+R".action = switch-preset-column-width;
+          "Mod+Minus".action = set-column-width "-10%";
+          "Mod+Equal".action = set-column-width "+10%";
+          "Mod+Comma".action = consume-window-into-column;
+          "Mod+Period".action = expel-window-from-column;
+          # Mod+Space opens the native Quickshell command overlay, so floating-focus lives on Mod+Tab.
+          "Mod+Tab".action = switch-focus-between-floating-and-tiling;
+          "Mod+Shift+Space".action = toggle-window-floating;
 
-        # Screenshots (niri built-in). Not bare builders in config.lib.niri.actions;
-        # use the path form (empty attrset = default props).
-        "Print".action.screenshot = { };
-        "Mod+Print".action.screenshot-screen = { };
-        "Mod+Shift+Print".action.screenshot-window = { };
+          # Screenshots (niri built-in). Not bare builders in config.lib.niri.actions;
+          # use the path form (empty attrset = default props).
+          "Print".action.screenshot = { };
+          "Mod+Print".action.screenshot-screen = { };
+          "Mod+Shift+Print".action.screenshot-window = { };
 
-        # Media / volume / brightness
-        "XF86AudioRaiseVolume" = { allow-when-locked = true; action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; };
-        "XF86AudioLowerVolume" = { allow-when-locked = true; action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; };
-        "XF86AudioMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; };
-        "XF86AudioMicMute" = { allow-when-locked = true; action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; };
-        "XF86MonBrightnessUp" = { allow-when-locked = true; action = spawn "brightness" "up"; };
-        "XF86MonBrightnessDown" = { allow-when-locked = true; action = spawn "brightness" "down"; };
-        "XF86AudioPlay" = { allow-when-locked = true; action = spawn "playerctl" "play-pause"; };
-        "XF86AudioNext" = { allow-when-locked = true; action = spawn "playerctl" "next"; };
-        "XF86AudioPrev" = { allow-when-locked = true; action = spawn "playerctl" "previous"; };
+          # Media / volume / brightness
+          "XF86AudioRaiseVolume" = {
+            allow-when-locked = true;
+            action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";
+          };
+          "XF86AudioLowerVolume" = {
+            allow-when-locked = true;
+            action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-";
+          };
+          "XF86AudioMute" = {
+            allow-when-locked = true;
+            action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle";
+          };
+          "XF86AudioMicMute" = {
+            allow-when-locked = true;
+            action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle";
+          };
+          "XF86MonBrightnessUp" = {
+            allow-when-locked = true;
+            action = spawn "brightness" "up";
+          };
+          "XF86MonBrightnessDown" = {
+            allow-when-locked = true;
+            action = spawn "brightness" "down";
+          };
+          "XF86AudioPlay" = {
+            allow-when-locked = true;
+            action = spawn "playerctl" "play-pause";
+          };
+          "XF86AudioNext" = {
+            allow-when-locked = true;
+            action = spawn "playerctl" "next";
+          };
+          "XF86AudioPrev" = {
+            allow-when-locked = true;
+            action = spawn "playerctl" "previous";
+          };
 
-        # Airplane mode. Not allow-when-locked: a lock screen shouldn't expose a
-        # radio kill switch that could cut off remote-locate before a thief does.
-        "XF86RFKill".action = spawn "sh" "-c" airplaneToggle;
-        "Mod+Shift+A".action = spawn "sh" "-c" airplaneToggle;
+          # Airplane mode. Not allow-when-locked: a lock screen shouldn't expose a
+          # radio kill switch that could cut off remote-locate before a thief does.
+          "XF86RFKill".action = spawn "sh" "-c" airplaneToggle;
+          "Mod+Shift+A".action = spawn "sh" "-c" airplaneToggle;
 
-        "Mod+Shift+E".action = quit;
-        "Mod+Shift+P".action = power-off-monitors;
-      }
-      # Workspaces: Mod+N focuses, Mod+Shift+N moves. move-column-to-workspace
-      # isn't in config.lib.niri.actions as a bare builder (only the -down/-up
-      # variants are), so use the path form.
-      // builtins.listToAttrs (lib.concatMap
-        (i: [
-          { name = "Mod+${toString i}"; value.action = focus-workspace i; }
-          { name = "Mod+Shift+${toString i}"; value.action.move-column-to-workspace = i; }
-        ])
-        (lib.range 1 9));
+          "Mod+Shift+E".action = quit;
+          "Mod+Shift+P".action = power-off-monitors;
+        }
+        # Workspaces: Mod+N focuses, Mod+Shift+N moves. move-column-to-workspace
+        # isn't in config.lib.niri.actions as a bare builder (only the -down/-up
+        # variants are), so use the path form.
+        // builtins.listToAttrs (
+          lib.concatMap (i: [
+            {
+              name = "Mod+${toString i}";
+              value.action = focus-workspace i;
+            }
+            {
+              name = "Mod+Shift+${toString i}";
+              value.action.move-column-to-workspace = i;
+            }
+          ]) (lib.range 1 9)
+        );
     };
 
   };
 
-  services.mako.enable = features.gui;
+  services.mako.enable = features.desktopApps;
   # NetworkManager and Blueman provide tray applets; Quickshell renders their
   # menus in the panel and keeps the click interaction in the tray.
   # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).

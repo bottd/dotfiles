@@ -1,8 +1,9 @@
-{ config
-, features
-, lib
-, pkgs
-, ...
+{
+  config,
+  features,
+  lib,
+  pkgs,
+  ...
 }:
 let
   sshAuthSock = "${config.home.homeDirectory}/.bitwarden-ssh-agent.sock";
@@ -12,20 +13,26 @@ in
     packages = [
       pkgs.rbw
       pkgs.pinentry-curses
-    ] ++ lib.optionals features.gui [
+    ]
+    ++ lib.optionals features.desktopApps [
       pkgs.bitwarden-desktop
     ];
 
-    sessionVariables = lib.mkIf features.gui {
+    sessionVariables = lib.mkIf features.desktopApps {
       SSH_AUTH_SOCK = sshAuthSock;
     };
   };
 
   # sessionVariables only reach shells
-  launchd.agents.bitwarden-ssh-auth-sock = lib.mkIf (features.gui && pkgs.stdenv.isDarwin) {
+  launchd.agents.bitwarden-ssh-auth-sock = lib.mkIf (features.desktopApps && pkgs.stdenv.isDarwin) {
     enable = true;
     config = {
-      ProgramArguments = [ "/bin/launchctl" "setenv" "SSH_AUTH_SOCK" sshAuthSock ];
+      ProgramArguments = [
+        "/bin/launchctl"
+        "setenv"
+        "SSH_AUTH_SOCK"
+        sshAuthSock
+      ];
       RunAtLoad = true;
     };
   };

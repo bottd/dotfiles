@@ -1,9 +1,10 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, alsa-lib
-, udev
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  alsa-lib,
+  udev,
 }:
 
 # Not in nixpkgs. Replaces the ShurePlus MOTIV desktop app, which is Windows/Mac
@@ -26,11 +27,17 @@ rustPlatform.buildRustPackage rec {
   # alsa-lib for cpal (the input level meter); udev because hidapi's
   # linux-native backend still enumerates devices through libudev-sys.
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ alsa-lib udev ];
+  buildInputs = [
+    alsa-lib
+    udev
+  ];
 
   # src/bin/probe.rs is a HID feature-address sweeper for reverse-engineering
   # work. Building it too would put a binary named `probe` on the system PATH.
-  cargoBuildFlags = [ "--bin" "shurectl" ];
+  cargoBuildFlags = [
+    "--bin"
+    "shurectl"
+  ];
   cargoTestFlags = cargoBuildFlags;
 
   # The 247 tests are worth keeping — 164 of them cover the HID feature-report

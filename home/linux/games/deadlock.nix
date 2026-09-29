@@ -1,5 +1,4 @@
-_:
-{
+_: {
   programs.steam.config.apps.deadlock = {
     id = 1422450;
     compatTool = "GE-Proton";

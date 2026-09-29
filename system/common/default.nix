@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./nix.nix
     ./nixpkgs.nix

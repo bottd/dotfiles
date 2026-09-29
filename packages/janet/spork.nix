@@ -1,8 +1,9 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, janet
-, jpm
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  janet,
+  jpm,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -16,7 +17,10 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-aAM9USwh3ZifupHVPqu/aFyaLrTGlYnzV/88RDkpLjE=";
   };
 
-  nativeBuildInputs = [ janet jpm ];
+  nativeBuildInputs = [
+    janet
+    jpm
+  ];
   buildInputs = [ janet ];
 
   dontConfigure = true;

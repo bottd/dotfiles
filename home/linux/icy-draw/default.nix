@@ -1,19 +1,20 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, makeWrapper
-, alsa-lib
-, libxkbcommon
-, libGL
-, wayland
-, libx11
-, libxcursor
-, libxi
-, libxrandr
-, libxcb
-, openssl
-, fontconfig
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  makeWrapper,
+  alsa-lib,
+  libxkbcommon,
+  libGL,
+  wayland,
+  libx11,
+  libxcursor,
+  libxi,
+  libxrandr,
+  libxcb,
+  openssl,
+  fontconfig,
 }:
 
 # Not in nixpkgs and upstream ships no flake, so it's packaged here. IcyDraw is
@@ -39,12 +40,18 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-nWgnTDu4IOJR57tsm8NbG9Ebd1Vu9Io3Z9F06rZvz04=";
 
   # the repo is a workspace of several tools; only IcyDraw is wanted
-  cargoBuildFlags = [ "-p" "icy_draw" ];
+  cargoBuildFlags = [
+    "-p"
+    "icy_draw"
+  ];
   cargoTestFlags = cargoBuildFlags;
   # the suite wants a window server
   doCheck = false;
 
-  nativeBuildInputs = [ pkg-config makeWrapper ];
+  nativeBuildInputs = [
+    pkg-config
+    makeWrapper
+  ];
 
   buildInputs = [
     alsa-lib
@@ -76,15 +83,26 @@ rustPlatform.buildRustPackage rec {
   # alone isn't enough — without this it builds fine and dies on launch.
   postFixup = ''
     wrapProgram $out/bin/icy_draw \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [
-        libGL libxkbcommon wayland libx11 libxcursor libxi libxrandr
-      ]}
+      --prefix LD_LIBRARY_PATH : ${
+        lib.makeLibraryPath [
+          libGL
+          libxkbcommon
+          wayland
+          libx11
+          libxcursor
+          libxi
+          libxrandr
+        ]
+      }
   '';
 
   meta = {
     description = "Text-art editor for ANSI/ASCII with a TheDraw (.tdf) font editor";
     homepage = "https://github.com/mkrueger/icy_tools";
-    license = with lib.licenses; [ asl20 mit ];
+    license = with lib.licenses; [
+      asl20
+      mit
+    ];
     mainProgram = "icy_draw";
     platforms = lib.platforms.linux;
   };

@@ -1,4 +1,10 @@
-{ lib, stdenvNoCC, fetchFromGitHub, janet, jpm }:
+{
+  lib,
+  stdenvNoCC,
+  fetchFromGitHub,
+  janet,
+  jpm,
+}:
 
 stdenvNoCC.mkDerivation {
   pname = "janet-cmd";
@@ -11,7 +17,10 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-Kkwde3hHgbi8aj9ud6rOh13KWVxdNCNY4zXnDVj7uzA=";
   };
 
-  nativeBuildInputs = [ janet jpm ];
+  nativeBuildInputs = [
+    janet
+    jpm
+  ];
   dontConfigure = true;
   dontBuild = true;
   dontGzipMan = true;

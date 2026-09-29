@@ -1,4 +1,9 @@
-{ config, inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 let
   seo = pkgs.callPackage ../seo/package.nix { };
   colors = config.lib.stylix.colors.withHashtag;
@@ -15,7 +20,11 @@ in
     settings = {
       mcp.seo = {
         type = "local";
-        command = [ "${seo}/bin/seo" "mcp" "serve" ];
+        command = [
+          "${seo}/bin/seo"
+          "mcp"
+          "serve"
+        ];
         enabled = true;
       };
       permission.external_directory = {

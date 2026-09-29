@@ -14,6 +14,7 @@
     gcc
     gnumake
     jq
+    nh
     notmuch
     readline
     typst

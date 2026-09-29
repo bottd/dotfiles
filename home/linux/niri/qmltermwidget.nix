@@ -1,9 +1,20 @@
-{ lib, stdenv, fetchFromGitHub, qt6, colors }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  qt6,
+  colors,
+}:
 let
-  rgb = hex:
-    lib.concatStringsSep "," (map
-      (offset: toString (lib.fromHexString (builtins.substring offset 2 hex)))
-      [ 0 2 4 ]);
+  rgb =
+    hex:
+    lib.concatStringsSep "," (
+      map (offset: toString (lib.fromHexString (builtins.substring offset 2 hex))) [
+        0
+        2
+        4
+      ]
+    );
 
   colorSection = name: color: ''
     [${name}]
@@ -25,7 +36,10 @@ stdenv.mkDerivation {
   patches = [ ./qmltermwidget-resize.patch ];
 
   nativeBuildInputs = [ qt6.qmake ];
-  buildInputs = [ qt6.qtbase qt6.qtdeclarative ];
+  buildInputs = [
+    qt6.qtbase
+    qt6.qtdeclarative
+  ];
   dontWrapQtApps = true;
 
   installPhase = ''

@@ -1,9 +1,10 @@
-{ lib
-, stdenvNoCC
-, importNpmLock
-, makeWrapper
-, nodejs_22
-, nodejs-slim_22
+{
+  lib,
+  stdenvNoCC,
+  importNpmLock,
+  makeWrapper,
+  nodejs_22,
+  nodejs-slim_22,
 }:
 let
   npmRoot = ./npm;

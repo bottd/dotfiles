@@ -1,11 +1,16 @@
-{ pkgs, username, ... }:
+{
+  pkgs,
+  username,
+  host,
+  ...
+}:
 let
   inherit (pkgs.stdenv.hostPlatform) isLinux;
 in
 {
   home = {
     inherit username;
-    stateVersion = "26.05";
+    stateVersion = host.stateVersion.home;
     homeDirectory = if isLinux then "/home/${username}" else "/Users/${username}";
   };
 

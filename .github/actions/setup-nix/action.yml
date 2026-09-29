@@ -1,11 +1,5 @@
 name: Setup Nix
-description: Install Nix and configure Cachix for caching
-
-inputs:
-  cachix-name:
-    description: Name of the Cachix cache to use
-    required: false
-    default: nix-community
+description: Install Nix and enable public binary caches
 
 runs:
   using: composite
@@ -13,7 +7,9 @@ runs:
     - name: Install Nix
       uses: DeterminateSystems/nix-installer-action@v22
 
-    - name: Setup Cachix
+    - name: Configure public caches
       uses: cachix/cachix-action@v15
       with:
-        name: ${{ inputs.cachix-name }}
+        name: nix-community
+        extraPullNames: niri
+        skipPush: "true"

@@ -10,8 +10,7 @@ let
     export PATH="/nix/var/nix/profiles/default/bin:$PATH"
   '';
 in
-_:
-{
+_: {
   # Required for Android Terminal
   targets.genericLinux.enable = true;
 

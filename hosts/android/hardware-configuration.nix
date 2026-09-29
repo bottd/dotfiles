@@ -11,7 +11,6 @@
     extraModulePackages = [ ];
   };
 
-
   fileSystems."/mnt/internal" = {
     device = "internal";
     fsType = "virtiofs";
@@ -21,7 +20,6 @@
     device = "android";
     fsType = "virtiofs";
   };
-
 
   swapDevices = [ ];
 
@@ -34,4 +32,3 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
-

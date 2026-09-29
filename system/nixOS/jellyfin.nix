@@ -8,6 +8,10 @@ _:
 
   # Add jellyfin to the audio group for hardware acceleration (optional)
   users.users.jellyfin = {
-    extraGroups = [ "audio" "video" "render" ];
+    extraGroups = [
+      "audio"
+      "video"
+      "render"
+    ];
   };
 }

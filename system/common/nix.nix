@@ -1,9 +1,17 @@
 # Shared nix daemon config for NixOS and darwin hosts.
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  host,
+  ...
+}:
 {
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       substituters = [
         "https://cache.nixos.org"
@@ -13,20 +21,21 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      max-jobs = "auto";
-      cores = 0;
+      max-jobs = host.nix.maxJobs;
+      cores = host.nix.cores;
       # Already the NixOS default; nix-darwin leaves it off.
       sandbox = true;
-      keep-outputs = true;
-      keep-derivations = true;
-      download-buffer-size = 536870912; # 512 MiB
-      http-connections = 128;
+      keep-outputs = host.nix.keepOutputs;
+      keep-derivations = host.nix.keepDerivations;
+      download-buffer-size = host.nix.downloadBufferSize;
+      http-connections = host.nix.httpConnections;
     };
     optimise.automatic = true;
     gc = {
       automatic = true;
       options = "--delete-older-than 30d";
-    } // lib.optionalAttrs pkgs.stdenv.isLinux {
+    }
+    // lib.optionalAttrs pkgs.stdenv.isLinux {
       # `dates` is the NixOS option; nix-darwin uses `interval` (default weekly)
       dates = "weekly";
     };

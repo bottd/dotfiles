@@ -1,4 +1,8 @@
-{ pkgs, appearance, scheme }:
+{
+  pkgs,
+  appearance,
+  scheme,
+}:
 let
   melange = {
     dark = {
@@ -40,16 +44,18 @@ let
   };
 
   schemeName =
-    if scheme == "catppuccin"
-    then (if appearance == "light" then "catppuccin-latte" else "catppuccin-mocha")
-    else if scheme == "primer"
-    then "primer-${appearance}"
-    else scheme;
+    if scheme == "catppuccin" then
+      (if appearance == "light" then "catppuccin-latte" else "catppuccin-mocha")
+    else if scheme == "primer" then
+      "primer-${appearance}"
+    else
+      scheme;
 in
 {
   base16Scheme =
-    if scheme == "melange"
-    then melange.${appearance}
-    else "${pkgs.base16-schemes}/share/themes/${schemeName}.yaml";
+    if scheme == "melange" then
+      melange.${appearance}
+    else
+      "${pkgs.base16-schemes}/share/themes/${schemeName}.yaml";
   polarity = appearance;
 }

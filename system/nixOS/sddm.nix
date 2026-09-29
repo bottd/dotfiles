@@ -16,5 +16,7 @@
   # SDDM looks for themes under /run/current-system/sw/share/sddm/themes.
   # We install the theme package directly rather than using the upstream
   # nixosModule, which pulls in Qt5 for a Qt6 theme.
-  environment.systemPackages = [ inputs.minesddm.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+  environment.systemPackages = [
+    inputs.minesddm.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 }

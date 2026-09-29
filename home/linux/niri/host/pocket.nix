@@ -4,8 +4,7 @@
 #
 # Only the scale is ours: at ~343 dpi niri auto-picks 2.0, which is too big.
 # Verify with `niri msg outputs` if anything looks off.
-_:
-{
+_: {
   programs.niri.settings.outputs."eDP-1" = {
     # The panel's native 60 Hz mode avoids driving it at 144 Hz on battery.
     mode = {

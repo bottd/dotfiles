@@ -1,6 +1,13 @@
 { theme, pkgs, ... }:
 let
-  inherit (import ../../lib/stylixScheme.nix { inherit pkgs; inherit (theme) appearance scheme; }) base16Scheme polarity;
+  inherit
+    (import ../../lib/stylixScheme.nix {
+      inherit pkgs;
+      inherit (theme) appearance scheme;
+    })
+    base16Scheme
+    polarity
+    ;
 in
 {
   stylix = {

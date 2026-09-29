@@ -1,11 +1,20 @@
-{ lib, callPackage, janet, coreutils, writers }:
+{
+  lib,
+  callPackage,
+  janet,
+  coreutils,
+  writers,
+}:
 let
   modules = callPackage ../packages/janet { };
   checkJanet = callPackage ./checkJanet.nix { };
 in
-name: { runtimeInputs ? [ ] }: content:
-writers.makeScriptWriter
+name:
 {
+  runtimeInputs ? [ ],
+}:
+content:
+writers.makeScriptWriter {
   interpreter = lib.getExe janet;
   check = checkJanet;
   makeWrapperArgs = [
@@ -19,6 +28,4 @@ writers.makeScriptWriter
     ":"
     (lib.makeBinPath ([ coreutils ] ++ runtimeInputs))
   ];
-}
-  "/bin/${name}"
-  content
+} "/bin/${name}" content

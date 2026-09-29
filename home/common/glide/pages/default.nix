@@ -1,11 +1,12 @@
-{ fetchPnpmDeps
-, lib
-, nodejs
-, pnpm
-, pnpmConfigHook
-, stdenvNoCC
-, stylixPalette ? builtins.fromJSON (builtins.readFile ./stylix-palette.json)
-, writeText
+{
+  fetchPnpmDeps,
+  lib,
+  nodejs,
+  pnpm,
+  pnpmConfigHook,
+  stdenvNoCC,
+  stylixPalette ? builtins.fromJSON (builtins.readFile ./stylix-palette.json),
+  writeText,
 }:
 let
   colorNames = [

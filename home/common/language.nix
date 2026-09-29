@@ -33,7 +33,8 @@
       stylua
 
       # Nix
-      nil
+      nixd
+      nixfmt
 
       # Python
       python3
