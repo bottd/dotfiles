@@ -1,7 +1,7 @@
 {
   config,
-  inputs,
   pkgs,
+  nixpkgs-unstable,
   ...
 }:
 let
@@ -16,7 +16,7 @@ in
 
   programs.opencode = {
     enable = true;
-    package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
+    package = nixpkgs-unstable.opencode;
     settings = {
       mcp.seo = {
         type = "local";

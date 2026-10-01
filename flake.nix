@@ -69,10 +69,6 @@
     };
     # Keeps its own nixpkgs pin so its cachix cache stays hit.
     claude-code.url = "github:sadjow/claude-code-nix";
-    opencode = {
-      url = "github:anomalyco/opencode";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     herdr.url = "github:herdrdev/herdr";
   };
 
