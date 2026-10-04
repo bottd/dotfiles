@@ -10,9 +10,9 @@ jobs:
     runs-on: nixos-x86_64
     timeout-minutes: 30
     steps:
+      # Checkout keeps Forgejo's per-job token in the git config; it can push to
+      # this repository, so `git push` below needs no stored secret.
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.FLAKE_UPDATE_TOKEN }}
 
       - name: Update flake.lock
         id: update
@@ -28,8 +28,15 @@ jobs:
       - name: Check updated flake
         if: steps.update.outputs.changed == 'true'
         run: |
-          nix flake check --no-update-lock-file -L
-          nix eval --no-update-lock-file --json .#ci.drvPaths > /dev/null
+          nix build --no-link --no-update-lock-file -L .#ciChecks
+          set -o pipefail
+          nix eval --no-update-lock-file --raw .#ci.drvPaths \
+            --apply 'p: builtins.concatStringsSep "\n" (builtins.attrNames p)' |
+            while read -r variant; do
+              echo "::group::$variant"
+              nix eval --no-update-lock-file --raw ".#ci.drvPaths.$variant"
+              echo; echo "::endgroup::"
+            done
 
       - name: Push to main
         if: steps.update.outputs.changed == 'true'

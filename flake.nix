@@ -65,7 +65,6 @@
     };
     # Keeps its own nixpkgs pin so its cachix cache stays hit.
     claude-code.url = "github:sadjow/claude-code-nix";
-    herdr.url = "github:herdrdev/herdr";
   };
 
   outputs =

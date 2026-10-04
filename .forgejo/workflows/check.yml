@@ -19,8 +19,17 @@ jobs:
         with:
           persist-credentials: false
 
+      # Not `nix flake check`: it evaluates every host in one ~6G process.
       - name: Flake checks
-        run: nix flake check --no-update-lock-file -L
+        run: nix build --no-link --no-update-lock-file -L .#ciChecks
 
       - name: Evaluate every host
-        run: nix eval --no-update-lock-file --json .#ci.drvPaths
+        run: |
+          set -o pipefail
+          nix eval --no-update-lock-file --raw .#ci.drvPaths \
+            --apply 'p: builtins.concatStringsSep "\n" (builtins.attrNames p)' |
+            while read -r variant; do
+              echo "::group::$variant"
+              nix eval --no-update-lock-file --raw ".#ci.drvPaths.$variant"
+              echo; echo "::endgroup::"
+            done

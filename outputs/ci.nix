@@ -4,9 +4,17 @@ let
   inherit (import ../lib { inherit inputs; }) inventory;
 in
 {
+  # `nix flake check` evaluates every host in one process (~6G); CI builds the
+  # checks through this instead and evaluates hosts one at a time below.
+  perSystem =
+    { config, pkgs, ... }:
+    {
+      legacyPackages.ciChecks = pkgs.linkFarm "ci-checks" config.checks;
+    };
+
   # Every host and appearance variant, evaluated to a drvPath but never built.
   # CI runs on a single x86_64-linux VPS, so this is how the aarch64 and darwin
-  # hosts still get checked: `nix eval --json .#ci.drvPaths`.
+  # hosts still get checked. Each takes ~2G alone versus ~8G all at once.
   flake.ci.drvPaths = lib.listToAttrs (
     lib.concatMap (
       host:
