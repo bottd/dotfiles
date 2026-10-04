@@ -1,30 +1,24 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  inherit (import ../lib { inherit inputs; }) inventory systems;
-  runners = {
-    x86_64-linux = "ubuntu-24.04";
-    aarch64-linux = "ubuntu-24.04-arm";
-    aarch64-darwin = "macos-15";
-  };
+  inherit (import ../lib { inherit inputs; }) inventory;
 in
 {
-  flake.ci = {
-    hosts.include = lib.mapAttrsToList (name: host: {
-      inherit name;
-      inherit (host) system;
-      runner = runners.${host.system};
-      targets = map (
+  # Every host and appearance variant, evaluated to a drvPath but never built.
+  # CI runs on a single x86_64-linux VPS, so this is how the aarch64 and darwin
+  # hosts still get checked: `nix eval --json .#ci.drvPaths`.
+  flake.ci.drvPaths = lib.listToAttrs (
+    lib.concatMap (
+      host:
+      map (
         variant:
-        if host.format == "nixos" then
-          "nixosConfigurations.${variant}.config.system.build.toplevel"
-        else
-          "darwinConfigurations.${variant}.system"
-      ) ([ name ] ++ map (appearance: "${name}-${appearance}") host.appearances);
-    }) inventory;
-    platforms.include = map (system: {
-      inherit system;
-      runner = runners.${system};
-    }) systems;
-  };
+        lib.nameValuePair variant (
+          if host.format == "nixos" then
+            self.nixosConfigurations.${variant}.config.system.build.toplevel.drvPath
+          else
+            self.darwinConfigurations.${variant}.system.drvPath
+        )
+      ) ([ host.hostName ] ++ map (appearance: "${host.hostName}-${appearance}") host.appearances)
+    ) (builtins.attrValues inventory)
+  );
 }

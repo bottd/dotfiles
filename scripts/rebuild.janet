@@ -57,14 +57,14 @@
 (defn selftest []
   (def desktop {:hostName "desktop" :format "nixos" :appearances ["light" "dark"]
                 :appearance "light" :flakeDirectory "/tmp/checkout with spaces"})
-  (def android (merge desktop {:hostName "android" :appearances [] :appearance "dark"}))
+  (def headless (merge desktop {:hostName "headless" :appearances [] :appearance "dark"}))
   (def mac (merge desktop {:hostName "renamed-mac" :format "darwin"}))
   (assert (= "desktop-light" (configuration desktop {} nil)))
   (assert (= "desktop-dark" (configuration desktop {} "dark")))
   (assert (= "desktop-light" (configuration desktop {"light" true} "dark")))
   (assert (= "desktop-light" (configuration desktop {} "invalid")))
-  (assert (= "android" (configuration android {} "dark")))
-  (assert (fails? (fn [] (configuration android {"dark" true} nil))))
+  (assert (= "headless" (configuration headless {} "dark")))
+  (assert (fails? (fn [] (configuration headless {"dark" true} nil))))
   (assert (fails? (fn [] (parse-options ["--light" "--dark"]))))
   (assert (fails? (fn [] (parse-options ["--unknown"]))))
   (assert (fails? (fn [] (parse-options ["extra-argument"]))))
@@ -97,13 +97,13 @@
       (assert (= "dark" (string (slurp state))))
 
       (array/clear calls)
-      (rebuild! android {} state)
-      (assert (= "android" (get-in calls [0 5])))
+      (rebuild! headless {} state)
+      (assert (= "headless" (get-in calls [0 5])))
       (assert (= "dark" (string (slurp state))))
 
       # Argument failure cannot cause a pull or a switch.
       (array/clear calls)
-      (assert (fails? (fn [] (rebuild! android {"update" true "light" true} state))))
+      (assert (fails? (fn [] (rebuild! headless {"update" true "light" true} state))))
       (assert (empty? calls))
 
       # Pull failure stops the switch; switch failure preserves the preference.

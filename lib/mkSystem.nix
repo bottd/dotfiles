@@ -7,7 +7,6 @@ host@{
   extraHomeModules,
   extraSystemModules,
   autologin,
-  enableAVF,
   stateVersion,
   ...
 }:
@@ -77,16 +76,7 @@ systemBuilder {
   ++ extraSystemModules
   ++ inputs.nixpkgs.lib.optional (format == "nixos") ../system/common/nixos.nix
   ++ (
-    if enableAVF then
-      [
-        inputs.nixos-avf.nixosModules.avf
-        inputs.stylix.nixosModules.stylix
-        ../system/common/stylix.nix
-        (_: {
-          stylix.targets.grub.enable = false;
-        })
-      ]
-    else if format == "nixos" then
+    if format == "nixos" then
       [
         inputs.stylix.nixosModules.stylix
         ../system/nixOS

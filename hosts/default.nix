@@ -46,26 +46,6 @@
       home = "26.05";
     };
   };
-  android = {
-    system = "aarch64-linux";
-    format = "nixos";
-    username = "droid";
-    enableAVF = true;
-    appearances = [ ];
-    theme = {
-      appearance = "dark";
-      baseFontSize = 20;
-    };
-    extraHomeModules = [ ./android/home.nix ];
-    nix = {
-      maxJobs = 1;
-      cores = 2;
-    };
-    stateVersion = {
-      system = "25.05";
-      home = "26.05";
-    };
-  };
   macbook = {
     system = "aarch64-darwin";
     format = "darwin";

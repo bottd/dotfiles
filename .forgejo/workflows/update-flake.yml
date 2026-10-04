@@ -1,0 +1,40 @@
+name: Update Flake
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-flake:
+    runs-on: nixos-x86_64
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FLAKE_UPDATE_TOKEN }}
+
+      - name: Update flake.lock
+        id: update
+        run: |
+          nix flake update
+          if git diff --quiet flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Same gate as check.yml; only a lock that passes it lands on main.
+      - name: Check updated flake
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          nix flake check --no-update-lock-file -L
+          nix eval --no-update-lock-file --json .#ci.drvPaths > /dev/null
+
+      - name: Push to main
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          git config user.name "forgejo-actions"
+          git config user.email "forgejo-actions@noreply.loge"
+          git commit -m "chore: update flake.lock" flake.lock
+          git push origin HEAD:main

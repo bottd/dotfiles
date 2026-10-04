@@ -38,10 +38,6 @@ let
                     type = types.bool;
                     default = false;
                   };
-                  enableAVF = mkOption {
-                    type = types.bool;
-                    default = false;
-                  };
                   extraHomeModules = mkOption {
                     type = types.listOf types.path;
                     default = [ ];
@@ -150,26 +146,21 @@ let
         )
         "invalid system state version for format"
         (
-          require
-            (!host.enableAVF || (host.format == "nixos" && host.system == "aarch64-linux" && desktop == null))
-            "AVF requires headless aarch64-linux"
+          require (desktop == null || desktop == (if darwin then "macos" else "niri"))
+            "desktop environment does not match platform"
             (
-              require (desktop == null || desktop == (if darwin then "macos" else "niri"))
-                "desktop environment does not match platform"
+              require
                 (
-                  require
-                    (
-                      desktop != null
-                      || !(
-                        host.features.desktopApps || host.features.animations || host.features.gaming || host.autologin
-                      )
-                    )
-                    "desktop capabilities require a desktop environment"
-                    (
-                      require (host.appearances == [ ] || builtins.elem host.theme.appearance host.appearances)
-                        "default appearance must be supported"
-                        (require (lib.unique host.appearances == host.appearances) "appearances must be unique" host)
-                    )
+                  desktop != null
+                  || !(
+                    host.features.desktopApps || host.features.animations || host.features.gaming || host.autologin
+                  )
+                )
+                "desktop capabilities require a desktop environment"
+                (
+                  require (host.appearances == [ ] || builtins.elem host.theme.appearance host.appearances)
+                    "default appearance must be supported"
+                    (require (lib.unique host.appearances == host.appearances) "appearances must be unique" host)
                 )
             )
         )

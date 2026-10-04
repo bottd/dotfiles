@@ -1,7 +1,6 @@
 { hostName, lib, ... }:
 {
-  # Applies to every nixosConfiguration, including the AVF hosts that skip
-  # ../nixOS — mkSystem imports this on the `nixos` format.
+  # Applies to every nixosConfiguration — mkSystem imports this on the `nixos` format.
   imports = [ ./tailscale.nix ];
 
   networking.hostName = lib.mkDefault hostName;

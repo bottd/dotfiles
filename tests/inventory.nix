@@ -37,11 +37,6 @@ builtins.all (result: result) [
   (expect "state versions are required" (
     !accepts { desktop = builtins.removeAttrs definitions.desktop [ "stateVersion" ]; }
   ))
-  (expect "AVF requires ARM" (
-    !accepts (desktopWith {
-      enableAVF = true;
-    })
-  ))
   (expect "headless hosts cannot enable desktop apps" (
     !accepts (desktopWith {
       features.desktopEnvironment = null;
@@ -74,10 +69,6 @@ builtins.all (result: result) [
   (expect "Pocket has bounded parallelism" (
     inventory.pocket.nix.maxJobs == 2 && inventory.pocket.nix.cores == 2
   ))
-  (expect "Android has bounded parallelism" (
-    inventory.android.nix.maxJobs == 1 && inventory.android.nix.cores == 2
-  ))
-  (expect "Android has no appearance variants" (inventory.android.appearances == [ ]))
   (expect "e-ink desktop and animation capabilities are separate" (
     inventory.eink.features.desktopEnvironment == "niri" && !inventory.eink.features.animations
   ))

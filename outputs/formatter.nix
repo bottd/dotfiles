@@ -85,7 +85,11 @@
         treefmt.enable = true;
         statix.enable = true;
         deadnix.enable = true;
-        actionlint.enable = true;
+        actionlint = {
+          enable = true;
+          files = "^\\.forgejo/workflows/";
+          entry = "${lib.getExe pkgs.actionlint} -config-file .forgejo/actionlint.yaml";
+        };
       };
 
       devShells.default = pkgs.mkShell {

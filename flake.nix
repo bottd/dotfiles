@@ -38,10 +38,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixos-avf = {
-      url = "github:nix-community/nixos-avf";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-tresorit = {
       url = "github:p15r/nix-tresorit/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";

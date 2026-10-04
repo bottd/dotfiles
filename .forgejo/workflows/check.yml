@@ -1,0 +1,26 @@
+name: Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    # Host-mode runner on the VPS: Nix and its store are already there, so no
+    # installer or cache action. Only x86_64-linux builds happen here; other
+    # platforms are evaluated, not built.
+    runs-on: nixos-x86_64
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Flake checks
+        run: nix flake check --no-update-lock-file -L
+
+      - name: Evaluate every host
+        run: nix eval --no-update-lock-file --json .#ci.drvPaths
