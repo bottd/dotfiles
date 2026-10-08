@@ -1,22 +1,11 @@
 (local blink (require :blink.cmp))
-(local compat (require :blink.compat))
-
-(compat.setup {:sources {:npm {:module :cmp-npm}}})
 
 (blink.setup {:keymap {:preset :super-tab}
               :term {:enabled true}
               :signature {:enabled true}
               :appearance {:kind_icons {}}
               :fuzzy {:sorts [:exact :score :sort_text]}
-              :sources {:default [:lsp
-                                  :path
-                                  :snippets
-                                  :buffer
-                                  :omni
-                                  :cmdline
-                                  :npm]
-                        :providers {:npm {:name :npm
-                                          :module :blink.compat.source}}}
+              :sources {:default [:lsp :path :snippets :buffer :omni :cmdline]}
               :completion {:keyword {:range :prefix}
                            :documentation {:auto_show true}
                            :ghost_text {:enabled true}

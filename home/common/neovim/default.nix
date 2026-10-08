@@ -63,19 +63,6 @@ in
       cowsay
       fortune
 
-      # images
-      ghostscript
-      imagemagick
-      luajitPackages.magick
-      mermaid-cli
-
-      # rust
-      cargo
-      rust-analyzer
-
-      # java
-      temurin-bin-21
-
       # janet
       janet
       spork

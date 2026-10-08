@@ -44,6 +44,7 @@ let
           ../home.nix
           ../home/common
         ]
+        ++ inputs.nixpkgs.lib.optional (host.features.desktopEnvironment != null) ../home/desktop
         ++ (
           if format == "nixos" then
             [

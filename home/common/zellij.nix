@@ -2,10 +2,11 @@
   pkgs,
   lib,
   nixpkgs-unstable,
+  features,
   ...
 }:
 {
-  home.packages = lib.optionals pkgs.stdenv.isLinux (
+  home.packages = lib.optionals (features.desktopEnvironment == "niri") (
     with pkgs;
     [
       wl-clipboard
@@ -23,7 +24,6 @@
       rounded_corners = true;
       show_startup_tips = false;
       show_release_notes = false;
-      copy_command = if pkgs.stdenv.isLinux then "wl-copy" else "pbcopy";
       copy_clipboard = "system";
       keybinds = {
         "locked" = {
@@ -40,6 +40,9 @@
           };
         };
       };
+    }
+    // lib.optionalAttrs (features.desktopEnvironment != null) {
+      copy_command = if pkgs.stdenv.isLinux then "wl-copy" else "pbcopy";
     };
   };
 }

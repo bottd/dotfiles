@@ -4,6 +4,14 @@ My personal nix flake.
 
 ## Targets
 
+### Home Manager only (`sh`)
+
+Config for remote Linux machines, home-manager only
+
+```sh
+nix run github:nix-community/home-manager/release-26.05 -- switch --flake .#sh
+```
+
 ### NixOS (Linux)
 
 I have a configuration for my gaming desktop:

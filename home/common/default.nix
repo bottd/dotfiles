@@ -1,40 +1,29 @@
 {
   config,
-  features,
-  lib,
+  host,
+  inputs,
   ...
 }:
 {
-  # Symlink into the live repo checkout instead of the store, so edits apply
-  # without a rebuild.
+  # Workstations use the live checkout. Standalone profiles carry their config
+  # in the generation so a server does not need a mutable ~/dotfiles checkout.
   lib.meta.createSymlink =
-    path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
+    path:
+    if host.format == "home-manager" then
+      "${inputs.self}/${path}"
+    else
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 
   imports = [
-    ./ai
-    ./bitwarden.nix
     ./cli.nix
     ./direnv.nix
-    ./emacs
     ./git.nix
     ./jujutsu.nix
-    ./language.nix
     ./neovim
-    ./scripts.nix
     ./starship
     ./stylix.nix
     ./zellij.nix
     ./zoxide.nix
     ./zsh.nix
-
-    # import GUI modules when desktop environment is present
-  ]
-  ++ lib.optionals (features.desktopEnvironment != null) [
-    ./browser.nix
-    ./ghostty.nix
-    ./glide
-  ]
-  ++ lib.optionals features.gaming [
-    ./games
   ];
 }

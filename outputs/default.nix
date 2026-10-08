@@ -10,6 +10,7 @@
     ./apps.nix
     ./ci.nix
     ./formatter.nix
+    ./home-manager.nix
     ./hosts.nix
     ./packages.nix
   ];

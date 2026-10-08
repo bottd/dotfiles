@@ -9,6 +9,15 @@ let
 in
 builtins.all (result: result) [
   (expect "all current hosts are valid" (accepts definitions))
+  (expect "sh is a home-only terminal profile" (
+    inventory.sh.format == "home-manager"
+    && inventory.sh.username == "drake"
+    && inventory.sh.stateVersion.system == null
+    && inventory.sh.features.desktopEnvironment == null
+  ))
+  (expect "home-only profiles cannot specify a system state version" (
+    !accepts { sh = lib.recursiveUpdate definitions.sh { stateVersion.system = "26.05"; }; }
+  ))
   (expect "unknown host field is rejected" (
     !accepts (desktopWith {
       usernmae = "typo";

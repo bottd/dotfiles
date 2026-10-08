@@ -1,16 +1,24 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  features,
+  ...
+}:
+let
+  desktop = features.desktopEnvironment != null;
+in
 {
   stylix = {
-    cursor = {
+    cursor = lib.mkIf desktop {
       name = lib.mkDefault "Bibata-Modern-Classic";
       package = lib.mkDefault pkgs.bibata-cursors;
       size = lib.mkDefault 24;
     };
 
-    targets.gtk.enable = pkgs.stdenv.isLinux;
+    targets.gtk.enable = pkgs.stdenv.isLinux && desktop;
   };
 
-  fonts.fontconfig.configFile.monolisa-nerd-font = lib.mkIf pkgs.stdenv.isLinux {
+  fonts.fontconfig.configFile.monolisa-nerd-font = lib.mkIf (pkgs.stdenv.isLinux && desktop) {
     enable = true;
     priority = 60;
     text = ''

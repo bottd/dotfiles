@@ -47,17 +47,9 @@
 (vim.lsp.config "*" {:capabilities (blink.get_lsp_capabilities)})
 
 ;; Server configs in lsp dir
-(local servers [:cssls
-                :eslint
-                :graphql
-                :html
-                :svelte
-                :tailwindcss
-                :ts_ls
-                :lua_ls
-                :clojure_lsp
-                :janet_lsp
-                :nixd])
+(local servers [:lua_ls :janet_lsp :nixd])
+
+(vim.list_extend servers (or vim.g.dotfiles_extra_lsp_servers []))
 
 (vim.lsp.enable servers)
 

@@ -23,6 +23,8 @@ in
         lib.nameValuePair variant (
           if host.format == "nixos" then
             self.nixosConfigurations.${variant}.config.system.build.toplevel.drvPath
+          else if host.format == "home-manager" then
+            self.homeConfigurations.${variant}.activationPackage.drvPath
           else
             self.darwinConfigurations.${variant}.system.drvPath
         )

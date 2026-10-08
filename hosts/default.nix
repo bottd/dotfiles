@@ -1,4 +1,11 @@
 {
+  sh = {
+    system = "x86_64-linux";
+    format = "home-manager";
+    username = "drake";
+    appearances = [ ];
+    stateVersion.home = "26.05";
+  };
   desktop = {
     system = "x86_64-linux";
     format = "nixos";

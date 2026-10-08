@@ -3,7 +3,7 @@ _: {
     # Reuse the package definitions used by the hosts, and expose them for
     # independent native builds rather than relying on system evaluation.
     packages = {
-      seo = pkgs.callPackage ../home/common/ai/seo/package.nix { };
+      seo = pkgs.callPackage ../home/desktop/ai/seo/package.nix { };
       janet-modules = pkgs.callPackage ../packages/janet { };
       janet-lsp = pkgs.callPackage ../home/common/neovim/janet/janet-lsp.nix {
         spork = pkgs.callPackage ../packages/janet/spork.nix { };

@@ -1,11 +1,12 @@
 { inputs, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  inherit (import ../lib { inherit inputs; }) inventory mkSystem;
+  inherit (import ../lib { inherit inputs; }) inventory mkSystem mkHome;
+  build = host: if host.format == "home-manager" then mkHome host else mkSystem host;
   mkWithVariants =
     name: host:
     let
-      base = mkSystem host;
+      base = build host;
     in
     {
       ${name} = base;
@@ -18,7 +19,7 @@ let
       if appearance == host.theme.appearance then
         base
       else
-        mkSystem (
+        build (
           host
           // {
             theme = host.theme // {
@@ -36,5 +37,6 @@ in
     hostInventory = inventory;
     nixosConfigurations = configurations "nixos";
     darwinConfigurations = configurations "darwin";
+    homeConfigurations = configurations "home-manager";
   };
 }

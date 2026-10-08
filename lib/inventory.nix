@@ -31,6 +31,7 @@ let
                     type = types.enum [
                       "nixos"
                       "darwin"
+                      "home-manager"
                     ];
                   };
                   username = mkOption { type = types.nonEmptyStr; };
@@ -54,7 +55,10 @@ let
                     ];
                   };
                   stateVersion = {
-                    system = mkOption { type = types.either release types.ints.positive; };
+                    system = mkOption {
+                      type = types.nullOr (types.either release types.ints.positive);
+                      default = null;
+                    };
                     home = mkOption { type = release; };
                   };
                   theme = {
@@ -133,13 +137,16 @@ let
     name: host:
     let
       require = condition: message: lib.throwIfNot condition "Host ${name}: ${message}";
-      darwin = host.format == "darwin";
+      homeOnly = host.format == "home-manager";
+      darwin = lib.hasSuffix "-darwin" host.system;
       desktop = host.features.desktopEnvironment;
     in
-    require (darwin == lib.hasSuffix "-darwin" host.system) "format and platform disagree" (
+    require (homeOnly || (host.format == "darwin") == darwin) "format and platform disagree" (
       require
         (
-          if darwin then
+          if homeOnly then
+            host.stateVersion.system == null
+          else if darwin then
             builtins.isInt host.stateVersion.system
           else
             builtins.isString host.stateVersion.system

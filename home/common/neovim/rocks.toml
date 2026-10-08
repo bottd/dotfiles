@@ -13,7 +13,6 @@
 "nvim-dap" = "0.10.0"
 "nvim-dap-ui" = "scm"
 "nvim-lspconfig" = "2.12.0"
-"rustaceanvim" = "9.2.1"
 "nvim-ts-autotag" = "scm"
 "nvim-parinfer" = "1.2.0"
 "nui.nvim" = "0.4.0"
@@ -74,10 +73,6 @@ rev = "v1.10.0"
 git = "Saghen/blink.cmp"
 rev = "v1.10.2"
 
-[plugins."blink.compat"]
-git = "Saghen/blink.compat"
-rev = "v2.5.0"
-
 [plugins."blink.indent"]
 git = "Saghen/blink.indent"
 rev = "v2.3.0"
@@ -106,20 +101,12 @@ rev = "v2.1.0"
 git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 rev = "v3.0.0"
 
-[plugins."cmp-npm"]
-git = "David-Kunz/cmp-npm"
-rev = "2337f109f51a09297596dd6b538b70ccba92b4e4"
-
 [plugins."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
 rev = "v2.0.0"
 
-[plugins."nvim-java"]
-git = "nvim-java/nvim-java"
-rev = "v4.1.2"
-
 [bundles.blink]
-items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
+items = ["blink.cmp", "luasnip"]
 
 [bundles.lsp]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
@@ -129,9 +116,6 @@ items = ["github-nvim-theme", "melange-nvim"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]
-
-[plugins."tree-sitter-mog"]
-dir = "~/workspace/mog-private/packages/tree-sitter"
 
 [treesitter]
 auto_highlight = "all"

@@ -8,12 +8,7 @@
                :win {:enabled true}
                :picker {:layout {:preset :ivy_split}}
                :styles {:zen {:backdrop {:transparent false}}}
-               :image {:enabled true
-                       :doc {:enabled true
-                             :inline true
-                             :float true
-                             :max_width 80
-                             :max_height 40}}
+               :image (or vim.g.dotfiles_snacks_image {:enabled false})
                :dashboard {:enabled true
                            :sections [{:section :terminal
                                        :cmd "fortune -s | cowsay -f stegosaurus"
