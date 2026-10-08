@@ -1,7 +1,4 @@
-{ config, inputs, ... }:
 {
-  imports = [ inputs.minegrub-world-sel-theme.nixosModules.default ];
-
   boot.loader = {
     systemd-boot.enable = false;
     efi.efiSysMountPoint = "/boot/efi";
@@ -15,10 +12,7 @@
       copyKernels = false;
       configurationLimit = 10;
 
-      # The theme uses fixed 1920x1080 coordinates.
-      gfxmodeEfi = "1920x1080,auto";
-
-      # Explicit entry avoids os-prober and selects the theme's Windows icon.
+      # Explicit entry avoids os-prober.
       extraEntries = ''
         menuentry "Windows 11" --class windows11 {
           insmod part_gpt
@@ -28,19 +22,6 @@
           chainloader /EFI/Microsoft/Boot/bootmgfw.efi
         }
       '';
-
-      minegrub-world-sel = {
-        enable = true;
-        customIcons = [
-          {
-            # Must match the menuentry class, not the hostname.
-            name = "nixos";
-            lineTop = with config.system.nixos; "${distroName} ${codeName} (${release})";
-            lineBottom = with config.system.nixos; "Survival Mode, No Cheats, Version: ${release}";
-            imgName = "nixos";
-          }
-        ];
-      };
     };
   };
 }

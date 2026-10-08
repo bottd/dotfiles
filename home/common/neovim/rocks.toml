@@ -57,10 +57,6 @@ tree-sitter-cpp = "0.0.51"
 tree-sitter-kotlin = "0.0.48"
 tree-sitter-kdl = "0.0.32"
 
-[plugins."catppuccin"]
-git = "catppuccin/nvim"
-rev = "v2.0.0"
-
 [plugins."github-nvim-theme"]
 git = "projekt0n/github-nvim-theme"
 rev = "v1.1.2"
@@ -129,7 +125,7 @@ items = ["blink.cmp", "blink.compat", "cmp-npm", "luasnip"]
 items = ["lsp_lines.nvim", "nvim-lspconfig"]
 
 [bundles.theme]
-items = ["catppuccin", "github-nvim-theme", "melange-nvim"]
+items = ["github-nvim-theme", "melange-nvim"]
 
 [bundles.treesitter]
 items = ["nvim-treesitter-context", "nvim-ts-autotag"]

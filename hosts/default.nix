@@ -18,6 +18,8 @@
     format = "nixos";
     username = "drakeb";
     autologin = true;
+    # e-ink, no dark mode
+    appearances = [ "light" ];
     features = {
       desktopEnvironment = "niri";
       desktopApps = false;
