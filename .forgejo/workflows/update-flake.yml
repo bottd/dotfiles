@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-flake:
-    runs-on: nixos-x86_64
+    runs-on: nix
     timeout-minutes: 30
     steps:
       # Checkout keeps Forgejo's per-job token in the git config; it can push to
