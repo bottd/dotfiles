@@ -3,6 +3,7 @@
   features,
   inputs,
   lib,
+  nixpkgs-unstable,
   pkgs,
   system,
   ...
@@ -10,7 +11,7 @@
 {
   home = {
     packages = [
-      pkgs.mcp-nixos
+      nixpkgs-unstable.mcp-nixos
       inputs.claude-code.packages.${system}.default
     ];
 
@@ -20,9 +21,6 @@
     ];
 
     file = {
-      # Live settings file in the dotfiles repo — mutable symlink so
-      # `claude plugin install/uninstall` and other in-place edits land
-      # back in this repo (git-tracked).
       ".claude/settings.json".source =
         config.lib.meta.createSymlink "home/desktop/ai/claude/settings.json";
     };
