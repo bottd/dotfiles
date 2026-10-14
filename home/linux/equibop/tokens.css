@@ -76,6 +76,18 @@
   --reaction-text-default: var(--base04) !important;
   --reaction-text-hover: var(--base05) !important;
   --reaction-text-reacted-default: var(--base0B) !important;
+  /* Tint the reacted pill with the same accent as its count and border. */
+  --reaction-background-reacted-default: color-mix(
+    in oklab,
+    var(--base0B) 15%,
+    transparent
+  ) !important;
+  --reaction-background-reacted-hover: color-mix(
+    in oklab,
+    var(--base0B) 22%,
+    transparent
+  ) !important;
+  --reaction-border-reacted-default: var(--base0B) !important;
 
   --notice-background-critical: var(--base01) !important;
   --notice-background-warning: var(--base01) !important;
@@ -112,6 +124,14 @@
   --ansi-bright-magenta: var(--base0E) !important;
   --ansi-bright-cyan: var(--base0C) !important;
   --ansi-bright-white: var(--base07) !important;
+}
+
+/* Discord's in-app Light theme paints selected pills from brand primitives,
+   skipping the semantic tokens: --brand-160 is an unmapped near-white fill and
+   Stylix maps its --brand-560 text to base01. Reuse the reacted pair instead. */
+.theme-light {
+  --brand-160: var(--reaction-background-reacted-default) !important;
+  --brand-560: var(--reaction-text-reacted-default) !important;
 }
 
 /* Increase selection contrast over Stylix's base02 highlight. */
