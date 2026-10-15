@@ -1,10 +1,15 @@
 {
   config,
   pkgs,
-  nixpkgs-unstable,
+  inputs,
+  system,
   ...
 }:
 let
+  # upstream's source fileset drops ./script, which packages/cli's build imports
+  opencode = inputs.opencode.packages.${system}.opencode.overrideAttrs (_: {
+    src = inputs.opencode.outPath;
+  });
   seo = pkgs.callPackage ../seo/package.nix { };
   colors = config.lib.stylix.colors.withHashtag;
 in
@@ -16,7 +21,7 @@ in
 
   programs.opencode = {
     enable = true;
-    package = nixpkgs-unstable.opencode;
+    package = opencode;
     settings = {
       mcp.seo = {
         type = "local";

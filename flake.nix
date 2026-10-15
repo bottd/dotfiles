@@ -50,13 +50,11 @@
     };
     niri.url = "github:sodiboo/niri-flake";
     mac-app-util = {
-      # Pinned to nixos-25.11 (sbcl 2.5.10) instead of following our nixos-26.05:
-      # 26.05's sbcl 2.6.4 breaks cl-nix-lite's fare-quasiquote build
       url = "github:hraban/mac-app-util";
-      inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Keeps its own nixpkgs pin so its cachix cache stays hit.
     claude-code.url = "github:sadjow/claude-code-nix";
+    opencode.url = "github:anomalyco/opencode/v2.0.29";
   };
 
   outputs =
