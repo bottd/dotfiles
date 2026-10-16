@@ -21,6 +21,13 @@ in
   xdg.configFile."opencode/cli.json".source = (pkgs.formats.json { }).generate "opencode-cli.json" {
     "$schema" = "https://opencode.ai/v2/cli.json";
     theme.name = "stylix";
+    diffs.wrap = "word";
+    session = {
+      sidebar = "auto";
+      scrollbar = false;
+      thinking = "hide";
+    };
+    animations = true;
   };
 
   programs.opencode = {

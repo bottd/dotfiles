@@ -764,11 +764,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1791681241,
-        "narHash": "sha256-C/8PIONtGasAcP9hZsr5mJIztQyx4FI9AayPkzhOtDM=",
+        "lastModified": 1792111133,
+        "narHash": "sha256-UGPRL5Lo+QTvQC1s5IPd+NIhDF48Zd6eKuzjbFIcFeI=",
         "owner": "different-name",
         "repo": "steam-config-nix",
-        "rev": "cc74c24818e1be3d1a80442ba20b1e1feb8276e6",
+        "rev": "ae75eb33cfd73929f519882cc8ec8294bfdc3c0d",
         "type": "github"
       },
       "original": {
