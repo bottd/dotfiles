@@ -14,6 +14,10 @@
       layout = {
         background-color = "#ffffff";
         gaps = 0;
+        # Zero gaps leave the plate offset nowhere to land but on the
+        # neighbouring window, and e-ink renders its alpha as mud.
+        shadow.enable = false;
+        border.inactive.color = "#${config.lib.stylix.colors.base07}";
       };
       # Don't drag the cursor across the panel on keyboard focus changes.
       input.warp-mouse-to-focus.enable = false;

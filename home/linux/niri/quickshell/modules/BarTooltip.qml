@@ -18,8 +18,10 @@ PopupWindow {
     visible: (root.shown || root.pinned) && root.text !== ""
     grabFocus: false
     color: "transparent"
-    implicitWidth: Math.min(label.implicitWidth + 16, 360)
-    implicitHeight: Math.min(label.implicitHeight + 12, 180)
+    readonly property int padX: Math.round(theme.fontSize * 0.67) // 8
+    readonly property int padY: Math.round(theme.fontSize / 2) // 6
+    implicitWidth: Math.min(label.implicitWidth + padX * 2, theme.fontSize * 30)
+    implicitHeight: Math.min(label.implicitHeight + padY * 2, theme.fontSize * 15)
 
     anchor {
         window: root.anchorItem.QsWindow.window
@@ -27,7 +29,7 @@ PopupWindow {
         adjustment: PopupAdjustment.Slide | PopupAdjustment.ResizeY
 
         onAnchoring: {
-            const position = root.anchorItem.QsWindow.contentItem.mapFromItem(root.anchorItem, root.anchorItem.width / 2 - root.width / 2, -root.height - 6);
+            const position = root.anchorItem.QsWindow.contentItem.mapFromItem(root.anchorItem, root.anchorItem.width / 2 - root.width / 2, -root.height - root.padY);
             anchor.rect.x = position.x;
             anchor.rect.y = position.y;
         }
@@ -55,22 +57,48 @@ PopupWindow {
         onTriggered: root.pinned = false
     }
 
+    onVisibleChanged: {
+        if (!visible || !root.theme.animationsEnabled)
+            return;
+        tag.progress = 0;
+        tagPrint.restart();
+    }
+
+    NumberAnimation {
+        id: tagPrint
+        target: tag
+        property: "progress"
+        to: 1
+        duration: 160
+        easing.type: Easing.OutCubic
+    }
+
     Rectangle {
+        id: tag
+
+        // Caption tags print in like the panels; they vanish without a lift.
+        property real progress: 1
+
         anchors.fill: parent
-        radius: 5
-        color: root.theme.surface
-        border.color: root.theme.border
-        border.width: 1
+        layer.enabled: tagPrint.running
+        layer.smooth: false
+        layer.effect: PrintEffect {
+            progress: tag.progress
+        }
+        radius: root.theme.radius
+        // Reversed out: paper type on an ink block, like a printed caption tag.
+        color: root.theme.ink
         clip: true
 
         Text {
             id: label
 
             anchors.centerIn: parent
-            width: parent.width - 16
-            height: Math.min(implicitHeight, parent.height - 12)
+            width: parent.width - root.padX * 2
+            height: Math.min(implicitHeight, parent.height - root.padY * 2)
             text: root.text
-            color: root.theme.textPrimary
+            textFormat: Text.PlainText
+            color: root.theme.background
             font.family: root.theme.fontFamily
             font.pixelSize: root.theme.fontSize - 1
             wrapMode: Text.Wrap

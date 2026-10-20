@@ -1,7 +1,9 @@
 {
+  config,
   lib,
   pkgs,
   nixpkgs-unstable,
+  hostName,
   ...
 }:
 {
@@ -35,6 +37,19 @@
       shell-integration = "none";
 
       background-opacity = 1.0;
+
+      # Dither Press: the cursor is the accent plate, and the grid sits inside
+      # a narrow print margin instead of running to the trim.
+      cursor-style = "block";
+      cursor-style-blink = false;
+      cursor-color = "#${
+        if hostName == "eink" then config.lib.stylix.colors.base07 else config.lib.stylix.colors.base09
+      }";
+      cursor-text = "#${config.lib.stylix.colors.base00}";
+      window-padding-x = 8;
+      window-padding-y = 6;
+      window-padding-balance = true;
+      window-padding-color = "extend";
 
       gtk-titlebar = true;
 

@@ -8,13 +8,26 @@ RowLayout {
 
     required property var parentWindow
     required property var theme
+    property bool overlayOpen: false
+    onOverlayOpenChanged: {
+        if (overlayOpen)
+            trayMenu.close();
+    }
 
-    spacing: 8
+    spacing: Math.round(theme.fontSize / 3) // 4
+
+    TrayMenu {
+        id: trayMenu
+        screen: root.parentWindow.screen
+        theme: root.theme
+    }
 
     Repeater {
         model: SystemTray.items
 
-        delegate: Rectangle {
+        // Icons keep their own colour (DESIGN.md: App Identity Exception);
+        // the slug around them speaks press. Attention prints a danger plate.
+        delegate: Item {
             id: trayItem
 
             required property var modelData
@@ -24,20 +37,36 @@ RowLayout {
 
             implicitWidth: root.theme.controlSize
             implicitHeight: root.theme.controlSize
-            radius: 4
-            color: trayMouse.pressed ? root.theme.surfacePressed : (trayMouse.containsMouse || needsAttention ? root.theme.surfaceHover : "transparent")
-            border.color: trayMouse.containsMouse ? root.theme.focusRing : (needsAttention ? root.theme.danger : "transparent")
-            border.width: 1
-            opacity: modelData.status === Status.Passive ? 0.65 : 1
             Accessible.role: Accessible.Button
-            Accessible.name: itemName
+            Accessible.name: itemName + (needsAttention ? ", needs attention" : "")
 
-            IconImage {
-                anchors.centerIn: parent
-                implicitWidth: root.theme.iconSize
-                implicitHeight: root.theme.iconSize
-                source: modelData.icon
-                opacity: trayMouse.pressed ? 0.65 : 1
+            Rectangle {
+                visible: trayItem.needsAttention
+                x: root.theme.plateOffset
+                y: root.theme.plateOffset
+                width: slug.width
+                height: slug.height
+                color: root.theme.danger
+            }
+
+            Rectangle {
+                id: slug
+
+                x: trayMouse.pressed ? root.theme.plateOffset : 0
+                y: x
+                width: parent.width - root.theme.plateOffset
+                height: parent.height - root.theme.plateOffset
+                radius: root.theme.radius
+                color: root.theme.background
+                border.color: trayItem.needsAttention ? root.theme.danger : root.theme.ink
+                border.width: trayMouse.containsMouse || trayItem.needsAttention ? root.theme.ruleWidth : 0
+
+                IconImage {
+                    anchors.centerIn: parent
+                    implicitWidth: root.theme.iconSize
+                    implicitHeight: root.theme.iconSize
+                    source: trayItem.modelData.icon
+                }
             }
 
             MouseArea {
@@ -50,9 +79,8 @@ RowLayout {
                 // An icon-only tray item's name exists nowhere but its tooltip.
                 onPressAndHold: trayTip.pinned = true
                 onClicked: function (mouse) {
-                    if (modelData.hasMenu && (mouse.button === Qt.LeftButton || mouse.button === Qt.RightButton)) {
-                        const point = root.parentWindow.contentItem.mapFromItem(parent, mouse.x, mouse.y);
-                        modelData.display(root.parentWindow, point.x, point.y);
+                    if (modelData.hasMenu && (modelData.onlyMenu || mouse.button === Qt.RightButton)) {
+                        trayMenu.show(modelData);
                     } else if (mouse.button === Qt.MiddleButton)
                         modelData.secondaryActivate();
                     else

@@ -18,7 +18,7 @@ RowLayout {
     signal backlightClicked
     signal backlightWheel(bool increase)
 
-    spacing: 8
+    spacing: Math.round(theme.fontSize / 3) // 4
 
     function toneColor(tone) {
         if (tone === "positive")
@@ -96,53 +96,78 @@ RowLayout {
         font.pixelSize: root.theme.fontSize
     }
 
-    component StatusButton: Rectangle {
+    // A slug set straight on the bar's paper. Hover reverses it out of ink
+    // over an off-register plate; a press drops the face onto that plate.
+    // Tone rides as a leading shape (circle positive, diamond warning, square
+    // danger) so it reads on grayscale eink; danger also keylines the slug.
+    component StatusButton: Item {
         id: control
 
         property string text: ""
         property string description: text
         property bool wheelEnabled: false
         property bool interactive: true
+        property real wheelRemainder: 0
         property string tone: "neutral"
+        readonly property bool toned: tone !== "neutral" && tone !== "muted"
+        readonly property bool inverted: interactive && buttonMouse.containsMouse
+        readonly property int marker: Math.max(5, Math.round(root.theme.fontSize / 2.4)) // 5
         signal activated
         signal scrolled(bool increase)
 
-        implicitWidth: label.implicitWidth + 12
+        implicitWidth: face.implicitWidth + root.theme.plateOffset
         implicitHeight: root.theme.controlSize
-        radius: 4
-        // Hover feedback is gated on `interactive` so the battery chip stops
-        // presenting itself as a button that does nothing when clicked.
-        color: control.interactive && buttonMouse.pressed ? root.theme.surfacePressed : (control.interactive && buttonMouse.containsMouse ? root.theme.surfaceHover : root.theme.surface)
-        // A toned border always survives hover — inspecting a warning used to
-        // erase the very cue being inspected. Hover is carried by the fill.
-        border.color: control.tone === "neutral" || control.tone === "muted" ? (control.interactive && buttonMouse.containsMouse ? root.theme.focusRing : root.theme.border) : root.toneColor(control.tone)
-        border.width: 1
         Accessible.role: control.interactive ? Accessible.Button : Accessible.StaticText
         Accessible.name: control.description
 
-        Text {
-            id: label
-
-            anchors.centerIn: parent
-            text: control.text
-            color: control.tone === "muted" ? root.theme.textMuted : root.theme.textPrimary
-            font.family: root.theme.fontFamily
-            font.pixelSize: root.theme.fontSize
+        Rectangle {
+            visible: control.inverted || control.tone === "danger"
+            x: root.theme.plateOffset
+            y: root.theme.plateOffset
+            width: face.width
+            height: face.height
+            color: control.tone === "danger" ? root.theme.danger : root.theme.plate
         }
 
-        // Tone also carries a shape, not just a hue: circle positive, diamond
-        // warning, square danger. On the grayscale eink panel — and for anyone
-        // who can't separate amber from crimson — colour alone said nothing.
         Rectangle {
-            visible: control.tone !== "neutral" && control.tone !== "muted"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.margins: 3
-            width: 5
-            height: 5
-            radius: control.tone === "positive" ? 3 : (control.tone === "danger" ? 0 : 1)
-            rotation: control.tone === "warning" ? 45 : 0
-            color: root.toneColor(control.tone)
+            id: face
+
+            readonly property bool down: control.interactive && buttonMouse.pressed
+
+            x: down ? root.theme.plateOffset : 0
+            y: down ? root.theme.plateOffset : 0
+            implicitWidth: content.implicitWidth + root.theme.fontSize
+            width: implicitWidth
+            height: parent.height - root.theme.plateOffset
+            radius: root.theme.radius
+            color: control.inverted ? root.theme.ink : root.theme.background
+            border.color: control.tone === "danger" ? root.theme.danger : root.theme.ink
+            border.width: control.inverted || control.tone === "danger" ? root.theme.ruleWidth : 0
+
+            Row {
+                id: content
+
+                anchors.centerIn: parent
+                spacing: Math.round(root.theme.fontSize / 2.4) // 5
+
+                Rectangle {
+                    visible: control.toned
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: control.marker
+                    height: control.marker
+                    radius: control.tone === "positive" ? width / 2 : 0
+                    rotation: control.tone === "warning" ? 45 : 0
+                    color: control.inverted ? root.theme.background : root.toneColor(control.tone)
+                }
+
+                Text {
+                    text: control.text
+                    textFormat: Text.PlainText
+                    color: control.inverted ? root.theme.background : (control.tone === "muted" ? root.theme.textMuted : root.theme.textPrimary)
+                    font.family: root.theme.fontFamily
+                    font.pixelSize: root.theme.fontSize
+                }
+            }
         }
 
         MouseArea {
@@ -159,12 +184,21 @@ RowLayout {
                     tip.pinned = !tip.pinned;
             }
             onPressAndHold: tip.pinned = true
-            onExited: tip.pinned = false
             onWheel: function (wheel) {
-                if (control.wheelEnabled)
-                    control.scrolled(wheel.angleDelta.y > 0);
-                else
+                if (!control.wheelEnabled) {
                     wheel.accepted = false;
+                    return;
+                }
+                if (wheel.phase === Qt.ScrollBegin)
+                    control.wheelRemainder = 0;
+                control.wheelRemainder += wheel.angleDelta.y;
+                while (Math.abs(control.wheelRemainder) >= 120) {
+                    const increase = control.wheelRemainder > 0;
+                    control.scrolled(increase);
+                    control.wheelRemainder += increase ? -120 : 120;
+                }
+                if (wheel.phase === Qt.ScrollEnd)
+                    control.wheelRemainder = 0;
             }
         }
 
@@ -219,7 +253,20 @@ RowLayout {
         tone: root.batteryTone()
     }
 
-    StatusLabel {
-        text: Qt.formatDateTime(root.now, "ddd, MMM d at hh:mm")
+    // Date set muted, time set bold: the bar's one typographic moment.
+    Row {
+        Layout.leftMargin: Math.round(root.theme.fontSize / 2) // 6
+        spacing: Math.round(root.theme.fontSize / 2) // 6
+        Accessible.role: Accessible.StaticText
+        Accessible.name: Qt.formatDateTime(root.now, "dddd, MMMM d, h:mm AP")
+
+        StatusLabel {
+            text: Qt.formatDateTime(root.now, "ddd MMM d")
+            color: root.theme.textMuted
+        }
+        StatusLabel {
+            text: Qt.formatTime(root.now, "h:mm AP")
+            font.bold: true
+        }
     }
 }

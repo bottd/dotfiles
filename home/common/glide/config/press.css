@@ -1,0 +1,78 @@
+/* Dither Press browser chrome.
+ *
+ * Colors come from press-palette.css, which Home Manager writes from the
+ * active Stylix scheme. Same rules as the desktop: square trims, ink
+ * keylines, and the accent plate printed off-register behind whatever has
+ * focus. No blur, no rounded pills. */
+
+:root {
+  --toolbarbutton-border-radius: 0px !important;
+  --border-radius-small: 0px !important;
+  --border-radius-medium: 0px !important;
+  --arrowpanel-border-radius: 0px !important;
+}
+
+/* Tabs (vertical, sidebar.revamp). The selected tab is the stamped chip. */
+.tabbrowser-tab .tab-background {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-background {
+  background: var(--press-hover) !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background: var(--press-paper) !important;
+  outline: 2px solid var(--press-ink) !important;
+  outline-offset: -2px !important;
+  box-shadow: 3px 3px 0 var(--press-plate) !important;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  font-weight: 600 !important;
+}
+
+/* Address bar: a ruled field at rest, inked and plated while typing. */
+.urlbar-background {
+  border-radius: 0 !important;
+  border: 1px solid var(--press-rule) !important;
+  background: var(--press-paper) !important;
+  box-shadow: none !important;
+}
+
+#urlbar[focused] > .urlbar-background {
+  border-color: var(--press-ink) !important;
+  outline: none !important;
+  box-shadow: 3px 3px 0 var(--press-plate) !important;
+}
+
+/* Selected result is reversed out, like the bar's tooltips. */
+.urlbarView-row[selected] > .urlbarView-row-inner {
+  border-radius: 0 !important;
+  background: var(--press-ink) !important;
+  color: var(--press-paper) !important;
+}
+
+.urlbarView-row[selected] > .urlbarView-row-inner * {
+  color: inherit !important;
+}
+
+#urlbar-input::selection {
+  background: var(--press-plate);
+  color: var(--press-paper);
+}
+
+/* Menus and panels: trimmed cards with an ink keyline. */
+menupopup,
+panel {
+  --panel-border-radius: 0px !important;
+  --panel-border-color: var(--press-ink) !important;
+}
+
+.urlbar-icon,
+.urlbar-page-action,
+.toolbarbutton-1 > .toolbarbutton-icon,
+.toolbarbutton-1 > .toolbarbutton-badge-stack {
+  border-radius: 0 !important;
+}

@@ -20,10 +20,10 @@
   (cond
     (nil? s) {:text "󰦞" :tooltip "tailscale: daemon down"}
     (not= backend "Running")
-    {:text "󰦞 off"
+    {:text "󰦞 tailscale off"
      :tooltip (string "tailscale: " (string/ascii-lower (or backend "unknown")))
      :class "disconnected"}
-    (nil? exit) {:text "󰦞 off" :tooltip "vpn: no exit node" :class "disconnected"}
+    (nil? exit) {:text "󰦞 exit off" :tooltip "vpn: no exit node" :class "disconnected"}
     (not (get exit :Online))
     {:text "󰦞 offline"
      :tooltip (string "vpn: exit node offline · " (place (get peer :HostName)))
@@ -47,6 +47,7 @@
              (get (status-json (merge running {:ExitNodeStatus {:Online true}})) :tooltip)))
   (assert (= "failed" (get (status-json (merge running {:ExitNodeStatus {:Online false}})) :class)))
   (assert (= "disconnected" (get (status-json running) :class)))
+  (assert (= "󰦞 exit off" (get (status-json running) :text)))
   (assert (= "tailscale: stopped" (get (status-json {:BackendState "Stopped"}) :tooltip)))
   (assert (string/find "daemon down" (get (status-json nil) :tooltip)))
   (assert (= "vpn: connected · ?"

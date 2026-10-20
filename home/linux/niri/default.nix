@@ -22,6 +22,23 @@ let
     inherit (config.lib.stylix) colors;
   };
 
+  inherit (config.lib.stylix) colors;
+  shaders = import ./shaders.nix { inherit lib colors; };
+
+  # The QML modules plus the compiled print shader, so PrintEffect.qml can
+  # resolve it next to itself.
+  quickshellModules =
+    pkgs.runCommand "quickshell-modules" { nativeBuildInputs = [ pkgs.qt6.qtshadertools ]; }
+      ''
+        cp -r ${./quickshell/modules} $out
+        chmod -R u+w $out
+        qsb --glsl "100 es,120,150" --hlsl 50 --msl 12 \
+          -o $out/press-print.frag.qsb ${pkgs.writeText "press-print.frag" shaders.qtPrint}
+      '';
+
+  # Media keys change the level, then ask the shell to show it.
+  showLevel = kind: "qs ipc call levels ${kind}";
+
   journalNvim = pkgs.writeShellScript "quickshell-journal" ''
     chalet_dir="$HOME/chalet"
     journal_dir="$chalet_dir/journal"
@@ -29,8 +46,11 @@ let
     cd "$chalet_dir"
     export COLORTERM=truecolor
     export TERM=xterm-256color
-    exec ${lib.getExe config.programs.neovim.finalPackage} \
+    # Keep a shell parent: QMLTermWidget does not emit finished on CrashExit.
+    ${lib.getExe config.programs.neovim.finalPackage} \
+      -c 'lua vim.api.nvim_create_user_command("JournalToday", function() vim.cmd("keepalt hide edit " .. vim.fn.fnameescape(vim.fn.expand("~/chalet/journal/") .. os.date("%Y-%m-%d") .. ".norg")) end, {})' \
       "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
+    exit 0
   '';
 
 in
@@ -62,7 +82,7 @@ in
 
   xdg.configFile = {
     "quickshell/shell.qml".source = ./quickshell/shell.qml;
-    "quickshell/modules".source = ./quickshell/modules;
+    "quickshell/modules".source = quickshellModules;
     "quickshell/Theme.qml" = {
       text = ''
         import QtQuick
@@ -84,6 +104,19 @@ in
             readonly property color accent: "#${config.lib.stylix.colors.base09}"
             readonly property color textOnAccent: "#${config.lib.stylix.colors.base00}"
             readonly property color focusRing: "#${config.lib.stylix.colors.base09}"
+            // Dither Press: ink keylines, one accent plate printed off-register
+            // behind whatever is selected, square trims everywhere.
+            readonly property color ink: "#${config.lib.stylix.colors.base07}"
+            readonly property color plate: "#${config.lib.stylix.colors.base09}"
+            readonly property int radius: 0
+            readonly property int plateOffset: Math.max(2, Math.round(fontSize / 6))  // 2
+            readonly property int ruleWidth: Math.max(2, Math.round(fontSize / 6))
+            readonly property int pressOffset: Math.max(3, Math.round(fontSize / 4))
+            readonly property int headingSize: Math.round(fontSize * 1.4)
+            // Halftone band above the bar where its paper breaks up into the
+            // wallpaper. Its height is included in the bar's exclusive zone.
+            readonly property int seamHeight: Math.round(fontSize / 2)        // 6
+            readonly property int seamCell: 2
             // base0B/base0A are base16's green/yellow slots. The old light branch
             // used base0D (blue) and base0F (rose), which made "connected" read
             // informational and put warning closer in hue to danger (base08) than
@@ -100,12 +133,8 @@ in
             readonly property int barHeight: Math.round(fontSize * 2.7)      // 32
             readonly property int rowHeight: Math.round(fontSize * 2.5)      // 30
             readonly property int listRowHeight: Math.round(fontSize * 4)    // 48
-            readonly property int cardHeight: Math.round(fontSize * 4.7)     // 56
             readonly property int iconSize: Math.round(fontSize * 1.5)       // 18
             readonly property int listIconSize: Math.round(fontSize * 1.85)  // 22
-            readonly property int drawerHeight: Math.round(fontSize * 30)    // 360
-            readonly property int overlayWidth: Math.round(fontSize * 20)    // 240
-            readonly property int overlayHeight: Math.round(fontSize * 8)    // 96
             readonly property int overlayGap: Math.round(fontSize * 1.33)    // 16
             readonly property int overlayEdgeMargin: Math.round(fontSize * 10) // 120
             readonly property bool animationsEnabled: ${lib.boolToString features.animations}
@@ -131,6 +160,10 @@ in
       Description = "Quickshell desktop panel";
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
+      # Quickshell's hot reload keeps the modules directory's cached type list,
+      # so a switch that adds a component fails with "X is not a type". A
+      # changed module set restarts the service instead.
+      X-Restart-Triggers = [ "${quickshellModules}" ];
     };
     Service = {
       ExecStart = "${pkgs.quickshell}/bin/quickshell -c default";
@@ -148,8 +181,28 @@ in
     # `settings` (not raw `config`) because niri-flake's stylix target only
     # writes into `settings` — setting `config` would override it wholesale.
     # niri reloads on rebuild-switch; no restart needed.
+    # Dither Press: the desktop is a print shop. Ink (base07) on paper
+    # (base00), one spot plate (base09). Depth is plate misregistration — hard
+    # offset shadows, never blur — and the one moving moment is windows
+    # printing in and lifting out through the wallpaper's ordered dither.
     niri.settings = {
-      animations.enable = features.animations;
+      animations = {
+        enable = features.animations;
+        window-open = {
+          kind.easing = {
+            duration-ms = 260;
+            curve = "ease-out-cubic";
+          };
+          custom-shader = shaders.open;
+        };
+        window-close = {
+          kind.easing = {
+            duration-ms = 200;
+            curve = "ease-out-quad";
+          };
+          custom-shader = shaders.close;
+        };
+      };
       input = {
         keyboard.xkb.layout = "us";
         touchpad = {
@@ -166,7 +219,9 @@ in
       layout = {
         # mkDefault on the settings hosts actually override (see host/eink.nix),
         # so they can just assign instead of reaching for mkForce.
-        gaps = lib.mkDefault 8;
+        # 16 leaves room for the 8px plate offset without it touching the
+        # neighbouring column or the bar's halftone seam.
+        gaps = lib.mkDefault 16;
         center-focused-column = "never";
         preset-column-widths = [
           { proportion = 0.33333; }
@@ -177,16 +232,55 @@ in
         # Open full width — no half-empty screen with a lone window. Mod+R
         # cycles down to ⅓/½/⅔ when tiling two side by side.
         default-column-width.proportion = 1.0;
-        # focus-ring / border colors come from stylix (niri-flake stylix target),
-        # which points the active border at base0D (blue) with mkDefault — a plain
-        # assignment wins. base09 (burnt orange) matches the bar's accent.
-        border.active.color = "#${config.lib.stylix.colors.base09}";
+        # focus-ring / border colors come from stylix (niri-flake stylix target)
+        # with mkDefault — plain assignments win. Focus is carried twice: an ink
+        # keyline and the accent plate printed off-register behind it.
+        border = {
+          # 4, not 2: a 2px keyline disappeared against the dithered
+          # wallpaper on the 1440p panels.
+          width = 4;
+          active.color = "#${colors.base07}";
+          inactive.color = lib.mkDefault "#${colors.base02}";
+          urgent.color = "#${colors.base08}";
+        };
+        shadow = {
+          enable = lib.mkDefault true;
+          offset = {
+            x = 8;
+            y = 8;
+          };
+          softness = 0;
+          spread = 0;
+          color = "#${colors.base09}";
+          inactive-color = "#${colors.base03}55";
+        };
+        insert-hint.display.color = "#${colors.base09}80";
+        tab-indicator = {
+          width = 4;
+          gap = 4;
+          corner-radius = 0;
+          active.color = "#${colors.base09}";
+          inactive.color = "#${colors.base03}";
+          urgent.color = "#${colors.base08}";
+        };
         # Empty-workspace + overview backdrop have no stylix target, so with
         # image = null they'd fall back to niri's gray — wire them by hand.
         background-color = lib.mkDefault "#${config.lib.stylix.colors.base00}";
       };
 
-      overview.backdrop-color = "#${config.lib.stylix.colors.base01}";
+      # Overview stacks workspaces like proofs on the drying rack.
+      overview = {
+        backdrop-color = "#${colors.base01}";
+        workspace-shadow = {
+          offset = {
+            x = 10;
+            y = 10;
+          };
+          softness = 0;
+          spread = 0;
+          color = "#${colors.base07}30";
+        };
+      };
 
       # niri-layout (scripts/) rebalances landscape workspaces to even column
       # widths and turns portrait outputs into one vertical scrolling column.
@@ -205,20 +299,10 @@ in
       screenshot-path = "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png";
       hotkey-overlay.skip-at-startup = true;
 
+      # Square corners: a print has a trimmed edge, not a rounded one. Clipping
+      # stays on so apps that draw their own rounded CSD get trimmed square.
       window-rules = [
-        {
-          geometry-corner-radius =
-            let
-              r = 6.0;
-            in
-            {
-              top-left = r;
-              top-right = r;
-              bottom-left = r;
-              bottom-right = r;
-            };
-          clip-to-geometry = true;
-        }
+        { clip-to-geometry = true; }
       ];
 
       binds =
@@ -283,15 +367,15 @@ in
           # Media / volume / brightness
           "XF86AudioRaiseVolume" = {
             allow-when-locked = true;
-            action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+";
+            action = spawn "sh" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+; ${showLevel "volume"}";
           };
           "XF86AudioLowerVolume" = {
             allow-when-locked = true;
-            action = spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-";
+            action = spawn "sh" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-; ${showLevel "volume"}";
           };
           "XF86AudioMute" = {
             allow-when-locked = true;
-            action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle";
+            action = spawn "sh" "-c" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${showLevel "volume"}";
           };
           "XF86AudioMicMute" = {
             allow-when-locked = true;
@@ -299,11 +383,11 @@ in
           };
           "XF86MonBrightnessUp" = {
             allow-when-locked = true;
-            action = spawn "brightness" "up";
+            action = spawn "sh" "-c" "brightness up; ${showLevel "brightness"}";
           };
           "XF86MonBrightnessDown" = {
             allow-when-locked = true;
-            action = spawn "brightness" "down";
+            action = spawn "sh" "-c" "brightness down; ${showLevel "brightness"}";
           };
           "XF86AudioPlay" = {
             allow-when-locked = true;
@@ -345,7 +429,21 @@ in
 
   };
 
-  services.mako.enable = features.desktopApps;
+  services.mako = {
+    enable = features.desktopApps;
+    # Stylix colors the notification; these set it as a trimmed print card
+    # with an ink keyline, matching the bar's popups.
+    settings = {
+      border-radius = 0;
+      border-size = 2;
+      border-color = lib.mkForce "#${colors.base07}";
+      "urgency=low".border-color = lib.mkForce "#${colors.base07}";
+      "urgency=normal".border-color = lib.mkForce "#${colors.base07}";
+      "urgency=critical".border-color = lib.mkForce "#${colors.base08}";
+      padding = "10,14";
+      margin = "12";
+    };
+  };
   # NetworkManager and Blueman provide tray applets; Quickshell renders their
   # menus in the panel and keeps the click interaction in the tray.
   # The polkit agent comes from niri-flake (niri-flake-polkit / polkit-kde).

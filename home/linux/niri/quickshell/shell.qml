@@ -54,6 +54,21 @@ ShellRoot {
             tooltip: root.audioReady ? "Volume " + Math.round(root.volumeLevel * 100) + "%" + (root.volumeMuted ? " · muted" : "") : "Audio unavailable"
         })
     readonly property var battery: UPower.devices.values.find(device => device.isLaptopBattery)
+    onAudioReadyChanged: {
+        if (!audioReady)
+            volumeOpen = false;
+    }
+    Connections {
+        target: Quickshell
+        function onScreensChanged() {
+            if (!Quickshell.screens.includes(root.drawerScreen))
+                root.drawerOpen = false;
+            if (!Quickshell.screens.includes(root.volumeScreen))
+                root.volumeOpen = false;
+            if (!Quickshell.screens.includes(root.brightnessScreen))
+                root.brightnessOpen = false;
+        }
+    }
 
     Theme {
         id: shellTheme
@@ -87,7 +102,38 @@ ShellRoot {
         onTriggered: root.refreshBrightness()
     }
 
+    function focusedScreen() {
+        return Quickshell.screens.find(screen => screen.name === root.focusedOutput) || Quickshell.screens[0];
+    }
+
+    // Media keys show a level without taking focus; KeyOverlay opens it to
+    // drive from the keyboard.
+    function showLevel(kind, keyboard) {
+        const screen = root.focusedScreen();
+        if (kind === "brightness") {
+            root.refreshBrightness();
+            if (!root.backlightAvailable)
+                return;
+            root.volumeOpen = false;
+            brightnessPopup.keyboardDriven = keyboard;
+            root.brightnessScreen = screen;
+            root.brightnessOpen = true;
+            brightnessPopup.poke();
+        } else {
+            if (!root.audioReady)
+                return;
+            root.brightnessOpen = false;
+            volumePopup.keyboardDriven = keyboard;
+            root.volumeScreen = screen;
+            root.volumeOpen = true;
+            volumePopup.poke();
+        }
+    }
+
     function toggleVolume(screen) {
+        if (!root.audioReady)
+            return;
+        volumePopup.keyboardDriven = false;
         const closing = root.volumeOpen && root.volumeScreen === screen;
         root.brightnessOpen = false;
         root.volumeScreen = screen;
@@ -98,6 +144,7 @@ ShellRoot {
         if (!root.backlightAvailable)
             return;
 
+        brightnessPopup.keyboardDriven = false;
         const closing = root.brightnessOpen && root.brightnessScreen === screen;
         root.volumeOpen = false;
         root.brightnessScreen = screen;
@@ -118,10 +165,7 @@ ShellRoot {
         if (!root.backlightAvailable)
             return;
 
-        root.brightnessRequestGeneration++;
-        root.requestedBrightnessLevel = Math.max(0, Math.min(1, root.brightnessLevel + (increase ? 0.05 : -0.05)));
-        root.pendingBrightnessCommands = root.pendingBrightnessCommands.concat([["brightness", increase ? "up" : "down"]]);
-        root.commitBrightness();
+        root.setBrightness(root.brightnessLevel + (increase ? 0.05 : -0.05));
     }
 
     function commitBrightness() {
@@ -168,6 +212,8 @@ ShellRoot {
     }
 
     function toggleDrawer(mode) {
+        root.volumeOpen = false;
+        root.brightnessOpen = false;
         if (root.drawerOpen) {
             root.drawerOpen = root.drawerMode !== mode;
             root.drawerMode = mode;
@@ -217,6 +263,16 @@ ShellRoot {
             const urgency = event.WorkspaceUrgencyChanged;
             root.workspaces = root.workspaces.map(workspace => workspace.id === urgency.id ? Object.assign({}, workspace, {
                     is_urgent: urgency.urgent
+                }) : workspace);
+            return;
+        }
+
+        // Keeps the workspace chips' occupied/empty state current; niri only
+        // resends the full workspace list on structural changes.
+        if (event.WorkspaceActiveWindowChanged) {
+            const change = event.WorkspaceActiveWindowChanged;
+            root.workspaces = root.workspaces.map(workspace => workspace.id === change.workspace_id ? Object.assign({}, workspace, {
+                    active_window_id: change.active_window_id
                 }) : workspace);
             return;
         }
@@ -321,8 +377,8 @@ ShellRoot {
         stdout: StdioCollector {
             onStreamFinished: {
                 const value = text;
-                const state = value.match(/modem\.generic\.state: (.+)/);
-                const signal = value.match(/modem\.generic\.signal-quality\.value: (.+)/);
+                const state = value.match(/modem\.generic\.state\s*:\s*(.+)/);
+                const signal = value.match(/modem\.generic\.signal-quality\.value\s*:\s*(.+)/);
                 const currentState = state ? state[1].trim() : "";
                 const signalValue = signal ? signal[1].trim() : "";
                 if (currentState === "") {
@@ -412,6 +468,17 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "levels"
+
+        function volume(): void {
+            root.showLevel("volume", false);
+        }
+        function brightness(): void {
+            root.showLevel("brightness", false);
+        }
+    }
+
+    IpcHandler {
         target: "key-overlay"
 
         function toggle(): void {
@@ -420,14 +487,16 @@ ShellRoot {
     }
 
     Modules.VolumePopup {
+        id: volumePopup
+
         screen: root.volumeScreen || Quickshell.screens[0]
         theme: shellTheme
-        visible: root.volumeOpen
+        open: root.volumeOpen
         level: root.volumeLevel
         muted: root.volumeMuted
         onSetVolume: level => {
             if (root.audioReady)
-                root.audioSink.audio.volume = Math.max(0, Math.min(1, level));
+                root.audioSink.audio.volume = Math.max(0, Math.min(Math.max(1, root.volumeLevel), level));
         }
         onToggleMute: {
             if (root.audioReady)
@@ -437,9 +506,11 @@ ShellRoot {
     }
 
     Modules.BrightnessPopup {
+        id: brightnessPopup
+
         screen: root.brightnessScreen || Quickshell.screens[0]
         theme: shellTheme
-        visible: root.brightnessOpen
+        open: root.brightnessOpen
         level: root.brightnessLevel
         onSetBrightness: level => root.setBrightness(level)
         onDismissed: root.brightnessOpen = false
@@ -449,18 +520,19 @@ ShellRoot {
         id: keyOverlay
 
         screen: root.drawerScreen || Quickshell.screens[0]
-        margins.bottom: root.barHeight
         theme: shellTheme
         open: root.drawerOpen
         mode: root.drawerMode
         now: clock.date
         onDismissed: root.drawerOpen = false
         onModeRequested: mode => root.drawerMode = mode
-        onShellActionRequested: action => {
+        onShellActionRequested: (action, keyboard) => {
             if (action === "vpn")
                 root.toggleVpn();
             else if (action === "network")
                 root.openNetworkSettings();
+            else if (action === "volume" || action === "brightness")
+                root.showLevel(action, keyboard);
         }
     }
 
@@ -475,7 +547,7 @@ ShellRoot {
             anchors.left: true
             anchors.right: true
             implicitHeight: 1
-            exclusiveZone: root.barHeight
+            exclusiveZone: root.barHeight + shellTheme.seamHeight
             color: "transparent"
         }
     }
@@ -492,27 +564,44 @@ ShellRoot {
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
-            implicitHeight: root.barHeight
+            // Reserve the whole painted area; the seam stays click-through.
+            implicitHeight: root.barHeight + shellTheme.seamHeight
             exclusionMode: ExclusionMode.Ignore
             color: "transparent"
+            mask: Region {
+                item: barSurface
+            }
+
+            Modules.DitherSeam {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: shellTheme.seamHeight
+                cell: shellTheme.seamCell
+                color: shellTheme.background
+            }
 
             Rectangle {
-                anchors.fill: parent
+                id: barSurface
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: root.barHeight
                 color: shellTheme.background
 
                 Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
                     anchors.top: parent.top
-                    height: 1
-                    color: shellTheme.border
+                    width: parent.width
+                    height: shellTheme.ruleWidth
+                    color: shellTheme.ink
                 }
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 8
+                    anchors.leftMargin: Math.round(shellTheme.fontSize * 0.85) // 10
+                    anchors.rightMargin: Math.round(shellTheme.fontSize * 0.85) // 10
+                    spacing: Math.round(shellTheme.fontSize * 0.67) // 8
 
                     Modules.WorkspaceList {
                         workspaces: root.workspaces
@@ -521,9 +610,18 @@ ShellRoot {
                         onFocusWorkspace: index => root.activateWorkspace(bar.screen.name, index)
                     }
 
+                    Rectangle {
+                        Layout.fillHeight: true
+                        Layout.topMargin: shellTheme.ruleWidth * 3
+                        Layout.bottomMargin: shellTheme.ruleWidth * 2
+                        implicitWidth: shellTheme.ruleWidth
+                        color: shellTheme.ink
+                    }
+
                     Text {
                         Layout.fillWidth: true
                         text: root.windowTitle
+                        textFormat: Text.PlainText
                         elide: Text.ElideRight
                         color: shellTheme.textPrimary
                         font.family: shellTheme.fontFamily
@@ -531,8 +629,17 @@ ShellRoot {
                     }
 
                     Modules.SystemTray {
+                        overlayOpen: root.drawerOpen
                         parentWindow: bar
                         theme: shellTheme
+                    }
+
+                    Rectangle {
+                        Layout.fillHeight: true
+                        Layout.topMargin: shellTheme.ruleWidth * 3
+                        Layout.bottomMargin: shellTheme.ruleWidth * 2
+                        implicitWidth: shellTheme.ruleWidth
+                        color: shellTheme.ink
                     }
 
                     Modules.StatusModules {

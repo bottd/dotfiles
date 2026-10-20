@@ -10,6 +10,7 @@ Item {
     signal moved(real value)
 
     readonly property real clampedValue: Math.max(0, Math.min(1, root.value))
+    readonly property bool dragging: sliderMouse.pressed
 
     implicitHeight: root.theme.controlSize
     activeFocusOnTab: true
@@ -23,10 +24,10 @@ Item {
 
     Keys.onPressed: function (event) {
         if (event.key === Qt.Key_Left || event.key === Qt.Key_Down) {
-            root.moved(Math.max(0, root.clampedValue - 0.05));
+            root.moved(Math.max(0, root.value - 0.05));
             event.accepted = true;
         } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Up) {
-            root.moved(Math.min(1, root.clampedValue + 0.05));
+            root.moved(Math.min(Math.max(1, root.value), root.value + 0.05));
             event.accepted = true;
         }
     }
@@ -35,11 +36,11 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        height: 14
-        radius: 7
+        height: root.theme.controlSize
+        radius: root.theme.radius
         color: "transparent"
-        border.color: root.activeFocus ? root.theme.focusRing : "transparent"
-        border.width: 1
+        border.color: root.activeFocus ? root.theme.ink : "transparent"
+        border.width: root.theme.ruleWidth
     }
 
     Rectangle {
@@ -48,29 +49,31 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        height: 8
-        radius: 4
+        height: root.theme.fontSize
+        radius: root.theme.radius
         clip: true
-        color: sliderMouse.containsMouse ? root.theme.surfacePressed : root.theme.surfaceSelected
+        color: root.theme.background
+        border.color: root.theme.ink
+        border.width: root.theme.ruleWidth
 
         Rectangle {
             width: parent.width * root.clampedValue
-            height: parent.height
+            y: root.theme.ruleWidth
+            height: parent.height - root.theme.ruleWidth * 2
             radius: parent.radius
-            color: root.theme.accent
+            color: root.theme.ink
         }
     }
 
     Rectangle {
-        width: 12
-        height: 12
+        width: root.theme.fontSize * 1.5
+        height: root.theme.fontSize * 1.5
         x: Math.max(0, Math.min(root.width - width, root.width * root.clampedValue - width / 2))
         anchors.verticalCenter: parent.verticalCenter
-        radius: 6
-        color: root.theme.accent
-        border.color: root.theme.background
-        border.width: 1
-        opacity: sliderMouse.pressed ? 0.7 : 1
+        radius: root.theme.radius
+        color: sliderMouse.pressed ? root.theme.ink : root.theme.background
+        border.color: root.theme.ink
+        border.width: root.theme.ruleWidth * 2
     }
 
     MouseArea {

@@ -5,7 +5,8 @@
 # If a monitor comes up upside-down, swap rotation 270 <-> 90.
 { pkgs, ... }:
 let
-  wallpaper = ../../../../assets/wallpapers/lighthouse.png;
+  wallpaper = ../../../../assets/wallpapers/autumn-river.png;
+  portraitWallpaper = ../../../../assets/wallpapers/autumn-river-portrait.png;
 in
 {
   programs.niri.settings = {
@@ -45,7 +46,7 @@ in
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${wallpaper} -m fill";
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${wallpaper} -m fill -o DP-3 -i ${portraitWallpaper} -m fill";
       Restart = "on-failure";
     };
     Install.WantedBy = [ "graphical-session.target" ];

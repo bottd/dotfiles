@@ -11,6 +11,18 @@ glide.o.newtab_url = new URL(`file://${newtabPath}`).href;
 
 glide.keymaps.set("normal", "<leader>c", "config_reload");
 
+// Dither Press chrome: rules in press.css, palette generated from Stylix.
+Promise.all([
+  glide.fs.read("press-palette.css", "utf8"),
+  glide.fs.read("press.css", "utf8"),
+])
+  .then(([palette, rules]) =>
+    glide.styles.add(palette + rules, { id: "dither-press", overwrite: true }),
+  )
+  .catch((error) => {
+    console.error("Dither Press: failed to load chrome styles", error);
+  });
+
 glide.prefs.set("sidebar.revamp", true);
 glide.prefs.set("sidebar.verticalTabs", true);
 

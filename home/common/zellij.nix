@@ -21,7 +21,8 @@
       theme = "default";
       default_shell = "zsh";
       mouse_mode = true;
-      rounded_corners = true;
+      # Square pane frames to match niri's trimmed window corners.
+      ui.pane_frames.rounded_corners = false;
       show_startup_tips = false;
       show_release_notes = false;
       copy_clipboard = "system";
