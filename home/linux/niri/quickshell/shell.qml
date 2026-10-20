@@ -468,6 +468,14 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "web"
+
+        function toggle(): void {
+            root.toggleDrawer("web");
+        }
+    }
+
+    IpcHandler {
         target: "levels"
 
         function volume(): void {

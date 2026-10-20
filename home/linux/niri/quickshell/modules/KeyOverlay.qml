@@ -6,6 +6,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import QMLTermWidget 2.0
+import "tlds.js" as Tlds
 
 PanelWindow {
     id: root
@@ -26,6 +27,11 @@ PanelWindow {
     signal modeRequested(string mode)
     signal shellActionRequested(string action, bool keyboard)
     property bool pointerActivation: false
+    property var webSuggestions: []
+    property int webGeneration: 0
+    // The trimmed text suggestions were last asked for, so a trailing space
+    // doesn't drop the answer in flight and ask again.
+    property string webQuery: ""
 
     readonly property var menu: [
         {
@@ -131,18 +137,72 @@ PanelWindow {
             key: "s",
             label: "Screenshot",
             screenshot: true
+        },
+        {
+            key: "w",
+            label: "Web",
+            description: "Open a URL or search " + theme.searchName,
+            targetMode: "web"
         }
     ]
+    readonly property var modeText: ({
+            commands: {
+                heading: "COMMANDS",
+                searchName: "Search commands",
+                placeholder: "Search commands · / to type",
+                empty: "No matching commands · Esc clears the search"
+            },
+            launcher: {
+                heading: "APPLICATIONS",
+                searchName: "Search applications",
+                placeholder: "Search applications",
+                empty: "No matching applications · Esc clears the search"
+            },
+            web: {
+                heading: "WEB",
+                searchName: "URL or " + theme.searchName + " search",
+                placeholder: "URL or " + theme.searchName + " search",
+                empty: "Type a URL or a search"
+            },
+            journal: {
+                heading: "DAILY JOURNAL",
+                searchName: "",
+                placeholder: "",
+                empty: ""
+            }
+        })
     readonly property var activeItems: path.length ? path[path.length - 1].items : menu
-    readonly property var filteredCommands: activeItems.filter(item => (!item.application || findApplication(item.application)) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
+    // Each list is only computed in its own mode; the others would be rescored
+    // on every keystroke for nothing.
+    readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => (!item.application || findApplication(item.application)) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
     readonly property var filteredApplications: {
+        if (mode !== "launcher")
+            return [];
         const needle = search.text.trim().toLowerCase();
         return applicationIndex.map(entry => ({
                     entry: entry,
                     score: needle ? applicationScore(needle, entry) : 0
                 })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || applicationRecency(a.entry.id) - applicationRecency(b.entry.id) || a.entry.name.localeCompare(b.entry.name)).map(item => item.entry);
     }
-    readonly property var visibleItems: mode === "launcher" ? filteredApplications : filteredCommands
+    // The typed text always yields a row, so Enter works offline or before
+    // the engine answers; its suggestions fill in below as they arrive.
+    readonly property var webItems: {
+        const query = search.text.trim();
+        if (mode !== "web" || !query)
+            return [];
+        const address = webAddress(query);
+        const items = address ? [addressItem(address)] : [];
+        items.push(searchItem(query, "Search " + theme.searchName));
+        // A suggestion that is itself an address opens the page, as typing it would.
+        for (const suggestion of webSuggestions) {
+            if (suggestion.toLowerCase() === query.toLowerCase())
+                continue;
+            const suggested = webAddress(suggestion);
+            items.push(suggested ? addressItem(suggested) : searchItem(suggestion, theme.searchName + " suggestion"));
+        }
+        return items;
+    }
+    readonly property var visibleItems: mode === "launcher" ? filteredApplications : (mode === "web" ? webItems : filteredCommands)
     readonly property date monthStart: new Date(now.getFullYear(), now.getMonth(), 1)
     readonly property int leadingDays: (monthStart.getDay() + 6) % 7
     readonly property int daysInMonth: new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
@@ -192,6 +252,83 @@ PanelWindow {
     function applicationRecency(id) {
         const index = recentState.apps.indexOf(id);
         return index < 0 ? 1000000 : index;
+    }
+    // Anything with a space is a search. A scheme is kept as typed. Loopback,
+    // IPs, LAN names and a bare host:port get http:// (Glide's HTTPS-First
+    // still upgrades when it can); a dotted host gets https:// only when its
+    // last label is a real TLD, so flake.nix or node.js stay searches.
+    function webAddress(query) {
+        if (/\s/.test(query))
+            return "";
+        if (/^[a-z][a-z0-9+.-]*:\/\//i.test(query) || /^(about|view-source):/i.test(query))
+            return query;
+        if (/^(localhost|\d{1,3}(\.\d{1,3}){3}|\[[0-9a-f:.]+\]|[a-z0-9-]+(?=:\d))(:\d+)?([/?#].*)?$/i.test(query))
+            return "http://" + query;
+        const host = query.match(/^(?:[^\s.:/?#@\[\]]+\.)+([^\s.:/?#@\[\]]+)\.?(:\d+)?([/?#].*)?$/);
+        if (!host)
+            return "";
+        const tld = host[1].toLowerCase();
+        if (["local", "lan", "home", "internal", "localdomain"].includes(tld))
+            return "http://" + query;
+        return Tlds.tlds.has(tld) ? "https://" + query : "";
+    }
+    // Web rows carry their keycap glyph as `key`, like command rows do.
+    function addressItem(address) {
+        return {
+            key: "↗",
+            label: address.replace(/^https?:\/\//i, ""),
+            description: "Open in Glide",
+            url: address
+        };
+    }
+    function searchItem(query, description) {
+        return {
+            key: "?",
+            label: query,
+            description: description,
+            url: theme.searchUrl.replace("{searchTerms}", encodeURIComponent(query))
+        };
+    }
+    function resetWeb() {
+        suggestTimer.stop();
+        webGeneration++;
+        webSuggestions = [];
+        webQuery = "";
+    }
+    // Only web mode's onTextChanged starts the timer, and leaving the mode or
+    // closing stops it, so this only runs for live web text.
+    function fetchSuggestions() {
+        const query = search.text.trim();
+        const generation = ++webGeneration;
+        // Addresses never leave the machine: a pasted reset link or LAN URL
+        // is not a search.
+        if (!query || webAddress(query)) {
+            webSuggestions = [];
+            return;
+        }
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState !== XMLHttpRequest.DONE || generation !== root.webGeneration)
+                return;
+            let suggestions = [];
+            try {
+                const body = JSON.parse(request.responseText);
+                if (Array.isArray(body[1]))
+                    suggestions = body[1].filter(value => typeof value === "string").slice(0, 8);
+            } catch (error) {}
+            // Keep the highlight on the row it was on, not the index.
+            const selected = root.webItems[root.selectedIndex];
+            root.webSuggestions = suggestions;
+            root.selectedIndex = Math.max(0, selected ? root.webItems.findIndex(item => item.url === selected.url) : 0);
+        };
+        request.open("GET", theme.suggestUrl.replace("{searchTerms}", encodeURIComponent(query)));
+        request.send();
+    }
+    function openWeb(item) {
+        if (!open)
+            return;
+        Quickshell.execDetached(theme.browserCommand.concat([item.url]));
+        dismissed();
     }
     function clearDangerConfirmation() {
         dangerTimer.stop();
@@ -276,11 +413,13 @@ PanelWindow {
             return;
         if (mode === "launcher")
             launchApplication(item);
+        else if (mode === "web")
+            openWeb(item);
         else
             activate(item);
     }
     function focusCurrentMode() {
-        if (mode === "launcher")
+        if (mode === "launcher" || mode === "web")
             search.forceActiveFocus();
         else if (mode === "journal") {
             if (!journalStarted) {
@@ -371,6 +510,7 @@ PanelWindow {
 
     onOpenChanged: {
         clearDangerConfirmation();
+        resetWeb();
         if (open) {
             screenshotTimer.stop();
             presented = true;
@@ -395,6 +535,7 @@ PanelWindow {
         // A new mode is a fresh proof pulled over the same sheet.
         if (open)
             panel.printIn();
+        resetWeb();
         path = [];
         search.text = "";
         selectedIndex = 0;
@@ -417,6 +558,11 @@ PanelWindow {
     Timer {
         id: pointerGuard
         interval: Qt.styleHints.mouseDoubleClickInterval
+    }
+    Timer {
+        id: suggestTimer
+        interval: 150
+        onTriggered: root.fetchSuggestions()
     }
     Timer {
         id: screenshotTimer
@@ -497,7 +643,7 @@ PanelWindow {
                     }
                     Text {
                         Layout.fillWidth: true
-                        text: root.mode === "journal" ? "DAILY JOURNAL" : (root.mode === "launcher" ? "APPLICATIONS" : (root.path.length ? root.path.map(entry => entry.label).join(" / ").toUpperCase() : "COMMANDS"))
+                        text: root.path.length ? root.path.map(entry => entry.label).join(" / ").toUpperCase() : root.modeText[root.mode].heading
                         elide: Text.ElideRight
                         color: root.theme.ink
                         font.family: root.theme.fontFamily
@@ -530,8 +676,8 @@ PanelWindow {
                     id: search
                     Layout.fillWidth: true
                     visible: root.mode !== "journal"
-                    placeholderText: root.mode === "launcher" ? "Search applications" : "Search commands · / to type"
-                    Accessible.name: root.mode === "launcher" ? "Search applications" : "Search commands"
+                    placeholderText: root.modeText[root.mode].placeholder
+                    Accessible.name: root.modeText[root.mode].searchName
                     selectByMouse: true
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
@@ -549,6 +695,17 @@ PanelWindow {
                         root.selectedIndex = 0;
                         root.clearDangerConfirmation();
                         results.positionViewAtBeginning();
+                        // Drop in-flight answers for the old text and keep only
+                        // suggestions the new text still prefixes.
+                        const query = text.trim().toLowerCase();
+                        if (root.mode === "web" && query !== root.webQuery) {
+                            root.webQuery = query;
+                            root.webGeneration++;
+                            const kept = query ? root.webSuggestions.filter(value => value.toLowerCase().startsWith(query)) : [];
+                            if (kept.length !== root.webSuggestions.length)
+                                root.webSuggestions = kept;
+                            suggestTimer.restart();
+                        }
                     }
                     Keys.onPressed: event => root.handleKey(event, true)
                 }
@@ -570,24 +727,22 @@ PanelWindow {
                         required property var modelData
                         required property int index
                         readonly property bool application: root.mode === "launcher"
+                        readonly property bool web: root.mode === "web"
                         readonly property bool confirming: !!root.confirmationItem && root.confirmationItem.key === modelData.key
                         theme: root.theme
                         width: results.width - root.theme.fontSize
                         height: root.theme.listRowHeight + root.theme.pressOffset
                         selected: index === root.selectedIndex
                         dangerous: !!modelData.destructive
-                        Accessible.name: application ? modelData.name : modelData.label
-                        Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (modelData.description || "")
+                        Accessible.name: application ? modelData.name : (web ? modelData.label + ", " + modelData.description : modelData.label)
+                        Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (web ? "" : (modelData.description || ""))
                         onClicked: {
                             if (!root.open || pointerGuard.running)
                                 return;
                             pointerGuard.restart();
                             root.pointerActivation = true;
                             root.selectedIndex = index;
-                            if (application)
-                                root.launchApplication(modelData);
-                            else
-                                root.activate(modelData);
+                            root.launchSelected();
                             root.pointerActivation = false;
                             root.focusKeys();
                         }
@@ -646,7 +801,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         visible: root.visibleItems.length === 0
-                        text: (root.mode === "launcher" ? "No matching applications" : "No matching commands") + " · Esc clears the search"
+                        text: root.modeText[root.mode].empty
                         color: root.theme.textMuted
                         font.family: root.theme.fontFamily
                         font.pixelSize: root.theme.fontSize

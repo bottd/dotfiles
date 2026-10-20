@@ -34,10 +34,39 @@ let
         chmod -R u+w $out
         qsb --glsl "100 es,120,150" --hlsl 50 --msl 12 \
           -o $out/press-print.frag.qsb ${pkgs.writeText "press-print.frag" shaders.qtPrint}
+        # Top-level labels of the public suffix list, so the web panel can tell
+        # git.drake.bot (a URL) from flake.nix (a search) the way Glide does.
+        {
+          echo '.pragma library'
+          printf 'var tlds = new Set(['
+          awk '!/^\/\// && NF { n = split($1, p, "."); print tolower(p[n]) }' \
+            ${pkgs.publicsuffix-list}/share/publicsuffix/public_suffix_list.dat \
+            | sort -u | sed 's/.*/"&"/' | paste -sd,
+          echo ']);'
+        } > $out/tlds.js
       '';
 
   # Media keys change the level, then ask the shell to show it.
   showLevel = kind: "qs ipc call levels ${kind}";
+
+  scopeRun =
+    args:
+    [
+      "${pkgs.systemd}/bin/systemd-run"
+      "--user"
+      "--scope"
+      "--quiet"
+      "--collect"
+    ]
+    ++ args;
+
+  searchEngine =
+    let
+      engines = config.programs.glide-browser.policies.SearchEngines;
+    in
+    lib.findFirst (
+      engine: engine.Name == engines.Default
+    ) (throw "glide: default search engine ${engines.Default} is not in SearchEngines.Add") engines.Add;
 
   journalNvim = pkgs.writeShellScript "quickshell-journal" ''
     chalet_dir="$HOME/chalet"
@@ -140,16 +169,29 @@ in
             readonly property bool animationsEnabled: ${lib.boolToString features.animations}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
             readonly property var launcherCommand: ${
-              builtins.toJSON [
-                "${pkgs.systemd}/bin/systemd-run"
-                "--user"
-                "--scope"
-                "--quiet"
-                "--collect"
+              builtins.toJSON (scopeRun [
                 "--"
                 "${pkgs.gtk3}/bin/gtk-launch"
-              ]
+              ])
             }
+            readonly property var browserCommand: ${
+              builtins.toJSON (scopeRun [
+                # Otherwise the scope is named after the command line and the
+                # URL or search lands in the journal.
+                "--description=Glide"
+                "--"
+                (lib.getExe' config.programs.glide-browser.finalPackage "glide")
+                # glide.desktop passes this too; without it a cold start sets
+                # app_id glide-glide.
+                "--name"
+                "glide"
+                "--new-window"
+              ])
+            }
+            // Glide's default engine, so the web panel and the URL bar agree.
+            readonly property string searchName: ${builtins.toJSON searchEngine.Name}
+            readonly property string searchUrl: ${builtins.toJSON searchEngine.URLTemplate}
+            readonly property string suggestUrl: ${builtins.toJSON searchEngine.SuggestURLTemplate}
         }
       '';
     };
@@ -312,6 +354,8 @@ in
 
           "Mod+Return".action = spawn "ghostty";
           "Mod+D".action = spawn "qs" "ipc" "call" "launcher" "toggle";
+          # eink keeps Mod+B for foliate.
+          "Mod+B".action = lib.mkDefault (spawn "qs" "ipc" "call" "web" "toggle");
           "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
           # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
           "XF86Tools" = {
