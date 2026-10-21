@@ -4,5 +4,6 @@
     ./claude
     ./opencode
     ./seo
+    ./extensions
   ];
 }

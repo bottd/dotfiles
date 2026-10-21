@@ -55,6 +55,10 @@
     };
     claude-code.url = "github:sadjow/claude-code-nix";
     opencode.url = "github:anomalyco/opencode/v2.0.29";
+    impeccable = {
+      url = "github:pbakaus/impeccable";
+      flake = false;
+    };
   };
 
   outputs =

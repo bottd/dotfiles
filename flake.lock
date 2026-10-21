@@ -334,6 +334,22 @@
         "type": "github"
       }
     },
+    "impeccable": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792606274,
+        "narHash": "sha256-AhOmsvjD1Ap4Go+mlxgZl96Id9g37Iloy/YGFVq3EcA=",
+        "owner": "pbakaus",
+        "repo": "impeccable",
+        "rev": "1820a1e49c2e0f4a4b2f76d1b470dc0eec8ec5aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pbakaus",
+        "repo": "impeccable",
+        "type": "github"
+      }
+    },
     "mac-app-util": {
       "inputs": {
         "cl-nix-lite": "cl-nix-lite",
@@ -719,6 +735,7 @@
         "flake-parts": "flake-parts",
         "glide": "glide",
         "home-manager": "home-manager",
+        "impeccable": "impeccable",
         "mac-app-util": "mac-app-util",
         "niri": "niri",
         "nix-darwin": "nix-darwin",

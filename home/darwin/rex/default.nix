@@ -39,9 +39,7 @@ in
     '';
   };
 
-  # Same stub and hook `rex skill setup` writes; the guide itself comes from the CLI.
-  # OpenCode also loads skills from ~/.claude/skills.
-  home.file.".claude/skills/rex/SKILL.md".source = ./SKILL.md;
+  # Same hook `rex skill setup` writes; the skill stub lives in ai/extensions.
   claude.extraSettings.hooks.SessionStart = [
     {
       hooks = [
