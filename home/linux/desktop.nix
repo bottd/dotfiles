@@ -11,6 +11,7 @@
       glaxnimate
       inkscape
       krita
+      libreoffice
       losslesscut-bin
       mupdf
       openscad
@@ -33,6 +34,8 @@
 
     mimeApps.defaultApplications = {
       "application/pdf" = "sioyek.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "writer.desktop";
+      "application/msword" = "writer.desktop";
     };
 
     mimeApps.enable = true;
