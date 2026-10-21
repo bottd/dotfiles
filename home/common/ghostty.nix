@@ -2,24 +2,15 @@
   config,
   lib,
   pkgs,
-  nixpkgs-unstable,
   hostName,
   ...
 }:
 {
-  # Ghostty `command` option fails to launch zellij on darwin
-  # start zellij via zsh instead on darwin
-  programs.zsh.initContent = lib.optionalString pkgs.stdenv.isDarwin ''
-    if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-      ${nixpkgs-unstable.zellij}/bin/zellij
-    fi
-  '';
-
   programs.ghostty = {
     enable = true;
     package = if pkgs.stdenv.isLinux then pkgs.ghostty else null;
     settings = {
-      command = lib.mkIf pkgs.stdenv.isLinux "zellij";
+      command = lib.mkIf config.programs.zellij.enable "zellij";
       desktop-notifications = false;
 
       font-family = lib.mkForce "MonoLisa Variable";
