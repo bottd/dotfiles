@@ -468,6 +468,15 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "games"
+
+        function toggle(): void {
+            if (shellTheme.gamesListCommand.length)
+                root.toggleDrawer("games");
+        }
+    }
+
+    IpcHandler {
         target: "web"
 
         function toggle(): void {

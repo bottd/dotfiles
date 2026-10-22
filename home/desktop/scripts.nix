@@ -19,6 +19,12 @@ in
   # so it stays out of every generation's closure and is realised on demand via
   # `nix run .#tresorit-install` instead.
   home.packages = builtins.attrValues (
-    builtins.removeAttrs scripts ([ "tresorit-install" ] ++ lib.optional pkgs.stdenv.isDarwin "vpn")
+    builtins.removeAttrs scripts (
+      [ "tresorit-install" ]
+      ++ lib.optionals pkgs.stdenv.isDarwin [
+        "vpn"
+        "games"
+      ]
+    )
   );
 }

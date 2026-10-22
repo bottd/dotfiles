@@ -12,6 +12,13 @@ let
   aurelia = lib.optionalString features.gaming (
     lib.getExe inputs.aurelia.packages.${pkgs.stdenv.hostPlatform.system}.default
   );
+  # The games script reads aurelia from AURELIA; its list adds Steam's cached
+  # icons and its play reports a failed launch through mako.
+  games = lib.optionals features.gaming [
+    (lib.getExe' pkgs.coreutils "env")
+    "AURELIA=${aurelia}"
+    (lib.getExe (import ../../../scripts { inherit pkgs; }).games)
+  ];
 
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
@@ -194,15 +201,19 @@ in
                 "--new-window"
               ])
             }
-            readonly property string aurelia: ${builtins.toJSON aurelia}
+            readonly property var gamesListCommand: ${
+              builtins.toJSON (games ++ lib.optional features.gaming "list")
+            }
             readonly property var gameCommand: ${
               builtins.toJSON (
-                lib.optionals features.gaming (scopeRun [
-                  "--description=Aurelia"
-                  "--"
-                  aurelia
-                  "play"
-                ])
+                lib.optionals features.gaming (
+                  scopeRun [
+                    "--description=Games"
+                    "--"
+                  ]
+                  ++ games
+                  ++ [ "play" ]
+                )
               )
             }
             // Glide's default engine, so the web panel and the URL bar agree.
@@ -374,6 +385,9 @@ in
           # eink keeps Mod+B for foliate.
           "Mod+B".action = lib.mkDefault (spawn "qs" "ipc" "call" "web" "toggle");
           "Mod+Space".action = spawn "qs" "ipc" "call" "key-overlay" "toggle";
+          "Mod+G" = lib.mkIf features.gaming {
+            action = spawn "qs" "ipc" "call" "games" "toggle";
+          };
           # keyd calls this f13; the evdev/XKB mapping exposes it as XF86Tools.
           "XF86Tools" = {
             repeat = false;

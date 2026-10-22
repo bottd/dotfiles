@@ -23,6 +23,7 @@ PanelWindow {
     property var confirmationItem: null
     property double armedAt: 0
     readonly property var applicationIndex: DesktopEntries.applications.values
+    readonly property var steamEntry: findApplication("Steam") || null
     signal dismissed
     signal modeRequested(string mode)
     signal shellActionRequested(string action, bool keyboard)
@@ -44,6 +45,12 @@ PanelWindow {
             label: "Applications",
             description: "Find and launch an application",
             targetMode: "launcher"
+        },
+        {
+            key: "g",
+            label: "Games",
+            description: "Play an installed game",
+            targetMode: "games"
         },
         {
             key: "j",
@@ -89,12 +96,6 @@ PanelWindow {
                     key: "d",
                     label: "Equibop",
                     application: "Discord"
-                },
-                {
-                    key: "s",
-                    label: "Games",
-                    description: "Installed games · Ctrl+S opens Steam",
-                    targetMode: "games"
                 },
                 {
                     key: "b",
@@ -168,7 +169,7 @@ PanelWindow {
                 heading: "GAMES",
                 searchName: "Search games",
                 placeholder: "Search games",
-                empty: gamesFailed ? "Couldn't read the library · run aurelia list in a terminal" : (gamesLoading ? "Reading library…" : (games.length ? "No matching games · Esc clears the search" : "No installed games · Ctrl+S opens Steam"))
+                empty: gamesFailed && !games.length ? "Couldn't read the library · run games list in a terminal" : (gamesLoading && !games.length ? "Reading library…" : (games.length ? "No matching games · Esc clears the search" : "No installed games" + (steamEntry ? " · Ctrl+S opens Steam" : "")))
             },
             web: {
                 heading: "WEB",
@@ -186,7 +187,7 @@ PanelWindow {
     readonly property var activeItems: path.length ? path[path.length - 1].items : menu
     // Each list is only computed in its own mode; the others would be rescored
     // on every keystroke for nothing.
-    readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => (!item.application || findApplication(item.application)) && (item.targetMode !== "games" || theme.aurelia) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
+    readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => (!item.application || findApplication(item.application)) && (item.targetMode !== "games" || theme.gamesListCommand.length) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
     readonly property var filteredApplications: {
         if (mode !== "launcher")
             return [];
@@ -203,7 +204,7 @@ PanelWindow {
         return games.map(game => ({
                     game: game,
                     score: needle ? fuzzyScore(needle, game.label) : 0
-                })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || gameRecency(a.game.appId) - gameRecency(b.game.appId) || a.game.label.localeCompare(b.game.label)).map(item => item.game);
+                })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || gameRecency(a.game.appId) - gameRecency(b.game.appId) || a.game.sortName.localeCompare(b.game.sortName)).map(item => item.game);
     }
     // The typed text always yields a row, so Enter works offline or before
     // the engine answers; its suggestions fill in below as they arrive.
@@ -279,7 +280,7 @@ PanelWindow {
         return index < 0 ? 1000000 : index;
     }
     function refreshGames() {
-        if (!theme.aurelia || gamesProcess.running)
+        if (!theme.gamesListCommand.length || gamesProcess.running)
             return;
         gamesLoading = true;
         gamesFailed = false;
@@ -290,40 +291,50 @@ PanelWindow {
             const library = JSON.parse(text);
             if (!Array.isArray(library))
                 throw new Error("not a list");
-            games = library.filter(game => game.is_installed).map(game => {
+            // Keep the highlight on the game it was on, not the index: a
+            // refresh that adds or drops a title must not retarget Enter.
+            const selected = root.mode === "games" ? filteredGames[selectedIndex] : null;
+            games = library.map(game => {
                 const minutes = game.playtime_forever_minutes || 0;
                 const notes = [];
-                if (minutes)
+                if (minutes >= 60)
                     notes.push((minutes / 60).toFixed(minutes < 600 ? 1 : 0) + " h played");
                 if (game.is_family_shared)
                     notes.push("family shared");
                 return {
-                    key: "▶",
                     label: game.name,
+                    sortName: game.name.replace(/^the\s+/i, ""),
                     description: notes.join(" · "),
-                    appId: game.app_id
+                    appId: game.app_id,
+                    icon: game.icon || ""
                 };
             });
+            if (selected)
+                selectedIndex = Math.max(0, filteredGames.findIndex(game => game.appId === selected.appId));
         } catch (error) {
             gamesFailed = true;
         }
         gamesLoading = false;
     }
-    // `aurelia play` blocks until the game exits; the scope keeps it out of
-    // quickshell.service. Through Steam bridges to the host client so
-    // Steamworks multiplayer works.
+    // The theme icon Steam writes for a desktop shortcut is sharpest; its
+    // library cache has a 32px icon for every installed game.
+    function gameIcon(game) {
+        return Quickshell.iconPath("steam_icon_" + game.appId, true) || (game.icon ? "file://" + game.icon : Qt.resolvedUrl("application.svg"));
+    }
+    // `games play` notifies, then blocks on `aurelia play` until the game
+    // exits; the scope keeps it out of quickshell.service. Through Steam
+    // bridges to the host client so Steamworks multiplayer works.
     function launchGame(game, throughSteam) {
         if (!open)
             return;
         recentState.games = [game.appId].concat(recentState.games.filter(id => id !== game.appId)).slice(0, 8);
         recentFile.writeAdapter();
-        Quickshell.execDetached(theme.gameCommand.concat([String(game.appId)], throughSteam ? ["--steam"] : []));
+        Quickshell.execDetached(theme.gameCommand.concat([game.label, String(game.appId)], throughSteam ? ["--steam"] : []));
         dismissed();
     }
     function launchSteam() {
-        const entry = findApplication("Steam");
-        if (entry)
-            launchApplication(entry);
+        if (steamEntry)
+            launchApplication(steamEntry);
     }
     // Anything with a space is a search. A scheme is kept as typed. Loopback,
     // IPs, LAN names and a bare host:port get http:// (Glide's HTTPS-First
@@ -639,7 +650,7 @@ PanelWindow {
     }
     Process {
         id: gamesProcess
-        command: [root.theme.aurelia, "--json", "list", "--installed"]
+        command: root.theme.gamesListCommand
         stdout: StdioCollector {
             onStreamFinished: root.parseGames(text)
         }
@@ -746,6 +757,29 @@ PanelWindow {
                         font.pixelSize: root.theme.headingSize * 1.2
                         font.bold: true
                     }
+                    // A cached list stays usable while it refreshes, so its
+                    // freshness is said here rather than in the empty state.
+                    Row {
+                        visible: root.mode === "games" && root.games.length > 0 && (root.gamesLoading || root.gamesFailed)
+                        spacing: Math.round(root.theme.fontSize / 2.4)
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: gamesStatus.text
+                        Rectangle {
+                            visible: root.gamesFailed
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: Math.max(5, Math.round(root.theme.fontSize / 2.4))
+                            height: width
+                            color: root.theme.danger
+                        }
+                        Text {
+                            id: gamesStatus
+                            text: root.gamesFailed ? "LIBRARY NOT REFRESHED" : "REFRESHING…"
+                            color: root.gamesFailed ? root.theme.danger : root.theme.textMuted
+                            font.family: root.theme.fontFamily
+                            font.pixelSize: root.theme.fontSize - 2
+                            font.bold: root.gamesFailed
+                        }
+                    }
                     PressButton {
                         id: closeButton
                         theme: root.theme
@@ -824,6 +858,7 @@ PanelWindow {
                         required property int index
                         readonly property bool application: root.mode === "launcher"
                         readonly property bool web: root.mode === "web"
+                        readonly property bool game: root.mode === "games"
                         readonly property bool confirming: !!root.confirmationItem && root.confirmationItem.key === modelData.key
                         theme: root.theme
                         width: results.width - root.theme.fontSize
@@ -831,7 +866,7 @@ PanelWindow {
                         selected: index === root.selectedIndex
                         dangerous: !!modelData.destructive
                         Accessible.name: application ? modelData.name : (web ? modelData.label + ", " + modelData.description : modelData.label)
-                        Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (web ? "" : (modelData.description || ""))
+                        Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (web ? "" : (game ? [modelData.description, "Shift+Enter plays in Steam"].filter(Boolean).join(". ") : (modelData.description || "")))
                         onClicked: {
                             if (!root.open || pointerGuard.running)
                                 return;
@@ -850,15 +885,15 @@ PanelWindow {
                             spacing: root.theme.fontSize
                             PressKey {
                                 theme: root.theme
-                                visible: !result.application
+                                visible: !result.application && !result.game
                                 text: result.modelData.key || ""
                                 inverted: result.inverted
                             }
                             IconImage {
-                                visible: result.application
+                                visible: result.application || result.game
                                 implicitWidth: root.theme.listIconSize
                                 implicitHeight: root.theme.listIconSize
-                                source: result.application ? (Quickshell.iconPath(result.modelData.icon || "application-x-executable", true) || Qt.resolvedUrl("application.svg")) : ""
+                                source: result.application ? (Quickshell.iconPath(result.modelData.icon || "application-x-executable", true) || Qt.resolvedUrl("application.svg")) : (result.game ? root.gameIcon(result.modelData) : "")
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
@@ -1004,7 +1039,7 @@ PanelWindow {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.mode === "games" ? "↑ ↓  SELECT     ENTER  PLAY     SHIFT+ENTER  VIA STEAM     CTRL+S  STEAM     ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ") + (search.text ? "CLEAR" : "BACK"))
+                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.mode === "games" ? "ENTER  PLAY     SHIFT+ENTER  PLAY IN STEAM     " + (root.steamEntry ? "CTRL+S  OPEN STEAM     " : "") + "ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ") + (search.text ? "CLEAR" : "BACK"))
                     elide: Text.ElideRight
                     color: root.confirmationItem ? root.theme.danger : root.theme.textMuted
                     font.family: root.theme.fontFamily
