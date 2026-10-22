@@ -2,6 +2,7 @@
   programs = {
     git = {
       enable = true;
+      lfs.enable = true;
       settings = {
         user.email = "bottd@users.noreply.github.com";
         push = {
