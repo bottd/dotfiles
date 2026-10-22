@@ -118,7 +118,7 @@ in
     ]
     ++ lib.optionals features.desktopApps [
       pavucontrol
-      networkmanagerapplet # nm-connection-editor for the bar's on-click
+      networkmanagerapplet # nm-applet's secret agent, nm-connection-editor for the network panel
       xwayland-satellite # X11 apps; niri finds it on PATH and spawns it on demand
     ];
 
@@ -214,6 +214,16 @@ in
                   ++ games
                   ++ [ "play" ]
                 )
+              )
+            }
+            // Empty without desktop apps, which hides the network panel's editor row.
+            readonly property var networkEditorCommand: ${
+              builtins.toJSON (
+                lib.optionals features.desktopApps (scopeRun [
+                  "--description=Connection editor"
+                  "--"
+                  (lib.getExe' pkgs.networkmanagerapplet "nm-connection-editor")
+                ])
               )
             }
             // Glide's default engine, so the web panel and the URL bar agree.

@@ -38,6 +38,17 @@ PanelWindow {
     property var games: []
     property bool gamesLoading: false
     property bool gamesFailed: false
+    // Rows from `network list`, kept between opens like the game library.
+    property var networkItems: []
+    property bool networkLoaded: false
+    property bool networkFailed: false
+    property bool networkScanning: false
+    property bool networkRescanQueued: false
+    property string networkMessage: ""
+    property bool networkMessageOk: true
+    property string networkPending: ""
+    // A row waiting for a password or SIM PIN; the search field takes it.
+    property var secretItem: null
 
     readonly property var menu: [
         {
@@ -122,9 +133,9 @@ PanelWindow {
                 },
                 {
                     key: "n",
-                    label: "Network settings",
-                    description: "Open the connection editor",
-                    shellAction: "network"
+                    label: "Network",
+                    description: "Ethernet, Wi-Fi and mobile broadband",
+                    targetMode: "network"
                 }
             ]
         },
@@ -177,6 +188,12 @@ PanelWindow {
                 placeholder: "URL or " + theme.searchName + " search",
                 empty: "Type a URL or a search"
             },
+            network: {
+                heading: "NETWORK",
+                searchName: secretItem ? secretItem.secret : "Filter networks",
+                placeholder: secretItem ? secretItem.secret : "Filter networks · / to type",
+                empty: networkFailed && !networkItems.length ? "NetworkManager isn't answering · try nmcli in a terminal" : (!networkLoaded ? "Reading connections…" : "No matching networks · Esc clears the search")
+            },
             journal: {
                 heading: "DAILY JOURNAL",
                 searchName: "",
@@ -224,7 +241,23 @@ PanelWindow {
         }
         return items;
     }
-    readonly property var visibleItems: mode === "launcher" ? filteredApplications : (mode === "web" ? webItems : (mode === "games" ? filteredGames : filteredCommands))
+    // While a secret is being typed the field holds it, so it never filters.
+    readonly property var filteredNetwork: {
+        if (mode !== "network")
+            return [];
+        const items = networkItems.concat(theme.networkEditorCommand.length ? [
+            {
+                id: "editor",
+                key: "⚙",
+                label: "Connection editor",
+                description: "Hidden, enterprise, VPN and APN settings",
+                editor: true
+            }
+        ] : []);
+        const needle = secretItem ? "" : search.text.trim().toLowerCase();
+        return needle ? items.filter(item => fuzzyScore(needle, item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY) : items;
+    }
+    readonly property var visibleItems: mode === "launcher" ? filteredApplications : (mode === "web" ? webItems : (mode === "games" ? filteredGames : (mode === "network" ? filteredNetwork : filteredCommands)))
     readonly property date monthStart: new Date(now.getFullYear(), now.getMonth(), 1)
     readonly property int leadingDays: (monthStart.getDay() + 6) % 7
     readonly property int daysInMonth: new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
@@ -413,6 +446,84 @@ PanelWindow {
         Quickshell.execDetached(theme.browserCommand.concat([item.url]));
         dismissed();
     }
+    // A plain list first so the panel fills at once, then a real scan; a scan
+    // asked for while a list is in flight runs after it.
+    function refreshNetwork(rescan) {
+        if (networkListProcess.running) {
+            networkRescanQueued = networkRescanQueued || rescan;
+            return;
+        }
+        networkScanning = rescan;
+        networkListProcess.command = ["network", "list"].concat(rescan ? ["--rescan"] : []);
+        networkListProcess.running = true;
+    }
+    function parseNetwork(text) {
+        try {
+            const items = JSON.parse(text);
+            if (!Array.isArray(items))
+                throw new Error("not a list");
+            // Keep the highlight on the row it was on: a scan that adds or
+            // drops a network must not retarget Enter.
+            const selected = mode === "network" ? filteredNetwork[selectedIndex] : null;
+            networkItems = items;
+            networkFailed = false;
+            if (selected)
+                selectedIndex = Math.max(0, filteredNetwork.findIndex(item => item.id === selected.id));
+        } catch (error) {
+            networkFailed = true;
+        }
+        networkLoaded = true;
+    }
+    function activateNetwork(item) {
+        if (!open || !item)
+            return;
+        if (item.editor) {
+            Quickshell.execDetached(theme.networkEditorCommand);
+            dismissed();
+            return;
+        }
+        if (!item.args) {
+            networkMessage = item.description || "";
+            networkMessageOk = true;
+            return;
+        }
+        if (item.secret) {
+            secretItem = item;
+            search.text = "";
+            search.forceActiveFocus();
+            return;
+        }
+        runNetwork(item, "");
+    }
+    function submitSecret() {
+        const item = secretItem;
+        const secret = search.text;
+        if (!item || !secret)
+            return;
+        cancelSecret();
+        runNetwork(item, secret);
+    }
+    function cancelSecret() {
+        secretItem = null;
+        search.text = "";
+        focusKeys();
+    }
+    // The secret rides in the environment, which only this user can read,
+    // and the script hands it to nmcli on stdin; argv is world-readable.
+    function runNetwork(item, secret) {
+        if (networkActionProcess.running) {
+            networkMessage = "Still working on " + networkPending;
+            networkMessageOk = false;
+            return;
+        }
+        networkPending = item.label;
+        networkMessage = "";
+        networkActionProcess.environment = {
+            NETWORK_SECRET: secret || null
+        };
+        networkActionProcess.command = ["network"].concat(item.args);
+        networkActionProcess.running = true;
+    }
     function clearDangerConfirmation() {
         dangerTimer.stop();
         confirmationItem = null;
@@ -500,6 +611,8 @@ PanelWindow {
             launchGame(item, !!alternate);
         else if (mode === "web")
             openWeb(item);
+        else if (mode === "network")
+            activateNetwork(item);
         else
             activate(item);
     }
@@ -558,8 +671,24 @@ PanelWindow {
                 return;
             }
         }
+        if (secretItem) {
+            if (event.key === Qt.Key_Escape) {
+                if (!event.isAutoRepeat)
+                    cancelSecret();
+                event.accepted = true;
+            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if (!event.isAutoRepeat)
+                    submitSecret();
+                event.accepted = true;
+            }
+            return;
+        }
         if (event.key === Qt.Key_Escape && search.text) {
             search.text = "";
+            event.accepted = true;
+        } else if (mode === "network" && (event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_R) {
+            if (!event.isAutoRepeat)
+                refreshNetwork(true);
             event.accepted = true;
         } else if (event.key === Qt.Key_Escape || (event.key === Qt.Key_Backspace && !search.text)) {
             if (!event.isAutoRepeat)
@@ -600,6 +729,8 @@ PanelWindow {
     onOpenChanged: {
         clearDangerConfirmation();
         resetWeb();
+        secretItem = null;
+        networkMessage = "";
         if (open) {
             screenshotTimer.stop();
             presented = true;
@@ -609,6 +740,10 @@ PanelWindow {
             panel.printIn();
             if (mode === "games")
                 refreshGames();
+            if (mode === "network") {
+                refreshNetwork(false);
+                refreshNetwork(true);
+            }
             Qt.callLater(() => {
                 if (root.open)
                     root.focusCurrentMode();
@@ -627,8 +762,14 @@ PanelWindow {
         if (open)
             panel.printIn();
         resetWeb();
+        secretItem = null;
+        networkMessage = "";
         if (open && mode === "games")
             refreshGames();
+        if (open && mode === "network") {
+            refreshNetwork(false);
+            refreshNetwork(true);
+        }
         path = [];
         search.text = "";
         selectedIndex = 0;
@@ -660,6 +801,53 @@ PanelWindow {
                 root.gamesLoading = false;
             }
         }
+    }
+    Process {
+        id: networkListProcess
+        stdout: StdioCollector {
+            onStreamFinished: root.parseNetwork(text)
+        }
+        onExited: exitCode => {
+            if (exitCode !== 0) {
+                root.networkFailed = true;
+                root.networkLoaded = true;
+            }
+            root.networkScanning = false;
+            if (root.networkRescanQueued) {
+                root.networkRescanQueued = false;
+                root.refreshNetwork(true);
+            }
+        }
+    }
+    Process {
+        id: networkActionProcess
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const result = JSON.parse(text);
+                    root.networkMessage = result.message || "";
+                    root.networkMessageOk = !!result.ok;
+                } catch (error) {
+                    root.networkMessage = "network gave no answer";
+                    root.networkMessageOk = false;
+                }
+            }
+        }
+        onStarted: networkActionProcess.environment = {
+            NETWORK_SECRET: null
+        }
+        onExited: {
+            root.networkPending = "";
+            root.refreshNetwork(false);
+            root.shellActionRequested("network-changed", false);
+        }
+    }
+    // NetworkManager changes underneath an open panel (cable, roaming).
+    Timer {
+        interval: 5000
+        repeat: true
+        running: root.open && root.mode === "network"
+        onTriggered: root.refreshNetwork(false)
     }
     // Leave compositor toggle binds and media keys available, including in nvim.
     Timer {
@@ -780,6 +968,20 @@ PanelWindow {
                             font.bold: root.gamesFailed
                         }
                     }
+                    Text {
+                        readonly property bool failed: !root.networkPending && !root.networkScanning && !root.networkMessageOk
+                        visible: root.mode === "network" && text !== ""
+                        Layout.maximumWidth: root.theme.fontSize * 30
+                        text: root.networkPending ? "CONNECTING " + root.networkPending.toUpperCase() + "…" : (root.networkScanning ? "SCANNING…" : root.networkMessage.toUpperCase())
+                        textFormat: Text.PlainText
+                        elide: Text.ElideRight
+                        color: failed ? root.theme.danger : root.theme.textMuted
+                        font.family: root.theme.fontFamily
+                        font.pixelSize: root.theme.fontSize - 2
+                        font.bold: failed
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: text
+                    }
                     PressButton {
                         id: closeButton
                         theme: root.theme
@@ -808,6 +1010,8 @@ PanelWindow {
                     visible: root.mode !== "journal"
                     placeholderText: root.modeText[root.mode].placeholder
                     Accessible.name: root.modeText[root.mode].searchName
+                    echoMode: root.secretItem ? TextInput.Password : TextInput.Normal
+                    inputMethodHints: root.secretItem ? Qt.ImhSensitiveData | Qt.ImhNoPredictiveText : Qt.ImhNone
                     selectByMouse: true
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
@@ -822,6 +1026,8 @@ PanelWindow {
                         border.width: search.activeFocus ? root.theme.ruleWidth * 2 : root.theme.ruleWidth
                     }
                     onTextChanged: {
+                        if (root.secretItem)
+                            return;
                         root.selectedIndex = 0;
                         root.clearDangerConfirmation();
                         results.positionViewAtBeginning();
@@ -860,6 +1066,7 @@ PanelWindow {
                         readonly property bool web: root.mode === "web"
                         readonly property bool game: root.mode === "games"
                         readonly property bool confirming: !!root.confirmationItem && root.confirmationItem.key === modelData.key
+                        readonly property bool awaitingSecret: !!root.secretItem && root.secretItem.id === modelData.id
                         theme: root.theme
                         width: results.width - root.theme.fontSize
                         height: root.theme.listRowHeight + root.theme.pressOffset
@@ -875,7 +1082,9 @@ PanelWindow {
                             root.selectedIndex = index;
                             root.launchSelected();
                             root.pointerActivation = false;
-                            root.focusKeys();
+                            // A secured network just handed focus to the password field.
+                            if (!root.secretItem)
+                                root.focusKeys();
                         }
                         // Keep confirmation and navigation in the panel's key handler.
                         Keys.onPressed: event => root.handleKey(event, false)
@@ -910,7 +1119,7 @@ PanelWindow {
                                 }
                                 Text {
                                     Layout.fillWidth: true
-                                    text: result.confirming ? "Enter or tap again confirms · Esc cancels" : (result.application ? (result.modelData.genericName || result.modelData.comment || "") : (result.modelData.description || ""))
+                                    text: result.confirming ? "Enter or tap again confirms · Esc cancels" : (result.awaitingSecret ? root.secretItem.secret + " above · Enter connects · Esc cancels" : (result.application ? (result.modelData.genericName || result.modelData.comment || "") : (result.modelData.description || "")))
                                     textFormat: Text.PlainText
                                     visible: text !== ""
                                     elide: Text.ElideRight
@@ -1039,7 +1248,7 @@ PanelWindow {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.mode === "games" ? "ENTER  PLAY     SHIFT+ENTER  PLAY IN STEAM     " + (root.steamEntry ? "CTRL+S  OPEN STEAM     " : "") + "ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ") + (search.text ? "CLEAR" : "BACK"))
+                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.secretItem ? "ENTER  CONNECT     ESC  CANCEL" : (root.mode === "games" ? "ENTER  PLAY     SHIFT+ENTER  PLAY IN STEAM     " + (root.steamEntry ? "CTRL+S  OPEN STEAM     " : "") + "ESC  " : (root.mode === "network" ? "↑ ↓  SELECT     ENTER  CONNECT     CTRL+R  RESCAN     ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ")) + (search.text ? "CLEAR" : "BACK")))
                     elide: Text.ElideRight
                     color: root.confirmationItem ? root.theme.danger : root.theme.textMuted
                     font.family: root.theme.fontFamily

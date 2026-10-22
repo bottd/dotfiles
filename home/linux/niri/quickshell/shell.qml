@@ -29,7 +29,7 @@ ShellRoot {
             tone: "neutral",
             tooltip: ""
         })
-    property var cellularStatus: ({
+    property var networkStatus: ({
             text: "",
             tone: "neutral",
             tooltip: ""
@@ -90,7 +90,7 @@ ShellRoot {
         repeat: true
         onTriggered: {
             vpnProcess.running = true;
-            cellularProcess.running = true;
+            networkProcess.running = true;
         }
     }
 
@@ -197,10 +197,6 @@ ShellRoot {
         vpnSettleTimer.restart();
     }
 
-    function openNetworkSettings() {
-        Quickshell.execDetached(["nm-connection-editor"]);
-    }
-
     function connectionTone(state) {
         if (state === "connected")
             return "positive";
@@ -211,7 +207,7 @@ ShellRoot {
         return "muted";
     }
 
-    function toggleDrawer(mode) {
+    function toggleDrawer(mode, screen) {
         root.volumeOpen = false;
         root.brightnessOpen = false;
         if (root.drawerOpen) {
@@ -220,7 +216,7 @@ ShellRoot {
             return;
         }
 
-        root.drawerScreen = Quickshell.screens.find(screen => screen.name === root.focusedOutput) || Quickshell.screens[0];
+        root.drawerScreen = screen || root.focusedScreen();
         root.drawerMode = mode;
         root.drawerOpen = true;
     }
@@ -370,31 +366,28 @@ ShellRoot {
         }
     }
 
+    // Ethernet, Wi-Fi and the modem in one slug: the preferred live link
+    // (wired, then Wi-Fi, then mobile, matching NetworkManager's route metrics).
     Process {
-        id: cellularProcess
-        command: ["sh", "-c", "mmcli -m any --output-keyvalue 2>/dev/null"]
+        id: networkProcess
+        command: ["network"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                const value = text;
-                const state = value.match(/modem\.generic\.state\s*:\s*(.+)/);
-                const signal = value.match(/modem\.generic\.signal-quality\.value\s*:\s*(.+)/);
-                const currentState = state ? state[1].trim() : "";
-                const signalValue = signal ? signal[1].trim() : "";
-                if (currentState === "") {
-                    root.cellularStatus = {
-                        text: "",
-                        tone: "neutral",
-                        tooltip: ""
+                try {
+                    const value = JSON.parse(text);
+                    root.networkStatus = {
+                        text: value.text || "",
+                        tone: root.connectionTone(value.class || "daemon-down"),
+                        tooltip: value.tooltip || "Network status unavailable"
                     };
-                    return;
+                } catch (error) {
+                    root.networkStatus = {
+                        text: "󰤫 network",
+                        tone: "danger",
+                        tooltip: "Network status unavailable" + (text.trim() ? " — " + text.trim().split("\n")[0] : "")
+                    };
                 }
-
-                root.cellularStatus = {
-                    text: "󰄋 " + (currentState === "connected" && signalValue ? signalValue + "%" : currentState),
-                    tone: root.connectionTone(currentState),
-                    tooltip: "Cellular: " + currentState + (signalValue ? " · " + signalValue + "% signal" : "")
-                };
             }
         }
     }
@@ -485,6 +478,14 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "network"
+
+        function toggle(): void {
+            root.toggleDrawer("network");
+        }
+    }
+
+    IpcHandler {
         target: "levels"
 
         function volume(): void {
@@ -546,8 +547,8 @@ ShellRoot {
         onShellActionRequested: (action, keyboard) => {
             if (action === "vpn")
                 root.toggleVpn();
-            else if (action === "network")
-                root.openNetworkSettings();
+            else if (action === "network-changed")
+                networkProcess.running = true;
             else if (action === "volume" || action === "brightness")
                 root.showLevel(action, keyboard);
         }
@@ -662,14 +663,14 @@ ShellRoot {
                     Modules.StatusModules {
                         audioStatus: root.audioStatus
                         vpnStatus: root.vpnStatus
-                        cellularStatus: root.cellularStatus
+                        networkStatus: root.networkStatus
                         backlightText: root.backlightText
                         battery: root.battery
                         now: clock.date
                         theme: shellTheme
                         onAudioClicked: root.toggleVolume(bar.screen)
                         onVpnClicked: root.toggleVpn()
-                        onCellularClicked: root.openNetworkSettings()
+                        onNetworkClicked: root.toggleDrawer("network", bar.screen)
                         onBacklightClicked: root.toggleBrightness(bar.screen)
                         onBacklightWheel: increase => root.adjustBrightness(increase)
                     }

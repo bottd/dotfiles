@@ -24,6 +24,7 @@ in
       ++ lib.optionals pkgs.stdenv.isDarwin [
         "vpn"
         "games"
+        "network"
       ]
     )
   );

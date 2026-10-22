@@ -7,14 +7,14 @@ RowLayout {
 
     required property var audioStatus
     required property var vpnStatus
-    required property var cellularStatus
+    required property var networkStatus
     required property string backlightText
     required property var battery
     required property date now
     required property var theme
     signal audioClicked
     signal vpnClicked
-    signal cellularClicked
+    signal networkClicked
     signal backlightClicked
     signal backlightWheel(bool increase)
 
@@ -229,11 +229,11 @@ RowLayout {
     }
 
     StatusButton {
-        visible: root.cellularStatus.text !== ""
-        text: root.cellularStatus.text || ""
-        description: root.cellularStatus.tooltip || "Open cellular settings"
-        tone: root.cellularStatus.tone || "neutral"
-        onActivated: root.cellularClicked()
+        visible: root.networkStatus.text !== ""
+        text: root.networkStatus.text || ""
+        description: root.networkStatus.tooltip || "Network"
+        tone: root.networkStatus.tone || "neutral"
+        onActivated: root.networkClicked()
     }
 
     StatusButton {
