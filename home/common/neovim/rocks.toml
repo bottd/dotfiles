@@ -1,5 +1,5 @@
 [plugins]
-"rocks.nvim" = "2.49.0"
+"rocks.nvim" = "2.49.1"
 "rocks-config.nvim" = "3.2.0"
 "rocks-dev.nvim" = "1.8.1"
 "rocks-git.nvim" = "2.6.0"
@@ -79,7 +79,7 @@ rev = "v2.3.0"
 
 [plugins."blink.lib"]
 git = "Saghen/blink.lib"
-rev = "5876dd95deeb70aadbe9f1c0b7117a135061cdac"
+rev = "fd9a48ebbe6ec30d5dfcc5b42c243941ccdca1aa"
 
 [plugins."blink.pairs"]
 git = "Saghen/blink.pairs"
