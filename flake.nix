@@ -49,6 +49,10 @@
       inputs.home-manager.follows = "home-manager";
     };
     niri.url = "github:sodiboo/niri-flake";
+    aurelia = {
+      url = "github:Drackrath/Aurelia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util = {
       url = "github:hraban/mac-app-util";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -32,6 +32,11 @@ PanelWindow {
     // The trimmed text suggestions were last asked for, so a trailing space
     // doesn't drop the answer in flight and ask again.
     property string webQuery: ""
+    // Installed games from Aurelia, kept between opens so the list shows at
+    // once while it refreshes.
+    property var games: []
+    property bool gamesLoading: false
+    property bool gamesFailed: false
 
     readonly property var menu: [
         {
@@ -87,8 +92,9 @@ PanelWindow {
                 },
                 {
                     key: "s",
-                    label: "Steam",
-                    application: "Steam"
+                    label: "Games",
+                    description: "Installed games · Ctrl+S opens Steam",
+                    targetMode: "games"
                 },
                 {
                     key: "b",
@@ -158,6 +164,12 @@ PanelWindow {
                 placeholder: "Search applications",
                 empty: "No matching applications · Esc clears the search"
             },
+            games: {
+                heading: "GAMES",
+                searchName: "Search games",
+                placeholder: "Search games",
+                empty: gamesFailed ? "Couldn't read the library · run aurelia list in a terminal" : (gamesLoading ? "Reading library…" : (games.length ? "No matching games · Esc clears the search" : "No installed games · Ctrl+S opens Steam"))
+            },
             web: {
                 heading: "WEB",
                 searchName: "URL or " + theme.searchName + " search",
@@ -174,7 +186,7 @@ PanelWindow {
     readonly property var activeItems: path.length ? path[path.length - 1].items : menu
     // Each list is only computed in its own mode; the others would be rescored
     // on every keystroke for nothing.
-    readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => (!item.application || findApplication(item.application)) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
+    readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => (!item.application || findApplication(item.application)) && (item.targetMode !== "games" || theme.aurelia) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
     readonly property var filteredApplications: {
         if (mode !== "launcher")
             return [];
@@ -183,6 +195,15 @@ PanelWindow {
                     entry: entry,
                     score: needle ? applicationScore(needle, entry) : 0
                 })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || applicationRecency(a.entry.id) - applicationRecency(b.entry.id) || a.entry.name.localeCompare(b.entry.name)).map(item => item.entry);
+    }
+    readonly property var filteredGames: {
+        if (mode !== "games")
+            return [];
+        const needle = search.text.trim().toLowerCase();
+        return games.map(game => ({
+                    game: game,
+                    score: needle ? fuzzyScore(needle, game.label) : 0
+                })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || gameRecency(a.game.appId) - gameRecency(b.game.appId) || a.game.label.localeCompare(b.game.label)).map(item => item.game);
     }
     // The typed text always yields a row, so Enter works offline or before
     // the engine answers; its suggestions fill in below as they arrive.
@@ -202,7 +223,7 @@ PanelWindow {
         }
         return items;
     }
-    readonly property var visibleItems: mode === "launcher" ? filteredApplications : (mode === "web" ? webItems : filteredCommands)
+    readonly property var visibleItems: mode === "launcher" ? filteredApplications : (mode === "web" ? webItems : (mode === "games" ? filteredGames : filteredCommands))
     readonly property date monthStart: new Date(now.getFullYear(), now.getMonth(), 1)
     readonly property int leadingDays: (monthStart.getDay() + 6) % 7
     readonly property int daysInMonth: new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
@@ -252,6 +273,57 @@ PanelWindow {
     function applicationRecency(id) {
         const index = recentState.apps.indexOf(id);
         return index < 0 ? 1000000 : index;
+    }
+    function gameRecency(appId) {
+        const index = recentState.games.indexOf(appId);
+        return index < 0 ? 1000000 : index;
+    }
+    function refreshGames() {
+        if (!theme.aurelia || gamesProcess.running)
+            return;
+        gamesLoading = true;
+        gamesFailed = false;
+        gamesProcess.running = true;
+    }
+    function parseGames(text) {
+        try {
+            const library = JSON.parse(text);
+            if (!Array.isArray(library))
+                throw new Error("not a list");
+            games = library.filter(game => game.is_installed).map(game => {
+                const minutes = game.playtime_forever_minutes || 0;
+                const notes = [];
+                if (minutes)
+                    notes.push((minutes / 60).toFixed(minutes < 600 ? 1 : 0) + " h played");
+                if (game.is_family_shared)
+                    notes.push("family shared");
+                return {
+                    key: "▶",
+                    label: game.name,
+                    description: notes.join(" · "),
+                    appId: game.app_id
+                };
+            });
+        } catch (error) {
+            gamesFailed = true;
+        }
+        gamesLoading = false;
+    }
+    // `aurelia play` blocks until the game exits; the scope keeps it out of
+    // quickshell.service. Through Steam bridges to the host client so
+    // Steamworks multiplayer works.
+    function launchGame(game, throughSteam) {
+        if (!open)
+            return;
+        recentState.games = [game.appId].concat(recentState.games.filter(id => id !== game.appId)).slice(0, 8);
+        recentFile.writeAdapter();
+        Quickshell.execDetached(theme.gameCommand.concat([String(game.appId)], throughSteam ? ["--steam"] : []));
+        dismissed();
+    }
+    function launchSteam() {
+        const entry = findApplication("Steam");
+        if (entry)
+            launchApplication(entry);
     }
     // Anything with a space is a search. A scheme is kept as typed. Loopback,
     // IPs, LAN names and a bare host:port get http:// (Glide's HTTPS-First
@@ -407,19 +479,21 @@ PanelWindow {
         Quickshell.execDetached(theme.launcherCommand.concat([entry.id]));
         dismissed();
     }
-    function launchSelected() {
+    function launchSelected(alternate) {
         const item = visibleItems[selectedIndex];
         if (!item)
             return;
         if (mode === "launcher")
             launchApplication(item);
+        else if (mode === "games")
+            launchGame(item, !!alternate);
         else if (mode === "web")
             openWeb(item);
         else
             activate(item);
     }
     function focusCurrentMode() {
-        if (mode === "launcher" || mode === "web")
+        if (mode === "launcher" || mode === "web" || mode === "games")
             search.forceActiveFocus();
         else if (mode === "journal") {
             if (!journalStarted) {
@@ -489,7 +563,11 @@ PanelWindow {
             event.accepted = true;
         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             if (!event.isAutoRepeat)
-                launchSelected();
+                launchSelected(event.modifiers & Qt.ShiftModifier);
+            event.accepted = true;
+        } else if (mode === "games" && (event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_S) {
+            if (!event.isAutoRepeat)
+                launchSteam();
             event.accepted = true;
         } else if (!typing && event.text === "/") {
             search.forceActiveFocus();
@@ -518,6 +596,8 @@ PanelWindow {
             search.text = "";
             selectedIndex = 0;
             panel.printIn();
+            if (mode === "games")
+                refreshGames();
             Qt.callLater(() => {
                 if (root.open)
                     root.focusCurrentMode();
@@ -536,6 +616,8 @@ PanelWindow {
         if (open)
             panel.printIn();
         resetWeb();
+        if (open && mode === "games")
+            refreshGames();
         path = [];
         search.text = "";
         selectedIndex = 0;
@@ -552,6 +634,20 @@ PanelWindow {
         JsonAdapter {
             id: recentState
             property var apps: []
+            property var games: []
+        }
+    }
+    Process {
+        id: gamesProcess
+        command: [root.theme.aurelia, "--json", "list", "--installed"]
+        stdout: StdioCollector {
+            onStreamFinished: root.parseGames(text)
+        }
+        onExited: exitCode => {
+            if (exitCode !== 0) {
+                root.gamesFailed = true;
+                root.gamesLoading = false;
+            }
         }
     }
     // Leave compositor toggle binds and media keys available, including in nvim.
@@ -908,7 +1004,7 @@ PanelWindow {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : "↑ ↓  SELECT     ENTER  OPEN     ESC  " + (search.text ? "CLEAR" : "BACK"))
+                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.mode === "games" ? "↑ ↓  SELECT     ENTER  PLAY     SHIFT+ENTER  VIA STEAM     CTRL+S  STEAM     ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ") + (search.text ? "CLEAR" : "BACK"))
                     elide: Text.ElideRight
                     color: root.confirmationItem ? root.theme.danger : root.theme.textMuted
                     font.family: root.theme.fontFamily

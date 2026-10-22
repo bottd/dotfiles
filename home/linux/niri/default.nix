@@ -2,11 +2,17 @@
   config,
   lib,
   pkgs,
+  inputs,
   hostName,
   features,
   ...
 }:
 let
+  # Empty off gaming hosts, which hides the panel's Games entry.
+  aurelia = lib.optionalString features.gaming (
+    lib.getExe inputs.aurelia.packages.${pkgs.stdenv.hostPlatform.system}.default
+  );
+
   # rfkill soft-blocks every radio via /dev/rfkill's uaccess ACL — no root needed.
   # `-o SOFT` drops the hardware-block column, which reads "unblocked" even while a
   # radio is soft-blocked and would otherwise pin this to the block branch forever.
@@ -187,6 +193,17 @@ in
                 "glide"
                 "--new-window"
               ])
+            }
+            readonly property string aurelia: ${builtins.toJSON aurelia}
+            readonly property var gameCommand: ${
+              builtins.toJSON (
+                lib.optionals features.gaming (scopeRun [
+                  "--description=Aurelia"
+                  "--"
+                  aurelia
+                  "play"
+                ])
+              )
             }
             // Glide's default engine, so the web panel and the URL bar agree.
             readonly property string searchName: ${builtins.toJSON searchEngine.Name}

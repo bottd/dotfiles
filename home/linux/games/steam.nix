@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   home.packages = with pkgs; [
+    # Headless Steam client; backs the command panel's Games list.
+    inputs.aurelia.packages.${stdenv.hostPlatform.system}.default
     chiaki-ng
     gamescope
   ];
