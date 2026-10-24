@@ -63,6 +63,10 @@
       url = "github:pbakaus/impeccable";
       flake = false;
     };
+    tree-sitter-mog = {
+      url = "git+https://git.drake.bot/drake/tree-sitter-mog";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

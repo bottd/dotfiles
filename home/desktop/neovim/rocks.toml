@@ -6,6 +6,3 @@ import = ["rocks-common.toml"]
 [plugins."nvim-java"]
 git = "nvim-java/nvim-java"
 rev = "v4.1.2"
-
-[plugins."tree-sitter-mog"]
-dir = "~/workspace/mog-private/packages/tree-sitter"

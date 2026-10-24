@@ -788,6 +788,7 @@
         "spicetify-nix": "spicetify-nix",
         "steam-config-nix": "steam-config-nix",
         "stylix": "stylix",
+        "tree-sitter-mog": "tree-sitter-mog",
         "treefmt-nix": "treefmt-nix_3"
       }
     },
@@ -1035,6 +1036,26 @@
         "owner": "tinted-theming",
         "repo": "base16-zed",
         "type": "github"
+      }
+    },
+    "tree-sitter-mog": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792867057,
+        "narHash": "sha256-0nhpfVy0++SjYtw7pYF7caEz69fwOW4zuhtx4e3gEe0=",
+        "ref": "refs/heads/main",
+        "rev": "0a75a2343e94d8aaf930aa5ca5d9f4146eb1722a",
+        "revCount": 6,
+        "type": "git",
+        "url": "https://git.drake.bot/drake/tree-sitter-mog"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.drake.bot/drake/tree-sitter-mog"
       }
     },
     "treefmt-nix": {
