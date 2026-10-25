@@ -7,7 +7,10 @@ Item {
     required property var theme
     property bool selected: false
     property bool dangerous: false
-    readonly property bool hovered: mouse.containsMouse
+    // Lists driven by the keyboard turn this off so a resting pointer can't
+    // print a second "selected" row.
+    property bool hoverable: true
+    readonly property bool hovered: hoverable && mouse.containsMouse
     readonly property bool inverted: enabled && (selected || hovered)
     // Keyboard focus keeps the face on paper but doubles its rule and prints
     // the plate, so Tab focus never reads as the pointer's hover.
@@ -66,7 +69,7 @@ Item {
         id: mouse
 
         anchors.fill: parent
-        hoverEnabled: true
+        hoverEnabled: root.hoverable
         cursorShape: Qt.PointingHandCursor
         onClicked: root.clicked()
         onDoubleClicked: mouse => mouse.accepted = true

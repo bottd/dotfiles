@@ -1071,6 +1071,7 @@ PanelWindow {
                         width: results.width - root.theme.fontSize
                         height: root.theme.listRowHeight + root.theme.pressOffset
                         selected: index === root.selectedIndex
+                        hoverable: false
                         dangerous: !!modelData.destructive
                         Accessible.name: application ? modelData.name : (web ? modelData.label + ", " + modelData.description : modelData.label)
                         Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (web ? "" : (game ? [modelData.description, "Shift+Enter plays in Steam"].filter(Boolean).join(". ") : (modelData.description || "")))
