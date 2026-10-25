@@ -22,7 +22,6 @@ export type HistoryGraph = {
   links: HistoryLink[];
 };
 
-/** glide.ts → page: `{ type: historyMessage, graph }`. */
+/** glide.ts → page: `{ type: historyMessage, graph }`. The page asks for it
+ * by setting `data-history-wanted` on its root element. */
 export const historyMessage = "glide-history";
-/** page → glide.ts: ask again in case the graph arrived before the page. */
-export const historyRequest = "glide-history-request";

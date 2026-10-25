@@ -1,7 +1,7 @@
 /* Dither Press browser chrome.
  *
- * Colors come from press-palette.css, which Home Manager writes from the
- * active Stylix scheme. Same rules as the desktop: square trims, ink
+ * Colours and sizes come from press-palette.css, which Home Manager writes
+ * from the Dither Press tokens. Same rules as the desktop: square trims, ink
  * keylines, and the accent plate printed off-register behind whatever has
  * focus. No blur, no rounded pills. */
 
@@ -24,9 +24,9 @@
 
 .tabbrowser-tab[selected] .tab-background {
   background: var(--press-paper) !important;
-  outline: 2px solid var(--press-ink) !important;
-  outline-offset: -2px !important;
-  box-shadow: 3px 3px 0 var(--press-plate) !important;
+  outline: var(--press-rule-width) solid var(--press-ink) !important;
+  outline-offset: calc(-1 * var(--press-rule-width)) !important;
+  box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-plate) !important;
 }
 
 .tabbrowser-tab[selected] .tab-label {
@@ -44,7 +44,7 @@
 #urlbar[focused] > .urlbar-background {
   border-color: var(--press-ink) !important;
   outline: none !important;
-  box-shadow: 3px 3px 0 var(--press-plate) !important;
+  box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-plate) !important;
 }
 
 /* Selected result is reversed out, like the bar's tooltips. */

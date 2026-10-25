@@ -5,6 +5,9 @@
   hostName,
   ...
 }:
+let
+  press = config.lib.ditherPress;
+in
 {
   programs.ghostty = {
     enable = true;
@@ -33,10 +36,8 @@
       # a narrow print margin instead of running to the trim.
       cursor-style = "block";
       cursor-style-blink = false;
-      cursor-color = "#${
-        if hostName == "eink" then config.lib.stylix.colors.base07 else config.lib.stylix.colors.base09
-      }";
-      cursor-text = "#${config.lib.stylix.colors.base00}";
+      cursor-color = if hostName == "eink" then press.colors.ink else press.colors.plate;
+      cursor-text = press.colors.paper;
       window-padding-x = 8;
       window-padding-y = 6;
       window-padding-balance = true;

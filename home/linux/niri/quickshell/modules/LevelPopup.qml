@@ -102,8 +102,8 @@ PanelWindow {
         }
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: root.theme.fontSize * 1.5
-            spacing: root.theme.fontSize
+            anchors.margins: root.theme.inset
+            spacing: root.theme.gap
             RowLayout {
                 Layout.fillWidth: true
                 Text {
@@ -130,7 +130,7 @@ PanelWindow {
             }
             RowLayout {
                 Layout.fillWidth: true
-                spacing: root.theme.fontSize
+                spacing: root.theme.gap
                 LevelSlider {
                     id: slider
                     Layout.fillWidth: true
@@ -158,7 +158,7 @@ PanelWindow {
                         text: root.muted ? "UNMUTE" : "MUTE"
                         color: muteButton.foreground
                         font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize - 2
+                        font.pixelSize: root.theme.captionSize
                         font.bold: true
                     }
                 }
@@ -168,7 +168,7 @@ PanelWindow {
                 text: "Esc or click outside to close"
                 color: root.theme.textMuted
                 font.family: root.theme.fontFamily
-                font.pixelSize: root.theme.fontSize - 2
+                font.pixelSize: root.theme.captionSize
             }
         }
     }

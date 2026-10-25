@@ -1,11 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import HistoryGraph from "./HistoryGraph.svelte";
   import {
     historyMessage,
-    historyRequest,
     type HistoryGraph as HistoryGraphData,
   } from "./history";
+  import {
+    faviconMissing,
+    faviconUrl,
+    markFaviconMissing,
+    siteHost,
+  } from "./site.svelte";
+  import { store, stored } from "./storage";
 
   type HackerNewsStory = {
     by: string;
@@ -58,12 +63,8 @@
   };
 
   function withHost(site: Site) {
-    const url = new URL(site.href);
-    return {
-      ...site,
-      hostname: url.hostname.replace(/^www\./, ""),
-      favicon: new URL("/favicon.ico", url).href,
-    };
+    const hostname = siteHost(site.href);
+    return { ...site, hostname, favicon: faviconUrl(hostname) };
   }
 
   const mediaSites: Site[] = [
@@ -117,8 +118,6 @@
   let astronomyPictureLoading = true;
   let astronomyPictureError = false;
   let livestreams: Record<string, KickLivestream> = {};
-  // Private sites may not serve a favicon publicly; show a letter tile instead.
-  let missingFavicons: Record<string, boolean> = {};
 
   // The big views share the bottom panel; the last one shown is remembered.
   const views = [
@@ -127,25 +126,25 @@
   ] as const;
   type ViewId = (typeof views)[number]["id"];
   const viewKey = "big-view";
-  let view: ViewId = "apod";
-  try {
-    const saved = localStorage.getItem(viewKey);
-    if (views.some(({ id }) => id === saved)) view = saved as ViewId;
-  } catch {
-    // Start on the picture when storage is unavailable.
-  }
-  // The graph mounts the first time its view is shown, then stays mounted.
-  let historyShown = view === "history";
+  const savedView = stored(viewKey);
+  let view: ViewId =
+    views.find(({ id }) => id === savedView)?.id ?? views[0].id;
+  // History is only read, and the graph's code only loaded, once its view is
+  // first shown; after that the graph stays mounted.
+  let historyShown = false;
   let historyGraph: HistoryGraphData | undefined;
+
+  // glide.ts watches this attribute and answers with a historyMessage.
+  function requestHistory() {
+    if (historyShown) return;
+    historyShown = true;
+    document.documentElement.dataset.historyWanted = "true";
+  }
 
   function showView(next: ViewId) {
     view = next;
-    if (next === "history") historyShown = true;
-    try {
-      localStorage.setItem(viewKey, next);
-    } catch {
-      // The view still switches without storage.
-    }
+    store(viewKey, next);
+    if (next === "history") requestHistory();
   }
 
   function viewKeydown(event: KeyboardEvent) {
@@ -166,13 +165,7 @@
   }
 
   function storyHost(story: HackerNewsStory) {
-    if (!story.url) return "news.ycombinator.com";
-
-    try {
-      return new URL(story.url).hostname.replace(/^www\./, "");
-    } catch {
-      return "";
-    }
+    return story.url ? siteHost(story.url) : "news.ycombinator.com";
   }
 
   function storyAge(timestamp: number) {
@@ -246,7 +239,7 @@
     const signal = AbortSignal.timeout(10_000);
 
     try {
-      const cached = localStorage.getItem(cacheKey);
+      const cached = stored(cacheKey);
       if (cached) {
         const { date: cachedDate, article } = JSON.parse(cached) as {
           date: string;
@@ -264,7 +257,7 @@
         }
       }
     } catch {
-      // Fetch a fresh copy when storage is unavailable or stale.
+      // Fetch a fresh copy when the cached one doesn't parse.
     }
 
     try {
@@ -287,11 +280,7 @@
       }
 
       wikipediaArticle = article;
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify({ date, article }));
-      } catch {
-        // The article can still be displayed without browser storage.
-      }
+      store(cacheKey, JSON.stringify({ date, article }));
     } catch {
       wikipediaArticleError = true;
     } finally {
@@ -325,7 +314,7 @@
     const signal = AbortSignal.timeout(10_000);
 
     try {
-      const cached = localStorage.getItem(cacheKey);
+      const cached = stored(cacheKey);
       if (cached) {
         const { date: cachedDate, picture } = JSON.parse(cached) as {
           date: string;
@@ -338,7 +327,7 @@
         }
       }
     } catch {
-      // Fetch a fresh copy when storage is unavailable or stale.
+      // Fetch a fresh copy when the cached one doesn't parse.
     }
 
     try {
@@ -351,11 +340,7 @@
       }
 
       astronomyPicture = picture;
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify({ date, picture }));
-      } catch {
-        // The image can still be displayed without browser storage.
-      }
+      store(cacheKey, JSON.stringify({ date, picture }));
     } catch {
       astronomyPictureError = true;
     } finally {
@@ -388,32 +373,32 @@
     maximumFractionDigits: 1,
   });
 
-  // The 8×8 Bayer order the desktop's press dither prints in (shaders.nix).
-  const bayer = [
-    [0, 32, 8, 40, 2, 34, 10, 42],
-    [48, 16, 56, 24, 50, 18, 58, 26],
-    [12, 44, 4, 36, 14, 46, 6, 38],
-    [60, 28, 52, 20, 62, 30, 54, 22],
-    [3, 35, 11, 43, 1, 33, 9, 41],
-    [51, 19, 59, 27, 49, 17, 57, 25],
-    [15, 47, 7, 39, 13, 45, 5, 37],
-    [63, 31, 55, 23, 61, 29, 53, 21],
-  ];
-
-  // Halftone seam mask: 2px cells ramping from sparse at the top edge to
-  // solid at the bottom, so paper breaks up into whatever sits above it.
-  const seamMask = (() => {
-    const cell = 2;
-    const size = bayer.length * cell;
-    const cells = bayer.flatMap((row, y) =>
-      row.flatMap((threshold, x) =>
-        threshold < ((y + 1) / bayer.length) * 64
-          ? [`<rect x="${x * cell}" y="${y * cell}" width="${cell}" height="${cell}"/>`]
-          : [],
-      ),
-    );
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" shape-rendering="crispEdges">${cells.join("")}</svg>`;
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  // The bar's halftone seam (quickshell/modules/DitherSeam.qml), as a CSS
+  // mask tile: the same 16-step order and row stagger, with each row's
+  // coverage taken at its centre, sized from the --press-seam-* tokens.
+  // The page's stylesheet is already in place when this runs, so the tile is
+  // built once, before the first paint.
+  const seam = (() => {
+    const order = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    const tokens = getComputedStyle(document.documentElement);
+    const cell = parseInt(tokens.getPropertyValue("--press-seam-cell"));
+    const height = parseInt(tokens.getPropertyValue("--press-seam-height"));
+    const rows = Math.max(1, Math.ceil(height / cell));
+    const columns = order.length;
+    const cells = [];
+    for (let row = 0; row < rows; ++row) {
+      const coverage = (row + 0.5) / rows;
+      for (let column = 0; column < columns; ++column) {
+        const threshold = (order[(column + row * 5) % columns] + 0.5) / columns;
+        if (threshold < coverage) {
+          cells.push(
+            `<rect x="${column * cell}" y="${row * cell}" width="${cell}" height="${cell}"/>`,
+          );
+        }
+      }
+    }
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${columns * cell}" height="${rows * cell}" shape-rendering="crispEdges">${cells.join("")}</svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 0 / ${columns * cell}px ${rows * cell}px repeat-x`;
   })();
 
   onMount(() => {
@@ -425,7 +410,7 @@
     loadAstronomyPicture();
 
     window.addEventListener("message", receiveHistory);
-    window.postMessage({ type: historyRequest }, "*");
+    if (view === "history") requestHistory();
     return () => window.removeEventListener("message", receiveHistory);
   });
 </script>
@@ -567,8 +552,7 @@
         </form>
         <nav class="wiki-nav" aria-label="Wikipedia navigation">
           <a href="https://en.wikipedia.org/wiki/Main_Page">Main page</a>
-          <a href="https://en.wikipedia.org/wiki/Wikipedia:Contents"
-            >Contents</a
+          <a href="https://en.wikipedia.org/wiki/Wikipedia:Contents">Contents</a
           >
           <a href="https://en.wikipedia.org/wiki/Portal:Current_events"
             >Current events</a
@@ -645,25 +629,25 @@
         <div class="links-body">
           {#each linkGroups as group (group.id)}
             <nav class="link-group" aria-labelledby={`links-${group.id}`}>
-              <h3 id={`links-${group.id}`}>{group.title}</h3>
+              <h3 class="press-kicker" id={`links-${group.id}`}>
+                {group.title}
+              </h3>
               {#each group.sites as site (site.href)}
                 {@const live =
                   site.kickChannel && livestreams[site.kickChannel]}
                 <a class="link" href={site.href}>
-                  {#if missingFavicons[site.href]}
-                    <span class="link-icon link-letter" aria-hidden="true"
-                      >{site.title[0]}</span
+                  <!-- Private sites may not serve a favicon publicly. -->
+                  {#if faviconMissing(site.hostname)}
+                    <span
+                      class="link-icon press-tile press-letter"
+                      aria-hidden="true">{site.title[0]}</span
                     >
                   {:else}
                     <img
-                      class="link-icon"
+                      class="link-icon press-tile"
                       src={site.favicon}
                       alt=""
-                      onerror={() =>
-                        (missingFavicons = {
-                          ...missingFavicons,
-                          [site.href]: true,
-                        })}
+                      onerror={() => markFaviconMissing(site.hostname)}
                     />
                   {/if}
                   <span class="link-text">
@@ -677,7 +661,8 @@
                           <span class="sr-only">watching</span>
                         </span>
                       {/if}
-                      <small class="link-domain truncate">{site.hostname}</small>
+                      <small class="link-domain truncate">{site.hostname}</small
+                      >
                       <span class="link-arrow" aria-hidden="true">↗</span>
                     </span>
                     <span class="link-description truncate">
@@ -692,7 +677,7 @@
       </section>
     </div>
 
-    <section class="card views" aria-label="Views" style:--seam={seamMask}>
+    <section class="card views" aria-label="Views" style:--seam={seam}>
       <div
         class="view-tabs"
         role="tablist"
@@ -724,60 +709,60 @@
         aria-busy={astronomyPictureLoading}
         hidden={view !== "apod"}
       >
-      {#if astronomyPictureLoading}
-        <span class="sr-only" role="status">
-          Loading NASA astronomy picture of the day
-        </span>
-        <div class="apod-placeholder" aria-hidden="true"></div>
-      {:else if astronomyPictureError || !astronomyPicture}
-        <div class="apod-placeholder apod-error" role="status">
-          <p>NASA's astronomy picture could not be reached.</p>
-          <div class="apod-actions">
-            <button
-              class="press-button"
-              type="button"
-              onclick={loadAstronomyPicture}
-            >
-              Try again
-            </button>
-            <a
-              class="press-button"
-              href="https://apod.nasa.gov/apod/astropix.html"
-            >
-              Open NASA APOD
-            </a>
+        {#if astronomyPictureLoading}
+          <span class="sr-only" role="status">
+            Loading NASA astronomy picture of the day
+          </span>
+          <div class="apod-placeholder" aria-hidden="true"></div>
+        {:else if astronomyPictureError || !astronomyPicture}
+          <div class="apod-placeholder apod-error" role="status">
+            <p>NASA's astronomy picture could not be reached.</p>
+            <div class="apod-actions">
+              <button
+                class="press-button"
+                type="button"
+                onclick={loadAstronomyPicture}
+              >
+                Try again
+              </button>
+              <a
+                class="press-button"
+                href="https://apod.nasa.gov/apod/astropix.html"
+              >
+                Open NASA APOD
+              </a>
+            </div>
           </div>
-        </div>
-      {:else}
-        <a
-          class="apod-image"
-          href={astronomyPictureTarget(astronomyPicture)}
-          aria-label={`${astronomyPicture.media_type === "video" ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
-          style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
-        >
-          {#if astronomyPicture.media_type === "video"}
-            <span class="apod-play" aria-hidden="true">▶</span>
-          {/if}
-        </a>
-        <div class="apod-caption">
-          <div class="seam" aria-hidden="true"></div>
-          <p class="apod-kicker">
-            NASA astronomy picture of the day · {astronomyPictureDate(
-              astronomyPicture.date,
-            )}
-          </p>
-          <h3 class="apod-title">{astronomyPicture.title}</h3>
-          <p class="apod-explanation">{astronomyPicture.explanation}</p>
-          <p class="apod-credit">
-            {astronomyPicture.copyright
-              ? `Image: ${astronomyPicture.copyright}`
-              : "Image: NASA"}
-            {astronomyPicture.media_type === "video"
-              ? " · Video thumbnail"
-              : ""}
-          </p>
-        </div>
-      {/if}
+        {:else}
+          <a
+            class="apod-image"
+            href={astronomyPictureTarget(astronomyPicture)}
+            aria-label={`${astronomyPicture.media_type === "video" ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
+            style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
+          >
+            {#if astronomyPicture.media_type === "video"}
+              <span class="apod-play" aria-hidden="true">▶</span>
+            {/if}
+          </a>
+          <div class="apod-caption">
+            <div class="seam" aria-hidden="true"></div>
+            <p class="press-kicker">
+              NASA astronomy picture of the day · {astronomyPictureDate(
+                astronomyPicture.date,
+              )}
+            </p>
+            <h3 class="apod-title">{astronomyPicture.title}</h3>
+            <p class="apod-explanation">{astronomyPicture.explanation}</p>
+            <p class="apod-credit">
+              {astronomyPicture.copyright
+                ? `Image: ${astronomyPicture.copyright}`
+                : "Image: NASA"}
+              {astronomyPicture.media_type === "video"
+                ? " · Video thumbnail"
+                : ""}
+            </p>
+          </div>
+        {/if}
       </div>
 
       <div
@@ -787,14 +772,19 @@
         aria-labelledby="view-tab-history"
         hidden={view !== "history"}
       >
-        {#if historyShown && historyGraph?.sites.length}
-          <HistoryGraph graph={historyGraph} />
-        {:else if historyShown}
-          <p class="view-empty">
-            {historyGraph
-              ? `No browsing in the last ${historyGraph.days} days.`
-              : "History comes from Glide's config. Open this tab in Glide."}
-          </p>
+        {#if historyShown}
+          {#if historyGraph?.sites.length}
+            <!-- Loaded on first show: three.js is most of the page's code. -->
+            {#await import("./HistoryGraph.svelte") then { default: Graph }}
+              <Graph graph={historyGraph} visible={view === "history"} />
+            {/await}
+          {:else}
+            <p class="press-empty">
+              {historyGraph
+                ? `No browsing in the last ${historyGraph.days} days.`
+                : "History comes from Glide's config. Open this tab in Glide."}
+            </p>
+          {/if}
         {/if}
       </div>
     </section>
@@ -804,17 +794,12 @@
 <style>
   /* Dither Press (DESIGN.md): ink keylines on paper, one spot plate printed
      off-register behind whatever has focus or hover, square trims, halftone
-     only at seams. Sizes resolve at the shell's base fontSize of 12px.
+     only at seams. Spacing and the page's own type come from the --press-*
+     tokens, generated from the shell's fontSize like Theme.qml.
      Breakpoints: 640px and 1024px. At 1024px and up the page locks to one
-     viewport: three columns over the APOD. */
+     viewport: three columns over the views. */
 
   .page {
-    --rule: 2px;
-    --press: 3px;
-    --panel-plate: 6px;
-    --gap: 12px;
-    --inset: 18px;
-
     min-block-size: 100dvh;
     padding: 1.25rem 1rem;
     background: var(--press-paper);
@@ -860,10 +845,11 @@
   .card {
     min-inline-size: 0;
     overflow: hidden;
-    border: var(--rule) solid var(--press-ink);
+    border: var(--press-rule-width) solid var(--press-ink);
 
     &:focus-within {
-      box-shadow: var(--panel-plate) var(--panel-plate) 0 var(--press-plate);
+      box-shadow: var(--press-panel-offset) var(--press-panel-offset) 0
+        var(--press-plate);
     }
   }
 
@@ -894,37 +880,47 @@
     overflow: hidden;
   }
 
-  /* Stamped control: paper face over an ink plate; hover reverses it onto
-     the spot plate, keyboard focus doubles the rule, a press closes the
-     offset. */
-  .press-button {
-    padding: 6px var(--gap);
-    border: var(--rule) solid var(--press-ink);
-    background: var(--press-paper);
-    box-shadow: var(--press) var(--press) 0 var(--press-ink);
-    color: var(--press-ink);
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
+  /* Stamped things: hover reverses the face (ink fill, paper type) onto the
+     spot plate, keyboard focus keeps paper with an ink keyline over the
+     plate, and a press closes the offset. --fg/--bg are the face's own ink
+     and paper, so reversed children (tiles, the live tag) follow along. */
+  .press-button,
+  .link {
+    --fg: var(--press-ink);
+    --bg: var(--press-paper);
+
+    background: var(--bg);
+    color: var(--fg);
     text-decoration: none;
-    text-transform: uppercase;
     cursor: pointer;
 
     &:hover {
-      background: var(--press-ink);
-      box-shadow: var(--press) var(--press) 0 var(--press-plate);
-      color: var(--press-paper);
+      --fg: var(--press-paper);
+      --bg: var(--press-ink);
+
+      box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-plate);
     }
 
     &:focus-visible {
-      outline: var(--rule) solid var(--press-ink);
-      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+      outline: var(--press-rule-width) solid var(--press-ink);
+      box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-plate);
     }
 
     &:active {
-      translate: var(--press) var(--press);
+      translate: var(--press-offset) var(--press-offset);
       box-shadow: none;
     }
+  }
+
+  /* A button rests on an ink plate; a link row rests flat on the paper. */
+  .press-button {
+    padding: var(--press-half-gap) var(--press-gap);
+    border: var(--press-rule-width) solid var(--press-ink);
+    box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-ink);
+    font-size: var(--press-font-size);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
   }
 
   /* Hacker News and Wikipedia keep their own colours and type inside the
@@ -935,6 +931,10 @@
     --brand-sans: Inter, ui-sans-serif, system-ui, sans-serif;
 
     font-family: var(--brand-sans);
+
+    & :is(a, button):focus-visible {
+      outline: 2px solid var(--brand-focus);
+    }
   }
 
   .hn {
@@ -942,7 +942,7 @@
     --hn-paper: #f6f6ef;
     --hn-muted: #5f5f5f;
     --hn-skeleton: #e4e4dc;
-    --hn-focus: #005fcc;
+    --brand-focus: #005fcc;
 
     display: flex;
     flex-direction: column;
@@ -956,10 +956,6 @@
 
     @media (width >= 1024px) {
       min-block-size: 0;
-    }
-
-    & :is(a, button):focus-visible {
-      outline: 2px solid var(--hn-focus);
     }
   }
 
@@ -1160,15 +1156,12 @@
     --wiki-skeleton: #eaecf0;
     --wiki-feature-rule: #a3bfb1;
     --wiki-serif: Georgia, serif;
+    --brand-focus: var(--wiki-link);
 
     display: flex;
     flex-direction: column;
     background: white;
     color: var(--wiki-text);
-
-    & :is(a, button):focus-visible {
-      outline: 2px solid var(--wiki-link);
-    }
   }
 
   .wiki-header {
@@ -1218,14 +1211,12 @@
   .wiki-search {
     padding: 0.75rem;
     border-block-end: 1px solid var(--wiki-rule);
-    background: white;
   }
 
   .wiki-search-control {
     display: flex;
     min-inline-size: 0;
     border: 1px solid var(--wiki-field);
-    background: white;
 
     &:focus-within {
       border-color: var(--wiki-link);
@@ -1248,19 +1239,23 @@
     }
   }
 
-  .wiki-search-button {
-    padding-inline: 0.75rem;
-    border: 0;
-    border-inline-start: 1px solid var(--wiki-field);
+  .wiki-search-button,
+  .wiki-feature-error button {
     background: var(--wiki-chrome);
     color: var(--wiki-text);
-    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
 
     &:hover {
       background: white;
     }
+  }
+
+  .wiki-search-button {
+    padding-inline: 0.75rem;
+    border: 0;
+    border-inline-start: 1px solid var(--wiki-field);
+    font-size: 11px;
 
     &:focus-visible {
       outline-offset: -2px;
@@ -1382,14 +1377,6 @@
     & button {
       padding: 6px 0.75rem;
       border: 1px solid var(--wiki-field);
-      background: var(--wiki-chrome);
-      color: var(--wiki-text);
-      font-weight: 600;
-      cursor: pointer;
-
-      &:hover {
-        background: white;
-      }
     }
   }
 
@@ -1462,23 +1449,21 @@
     font-size: 10px;
   }
 
-  /* Links: a press panel of slugs. Type sits straight on paper at rest;
-     hover reverses a row onto the spot plate, keyboard focus keeps it on
-     paper with an ink keyline. */
+  /* Links: a press panel of slugs. Type sits straight on paper at rest; the
+     row stamps like a press button (see .press-button, .link above). */
 
   .links {
     display: flex;
     flex-direction: column;
-    background: var(--press-paper);
   }
 
   .links-header {
-    padding: var(--gap) var(--inset);
-    border-block-end: var(--rule) solid var(--press-ink);
+    padding: var(--press-gap) var(--press-inset);
+    border-block-end: var(--press-rule-width) solid var(--press-ink);
 
     & h2 {
       margin: 0;
-      font-size: 17px;
+      font-size: var(--press-heading-size);
       font-weight: 700;
       line-height: 1;
       text-transform: uppercase;
@@ -1488,9 +1473,9 @@
   .links-body {
     display: grid;
     align-content: start;
-    gap: var(--gap);
+    gap: var(--press-gap);
     min-block-size: 0;
-    padding: var(--gap);
+    padding: var(--press-gap);
     overflow-y: auto;
   }
 
@@ -1500,74 +1485,30 @@
 
     & h3 {
       margin: 0 0 4px;
-      padding-inline: 6px;
-      color: var(--press-muted);
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      line-height: 1.25;
-      text-transform: uppercase;
+      padding-inline: var(--press-half-gap);
     }
   }
 
   .link {
+    --muted: var(--press-muted);
+
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr);
+    grid-template-columns: var(--press-tile-size) minmax(0, 1fr);
     align-items: start;
-    gap: var(--gap);
-    padding: 6px;
-    color: inherit;
-    text-decoration: none;
+    gap: var(--press-gap);
+    padding: var(--press-half-gap);
 
     &:hover {
-      background: var(--press-ink);
-      box-shadow: var(--press) var(--press) 0 var(--press-plate);
-      color: var(--press-paper);
-
-      & .link-domain {
-        color: inherit;
-      }
-
-      & .link-live {
-        background: var(--press-paper);
-        color: var(--press-ink);
-      }
+      --muted: currentColor;
     }
 
     &:focus-visible {
-      outline: var(--rule) solid var(--press-ink);
-      outline-offset: calc(-1 * var(--rule));
-      box-shadow: var(--press) var(--press) 0 var(--press-plate);
-    }
-
-    &:active {
-      translate: var(--press) var(--press);
-      box-shadow: none;
+      outline-offset: calc(-1 * var(--press-rule-width));
     }
   }
 
   .link-icon {
-    inline-size: 24px;
-    block-size: 24px;
-    padding: 2px;
-    background: var(--press-paper);
-    object-fit: contain;
-  }
-
-  .link-letter {
-    display: grid;
-    place-items: center;
-    background: var(--press-ink);
-    color: var(--press-paper);
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-    text-transform: uppercase;
-
-    .link:hover & {
-      background: var(--press-paper);
-      color: var(--press-ink);
-    }
+    --size: var(--press-tile-size);
   }
 
   .link-text {
@@ -1579,26 +1520,27 @@
   .link-heading {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--press-half-gap);
     min-inline-size: 0;
   }
 
   .link-name {
     min-inline-size: 0;
-    font-size: 12px;
+    font-size: var(--press-font-size);
     font-weight: 700;
     line-height: 1.25;
   }
 
+  /* A caption tag reversed out of the row's ink. */
   .link-live {
     display: flex;
     flex: none;
     align-items: center;
     gap: 4px;
     padding: 2px 4px;
-    background: var(--press-ink);
-    color: var(--press-paper);
-    font-size: 10px;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: var(--press-caption-size);
     font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
@@ -1615,19 +1557,19 @@
   .link-domain {
     min-inline-size: 0;
     margin-inline-start: auto;
-    color: var(--press-muted);
-    font-size: 10px;
+    color: var(--muted);
+    font-size: var(--press-caption-size);
     line-height: 1.25;
   }
 
   .link-arrow {
     flex: none;
-    font-size: 12px;
+    font-size: var(--press-font-size);
     line-height: 1;
   }
 
   .link-description {
-    font-size: 12px;
+    font-size: var(--press-font-size);
     line-height: 1.25;
   }
 
@@ -1639,7 +1581,6 @@
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     block-size: clamp(360px, 56vh, 620px);
-    background: var(--press-paper);
 
     @media (width >= 1024px) {
       block-size: 100%;
@@ -1649,17 +1590,18 @@
 
   .view-tabs {
     display: flex;
-    gap: var(--gap);
-    padding: 6px var(--gap) 9px;
-    border-block-end: var(--rule) solid var(--press-ink);
+    gap: var(--press-gap);
+    padding: var(--press-half-gap) var(--press-gap)
+      calc(var(--press-half-gap) + var(--press-offset));
+    border-block-end: var(--press-rule-width) solid var(--press-ink);
   }
 
   .view-tab {
     padding: 4px 8px;
-    border: var(--rule) solid transparent;
+    border: var(--press-rule-width) solid transparent;
     background: none;
     color: var(--press-ink);
-    font-size: 12px;
+    font-size: var(--press-font-size);
     font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
@@ -1672,16 +1614,17 @@
     &[aria-selected="true"] {
       border-color: var(--press-ink);
       background: var(--press-paper);
-      box-shadow: 2px 2px 0 var(--press-plate);
+      box-shadow: var(--press-plate-offset) var(--press-plate-offset) 0
+        var(--press-plate);
     }
 
     &:focus-visible {
-      outline: var(--rule) solid var(--press-ink);
+      outline: var(--press-rule-width) solid var(--press-ink);
       outline-offset: 2px;
     }
 
     &:active {
-      translate: 2px 2px;
+      translate: var(--press-plate-offset) var(--press-plate-offset);
       box-shadow: none;
     }
   }
@@ -1692,16 +1635,6 @@
     &[hidden] {
       display: none;
     }
-  }
-
-  .view-empty {
-    display: grid;
-    place-content: center;
-    block-size: 100%;
-    margin: 0;
-    padding-inline: var(--inset);
-    font-size: 12px;
-    text-align: center;
   }
 
   /* NASA astronomy picture of the day: the picture over a paper caption
@@ -1715,20 +1648,19 @@
 
   .apod-placeholder {
     grid-row: 1 / -1;
-    background: var(--press-surface);
   }
 
   .apod-error {
     display: grid;
     place-content: center;
     justify-items: center;
-    gap: var(--inset);
-    padding-inline: var(--inset);
+    gap: var(--press-inset);
+    padding-inline: var(--press-inset);
     text-align: center;
 
     & p {
       margin: 0;
-      font-size: 12px;
+      font-size: var(--press-font-size);
     }
   }
 
@@ -1736,7 +1668,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--gap);
+    gap: var(--press-gap);
   }
 
   .apod-image {
@@ -1746,8 +1678,8 @@
     background: center / cover no-repeat;
 
     &:focus-visible {
-      outline: calc(2 * var(--rule)) solid var(--press-ink);
-      outline-offset: calc(-2 * var(--rule));
+      outline: calc(2 * var(--press-rule-width)) solid var(--press-ink);
+      outline-offset: calc(-2 * var(--press-rule-width));
     }
   }
 
@@ -1757,22 +1689,24 @@
     inline-size: 48px;
     block-size: 48px;
     background: var(--press-ink);
-    box-shadow: var(--press) var(--press) 0 var(--press-paper);
+    box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-paper);
     color: var(--press-paper);
-    font-size: 17px;
+    font-size: var(--press-heading-size);
 
     .apod-image:hover & {
-      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+      box-shadow: var(--press-offset) var(--press-offset) 0 var(--press-plate);
     }
   }
 
   .apod-caption {
     position: relative;
-    padding: var(--gap) var(--inset) var(--inset);
+    display: grid;
+    gap: var(--press-half-gap);
+    padding: var(--press-gap) var(--press-inset) var(--press-inset);
     background: var(--press-paper);
 
-    & p {
-      margin: 6px 0 0;
+    & > * {
+      margin: 0;
     }
   }
 
@@ -1780,23 +1714,14 @@
     position: absolute;
     inset-inline: 0;
     bottom: 100%;
-    block-size: 16px;
+    block-size: var(--press-seam-height);
     background: var(--press-paper);
-    mask: var(--seam) repeat-x 0 0 / 16px 16px;
+    mask: var(--seam);
     pointer-events: none;
   }
 
-  .apod-caption .apod-kicker {
-    margin: 0;
-    color: var(--press-muted);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
   .apod-title {
-    margin: 6px 0 0;
-    font-size: 17px;
+    font-size: var(--press-heading-size);
     font-weight: 700;
     line-height: 1.2;
     text-transform: uppercase;
@@ -1807,12 +1732,12 @@
     --lines: 2;
 
     max-inline-size: 96ch;
-    font-size: 12px;
+    font-size: var(--press-font-size);
     line-height: 1.5;
   }
 
   .apod-credit {
     color: var(--press-muted);
-    font-size: 10px;
+    font-size: var(--press-caption-size);
   }
 </style>

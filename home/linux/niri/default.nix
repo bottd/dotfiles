@@ -8,6 +8,8 @@
   ...
 }:
 let
+  press = config.lib.ditherPress;
+
   # Empty off gaming hosts, which hides the panel's Games entry.
   aurelia = lib.optionalString features.gaming (
     lib.getExe inputs.aurelia.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -35,8 +37,10 @@ let
     inherit (config.lib.stylix) colors;
   };
 
-  inherit (config.lib.stylix) colors;
-  shaders = import ./shaders.nix { inherit lib colors; };
+  shaders = import ./shaders.nix {
+    inherit lib;
+    inherit (press.colors) plate;
+  };
 
   # The QML modules plus the compiled print shader, so PrintEffect.qml can
   # resolve it next to itself.
@@ -130,44 +134,42 @@ in
         import QtQuick
 
         QtObject {
-            readonly property color background: "#${config.lib.stylix.colors.base00}"
-            readonly property color surface: "#${config.lib.stylix.colors.base01}"
-            readonly property color surfaceHover: "#${config.lib.stylix.colors.base02}"
-            readonly property color surfaceSelected: "#${config.lib.stylix.colors.base02}"
-            readonly property color surfacePressed: "#${config.lib.stylix.colors.base03}"
-            readonly property color border: "#${config.lib.stylix.colors.base03}"
-            readonly property color textPrimary: "#${config.lib.stylix.colors.base07}"
-            // base04 is base16's muted-foreground slot in both polarities. The old
-            // dark branch used base06, which melange doesn't define (see
-            // lib/stylixScheme.nix) — it was extrapolated off the gray ramp and
-            // landed 1.07:1 against base07, so "muted" text rendered at primary
-            // emphasis. base04 gives a real step down: 2.04:1 dark, 2.99:1 light.
-            readonly property color textMuted: "#${config.lib.stylix.colors.base04}"
-            readonly property color accent: "#${config.lib.stylix.colors.base09}"
-            readonly property color textOnAccent: "#${config.lib.stylix.colors.base00}"
-            readonly property color focusRing: "#${config.lib.stylix.colors.base09}"
+            // Colours and the shared sizes come from config.lib.ditherPress
+            // (home/common/dither-press.nix), which Glide's chrome and new tab
+            // page read too.
+            readonly property color background: "${press.colors.paper}"
+            readonly property color surface: "${press.colors.surface}"
+            readonly property color surfaceHover: "${press.colors.hover}"
+            readonly property color surfaceSelected: "${press.colors.hover}"
+            readonly property color surfacePressed: "${press.colors.rule}"
+            readonly property color border: "${press.colors.rule}"
+            readonly property color textPrimary: "${press.colors.ink}"
+            readonly property color textMuted: "${press.colors.muted}"
+            readonly property color accent: "${press.colors.plate}"
+            readonly property color textOnAccent: "${press.colors.paper}"
+            readonly property color focusRing: "${press.colors.plate}"
             // Dither Press: ink keylines, one accent plate printed off-register
             // behind whatever is selected, square trims everywhere.
-            readonly property color ink: "#${config.lib.stylix.colors.base07}"
-            readonly property color plate: "#${config.lib.stylix.colors.base09}"
+            readonly property color ink: "${press.colors.ink}"
+            readonly property color plate: "${press.colors.plate}"
             readonly property int radius: 0
-            readonly property int plateOffset: Math.max(2, Math.round(fontSize / 6))  // 2
-            readonly property int ruleWidth: Math.max(2, Math.round(fontSize / 6))
-            readonly property int pressOffset: Math.max(3, Math.round(fontSize / 4))
-            readonly property int headingSize: Math.round(fontSize * 1.4)
+            readonly property int plateOffset: ${toString press.sizes.plateOffset}
+            readonly property int ruleWidth: ${toString press.sizes.rule}
+            readonly property int pressOffset: ${toString press.sizes.pressOffset}
+            readonly property int panelOffset: ${toString press.sizes.panelOffset}
+            readonly property int headingSize: ${toString press.sizes.heading}
+            readonly property int captionSize: ${toString press.sizes.caption}
+            readonly property int gap: ${toString press.sizes.gap}
+            readonly property int inset: ${toString press.sizes.inset}
             // Halftone band above the bar where its paper breaks up into the
             // wallpaper. Its height is included in the bar's exclusive zone.
-            readonly property int seamHeight: Math.round(fontSize / 2)        // 6
-            readonly property int seamCell: 2
-            // base0B/base0A are base16's green/yellow slots. The old light branch
-            // used base0D (blue) and base0F (rose), which made "connected" read
-            // informational and put warning closer in hue to danger (base08) than
-            // to caution — at 2.80:1 on background, under the 3:1 non-text floor.
-            readonly property color statusPositive: "#${config.lib.stylix.colors.base0B}"
-            readonly property color statusWarning: "#${config.lib.stylix.colors.base0A}"
-            readonly property color danger: "#${config.lib.stylix.colors.base08}"
-            readonly property string fontFamily: ${builtins.toJSON config.stylix.fonts.monospace.name}
-            readonly property int fontSize: ${toString config.stylix.fonts.sizes.terminal}
+            readonly property int seamHeight: ${toString press.sizes.seam}
+            readonly property int seamCell: ${toString press.sizes.seamCell}
+            readonly property color statusPositive: "${press.colors.positive}"
+            readonly property color statusWarning: "${press.colors.warning}"
+            readonly property color danger: "${press.colors.danger}"
+            readonly property string fontFamily: ${builtins.toJSON press.font}
+            readonly property int fontSize: ${toString press.sizes.font}
             // Every size in the shell derives from fontSize so the eink host
             // (base 20) scales instead of overflowing a layout tuned for 12.
             // The comments give the resolved value at fontSize 12.
@@ -319,9 +321,9 @@ in
           # 4, not 2: a 2px keyline disappeared against the dithered
           # wallpaper on the 1440p panels.
           width = 4;
-          active.color = "#${colors.base07}";
-          inactive.color = lib.mkDefault "#${colors.base02}";
-          urgent.color = "#${colors.base08}";
+          active.color = press.colors.ink;
+          inactive.color = lib.mkDefault press.colors.hover;
+          urgent.color = press.colors.danger;
         };
         shadow = {
           enable = lib.mkDefault true;
@@ -331,26 +333,26 @@ in
           };
           softness = 0;
           spread = 0;
-          color = "#${colors.base09}";
-          inactive-color = "#${colors.base03}55";
+          color = press.colors.plate;
+          inactive-color = "${press.colors.rule}55";
         };
-        insert-hint.display.color = "#${colors.base09}80";
+        insert-hint.display.color = "${press.colors.plate}80";
         tab-indicator = {
           width = 4;
           gap = 4;
           corner-radius = 0;
-          active.color = "#${colors.base09}";
-          inactive.color = "#${colors.base03}";
-          urgent.color = "#${colors.base08}";
+          active.color = press.colors.plate;
+          inactive.color = press.colors.rule;
+          urgent.color = press.colors.danger;
         };
         # Empty-workspace + overview backdrop have no stylix target, so with
         # image = null they'd fall back to niri's gray — wire them by hand.
-        background-color = lib.mkDefault "#${config.lib.stylix.colors.base00}";
+        background-color = lib.mkDefault press.colors.paper;
       };
 
       # Overview stacks workspaces like proofs on the drying rack.
       overview = {
-        backdrop-color = "#${colors.base01}";
+        backdrop-color = press.colors.surface;
         workspace-shadow = {
           offset = {
             x = 10;
@@ -358,7 +360,7 @@ in
           };
           softness = 0;
           spread = 0;
-          color = "#${colors.base07}30";
+          color = "${press.colors.ink}30";
         };
       };
 
@@ -521,10 +523,10 @@ in
     settings = {
       border-radius = 0;
       border-size = 2;
-      border-color = lib.mkForce "#${colors.base07}";
-      "urgency=low".border-color = lib.mkForce "#${colors.base07}";
-      "urgency=normal".border-color = lib.mkForce "#${colors.base07}";
-      "urgency=critical".border-color = lib.mkForce "#${colors.base08}";
+      border-color = lib.mkForce press.colors.ink;
+      "urgency=low".border-color = lib.mkForce press.colors.ink;
+      "urgency=normal".border-color = lib.mkForce press.colors.ink;
+      "urgency=critical".border-color = lib.mkForce press.colors.danger;
       padding = "10,14";
       margin = "12";
     };

@@ -29,3 +29,50 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* Dither Press pieces shared across components (scoped styles can't reach
+   into each other, and the history graph builds its tiles by hand). */
+
+/* Caption-size small caps for section labels and view metadata. */
+.press-kicker {
+  color: var(--press-muted);
+  font-size: var(--press-caption-size);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+/* A site's favicon in its own colours on paper (a tray slot), --size
+   square. With .press-letter it is the site's initial reversed out of ink
+   instead; inside a stamped row it follows the row's --fg/--bg. */
+.press-tile {
+  display: grid;
+  place-items: center;
+  inline-size: var(--size);
+  block-size: var(--size);
+  padding: 2px;
+  background: var(--press-paper);
+  object-fit: contain;
+}
+
+.press-tile.press-letter {
+  padding: 0;
+  background: var(--fg, var(--press-ink));
+  color: var(--bg, var(--press-paper));
+  font-size: calc(var(--size) / 2);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* A view's message when it has nothing to show. */
+.press-empty {
+  display: grid;
+  place-content: center;
+  block-size: 100%;
+  margin: 0;
+  padding-inline: var(--press-inset);
+  font-size: var(--press-font-size);
+  text-align: center;
+}

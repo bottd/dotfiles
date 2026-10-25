@@ -3,9 +3,14 @@
 A standalone Svelte page styled with plain CSS. Vite inlines its JavaScript and
 CSS so Glide can load it through `file://` without a local web server.
 
-Colors are the custom properties `--base00` through `--base0F` in
-`src/palette.css`. The committed file is the Everforest dark palette for the
-development server; the Nix build overwrites it with the active Stylix theme.
+Colours, type sizes and spacing are the Dither Press `--press-*` custom
+properties in `src/palette.css`. The committed file holds Everforest dark at
+fontSize 12 for the development server; the Nix build overwrites it with the
+tokens `home/common/glide/default.nix` generates from Stylix, which the browser
+chrome (`config/press.css`) uses too.
+
+The History view gets its data from `config/glide.ts`, so outside Glide it only
+shows a message.
 
 ```sh
 pnpm install

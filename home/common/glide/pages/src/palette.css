@@ -1,5 +1,5 @@
-/* Dither Press tokens for `pnpm dev` (Everforest dark). The Nix build
-   replaces this file with the press-palette.css that home/common/glide
+/* Dither Press tokens for `pnpm dev` (Everforest dark, fontSize 12). The Nix
+   build replaces this file with the press-palette.css home/common/glide
    generates from the active Stylix scheme, the same one press.css uses. */
 :root {
   --press-paper: #2d353b;
@@ -11,4 +11,17 @@
   --press-plate: #e69875;
   --press-danger: #e67e80;
   --press-font: "MonoLisa Nerd Font";
+  --press-font-size: 12px;
+  --press-heading-size: 17px;
+  --press-caption-size: 10px;
+  --press-rule-width: 2px;
+  --press-plate-offset: 2px;
+  --press-offset: 3px;
+  --press-panel-offset: 6px;
+  --press-gap: 12px;
+  --press-half-gap: 6px;
+  --press-inset: 18px;
+  --press-tile-size: 24px;
+  --press-seam-height: 6px;
+  --press-seam-cell: 2px;
 }

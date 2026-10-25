@@ -6,11 +6,14 @@
 #
 # GLSL ES 1.00 (niri's GLES2 renderer): no const arrays or bitwise ops, so the
 # Bayer matrix is built recursively from the 2x2 base with fract().
-{ lib, colors }:
+{ lib, plate }:
 let
-  # "E49B5D" -> "0.894118, 0.607843, 0.364706"
+  # "#E49B5D" -> "0.894118, 0.607843, 0.364706"
   hexToVec3 =
-    hex:
+    color:
+    let
+      hex = lib.removePrefix "#" color;
+    in
     lib.concatMapStringsSep ", " (i: toString (lib.fromHexString (builtins.substring i 2 hex) / 255.0))
       [
         0
@@ -39,7 +42,7 @@ let
         return b;
     }
 
-    const vec3 press_plate = vec3(${hexToVec3 colors.base09});
+    const vec3 press_plate = vec3(${hexToVec3 plate});
 
     bool press_inside(vec3 c) {
         return 0.0 <= c.x && c.x <= 1.0 && 0.0 <= c.y && c.y <= 1.0;

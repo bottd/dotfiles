@@ -5,7 +5,7 @@ Item {
 
     required property var theme
     default property alias contentData: surface.data
-    readonly property int offset: theme.pressOffset * 2
+    readonly property int offset: theme.panelOffset
     // The panel prints in head-first through the ordered dither and lifts out
     // tail-first, the same pair niri runs on windows. Owners call printIn()
     // when they appear and pressOut() before hiding, then hide on pressedOut.

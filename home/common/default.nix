@@ -17,6 +17,7 @@
   imports = [
     ./cli.nix
     ./direnv.nix
+    ./dither-press.nix
     ./git.nix
     ./jujutsu.nix
     ./neovim

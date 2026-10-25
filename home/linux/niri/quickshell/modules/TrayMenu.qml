@@ -157,8 +157,8 @@ PanelWindow {
             height: Math.min(parent.height - root.theme.fontSize * 4, Math.max(root.theme.fontSize * 14, list.contentHeight + root.theme.fontSize * 10))
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: root.theme.fontSize * 1.5
-                spacing: root.theme.fontSize
+                anchors.margins: root.theme.inset
+                spacing: root.theme.gap
                 RowLayout {
                     Layout.fillWidth: true
                     Text {
@@ -236,7 +236,7 @@ PanelWindow {
                                 anchors.fill: parent
                                 anchors.leftMargin: root.theme.ruleWidth * 3
                                 anchors.rightMargin: root.theme.ruleWidth * 3
-                                spacing: root.theme.fontSize
+                                spacing: root.theme.gap
                                 Rectangle {
                                     visible: modelData.buttonType !== QsMenuButtonType.None
                                     implicitWidth: root.theme.fontSize

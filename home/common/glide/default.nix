@@ -6,20 +6,35 @@
   ...
 }:
 let
-  inherit (config.lib.stylix) colors;
+  inherit (config.lib.ditherPress) colors font sizes;
+  px = n: "${toString n}px";
 
-  # Dither Press tokens, shared by the chrome (press.css) and the new tab page.
+  # Dither Press tokens (home/common/dither-press.nix) as CSS custom
+  # properties, shared by the chrome (press.css) and the new tab page.
   pressTokens = pkgs.writeText "press-palette.css" ''
     :root {
-      --press-paper: #${colors.base00};
-      --press-surface: #${colors.base01};
-      --press-hover: #${colors.base02};
-      --press-rule: #${colors.base03};
-      --press-muted: #${colors.base04};
-      --press-ink: #${colors.base07};
-      --press-plate: #${colors.base09};
-      --press-danger: #${colors.base08};
-      --press-font: ${builtins.toJSON config.stylix.fonts.monospace.name};
+      --press-paper: ${colors.paper};
+      --press-surface: ${colors.surface};
+      --press-hover: ${colors.hover};
+      --press-rule: ${colors.rule};
+      --press-muted: ${colors.muted};
+      --press-ink: ${colors.ink};
+      --press-plate: ${colors.plate};
+      --press-danger: ${colors.danger};
+      --press-font: ${builtins.toJSON font};
+      --press-font-size: ${px sizes.font};
+      --press-heading-size: ${px sizes.heading};
+      --press-caption-size: ${px sizes.caption};
+      --press-rule-width: ${px sizes.rule};
+      --press-plate-offset: ${px sizes.plateOffset};
+      --press-offset: ${px sizes.pressOffset};
+      --press-panel-offset: ${px sizes.panelOffset};
+      --press-gap: ${px sizes.gap};
+      --press-half-gap: ${px sizes.halfGap};
+      --press-inset: ${px sizes.inset};
+      --press-tile-size: ${px sizes.tile};
+      --press-seam-height: ${px sizes.seam};
+      --press-seam-cell: ${px sizes.seamCell};
     }
   '';
 

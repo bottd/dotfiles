@@ -915,8 +915,8 @@ PanelWindow {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: root.theme.fontSize * 1.5
-                spacing: root.theme.fontSize
+                anchors.margins: root.theme.inset
+                spacing: root.theme.gap
 
                 RowLayout {
                     Layout.fillWidth: true
@@ -964,7 +964,7 @@ PanelWindow {
                             text: root.gamesFailed ? "LIBRARY NOT REFRESHED" : "REFRESHING…"
                             color: root.gamesFailed ? root.theme.danger : root.theme.textMuted
                             font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize - 2
+                            font.pixelSize: root.theme.captionSize
                             font.bold: root.gamesFailed
                         }
                     }
@@ -977,7 +977,7 @@ PanelWindow {
                         elide: Text.ElideRight
                         color: failed ? root.theme.danger : root.theme.textMuted
                         font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize - 2
+                        font.pixelSize: root.theme.captionSize
                         font.bold: failed
                         Accessible.role: Accessible.StaticText
                         Accessible.name: text
@@ -1092,7 +1092,7 @@ PanelWindow {
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: root.theme.ruleWidth * 2
-                            spacing: root.theme.fontSize
+                            spacing: root.theme.gap
                             PressKey {
                                 theme: root.theme
                                 visible: !result.application && !result.game
@@ -1126,7 +1126,7 @@ PanelWindow {
                                     elide: Text.ElideRight
                                     color: result.inverted ? root.theme.background : (result.confirming ? root.theme.danger : root.theme.textMuted)
                                     font.family: root.theme.fontFamily
-                                    font.pixelSize: root.theme.fontSize - 2
+                                    font.pixelSize: root.theme.captionSize
                                 }
                             }
                             Text {
@@ -1153,7 +1153,7 @@ PanelWindow {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     visible: root.mode === "journal"
-                    spacing: root.theme.fontSize
+                    spacing: root.theme.gap
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -1222,7 +1222,7 @@ PanelWindow {
                                     text: modelData
                                     color: root.theme.textMuted
                                     font.family: root.theme.fontFamily
-                                    font.pixelSize: root.theme.fontSize - 2
+                                    font.pixelSize: root.theme.captionSize
                                 }
                             }
                             Repeater {
@@ -1253,7 +1253,7 @@ PanelWindow {
                     elide: Text.ElideRight
                     color: root.confirmationItem ? root.theme.danger : root.theme.textMuted
                     font.family: root.theme.fontFamily
-                    font.pixelSize: root.theme.fontSize - 2
+                    font.pixelSize: root.theme.captionSize
                     font.bold: !!root.confirmationItem
                 }
             }
