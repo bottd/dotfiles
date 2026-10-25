@@ -1,0 +1,14 @@
+/* Dither Press tokens for `pnpm dev` (Everforest dark). The Nix build
+   replaces this file with the press-palette.css that home/common/glide
+   generates from the active Stylix scheme, the same one press.css uses. */
+:root {
+  --press-paper: #2d353b;
+  --press-surface: #343f44;
+  --press-hover: #3d484d;
+  --press-rule: #475258;
+  --press-muted: #7a8478;
+  --press-ink: #d3c6aa;
+  --press-plate: #e69875;
+  --press-danger: #e67e80;
+  --press-font: "MonoLisa Nerd Font";
+}

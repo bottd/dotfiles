@@ -13,16 +13,20 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "7.1.2",
     "@types/node": "25.9.1",
+    "@types/three": "0.186.0",
     "prettier": "3.8.3",
     "prettier-plugin-svelte": "4.0.1",
     "svelte": "5.56.0",
     "svelte-check": "4.4.8",
     "typescript": "6.0.3",
-    "unocss": "66.7.5",
     "vite": "8.0.14",
     "vite-plugin-singlefile": "2.3.3"
   },
   "engines": {
     "node": ">=24"
+  },
+  "dependencies": {
+    "3d-force-graph": "1.80.1",
+    "three": "0.186.1"
   }
 }

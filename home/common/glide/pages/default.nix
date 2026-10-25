@@ -5,37 +5,10 @@
   pnpm,
   pnpmConfigHook,
   stdenvNoCC,
-  stylixPalette ? builtins.fromJSON (builtins.readFile ./stylix-palette.json),
-  writeText,
+  # The Dither Press tokens (--press-*) Home Manager generates from Stylix.
+  # Without them the committed src/palette.css (Everforest dark) is used.
+  pressTokens ? null,
 }:
-let
-  colorNames = [
-    "base00"
-    "base01"
-    "base02"
-    "base03"
-    "base04"
-    "base05"
-    "base06"
-    "base07"
-    "base08"
-    "base09"
-    "base0A"
-    "base0B"
-    "base0C"
-    "base0D"
-    "base0E"
-    "base0F"
-  ];
-  palette = lib.genAttrs colorNames (
-    name:
-    let
-      value = stylixPalette.${name};
-    in
-    if lib.hasPrefix "#" value then value else "#${value}"
-  );
-  paletteFile = writeText "stylix-palette.json" (builtins.toJSON palette);
-in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "glide-pages";
   version = "0.1.0";
@@ -49,7 +22,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       ./pnpm-lock.yaml
       ./src
       ./tsconfig.json
-      ./uno.config.ts
       ./vite.config.ts
     ];
   };
@@ -64,11 +36,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) pname version src;
     inherit pnpm;
     fetcherVersion = 4;
-    hash = "sha256-EAIlg5Fiu1TLWeK2iDViJiA7sACFVa8gL7nwUPBY0Ns=";
+    hash = "sha256-btVkxnQQdkQShyPtJNpU7PjmTQCe/xh0dY+0VHWmL/M=";
   };
 
-  postPatch = ''
-    cp ${paletteFile} stylix-palette.json
+  postPatch = lib.optionalString (pressTokens != null) ''
+    cp ${pressTokens} src/palette.css
   '';
 
   buildPhase = ''

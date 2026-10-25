@@ -1,5 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import HistoryGraph from "./HistoryGraph.svelte";
+  import {
+    historyMessage,
+    historyRequest,
+    type HistoryGraph as HistoryGraphData,
+  } from "./history";
 
   type HackerNewsStory = {
     by: string;
@@ -44,18 +50,32 @@
   const hackerNewsStoryCount = 10;
   const astronomyPictureApi =
     "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true";
-  const mediaSites = [
+  type Site = {
+    href: string;
+    title: string;
+    description: string;
+    kickChannel?: string;
+  };
+
+  function withHost(site: Site) {
+    const url = new URL(site.href);
+    return {
+      ...site,
+      hostname: url.hostname.replace(/^www\./, ""),
+      favicon: new URL("/favicon.ico", url).href,
+    };
+  }
+
+  const mediaSites: Site[] = [
     {
       href: "https://youtube.com/",
       title: "YouTube",
       description: "Videos, music, subscriptions, and live streams.",
-      kind: "Video",
     },
     {
       href: "https://destiny.gg/",
       title: "Destiny",
       description: "Livestreams, debates, events, and the DGG community.",
-      kind: "Live & community",
       kickChannel: "destiny",
     },
     {
@@ -63,18 +83,29 @@
       title: "AP News",
       description:
         "Independent reporting and breaking news from around the world.",
-      kind: "News",
     },
-  ].map((site) => {
-    const url = new URL(site.href);
-    const hostname = url.hostname.replace(/^www\./, "");
-
-    return {
-      ...site,
-      hostname,
-      favicon: new URL("/favicon.ico", url).href,
-    };
-  });
+  ];
+  const personalSites: Site[] = [
+    {
+      href: "https://drena.haus/",
+      title: "Drena Haus",
+      description: "Shared home dashboard, mostly media.",
+    },
+    {
+      href: "https://git.drake.bot/",
+      title: "Forge",
+      description: "Private git forge.",
+    },
+    {
+      href: "https://a.drake.dev/",
+      title: "Analytics",
+      description: "Private analytics dashboard.",
+    },
+  ];
+  const linkGroups = [
+    { id: "media", title: "Media", sites: mediaSites.map(withHost) },
+    { id: "personal", title: "Personal", sites: personalSites.map(withHost) },
+  ];
 
   let stories: HackerNewsStory[] = [];
   let loading = true;
@@ -86,6 +117,49 @@
   let astronomyPictureLoading = true;
   let astronomyPictureError = false;
   let livestreams: Record<string, KickLivestream> = {};
+  // Private sites may not serve a favicon publicly; show a letter tile instead.
+  let missingFavicons: Record<string, boolean> = {};
+
+  // The big views share the bottom panel; the last one shown is remembered.
+  const views = [
+    { id: "apod", title: "Picture of the day" },
+    { id: "history", title: "History" },
+  ] as const;
+  type ViewId = (typeof views)[number]["id"];
+  const viewKey = "big-view";
+  let view: ViewId = "apod";
+  try {
+    const saved = localStorage.getItem(viewKey);
+    if (views.some(({ id }) => id === saved)) view = saved as ViewId;
+  } catch {
+    // Start on the picture when storage is unavailable.
+  }
+  // The graph mounts the first time its view is shown, then stays mounted.
+  let historyShown = view === "history";
+  let historyGraph: HistoryGraphData | undefined;
+
+  function showView(next: ViewId) {
+    view = next;
+    if (next === "history") historyShown = true;
+    try {
+      localStorage.setItem(viewKey, next);
+    } catch {
+      // The view still switches without storage.
+    }
+  }
+
+  function viewKeydown(event: KeyboardEvent) {
+    const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+    if (!step) return;
+    const index = views.findIndex(({ id }) => id === view);
+    const next = views[(index + step + views.length) % views.length];
+    showView(next.id);
+    document.getElementById(`view-tab-${next.id}`)?.focus();
+  }
+
+  function receiveHistory(event: MessageEvent) {
+    if (event.data?.type === historyMessage) historyGraph = event.data.graph;
+  }
 
   function storyUrl(story: HackerNewsStory) {
     return story.url ?? `https://news.ycombinator.com/item?id=${story.id}`;
@@ -309,12 +383,38 @@
     }
   }
 
-  function viewerCount(count: number) {
-    return new Intl.NumberFormat(undefined, {
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(count);
-  }
+  const viewerCount = new Intl.NumberFormat(undefined, {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  });
+
+  // The 8×8 Bayer order the desktop's press dither prints in (shaders.nix).
+  const bayer = [
+    [0, 32, 8, 40, 2, 34, 10, 42],
+    [48, 16, 56, 24, 50, 18, 58, 26],
+    [12, 44, 4, 36, 14, 46, 6, 38],
+    [60, 28, 52, 20, 62, 30, 54, 22],
+    [3, 35, 11, 43, 1, 33, 9, 41],
+    [51, 19, 59, 27, 49, 17, 57, 25],
+    [15, 47, 7, 39, 13, 45, 5, 37],
+    [63, 31, 55, 23, 61, 29, 53, 21],
+  ];
+
+  // Halftone seam mask: 2px cells ramping from sparse at the top edge to
+  // solid at the bottom, so paper breaks up into whatever sits above it.
+  const seamMask = (() => {
+    const cell = 2;
+    const size = bayer.length * cell;
+    const cells = bayer.flatMap((row, y) =>
+      row.flatMap((threshold, x) =>
+        threshold < ((y + 1) / bayer.length) * 64
+          ? [`<rect x="${x * cell}" y="${y * cell}" width="${cell}" height="${cell}"/>`]
+          : [],
+      ),
+    );
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" shape-rendering="crispEdges">${cells.join("")}</svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  })();
 
   onMount(() => {
     mediaSites.forEach(
@@ -323,375 +423,325 @@
     loadStories();
     loadWikipediaArticle();
     loadAstronomyPicture();
+
+    window.addEventListener("message", receiveHistory);
+    window.postMessage({ type: historyRequest }, "*");
+    return () => window.removeEventListener("message", receiveHistory);
   });
 </script>
 
-<main
-  min-h="screen lg:0"
-  h="lg:screen"
-  overflow="lg:hidden"
-  bg="base00"
-  p="x-4 y-5 sm:x-6 sm:y-8 lg:y-5"
-  text="base07"
->
-  <div
-    h="lg:full"
-    min-h="lg:0"
-    max-w="[1180px]"
-    m="x-auto"
-    grid="~ lg:rows-[clamp(380px,50vh,430px)_minmax(0,1fr)] lg:gap-4"
-  >
+<main class="page">
+  <div class="shell">
     <h1 class="sr-only">New tab</h1>
-    <div h="lg:full" min-h="lg:0" grid="~ lg:cols-3" gap="4">
+    <div class="columns">
       <section
-        class="hn-frame"
-        min-w="0"
+        class="card hn"
         aria-labelledby="hacker-news-title"
         aria-busy={loading}
       >
-        <div class="hn-page">
-          <header class="hn-header">
+        <header class="hn-header">
+          <a
+            class="hn-logo"
+            href="https://news.ycombinator.com/"
+            aria-label="Hacker News home">Y</a
+          >
+          <h2>
             <a
-              class="hn-logo"
+              class="hn-name"
+              id="hacker-news-title"
               href="https://news.ycombinator.com/"
-              aria-label="Hacker News home">Y</a
             >
-            <h2 m="0" text="[13px]" leading="none">
-              <a
-                class="hn-name"
-                id="hacker-news-title"
-                href="https://news.ycombinator.com/"
-              >
-                Hacker News
-              </a>
-            </h2>
-          </header>
+              Hacker News
+            </a>
+          </h2>
+        </header>
 
-          <div class="sr-only" role="status">
-            {loading
-              ? "Loading top Hacker News stories"
-              : error
-                ? "Hacker News could not be reached"
-                : `${stories.length} top Hacker News stories loaded`}
-          </div>
-          <div class="hn-content">
-            {#if loading}
-              <ol
-                class="story-list"
-                aria-label="Loading top Hacker News stories"
-                aria-hidden="true"
+        <div class="sr-only" role="status">
+          {loading
+            ? "Loading top Hacker News stories"
+            : error
+              ? "Hacker News could not be reached"
+              : `${stories.length} top Hacker News stories loaded`}
+        </div>
+        <div class="hn-content">
+          {#if loading}
+            <ol class="story-list" aria-hidden="true">
+              {#each Array(hackerNewsStoryCount) as _, index}
+                <li class="story story-loading">
+                  <span class="rank">{index + 1}.</span>
+                  <div class="story-main">
+                    <span class="loading-title"></span>
+                    <span class="loading-meta"></span>
+                  </div>
+                </li>
+              {/each}
+            </ol>
+          {:else if error}
+            <div class="hn-state">
+              <p>Hacker News could not be reached.</p>
+              <button class="hn-retry" type="button" onclick={loadStories}
+                >try again</button
               >
-                {#each Array(hackerNewsStoryCount) as _, index}
-                  <li class="story story-loading">
-                    <span class="rank">{index + 1}.</span>
-                    <div class="story-main">
-                      <span class="loading-block"></span>
-                      <span class="loading-meta"></span>
+            </div>
+          {:else}
+            <ol class="story-list" aria-label="Top Hacker News stories">
+              {#each stories as story, index (story.id)}
+                <li class="story">
+                  <span class="rank">{index + 1}.</span>
+                  <div class="story-main">
+                    <div class="story-heading">
+                      <a class="story-title" href={storyUrl(story)}
+                        >{story.title}</a
+                      >
+                      {#if storyHost(story)}
+                        <span class="story-host truncate"
+                          >({storyHost(story)})</span
+                        >
+                      {/if}
                     </div>
-                  </li>
-                {/each}
-              </ol>
-            {:else if error}
-              <div class="hn-state">
-                <p>Hacker News could not be reached.</p>
-                <button class="hn-retry" type="button" onclick={loadStories}
-                  >try again</button
-                >
-              </div>
-            {:else}
-              <ol class="story-list" aria-label="Top Hacker News stories">
-                {#each stories as story, index (story.id)}
-                  <li class="story">
-                    <span class="rank">{index + 1}.</span>
-                    <div class="story-main">
-                      <div class="story-heading">
-                        <a class="story-title" href={storyUrl(story)}
-                          >{story.title}</a
-                        >
-                        {#if storyHost(story)}
-                          <span class="story-host">({storyHost(story)})</span>
-                        {/if}
-                      </div>
-                      <p class="story-meta">
-                        {story.score} points by
-                        <a
-                          href={`https://news.ycombinator.com/user?id=${story.by}`}
-                          >{story.by}</a
-                        >
-                        <a
-                          href={`https://news.ycombinator.com/item?id=${story.id}`}
-                        >
-                          {storyAge(story.time)}
-                        </a>
-                        <span>|</span>
-                        <a
-                          href={`https://news.ycombinator.com/item?id=${story.id}`}
-                        >
-                          {story.descendants ?? 0} comments
-                        </a>
-                      </p>
-                    </div>
-                  </li>
-                {/each}
-              </ol>
-            {/if}
-          </div>
+                    <p class="story-meta">
+                      {story.score} points by
+                      <a
+                        href={`https://news.ycombinator.com/user?id=${story.by}`}
+                        >{story.by}</a
+                      >
+                      <a
+                        href={`https://news.ycombinator.com/item?id=${story.id}`}
+                      >
+                        {storyAge(story.time)}
+                      </a>
+                      <span>|</span>
+                      <a
+                        href={`https://news.ycombinator.com/item?id=${story.id}`}
+                      >
+                        {story.descendants ?? 0} comments
+                      </a>
+                    </p>
+                  </div>
+                </li>
+              {/each}
+            </ol>
+          {/if}
         </div>
       </section>
 
-      <div class="contents">
-        <section
-          class="wiki-frame"
-          aria-labelledby="wiki-title"
-          aria-busy={wikipediaArticleLoading}
+      <section
+        class="card wiki"
+        aria-labelledby="wiki-title"
+        aria-busy={wikipediaArticleLoading}
+      >
+        <header class="wiki-header">
+          <a class="wiki-brand" href="https://en.wikipedia.org/wiki/Main_Page">
+            <span class="wiki-mark" aria-hidden="true">W</span>
+            <span class="wiki-brand-text">
+              <h2 id="wiki-title" class="wiki-wordmark truncate">Wikipedia</h2>
+              <span class="wiki-tagline truncate">The Free Encyclopedia</span>
+            </span>
+          </a>
+        </header>
+        <form
+          class="wiki-search"
+          action="https://en.wikipedia.org/w/index.php"
+          method="get"
         >
-          <header class="wiki-header">
-            <a
-              class="wiki-brand"
-              href="https://en.wikipedia.org/wiki/Main_Page"
+          <label class="sr-only" for="wikipedia-search">
+            Search Wikipedia
+          </label>
+          <div class="wiki-search-control">
+            <input
+              id="wikipedia-search"
+              class="wiki-search-input"
+              name="search"
+              type="search"
+              placeholder="Search Wikipedia"
+              autocomplete="off"
+            />
+            <button
+              class="wiki-search-button"
+              type="submit"
+              aria-label="Search Wikipedia"
             >
-              <span class="wiki-mark" aria-hidden="true">W</span>
-              <span min-w="0">
-                <h2 id="wiki-title" class="wiki-wordmark">Wikipedia</h2>
-                <span class="wiki-tagline">The Free Encyclopedia</span>
-              </span>
-            </a>
-          </header>
-          <form
-            class="wiki-search"
-            action="https://en.wikipedia.org/w/index.php"
-            method="get"
+              Search
+            </button>
+          </div>
+        </form>
+        <nav class="wiki-nav" aria-label="Wikipedia navigation">
+          <a href="https://en.wikipedia.org/wiki/Main_Page">Main page</a>
+          <a href="https://en.wikipedia.org/wiki/Wikipedia:Contents"
+            >Contents</a
           >
-            <label class="sr-only" for="wikipedia-search">
-              Search Wikipedia
-            </label>
-            <div class="wiki-search-control">
-              <input
-                id="wikipedia-search"
-                class="wiki-search-input"
-                name="search"
-                type="search"
-                placeholder="Search Wikipedia"
-                autocomplete="off"
-              />
-              <button
-                class="wiki-search-button"
-                type="submit"
-                aria-label="Search Wikipedia"
-              >
-                Search
+          <a href="https://en.wikipedia.org/wiki/Portal:Current_events"
+            >Current events</a
+          >
+          <a href="https://en.wikipedia.org/wiki/Special:Random">Random</a>
+        </nav>
+
+        <div class="wiki-feature">
+          <div class="wiki-feature-heading">
+            <span>From today's featured article</span>
+            <a
+              href="https://en.wikipedia.org/wiki/Wikipedia:Today%27s_featured_article"
+              aria-label="About today's featured article">?</a
+            >
+          </div>
+          {#if wikipediaArticleLoading}
+            <span class="sr-only" role="status">
+              Loading Wikipedia's featured article
+            </span>
+            <div class="wiki-feature-loading" aria-hidden="true">
+              <div class="wiki-skeleton-image"></div>
+              <div class="wiki-skeleton-lines">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          {:else if wikipediaArticleError || !wikipediaArticle}
+            <div class="wiki-feature-error" role="status">
+              <p>Today's featured article could not be reached.</p>
+              <button type="button" onclick={loadWikipediaArticle}>
+                Try again
               </button>
             </div>
-          </form>
-          <nav class="wiki-nav" aria-label="Wikipedia navigation">
-            <a href="https://en.wikipedia.org/wiki/Main_Page">Main page</a>
-            <a href="https://en.wikipedia.org/wiki/Wikipedia:Contents"
-              >Contents</a
-            >
-            <a href="https://en.wikipedia.org/wiki/Portal:Current_events"
-              >Current events</a
-            >
-            <a href="https://en.wikipedia.org/wiki/Special:Random">Random</a>
-          </nav>
-
-          <div class="wiki-feature">
-            <div class="wiki-feature-heading">
-              <span>From today's featured article</span>
-              <a
-                href="https://en.wikipedia.org/wiki/Wikipedia:Today%27s_featured_article"
-                aria-label="About today's featured article">?</a
-              >
-            </div>
-            {#if wikipediaArticleLoading}
-              <span class="sr-only" role="status">
-                Loading Wikipedia's featured article
-              </span>
-              <div class="wiki-feature-loading" aria-hidden="true">
-                <div
-                  h="28"
-                  animate="pulse motion-reduce:none"
-                  bg="[#eaecf0]"
-                ></div>
-                <div grid="~" content="start" gap="2">
-                  <span
-                    h="4"
-                    w="3/4"
-                    animate="pulse motion-reduce:none"
-                    bg="[#c8ccd1]"
-                  ></span>
-                  <span
-                    h="2.5"
-                    animate="pulse motion-reduce:none"
-                    bg="[#eaecf0]"
-                  ></span>
-                  <span
-                    h="2.5"
-                    w="5/6"
-                    animate="pulse motion-reduce:none"
-                    bg="[#eaecf0]"
-                  ></span>
-                </div>
+          {:else}
+            <article class="wiki-article">
+              <div class="wiki-article-image">
+                {#if wikipediaArticle.thumbnail}
+                  <img src={wikipediaArticle.thumbnail.source} alt="" />
+                {:else}
+                  <div class="wiki-image-fallback" aria-hidden="true">W</div>
+                {/if}
               </div>
-            {:else if wikipediaArticleError || !wikipediaArticle}
-              <div class="wiki-feature-error" role="status">
-                <p>Today's featured article could not be reached.</p>
-                <button type="button" onclick={loadWikipediaArticle}>
-                  Try again
-                </button>
-              </div>
-            {:else}
-              <article class="wiki-article">
-                <div class="wiki-article-image">
-                  {#if wikipediaArticle.thumbnail}
-                    <img
-                      h="full"
-                      w="full"
-                      object="cover"
-                      src={wikipediaArticle.thumbnail.source}
-                      alt=""
-                    />
-                  {:else}
-                    <div class="wiki-image-fallback" aria-hidden="true">W</div>
-                  {/if}
-                </div>
-                <div min-w="0">
-                  <h3 class="wiki-article-title">
-                    <a href={wikipediaArticle.content_urls.desktop.page}>
-                      {wikipediaArticleTitle(wikipediaArticle)}
-                    </a>
-                  </h3>
-                  {#if wikipediaArticle.description}
-                    <p class="wiki-article-description">
-                      {wikipediaArticle.description}
-                    </p>
-                  {/if}
-                  <p class="wiki-article-extract">
-                    {wikipediaArticle.extract}
-                  </p>
-                  <a
-                    class="wiki-read-more"
-                    href={wikipediaArticle.content_urls.desktop.page}
-                  >
-                    Full article...
+              <div class="wiki-article-body">
+                <h3 class="wiki-article-title">
+                  <a href={wikipediaArticle.content_urls.desktop.page}>
+                    {wikipediaArticleTitle(wikipediaArticle)}
                   </a>
-                </div>
-              </article>
-            {/if}
-          </div>
-        </section>
+                </h3>
+                {#if wikipediaArticle.description}
+                  <p class="wiki-article-description">
+                    {wikipediaArticle.description}
+                  </p>
+                {/if}
+                <p class="wiki-article-extract">
+                  {wikipediaArticle.extract}
+                </p>
+                <a
+                  class="wiki-read-more"
+                  href={wikipediaArticle.content_urls.desktop.page}
+                >
+                  Full article...
+                </a>
+              </div>
+            </article>
+          {/if}
+        </div>
+      </section>
 
-        <section
-          class="widget"
-          h="lg:full"
-          overflow="hidden"
-          border="~ base02"
-          bg="base01"
-          aria-labelledby="media-title"
-        >
-          <div border="b base02" p="x-5 y-4">
-            <h2 id="media-title" m="0" text="base base07" font="medium">
-              Media
-            </h2>
-          </div>
-          <nav class="media-links" aria-label="Media shortcuts">
-            {#each mediaSites as site (site.href)}
-              {@const live = site.kickChannel && livestreams[site.kickChannel]}
-              <a class="media-link" href={site.href}>
-                <img class="media-favicon" src={site.favicon} alt="" />
-                <span min-w="0">
-                  <span class="media-heading">
-                    <strong class="media-name">{site.title}</strong>
-                    {#if live}
-                      <span class="media-live">
-                        <span class="media-live-dot" aria-hidden="true"></span>
-                        Live · {viewerCount(live.viewer_count)}
-                        <span class="sr-only">watching</span>
-                      </span>
-                    {/if}
-                    <span class="arrow" aria-hidden="true">↗</span>
+      <section class="card links" aria-labelledby="links-title">
+        <header class="links-header">
+          <h2 id="links-title">Links</h2>
+        </header>
+        <div class="links-body">
+          {#each linkGroups as group (group.id)}
+            <nav class="link-group" aria-labelledby={`links-${group.id}`}>
+              <h3 id={`links-${group.id}`}>{group.title}</h3>
+              {#each group.sites as site (site.href)}
+                {@const live =
+                  site.kickChannel && livestreams[site.kickChannel]}
+                <a class="link" href={site.href}>
+                  {#if missingFavicons[site.href]}
+                    <span class="link-icon link-letter" aria-hidden="true"
+                      >{site.title[0]}</span
+                    >
+                  {:else}
+                    <img
+                      class="link-icon"
+                      src={site.favicon}
+                      alt=""
+                      onerror={() =>
+                        (missingFavicons = {
+                          ...missingFavicons,
+                          [site.href]: true,
+                        })}
+                    />
+                  {/if}
+                  <span class="link-text">
+                    <span class="link-heading">
+                      <strong class="link-name truncate">{site.title}</strong>
+                      {#if live}
+                        <span class="link-live">
+                          <span class="link-live-marker" aria-hidden="true"
+                          ></span>
+                          Live · {viewerCount.format(live.viewer_count)}
+                          <span class="sr-only">watching</span>
+                        </span>
+                      {/if}
+                      <small class="link-domain truncate">{site.hostname}</small>
+                      <span class="link-arrow" aria-hidden="true">↗</span>
+                    </span>
+                    <span class="link-description truncate">
+                      {live ? live.session_title : site.description}
+                    </span>
                   </span>
-                  <span class="media-description">
-                    {live ? live.session_title : site.description}
-                  </span>
-                  <span class="media-details">
-                    <small class="media-domain">{site.hostname}</small>
-                    <small class="media-kind">{site.kind}</small>
-                  </span>
-                </span>
-              </a>
-            {/each}
-          </nav>
-        </section>
-      </div>
+                </a>
+              {/each}
+            </nav>
+          {/each}
+        </div>
+      </section>
     </div>
 
-    <section
-      class="widget"
-      relative
-      min-h="lg:0"
-      h="[clamp(360px,56vh,620px)] lg:full"
-      m="t-4 lg:t-0"
-      overflow="hidden"
-      border="~ base03"
-      bg="base01"
-      aria-labelledby="astronomy-picture-title"
-      aria-busy={astronomyPictureLoading}
-    >
-      <h2 id="astronomy-picture-title" class="sr-only">
-        NASA astronomy picture of the day
-      </h2>
+    <section class="card views" aria-label="Views" style:--seam={seamMask}>
+      <div
+        class="view-tabs"
+        role="tablist"
+        aria-label="Views"
+        tabindex="-1"
+        onkeydown={viewKeydown}
+      >
+        {#each views as { id, title } (id)}
+          <button
+            class="view-tab"
+            id={`view-tab-${id}`}
+            type="button"
+            role="tab"
+            aria-selected={view === id}
+            aria-controls={`view-${id}`}
+            tabindex={view === id ? 0 : -1}
+            onclick={() => showView(id)}
+          >
+            {title}
+          </button>
+        {/each}
+      </div>
+
+      <div
+        class="view view-apod"
+        id="view-apod"
+        role="tabpanel"
+        aria-labelledby="view-tab-apod"
+        aria-busy={astronomyPictureLoading}
+        hidden={view !== "apod"}
+      >
       {#if astronomyPictureLoading}
         <span class="sr-only" role="status">
           Loading NASA astronomy picture of the day
         </span>
-        <div
-          h="full"
-          w="full"
-          animate="pulse motion-reduce:none"
-          bg="gradient-to-br"
-          from="base01"
-          via="base02"
-          to="base00"
-          aria-hidden="true"
-        ></div>
+        <div class="apod-placeholder" aria-hidden="true"></div>
       {:else if astronomyPictureError || !astronomyPicture}
-        <div
-          h="full"
-          grid="~"
-          place-content="center"
-          justify-items="center"
-          gap="3"
-          bg="gradient-to-br"
-          from="base01"
-          via="base02"
-          to="base00"
-          p="x-6"
-          text="center"
-          role="status"
-        >
-          <p m="0" text="sm base07">
-            NASA's astronomy picture could not be reached.
-          </p>
-          <div flex="~ wrap" justify="center" gap="3">
+        <div class="apod-placeholder apod-error" role="status">
+          <p>NASA's astronomy picture could not be reached.</p>
+          <div class="apod-actions">
             <button
-              cursor="pointer"
-              border="~ base0D"
-              bg="base00 hover:base03"
-              p="x-3 y-1.5"
-              text="xs base0D hover:base07"
-              outline="focus-visible:2 focus-visible:base0D focus-visible:offset-2"
+              class="press-button"
               type="button"
               onclick={loadAstronomyPicture}
             >
               Try again
             </button>
             <a
-              border="~ base0E"
-              bg="base00 hover:base03"
-              p="x-3 y-1.5"
-              text="xs base0E hover:base07"
-              decoration="none"
-              outline="focus-visible:2 focus-visible:base0E focus-visible:offset-2"
+              class="press-button"
               href="https://apod.nasa.gov/apod/astropix.html"
             >
               Open NASA APOD
@@ -700,70 +750,25 @@
         </div>
       {:else}
         <a
-          block
-          h="full"
-          bg="cover center no-repeat"
-          outline="focus-visible:2 focus-visible:base0D focus-visible:offset--2"
+          class="apod-image"
           href={astronomyPictureTarget(astronomyPicture)}
           aria-label={`${astronomyPicture.media_type === "video" ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
           style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
         >
           {#if astronomyPicture.media_type === "video"}
-            <span
-              pointer-events="none"
-              absolute
-              left="1/2"
-              top="1/2"
-              h="16"
-              w="16"
-              translate="x--1/2 y--1/2"
-              grid="~"
-              place-items="center"
-              rounded="full"
-              border="~ white/70"
-              bg="black/70"
-              text="2xl white"
-              shadow="xl"
-              aria-hidden="true">▶</span
-            >
+            <span class="apod-play" aria-hidden="true">▶</span>
           {/if}
         </a>
-        <div
-          pointer-events="none"
-          absolute
-          inset="x-0"
-          bottom="0"
-          bg="gradient-to-t"
-          from="black/95"
-          via="black/65"
-          to="transparent"
-          p="x-5 b-5 t-24 sm:x-7"
-          text="white"
-        >
-          <p
-            m="0"
-            text="[10px] base0D"
-            font="semibold"
-            tracking="[0.18em]"
-            uppercase
-          >
+        <div class="apod-caption">
+          <div class="seam" aria-hidden="true"></div>
+          <p class="apod-kicker">
             NASA astronomy picture of the day · {astronomyPictureDate(
               astronomyPicture.date,
             )}
           </p>
-          <h3 m="0 t-2" text="2xl white" font="medium" tracking="[-0.025em]">
-            {astronomyPicture.title}
-          </h3>
-          <p
-            m="0 t-2"
-            max-w="3xl"
-            line-clamp="2"
-            text="xs white/85 sm:sm"
-            leading="5"
-          >
-            {astronomyPicture.explanation}
-          </p>
-          <p m="0 t-2" text="[11px] white/75">
+          <h3 class="apod-title">{astronomyPicture.title}</h3>
+          <p class="apod-explanation">{astronomyPicture.explanation}</p>
+          <p class="apod-credit">
             {astronomyPicture.copyright
               ? `Image: ${astronomyPicture.copyright}`
               : "Image: NASA"}
@@ -773,6 +778,1041 @@
           </p>
         </div>
       {/if}
+      </div>
+
+      <div
+        class="view"
+        id="view-history"
+        role="tabpanel"
+        aria-labelledby="view-tab-history"
+        hidden={view !== "history"}
+      >
+        {#if historyShown && historyGraph?.sites.length}
+          <HistoryGraph graph={historyGraph} />
+        {:else if historyShown}
+          <p class="view-empty">
+            {historyGraph
+              ? `No browsing in the last ${historyGraph.days} days.`
+              : "History comes from Glide's config. Open this tab in Glide."}
+          </p>
+        {/if}
+      </div>
     </section>
   </div>
 </main>
+
+<style>
+  /* Dither Press (DESIGN.md): ink keylines on paper, one spot plate printed
+     off-register behind whatever has focus or hover, square trims, halftone
+     only at seams. Sizes resolve at the shell's base fontSize of 12px.
+     Breakpoints: 640px and 1024px. At 1024px and up the page locks to one
+     viewport: three columns over the APOD. */
+
+  .page {
+    --rule: 2px;
+    --press: 3px;
+    --panel-plate: 6px;
+    --gap: 12px;
+    --inset: 18px;
+
+    min-block-size: 100dvh;
+    padding: 1.25rem 1rem;
+    background: var(--press-paper);
+    color: var(--press-ink);
+
+    @media (width >= 640px) {
+      padding: 2rem 1.5rem;
+    }
+
+    @media (width >= 1024px) {
+      block-size: 100dvh;
+      min-block-size: 0;
+      overflow: hidden;
+      padding-block: 1.25rem;
+    }
+  }
+
+  .shell {
+    display: grid;
+    gap: 1rem;
+    max-inline-size: 1180px;
+    margin-inline: auto;
+
+    @media (width >= 1024px) {
+      block-size: 100%;
+      min-block-size: 0;
+      grid-template-rows: clamp(380px, 50vh, 430px) minmax(0, 1fr);
+    }
+  }
+
+  .columns {
+    display: grid;
+    gap: 1rem;
+
+    @media (width >= 1024px) {
+      min-block-size: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* Every card is a trimmed sheet with a 2px ink rule. The panel plate
+     prints behind the one you are working in. */
+  .card {
+    min-inline-size: 0;
+    overflow: hidden;
+    border: var(--rule) solid var(--press-ink);
+
+    &:focus-within {
+      box-shadow: var(--panel-plate) var(--panel-plate) 0 var(--press-plate);
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .wiki-article-description,
+  .wiki-article-extract,
+  .apod-explanation {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--lines);
+    line-clamp: var(--lines);
+    overflow: hidden;
+  }
+
+  /* Stamped control: paper face over an ink plate; hover reverses it onto
+     the spot plate, keyboard focus doubles the rule, a press closes the
+     offset. */
+  .press-button {
+    padding: 6px var(--gap);
+    border: var(--rule) solid var(--press-ink);
+    background: var(--press-paper);
+    box-shadow: var(--press) var(--press) 0 var(--press-ink);
+    color: var(--press-ink);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--press-ink);
+      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+      color: var(--press-paper);
+    }
+
+    &:focus-visible {
+      outline: var(--rule) solid var(--press-ink);
+      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+    }
+
+    &:active {
+      translate: var(--press) var(--press);
+      box-shadow: none;
+    }
+  }
+
+  /* Hacker News and Wikipedia keep their own colours and type inside the
+     press frame, the way tray icons keep theirs (App Identity Exception). */
+
+  .hn,
+  .wiki {
+    --brand-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+    font-family: var(--brand-sans);
+  }
+
+  .hn {
+    --hn-orange: #ff6600;
+    --hn-paper: #f6f6ef;
+    --hn-muted: #5f5f5f;
+    --hn-skeleton: #e4e4dc;
+    --hn-focus: #005fcc;
+
+    display: flex;
+    flex-direction: column;
+    background: var(--hn-paper);
+    color: black;
+    font-size: 13px;
+
+    @media (width >= 640px) {
+      min-block-size: 390px;
+    }
+
+    @media (width >= 1024px) {
+      min-block-size: 0;
+    }
+
+    & :is(a, button):focus-visible {
+      outline: 2px solid var(--hn-focus);
+    }
+  }
+
+  .hn-header {
+    display: flex;
+    align-items: center;
+    min-block-size: 1.75rem;
+    padding: 2px;
+    background: var(--hn-orange);
+    white-space: nowrap;
+
+    & h2 {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    & a {
+      color: black;
+      text-decoration: none;
+    }
+
+    & .hn-logo {
+      display: grid;
+      place-items: center;
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      margin-inline-end: 5px;
+      border: 1px solid white;
+      color: white;
+    }
+  }
+
+  .hn-name {
+    margin-inline-end: 7px;
+    font-weight: 700;
+  }
+
+  .hn-content {
+    flex: 1;
+    min-block-size: 0;
+    padding: 0.5rem 7px;
+
+    @media (width >= 640px) {
+      padding: 0.875rem 0.5rem;
+    }
+
+    @media (width >= 1024px) {
+      padding-block: 0.5rem;
+    }
+  }
+
+  .story-list {
+    display: grid;
+    align-content: space-between;
+    gap: 11px;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @media (width >= 640px) {
+      gap: 9px;
+    }
+
+    @media (width >= 1024px) {
+      gap: 2px;
+    }
+  }
+
+  .story {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+
+  .story-loading {
+    min-block-size: 30px;
+  }
+
+  .rank {
+    padding-block-start: 1px;
+    color: var(--hn-muted);
+    text-align: end;
+  }
+
+  .story-main {
+    min-inline-size: 0;
+  }
+
+  .story-heading {
+    display: flex;
+    align-items: start;
+    min-inline-size: 0;
+    padding-inline-start: 5px;
+    line-height: 1rem;
+
+    @media (width >= 640px) {
+      align-items: baseline;
+    }
+  }
+
+  .story-title {
+    min-inline-size: 0;
+    color: black;
+    text-decoration: none;
+
+    &:visited {
+      color: var(--hn-muted);
+    }
+
+    @media (width >= 640px) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .story-host {
+    display: none;
+    flex: auto;
+    margin-inline-start: 5px;
+    color: var(--hn-muted);
+    font-size: 11px;
+
+    @media (width >= 640px) {
+      display: block;
+    }
+  }
+
+  .story-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 6px;
+    margin: 4px 0 0 5px;
+    color: var(--hn-muted);
+    font-size: 11px;
+    line-height: 1rem;
+
+    @media (width >= 1024px) {
+      margin-block-start: 0;
+      line-height: 14px;
+    }
+
+    & a {
+      color: inherit;
+      text-decoration: none;
+      text-underline-offset: 2px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .loading-title,
+  .loading-meta {
+    display: block;
+    background: var(--hn-skeleton);
+  }
+
+  .loading-title {
+    inline-size: min(78%, 480px);
+    block-size: 10px;
+    margin-block-start: 3px;
+  }
+
+  .loading-meta {
+    inline-size: min(40%, 230px);
+    block-size: 7px;
+    margin-block-start: 0.5rem;
+  }
+
+  .hn-state {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    min-block-size: 280px;
+    color: var(--hn-muted);
+  }
+
+  .hn-retry {
+    border: 0;
+    border-block-end: 1px solid var(--hn-muted);
+    background: none;
+    color: black;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .wiki {
+    --wiki-link: #36c;
+    --wiki-text: #202122;
+    --wiki-subtle: #54595d;
+    --wiki-rule: #c8ccd1;
+    --wiki-field: #72777d;
+    --wiki-chrome: #f8f9fa;
+    --wiki-skeleton: #eaecf0;
+    --wiki-feature-rule: #a3bfb1;
+    --wiki-serif: Georgia, serif;
+
+    display: flex;
+    flex-direction: column;
+    background: white;
+    color: var(--wiki-text);
+
+    & :is(a, button):focus-visible {
+      outline: 2px solid var(--wiki-link);
+    }
+  }
+
+  .wiki-header {
+    padding: 0.625rem 1rem;
+    border-block-end: 1px solid var(--wiki-rule);
+    background: var(--wiki-chrome);
+  }
+
+  .wiki-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-inline-size: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .wiki-brand-text {
+    min-inline-size: 0;
+  }
+
+  .wiki-mark {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    color: black;
+    font: 34px/1 var(--wiki-serif);
+  }
+
+  .wiki-wordmark {
+    margin: 0;
+    color: black;
+    font: 400 20px/1.25rem var(--wiki-serif);
+    letter-spacing: 0.02em;
+  }
+
+  .wiki-tagline {
+    display: block;
+    margin-block-start: 2px;
+    color: var(--wiki-subtle);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .wiki-search {
+    padding: 0.75rem;
+    border-block-end: 1px solid var(--wiki-rule);
+    background: white;
+  }
+
+  .wiki-search-control {
+    display: flex;
+    min-inline-size: 0;
+    border: 1px solid var(--wiki-field);
+    background: white;
+
+    &:focus-within {
+      border-color: var(--wiki-link);
+      box-shadow: 0 0 0 1px var(--wiki-link);
+    }
+  }
+
+  .wiki-search-input {
+    flex: 1;
+    min-inline-size: 0;
+    padding: 7px 10px;
+    border: 0;
+    outline: none;
+    background: white;
+    color: var(--wiki-text);
+    font-size: 12px;
+
+    &::placeholder {
+      color: var(--wiki-field);
+    }
+  }
+
+  .wiki-search-button {
+    padding-inline: 0.75rem;
+    border: 0;
+    border-inline-start: 1px solid var(--wiki-field);
+    background: var(--wiki-chrome);
+    color: var(--wiki-text);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      background: white;
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+    }
+  }
+
+  .wiki-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-block-end: 1px solid var(--wiki-rule);
+    background: var(--wiki-chrome);
+    font-size: 10px;
+  }
+
+  .wiki-nav a,
+  .wiki-article-title a,
+  .wiki-read-more {
+    color: var(--wiki-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .wiki-feature {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-block-size: 0;
+    margin: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--wiki-feature-rule);
+    background: #f5fffa;
+  }
+
+  .wiki-feature-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    border-block-end: 1px solid var(--wiki-feature-rule);
+    background: #cef2e0;
+    color: black;
+    font: 700 14px/1.5 var(--wiki-serif);
+
+    & a {
+      display: grid;
+      place-items: center;
+      inline-size: 1rem;
+      block-size: 1rem;
+      border: 1px solid var(--wiki-field);
+      border-radius: 50%;
+      color: var(--wiki-link);
+      font-family: var(--brand-sans);
+      font-size: 10px;
+      text-decoration: none;
+    }
+  }
+
+  .wiki-feature-loading,
+  .wiki-article {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+
+    @media (width >= 1024px) {
+      grid-template-columns: 112px minmax(0, 1fr);
+    }
+  }
+
+  .wiki-feature-loading {
+    min-block-size: 11rem;
+  }
+
+  .wiki-skeleton-image {
+    block-size: 7rem;
+    background: var(--wiki-skeleton);
+  }
+
+  .wiki-skeleton-lines {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+
+    & span {
+      block-size: 10px;
+      background: var(--wiki-skeleton);
+    }
+
+    & span:first-child {
+      inline-size: 75%;
+      block-size: 1rem;
+      background: var(--wiki-rule);
+    }
+
+    & span:last-child {
+      inline-size: calc(5 / 6 * 100%);
+    }
+  }
+
+  .wiki-feature-error {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.75rem;
+    min-block-size: 11rem;
+    padding: 1rem;
+    font-size: 11px;
+    text-align: center;
+
+    & p {
+      margin: 0;
+    }
+
+    & button {
+      padding: 6px 0.75rem;
+      border: 1px solid var(--wiki-field);
+      background: var(--wiki-chrome);
+      color: var(--wiki-text);
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover {
+        background: white;
+      }
+    }
+  }
+
+  .wiki-article {
+    flex: 1;
+    min-block-size: 0;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1rem;
+  }
+
+  .wiki-article-image {
+    block-size: 7rem;
+    padding: 0.25rem;
+    overflow: hidden;
+    border: 1px solid var(--wiki-rule);
+    background: white;
+
+    @media (width >= 1024px) {
+      block-size: 6rem;
+    }
+
+    & img {
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .wiki-image-fallback {
+    display: grid;
+    place-items: center;
+    block-size: 100%;
+    background: var(--wiki-skeleton);
+    color: var(--wiki-subtle);
+    font: 3rem/1 var(--wiki-serif);
+  }
+
+  .wiki-article-body {
+    min-inline-size: 0;
+  }
+
+  .wiki-article-title {
+    margin: 0;
+    font: 700 15px/18px var(--wiki-serif);
+  }
+
+  .wiki-article-description {
+    --lines: 2;
+
+    margin: 4px 0 0;
+    color: var(--wiki-subtle);
+    font-size: 10px;
+    font-style: italic;
+  }
+
+  .wiki-article-extract {
+    --lines: 7;
+
+    margin: 0.5rem 0 0;
+
+    @media (width >= 1024px) {
+      --lines: 3;
+    }
+  }
+
+  .wiki-read-more {
+    display: inline-block;
+    margin-block-start: 0.5rem;
+    font-size: 10px;
+  }
+
+  /* Links: a press panel of slugs. Type sits straight on paper at rest;
+     hover reverses a row onto the spot plate, keyboard focus keeps it on
+     paper with an ink keyline. */
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    background: var(--press-paper);
+  }
+
+  .links-header {
+    padding: var(--gap) var(--inset);
+    border-block-end: var(--rule) solid var(--press-ink);
+
+    & h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+  }
+
+  .links-body {
+    display: grid;
+    align-content: start;
+    gap: var(--gap);
+    min-block-size: 0;
+    padding: var(--gap);
+    overflow-y: auto;
+  }
+
+  .link-group {
+    display: grid;
+    gap: 2px;
+
+    & h3 {
+      margin: 0 0 4px;
+      padding-inline: 6px;
+      color: var(--press-muted);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+  }
+
+  .link {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap);
+    padding: 6px;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--press-ink);
+      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+      color: var(--press-paper);
+
+      & .link-domain {
+        color: inherit;
+      }
+
+      & .link-live {
+        background: var(--press-paper);
+        color: var(--press-ink);
+      }
+    }
+
+    &:focus-visible {
+      outline: var(--rule) solid var(--press-ink);
+      outline-offset: calc(-1 * var(--rule));
+      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+    }
+
+    &:active {
+      translate: var(--press) var(--press);
+      box-shadow: none;
+    }
+  }
+
+  .link-icon {
+    inline-size: 24px;
+    block-size: 24px;
+    padding: 2px;
+    background: var(--press-paper);
+    object-fit: contain;
+  }
+
+  .link-letter {
+    display: grid;
+    place-items: center;
+    background: var(--press-ink);
+    color: var(--press-paper);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+
+    .link:hover & {
+      background: var(--press-paper);
+      color: var(--press-ink);
+    }
+  }
+
+  .link-text {
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+
+  .link-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-inline-size: 0;
+  }
+
+  .link-name {
+    min-inline-size: 0;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .link-live {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+    background: var(--press-ink);
+    color: var(--press-paper);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  /* Danger hue always travels with its square. */
+  .link-live-marker {
+    flex: none;
+    inline-size: 6px;
+    block-size: 6px;
+    background: var(--press-danger);
+  }
+
+  .link-domain {
+    min-inline-size: 0;
+    margin-inline-start: auto;
+    color: var(--press-muted);
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .link-arrow {
+    flex: none;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .link-description {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  /* Big views: one panel, a strip of stamped tabs over whichever view is
+     showing. The selected tab is the focused workspace chip: paper with an
+     ink rule over the spot plate. */
+
+  .views {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    block-size: clamp(360px, 56vh, 620px);
+    background: var(--press-paper);
+
+    @media (width >= 1024px) {
+      block-size: 100%;
+      min-block-size: 0;
+    }
+  }
+
+  .view-tabs {
+    display: flex;
+    gap: var(--gap);
+    padding: 6px var(--gap) 9px;
+    border-block-end: var(--rule) solid var(--press-ink);
+  }
+
+  .view-tab {
+    padding: 4px 8px;
+    border: var(--rule) solid transparent;
+    background: none;
+    color: var(--press-ink);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--press-ink);
+    }
+
+    &[aria-selected="true"] {
+      border-color: var(--press-ink);
+      background: var(--press-paper);
+      box-shadow: 2px 2px 0 var(--press-plate);
+    }
+
+    &:focus-visible {
+      outline: var(--rule) solid var(--press-ink);
+      outline-offset: 2px;
+    }
+
+    &:active {
+      translate: 2px 2px;
+      box-shadow: none;
+    }
+  }
+
+  .view {
+    min-block-size: 0;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .view-empty {
+    display: grid;
+    place-content: center;
+    block-size: 100%;
+    margin: 0;
+    padding-inline: var(--inset);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* NASA astronomy picture of the day: the picture over a paper caption
+     whose top edge breaks up into halftone instead of fading. */
+
+  .view-apod {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: var(--press-surface);
+  }
+
+  .apod-placeholder {
+    grid-row: 1 / -1;
+    background: var(--press-surface);
+  }
+
+  .apod-error {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--inset);
+    padding-inline: var(--inset);
+    text-align: center;
+
+    & p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  .apod-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
+  }
+
+  .apod-image {
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: center / cover no-repeat;
+
+    &:focus-visible {
+      outline: calc(2 * var(--rule)) solid var(--press-ink);
+      outline-offset: calc(-2 * var(--rule));
+    }
+  }
+
+  .apod-play {
+    display: grid;
+    place-items: center;
+    inline-size: 48px;
+    block-size: 48px;
+    background: var(--press-ink);
+    box-shadow: var(--press) var(--press) 0 var(--press-paper);
+    color: var(--press-paper);
+    font-size: 17px;
+
+    .apod-image:hover & {
+      box-shadow: var(--press) var(--press) 0 var(--press-plate);
+    }
+  }
+
+  .apod-caption {
+    position: relative;
+    padding: var(--gap) var(--inset) var(--inset);
+    background: var(--press-paper);
+
+    & p {
+      margin: 6px 0 0;
+    }
+  }
+
+  .seam {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    block-size: 16px;
+    background: var(--press-paper);
+    mask: var(--seam) repeat-x 0 0 / 16px 16px;
+    pointer-events: none;
+  }
+
+  .apod-caption .apod-kicker {
+    margin: 0;
+    color: var(--press-muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .apod-title {
+    margin: 6px 0 0;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .apod-explanation {
+    --lines: 2;
+
+    max-inline-size: 96ch;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .apod-credit {
+    color: var(--press-muted);
+    font-size: 10px;
+  }
+</style>

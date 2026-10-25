@@ -3,7 +3,6 @@
   features,
   inputs,
   lib,
-  nixpkgs-unstable,
   pkgs,
   system,
   ...
@@ -24,7 +23,6 @@ in
   config = {
     home = {
       packages = [
-        nixpkgs-unstable.mcp-nixos
         inputs.claude-code.packages.${system}.default
       ];
 

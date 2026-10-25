@@ -6,11 +6,24 @@
   ...
 }:
 let
-  pages = pkgs.callPackage ./pages {
-    stylixPalette = config.lib.stylix.colors;
-  };
-
   inherit (config.lib.stylix) colors;
+
+  # Dither Press tokens, shared by the chrome (press.css) and the new tab page.
+  pressTokens = pkgs.writeText "press-palette.css" ''
+    :root {
+      --press-paper: #${colors.base00};
+      --press-surface: #${colors.base01};
+      --press-hover: #${colors.base02};
+      --press-rule: #${colors.base03};
+      --press-muted: #${colors.base04};
+      --press-ink: #${colors.base07};
+      --press-plate: #${colors.base09};
+      --press-danger: #${colors.base08};
+      --press-font: ${builtins.toJSON config.stylix.fonts.monospace.name};
+    }
+  '';
+
+  pages = pkgs.callPackage ./pages { inherit pressTokens; };
 in
 {
   imports = [ inputs.glide.homeModules.default ];
@@ -55,15 +68,7 @@ in
       # Chrome rules live in the repo (live-editable via <leader>c); only the
       # palette is generated, so a scheme switch restyles without touching them.
       "glide/press.css".source = config.lib.meta.createSymlink "home/common/glide/config/press.css";
-      "glide/press-palette.css".text = ''
-        :root {
-          --press-paper: #${colors.base00};
-          --press-hover: #${colors.base02};
-          --press-rule: #${colors.base03};
-          --press-ink: #${colors.base07};
-          --press-plate: #${colors.base09};
-        }
-      '';
+      "glide/press-palette.css".source = pressTokens;
     };
 
     dataFile."glide-pages".source = pages;
