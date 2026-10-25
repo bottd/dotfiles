@@ -85,6 +85,10 @@ export default defineConfig({
       "h-12 w-12 rounded-1 border border-base03 bg-base00 object-contain p-2",
     "media-heading": "flex min-w-0 items-center justify-between gap-2",
     "media-name": "block min-w-0 truncate text-[13px] font-medium text-base07",
+    "media-live":
+      "ml-auto flex flex-none items-center gap-1.5 border border-base08 bg-base00 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-base07 uppercase shadow-[2px_2px_0] shadow-base08",
+    "media-live-dot":
+      "h-1.5 w-1.5 flex-none bg-base08 animate-pulse motion-reduce:animate-none",
     "media-description": "mt-1 block truncate text-xs leading-4 text-base07",
     "media-details": "mt-1.5 flex min-w-0 items-center gap-1.5",
     "media-domain": "min-w-0 truncate font-mono text-[11px] text-base07",

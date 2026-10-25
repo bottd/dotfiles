@@ -34,6 +34,12 @@
     title: string;
   };
 
+  type KickLivestream = {
+    is_live: boolean;
+    session_title: string;
+    viewer_count: number;
+  };
+
   const hackerNewsApi = "https://hacker-news.firebaseio.com/v0";
   const hackerNewsStoryCount = 10;
   const astronomyPictureApi =
@@ -50,6 +56,7 @@
       title: "Destiny",
       description: "Livestreams, debates, events, and the DGG community.",
       kind: "Live & community",
+      kickChannel: "destiny",
     },
     {
       href: "https://apnews.com/",
@@ -78,6 +85,7 @@
   let astronomyPicture: AstronomyPicture | undefined;
   let astronomyPictureLoading = true;
   let astronomyPictureError = false;
+  let livestreams: Record<string, KickLivestream> = {};
 
   function storyUrl(story: HackerNewsStory) {
     return story.url ?? `https://news.ycombinator.com/item?id=${story.id}`;
@@ -281,7 +289,37 @@
     }
   }
 
+  // Kick allows cross-origin reads from file://; destiny.gg's own API does not.
+  async function loadLivestream(channel: string) {
+    try {
+      const response = await fetch(
+        `https://kick.com/api/v2/channels/${channel}`,
+        { signal: AbortSignal.timeout(10_000) },
+      );
+      if (!response.ok) return;
+
+      const { livestream } = (await response.json()) as {
+        livestream: KickLivestream | null;
+      };
+      if (livestream?.is_live) {
+        livestreams = { ...livestreams, [channel]: livestream };
+      }
+    } catch {
+      // Offline and unreachable look the same: no indicator.
+    }
+  }
+
+  function viewerCount(count: number) {
+    return new Intl.NumberFormat(undefined, {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(count);
+  }
+
   onMount(() => {
+    mediaSites.forEach(
+      ({ kickChannel }) => kickChannel && loadLivestream(kickChannel),
+    );
     loadStories();
     loadWikipediaArticle();
     loadAstronomyPicture();
@@ -557,14 +595,24 @@
           </div>
           <nav class="media-links" aria-label="Media shortcuts">
             {#each mediaSites as site (site.href)}
+              {@const live = site.kickChannel && livestreams[site.kickChannel]}
               <a class="media-link" href={site.href}>
                 <img class="media-favicon" src={site.favicon} alt="" />
                 <span min-w="0">
                   <span class="media-heading">
                     <strong class="media-name">{site.title}</strong>
+                    {#if live}
+                      <span class="media-live">
+                        <span class="media-live-dot" aria-hidden="true"></span>
+                        Live · {viewerCount(live.viewer_count)}
+                        <span class="sr-only">watching</span>
+                      </span>
+                    {/if}
                     <span class="arrow" aria-hidden="true">↗</span>
                   </span>
-                  <span class="media-description">{site.description}</span>
+                  <span class="media-description">
+                    {live ? live.session_title : site.description}
+                  </span>
                   <span class="media-details">
                     <small class="media-domain">{site.hostname}</small>
                     <small class="media-kind">{site.kind}</small>
