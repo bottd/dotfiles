@@ -36,9 +36,6 @@ in
   home.packages = [ rex ];
 
   programs = {
-    # Rex replaces zellij here.
-    zellij.enable = lib.mkForce false;
-
     zsh.initContent = ''
       source <(${rex}/bin/rex completion zsh 2>/dev/null)
     '';
