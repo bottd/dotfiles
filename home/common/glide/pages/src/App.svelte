@@ -26,8 +26,10 @@
     copyright?: string;
     date: string;
     explanation: string;
+    // Where clicking the backdrop goes: the full image, or the post for a
+    // video.
+    href: string;
     image: string;
-    link: string;
     title: string;
     video: boolean;
   };
@@ -300,31 +302,21 @@
     }
   }
 
-  // featured_image_url carries the original's size as resize parameters; the
-  // backdrop asks NASA's resizer for a screen-sized copy instead.
-  function astronomyPictureUrl(picture: AstronomyPicture) {
-    const url = new URL(picture.image);
-    url.search = "?w=1920";
-    return url.href;
-  }
-
-  function astronomyPictureTarget(picture: AstronomyPicture) {
-    if (picture.video) return picture.link;
-    const url = new URL(picture.image);
-    url.search = "";
-    return url.href;
-  }
-
   function astronomyPictureFromPost(
     post: AstronomyPicturePost,
   ): AstronomyPicture | undefined {
     if (!post.featured_image_url) return;
-    const page = new DOMParser().parseFromString(
-      post.content.rendered,
-      "text/html",
-    );
+    const parse = (html: string) =>
+      new DOMParser().parseFromString(html, "text/html");
     const text = (element: Element | null | undefined) =>
       element?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+    const page = parse(post.content.rendered);
+    // featured_image_url carries the original's size as resize parameters;
+    // the backdrop asks NASA's resizer for a screen-sized copy instead.
+    const original = post.featured_image_url.split("?")[0];
+    const video =
+      page.querySelector(".media-detail-hero__media :is(video, iframe)") !==
+      null;
 
     const explanation = text(
       page.querySelector(".media-detail-hero__description"),
@@ -333,20 +325,19 @@
       ...page.querySelectorAll(".media-detail-hero__meta-row"),
     ].find((row) => text(row.querySelector("th")).startsWith("Credit"));
     // "APOD: 29 October 2026 – The Horns of Venus"
-    const title = text(
-      new DOMParser().parseFromString(post.title.rendered, "text/html").body,
-    ).replace(/^APOD:[^–]*–\s*/, "");
+    const title = text(parse(post.title.rendered).body).replace(
+      /^APOD:[^–]*–\s*/,
+      "",
+    );
 
     return {
       copyright: text(credit?.querySelector("td")) || undefined,
       date: post.date.slice(0, 10),
       explanation,
-      image: post.featured_image_url,
-      link: post.link,
+      href: video ? post.link : original,
+      image: `${original}?w=1920`,
       title,
-      video:
-        page.querySelector(".media-detail-hero__media :is(video, iframe)") !==
-        null,
+      video,
     };
   }
 
@@ -362,7 +353,7 @@
     astronomyPictureLoading = true;
     astronomyPictureError = false;
     const date = localDate();
-    const cacheKey = "nasa-apod";
+    const cacheKey = "nasa-apod-v2";
     const signal = AbortSignal.timeout(10_000);
 
     try {
@@ -372,7 +363,7 @@
           date: string;
           picture: AstronomyPicture;
         };
-        if (cachedDate === date && picture.image) {
+        if (cachedDate === date) {
           astronomyPicture = picture;
           astronomyPictureLoading = false;
           return;
@@ -391,7 +382,12 @@
       if (!picture) throw new Error("NASA APOD did not provide an image");
 
       astronomyPicture = picture;
-      store(cacheKey, JSON.stringify({ date, picture }));
+      // Before NASA posts today's picture the latest is yesterday's; leave it
+      // uncached so a later tab picks up the new one. Posts are dated in US
+      // Eastern time, so west of that the post can be a day ahead.
+      if (picture.date >= date) {
+        store(cacheKey, JSON.stringify({ date, picture }));
+      }
     } catch {
       astronomyPictureError = true;
     } finally {
@@ -776,10 +772,7 @@
               >
                 Try again
               </button>
-              <a
-                class="press-button"
-                href="https://science.nasa.gov/apod/"
-              >
+              <a class="press-button" href="https://science.nasa.gov/apod/">
                 Open NASA APOD
               </a>
             </div>
@@ -787,9 +780,9 @@
         {:else}
           <a
             class="apod-image"
-            href={astronomyPictureTarget(astronomyPicture)}
+            href={astronomyPicture.href}
             aria-label={`${astronomyPicture.video ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
-            style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
+            style:background-image={`url("${astronomyPicture.image}")`}
           >
             {#if astronomyPicture.video}
               <span class="apod-play" aria-hidden="true">▶</span>
@@ -808,9 +801,7 @@
               {astronomyPicture.copyright
                 ? `Image: ${astronomyPicture.copyright}`
                 : "Image: NASA"}
-              {astronomyPicture.video
-                ? " · Video thumbnail"
-                : ""}
+              {astronomyPicture.video ? " · Video thumbnail" : ""}
             </p>
           </div>
         {/if}
