@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   nixpkgs-unstable,
   ...
@@ -39,6 +40,9 @@ let
   '';
 
   pages = pkgs.callPackage ./pages { inherit pressTokens; };
+
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
+  glidePackages = inputs.glide.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [ inputs.glide.homeModules.default ];
@@ -46,12 +50,17 @@ in
   programs.glide-browser = {
     enable = true;
 
-    package = nixpkgs-unstable.wrapFirefox (
-      inputs.glide.packages.${pkgs.stdenv.hostPlatform.system}.glide-browser-bin-unwrapped.override
-        {
+    # wrapFirefox rewrites the .app bundle on darwin, which breaks its code
+    # signature and gets it SIGKILLed at launch. The module wraps any non-null
+    # package, so there the signed upstream app is installed directly and the
+    # policies go through defaults instead.
+    package =
+      if isDarwin then
+        null
+      else
+        nixpkgs-unstable.wrapFirefox (glidePackages.glide-browser-bin-unwrapped.override {
           inherit (config.programs.glide-browser) policies;
-        }
-    ) { pname = "glide-browser-bin"; };
+        }) { pname = "glide-browser-bin"; };
 
     policies.SearchEngines = {
       Default = "Kagi";
@@ -75,6 +84,16 @@ in
         }
       ];
     };
+  };
+
+  home.packages = lib.optional isDarwin glidePackages.glide-browser-bin-unwrapped;
+
+  # macOS Gecko reads enterprise policies from the app's bundle-id domain.
+  targets.darwin.defaults = lib.mkIf isDarwin {
+    "app.glide-browser.glide" = {
+      EnterprisePoliciesEnabled = true;
+    }
+    // config.programs.glide-browser.policies;
   };
 
   xdg = {
