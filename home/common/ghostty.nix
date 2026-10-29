@@ -13,7 +13,9 @@ in
     enable = true;
     package = if pkgs.stdenv.isLinux then pkgs.ghostty else null;
     settings = {
-      command = lib.mkIf config.programs.zellij.enable "zellij";
+      # macOS Ghostty runs this through `bash --noprofile --norc`, whose PATH
+      # lacks the Nix per-user profile, so the bare name "zellij" fails to launch.
+      command = lib.mkIf config.programs.zellij.enable (lib.getExe config.programs.zellij.package);
       desktop-notifications = false;
 
       font-family = lib.mkForce "MonoLisa Variable";
