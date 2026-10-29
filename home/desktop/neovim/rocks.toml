@@ -1,7 +1,7 @@
 import = ["rocks-common.toml"]
 
 [plugins]
-"rustaceanvim" = "9.2.1"
+"rustaceanvim" = "9.2.2"
 
 [plugins."nvim-java"]
 git = "nvim-java/nvim-java"
