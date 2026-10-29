@@ -26,11 +26,20 @@
     copyright?: string;
     date: string;
     explanation: string;
-    hdurl?: string;
-    media_type: "image" | "video";
-    thumbnail_url?: string;
+    image: string;
+    link: string;
     title: string;
-    url: string;
+    video: boolean;
+  };
+
+  // A science.nasa.gov WordPress post; the explanation and credit are only
+  // in its rendered page body.
+  type AstronomyPicturePost = {
+    content: { rendered: string };
+    date: string;
+    featured_image_url?: string;
+    link: string;
+    title: { rendered: string };
   };
 
   type WikipediaArticle = {
@@ -53,8 +62,11 @@
 
   const hackerNewsApi = "https://hacker-news.firebaseio.com/v0";
   const hackerNewsStoryCount = 10;
+  // APOD moved to science.nasa.gov, whose REST API allows file:// origins;
+  // api.nasa.gov's shared DEMO_KEY is almost always over its rate limit.
+  // Category 22766 is APOD.
   const astronomyPictureApi =
-    "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true";
+    "https://science.nasa.gov/wp-json/wp/v2/image-article?categories=22766&per_page=1&_fields=content,date,featured_image_url,link,title";
   type Site = {
     href: string;
     title: string;
@@ -288,14 +300,54 @@
     }
   }
 
+  // featured_image_url carries the original's size as resize parameters; the
+  // backdrop asks NASA's resizer for a screen-sized copy instead.
   function astronomyPictureUrl(picture: AstronomyPicture) {
-    return picture.media_type === "image" ? picture.url : picture.thumbnail_url;
+    const url = new URL(picture.image);
+    url.search = "?w=1920";
+    return url.href;
   }
 
   function astronomyPictureTarget(picture: AstronomyPicture) {
-    return picture.media_type === "image"
-      ? (picture.hdurl ?? picture.url)
-      : picture.url;
+    if (picture.video) return picture.link;
+    const url = new URL(picture.image);
+    url.search = "";
+    return url.href;
+  }
+
+  function astronomyPictureFromPost(
+    post: AstronomyPicturePost,
+  ): AstronomyPicture | undefined {
+    if (!post.featured_image_url) return;
+    const page = new DOMParser().parseFromString(
+      post.content.rendered,
+      "text/html",
+    );
+    const text = (element: Element | null | undefined) =>
+      element?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+
+    const explanation = text(
+      page.querySelector(".media-detail-hero__description"),
+    ).replace(/^Explanation:\s*/, "");
+    const credit = [
+      ...page.querySelectorAll(".media-detail-hero__meta-row"),
+    ].find((row) => text(row.querySelector("th")).startsWith("Credit"));
+    // "APOD: 29 October 2026 – The Horns of Venus"
+    const title = text(
+      new DOMParser().parseFromString(post.title.rendered, "text/html").body,
+    ).replace(/^APOD:[^–]*–\s*/, "");
+
+    return {
+      copyright: text(credit?.querySelector("td")) || undefined,
+      date: post.date.slice(0, 10),
+      explanation,
+      image: post.featured_image_url,
+      link: post.link,
+      title,
+      video:
+        page.querySelector(".media-detail-hero__media :is(video, iframe)") !==
+        null,
+    };
   }
 
   function astronomyPictureDate(date: string) {
@@ -320,7 +372,7 @@
           date: string;
           picture: AstronomyPicture;
         };
-        if (cachedDate === date && astronomyPictureUrl(picture)) {
+        if (cachedDate === date && picture.image) {
           astronomyPicture = picture;
           astronomyPictureLoading = false;
           return;
@@ -334,10 +386,9 @@
       const response = await fetch(astronomyPictureApi, { signal });
       if (!response.ok) throw new Error("Could not load NASA APOD");
 
-      const picture = (await response.json()) as AstronomyPicture;
-      if (!astronomyPictureUrl(picture)) {
-        throw new Error("NASA APOD did not provide an image");
-      }
+      const [post] = (await response.json()) as AstronomyPicturePost[];
+      const picture = post && astronomyPictureFromPost(post);
+      if (!picture) throw new Error("NASA APOD did not provide an image");
 
       astronomyPicture = picture;
       store(cacheKey, JSON.stringify({ date, picture }));
@@ -727,7 +778,7 @@
               </button>
               <a
                 class="press-button"
-                href="https://apod.nasa.gov/apod/astropix.html"
+                href="https://science.nasa.gov/apod/"
               >
                 Open NASA APOD
               </a>
@@ -737,10 +788,10 @@
           <a
             class="apod-image"
             href={astronomyPictureTarget(astronomyPicture)}
-            aria-label={`${astronomyPicture.media_type === "video" ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
+            aria-label={`${astronomyPicture.video ? "Play video" : "Open full image"}: ${astronomyPicture.title}`}
             style:background-image={`url("${astronomyPictureUrl(astronomyPicture)}")`}
           >
-            {#if astronomyPicture.media_type === "video"}
+            {#if astronomyPicture.video}
               <span class="apod-play" aria-hidden="true">▶</span>
             {/if}
           </a>
@@ -757,7 +808,7 @@
               {astronomyPicture.copyright
                 ? `Image: ${astronomyPicture.copyright}`
                 : "Image: NASA"}
-              {astronomyPicture.media_type === "video"
+              {astronomyPicture.video
                 ? " · Video thumbnail"
                 : ""}
             </p>
