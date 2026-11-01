@@ -8,7 +8,7 @@
 }:
 let
   # Dither Press tokens (home/common/dither-press.nix) as CSS custom
-  # properties, shared by the chrome (press.css) and the new tab page.
+  # properties for the chrome (press.css).
   pressTokens = pkgs.writeText "press-palette.css" ''
     :root {
     ${
@@ -17,8 +17,6 @@ let
       )
     }}
   '';
-
-  pages = pkgs.callPackage ./pages { inherit pressTokens; };
 
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
   glidePackages = inputs.glide.packages.${pkgs.stdenv.hostPlatform.system};
@@ -40,6 +38,11 @@ in
         nixpkgs-unstable.wrapFirefox (glidePackages.glide-browser-bin-unwrapped.override {
           inherit (config.programs.glide-browser) policies;
         }) { pname = "glide-browser-bin"; };
+
+    policies.Homepage = {
+      URL = "https://drake.bot";
+      StartPage = "homepage";
+    };
 
     policies.SearchEngines = {
       Default = "Kagi";
@@ -83,7 +86,5 @@ in
       "glide/press.css".source = config.lib.meta.createSymlink "home/common/glide/config/press.css";
       "glide/press-palette.css".source = pressTokens;
     };
-
-    dataFile."glide-pages".source = pages;
   };
 }
