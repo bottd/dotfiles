@@ -12,6 +12,8 @@ let
   round = x: builtins.floor (x + 0.5);
   hairline = lib.max 2 (round (fontSize / 6.0));
   pressOffset = lib.max 3 (round (fontSize / 4.0));
+  press = config.lib.ditherPress;
+  px = n: "${toString n}px";
 in
 {
   lib.ditherPress = {
@@ -56,6 +58,36 @@ in
       # The halftone band where paper breaks up into what's behind it.
       seam = round (fontSize / 2.0); # 6
       seamCell = 2;
+    };
+
+    # The web's view of the above: CSS custom properties, keyed without their
+    # `--press-` prefix. Glide's chrome and new tab read them as a stylesheet;
+    # drake.bot serves them as per-host palettes (outputs/press-palettes.nix).
+    tokens = {
+      inherit (press.colors)
+        paper
+        surface
+        hover
+        rule
+        muted
+        ink
+        plate
+        danger
+        ;
+      font = builtins.toJSON press.font;
+      font-size = px press.sizes.font;
+      heading-size = px press.sizes.heading;
+      caption-size = px press.sizes.caption;
+      rule-width = px press.sizes.rule;
+      plate-offset = px press.sizes.plateOffset;
+      offset = px press.sizes.pressOffset;
+      panel-offset = px press.sizes.panelOffset;
+      gap = px press.sizes.gap;
+      half-gap = px press.sizes.halfGap;
+      inset = px press.sizes.inset;
+      tile-size = px press.sizes.tile;
+      seam-height = px press.sizes.seam;
+      seam-cell = px press.sizes.seamCell;
     };
   };
 }

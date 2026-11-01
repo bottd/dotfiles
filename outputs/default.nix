@@ -13,5 +13,6 @@
     ./home-manager.nix
     ./hosts.nix
     ./packages.nix
+    ./press-palettes.nix
   ];
 }
