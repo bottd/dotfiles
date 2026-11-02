@@ -46,6 +46,10 @@ const addons: Addon[] = [
     url: "https://addons.mozilla.org/firefox/downloads/latest/per-tab-volume-control-xpi/latest.xpi",
     private_browsing_allowed: true,
   },
+  {
+    // Saves pages to deck.drena.haus (loge); sign in via the extension's options.
+    url: "https://addons.mozilla.org/firefox/downloads/latest/readeck/latest.xpi",
+  },
 ];
 
 addons.forEach(({ url, ...options }) => glide.addons.install(url, options));
