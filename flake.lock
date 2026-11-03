@@ -99,11 +99,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793726481,
-        "narHash": "sha256-MJMTVltudAHLsg54BhrYDgMkwU8RmUTB7um1Q678ECI=",
+        "lastModified": 1793731068,
+        "narHash": "sha256-MZcPCWR1FfxuGVPhdTWVRipxAGiIiGDK/LkKlP1IXlM=",
         "ref": "refs/heads/main",
-        "rev": "29b78c47328b7513668649b0c8d403b770603271",
-        "revCount": 22,
+        "rev": "80b23a0e4a50f52eebec33dfd5f4bbe6da462d1d",
+        "revCount": 41,
         "type": "git",
         "url": "ssh://git@loge:2222/loam/cauldron.git"
       },
