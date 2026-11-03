@@ -67,10 +67,8 @@
       url = "git+https://git.drake.bot/drake/tree-sitter-mog";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Private repo, so over SSH like its git remote. Provides Cauldron, the
-    # Mog desktop app.
-    mog = {
-      url = "git+ssh://git@loge:2222/drake/mog-private.git";
+    cauldron = {
+      url = "git+ssh://git@loge:2222/loam/cauldron.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
