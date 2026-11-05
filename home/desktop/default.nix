@@ -13,7 +13,6 @@
     ./neovim
     ./scripts.nix
     ../common/browser.nix
-    ../common/cauldron.nix
     ../common/ghostty.nix
     ../common/glide
   ]

@@ -67,10 +67,6 @@
       url = "git+https://git.drake.bot/drake/tree-sitter-mog";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    cauldron = {
-      url = "git+ssh://git@loge:2222/loam/cauldron.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
