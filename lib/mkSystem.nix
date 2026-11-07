@@ -55,6 +55,8 @@ let
               ../home/darwin
             ]
         )
+        # Host-specific home config sits next to the host's system module.
+        ++ inputs.nixpkgs.lib.optional (builtins.pathExists (path + "/home.nix")) (path + "/home.nix")
         ++ extraHomeModules;
       };
     };

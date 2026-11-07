@@ -7,7 +7,6 @@
     ./desktop.nix
     ./equibop
     ./mpv
-    ./obs.nix
     ./tailscale.nix
     ./tresorit.nix
   ]

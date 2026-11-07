@@ -13,7 +13,7 @@ _: {
     // lib.optionalAttrs pkgs.stdenv.isLinux (
       {
         shurectl = pkgs.callPackage ../hosts/desktop/shurectl.nix { };
-        icy-draw = pkgs.callPackage ../home/linux/icy-draw { };
+        icy-draw = pkgs.callPackage ../hosts/desktop/icy-draw { };
       }
       // lib.genAttrs [ "qmltermwidget-light" "qmltermwidget-dark" ] (
         name:

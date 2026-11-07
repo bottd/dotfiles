@@ -8,7 +8,6 @@
   imports = [
     ./ai
     ./bitwarden.nix
-    ./emacs.nix
     ./language.nix
     ./neovim
     ./scripts.nix

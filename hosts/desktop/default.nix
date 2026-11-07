@@ -37,6 +37,8 @@ in
     # scripts/brightness.nix and does not depend on this one.
     ddcutil
     moonlight-qt
+    # Not in the binary cache, so it builds from source.
+    podman-desktop
     shurectl
   ];
 }

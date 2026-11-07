@@ -1,6 +1,5 @@
 {
   lib,
-  pkgs,
   username,
   ...
 }:
@@ -36,10 +35,6 @@
   ];
 
   virtualisation.docker.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    podman-desktop
-  ];
 
   programs.nix-ld.enable = true;
 }
