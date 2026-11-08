@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794080569,
-        "narHash": "sha256-yHei4XliFnS8cEUHAKtvHC5zmGv0ZKJKOlTJr/w0R5c=",
+        "lastModified": 1794134190,
+        "narHash": "sha256-9WG6M5aIZRkGS4NPSHPxE2qHDX4mFUltfUcjGDEIh4E=",
         "owner": "Drackrath",
         "repo": "Aurelia",
-        "rev": "672c0c5f559fd75dd791eb327d1d1ed94e182540",
+        "rev": "23e37ef6f1ac80ab196381b26c61db264f82b237",
         "type": "github"
       },
       "original": {
@@ -116,11 +116,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1793988107,
-        "narHash": "sha256-O91/HnND0xTpdCecUJedsfRU2n/V5xdTLV4iplOXS7Y=",
+        "lastModified": 1794145993,
+        "narHash": "sha256-VTuZErYZM9Dc5XyXzpejgxsCjYHxEZVTYKRSJYxN9PY=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "623c716377e67e88cd96e505928a03b087e00e8a",
+        "rev": "dcf5354053c67a0c653796cca9af5630e4a54fc4",
         "type": "github"
       },
       "original": {
@@ -376,11 +376,11 @@
     "impeccable": {
       "flake": false,
       "locked": {
-        "lastModified": 1794008774,
-        "narHash": "sha256-idfQqFwpBydUYvJSF/+2ao3o8x7pO05wsX+wAeoFSzs=",
+        "lastModified": 1794105626,
+        "narHash": "sha256-9MntXkTa6ReVwl8eQ3OKNB8P0/4ub97wH/nFnuW1fXc=",
         "owner": "pbakaus",
         "repo": "impeccable",
-        "rev": "687bc381bc9091bf252c0a05303640561014a425",
+        "rev": "924bbd194d02e5e15a227e75b5901fb0d7a4ecad",
         "type": "github"
       },
       "original": {
