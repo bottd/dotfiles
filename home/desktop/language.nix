@@ -7,10 +7,6 @@
       cljfmt
       clojure
       clojure-lsp
-      jet
-
-      # Common Lisp
-      sbcl
 
       # Fennel
       fnlfmt
@@ -18,7 +14,6 @@
 
       # JavaScript/Node
       nodejs
-      prettier
       svelte-language-server
       typescript-language-server
       prettierd

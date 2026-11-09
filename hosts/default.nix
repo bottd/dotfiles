@@ -30,7 +30,6 @@
     features = {
       desktopEnvironment = "niri";
       desktopApps = false;
-      animations = false;
     };
     theme = {
       baseFontSize = 20;

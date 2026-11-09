@@ -1,6 +1,5 @@
 {
   config,
-  features,
   inputs,
   lib,
   pkgs,
@@ -26,11 +25,6 @@ in
         inputs.claude-code.packages.${system}.default
       ];
 
-      # Add native installer location to PATH on macOS
-      sessionPath = lib.mkIf pkgs.stdenv.isDarwin [
-        "$HOME/.local/bin"
-      ];
-
       file = {
         ".claude/settings.json".source =
           if config.claude.extraSettings == { } then
@@ -52,11 +46,5 @@ in
       ".impeccable"
       "DESIGN.md"
     ];
-
-    xdg.mimeApps = lib.mkIf (features.desktopEnvironment != null && pkgs.stdenv.isLinux) {
-      associations.added = {
-        "x-scheme-handler/claude" = "claude-desktop.desktop";
-      };
-    };
   };
 }

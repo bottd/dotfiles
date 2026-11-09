@@ -6,7 +6,6 @@
       filezilla
       crosspipe
       nautilus
-      mupdf
       signal-desktop
     ];
   };

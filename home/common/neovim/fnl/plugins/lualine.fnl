@@ -7,7 +7,7 @@
                           :disabled_filetypes {}}
                 :sections {:lualine_a [:mode]
                            :lualine_b [:branch :diff :diagnostics]
-                           :lualine_c [:lsp_progress]
+                           :lualine_c []
                            :lualine_x [:encoding :filetype]
                            :lualine_y [:progress]
                            :lualine_z [:location]}

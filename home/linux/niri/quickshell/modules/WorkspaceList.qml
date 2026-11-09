@@ -100,7 +100,7 @@ RowLayout {
                     Text {
                         anchors.centerIn: parent
                         text: modelData.idx + (modelData.is_urgent ? "!" : "")
-                        color: modelData.is_urgent ? root.theme.background : (workspace.lit || workspace.occupied ? root.theme.textPrimary : root.theme.textMuted)
+                        color: modelData.is_urgent ? root.theme.background : (workspace.lit || workspace.occupied ? root.theme.ink : root.theme.textMuted)
                         font.family: root.theme.fontFamily
                         font.pixelSize: root.theme.fontSize
                         font.bold: workspace.lit

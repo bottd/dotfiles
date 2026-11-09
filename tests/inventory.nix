@@ -71,9 +71,7 @@ builtins.all (result: result) [
     })
   ))
   (expect "desktop resource defaults are retained" (
-    inventory.desktop.nix.maxJobs == "auto"
-    && inventory.desktop.nix.cores == 0
-    && inventory.desktop.nix.keepOutputs
+    inventory.desktop.nix.maxJobs == "auto" && inventory.desktop.nix.cores == 0
   ))
   (expect "Pocket has bounded parallelism" (
     inventory.pocket.nix.maxJobs == 2 && inventory.pocket.nix.cores == 2

@@ -34,7 +34,7 @@ in
     vim.opt.runtimepath:prepend("${mogGrammar}")
 
     vim.g.dotfiles_extra_lsp_servers = {
-      "cssls", "eslint", "graphql", "html", "svelte", "tailwindcss", "ts_ls", "clojure_lsp",
+      "cssls", "eslint", "html", "svelte", "tailwindcss", "ts_ls", "clojure_lsp",
     }
     vim.g.dotfiles_snacks_image = {
       enabled = true,

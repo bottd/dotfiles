@@ -39,14 +39,6 @@ let
                     type = types.bool;
                     default = false;
                   };
-                  extraHomeModules = mkOption {
-                    type = types.listOf types.path;
-                    default = [ ];
-                  };
-                  extraSystemModules = mkOption {
-                    type = types.listOf types.path;
-                    default = [ ];
-                  };
                   appearances = mkOption {
                     type = types.listOf appearance;
                     default = [
@@ -106,22 +98,6 @@ let
                     cores = mkOption {
                       type = types.ints.unsigned;
                       default = 0;
-                    };
-                    keepOutputs = mkOption {
-                      type = types.bool;
-                      default = true;
-                    };
-                    keepDerivations = mkOption {
-                      type = types.bool;
-                      default = true;
-                    };
-                    downloadBufferSize = mkOption {
-                      type = types.ints.positive;
-                      default = 536870912;
-                    };
-                    httpConnections = mkOption {
-                      type = types.ints.positive;
-                      default = 128;
                     };
                   };
                 };

@@ -34,7 +34,6 @@ let
 in
 {
   flake = {
-    hostInventory = inventory;
     nixosConfigurations = configurations "nixos";
     darwinConfigurations = configurations "darwin";
     homeConfigurations = configurations "home-manager";

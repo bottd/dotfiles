@@ -70,7 +70,6 @@ in
     ];
 
     sessionVariables = {
-      EDITOR = "nvim";
       VISUAL = "nvim";
       SUDO_EDITOR = "nvim";
       LUA_INCDIR = "${pkgs.lua5_1}/include";

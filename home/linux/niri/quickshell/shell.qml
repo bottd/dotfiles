@@ -478,14 +478,6 @@ ShellRoot {
     }
 
     IpcHandler {
-        target: "network"
-
-        function toggle(): void {
-            root.toggleDrawer("network");
-        }
-    }
-
-    IpcHandler {
         target: "levels"
 
         function volume(): void {
@@ -646,7 +638,7 @@ ShellRoot {
                         text: root.windowTitle
                         textFormat: Text.PlainText
                         elide: Text.ElideRight
-                        color: shellTheme.textPrimary
+                        color: shellTheme.ink
                         font.family: shellTheme.fontFamily
                         font.pixelSize: shellTheme.fontSize
                     }

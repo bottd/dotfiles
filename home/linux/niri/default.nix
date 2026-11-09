@@ -138,7 +138,6 @@ in
             // page read too.
             readonly property color background: "${press.colors.paper}"
             readonly property color surfaceHover: "${press.colors.hover}"
-            readonly property color textPrimary: "${press.colors.ink}"
             readonly property color textMuted: "${press.colors.muted}"
             // Dither Press: ink keylines, one accent plate printed off-register
             // behind whatever is selected, square trims everywhere.

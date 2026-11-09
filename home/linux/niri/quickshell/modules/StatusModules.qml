@@ -29,7 +29,7 @@ RowLayout {
             return root.theme.danger;
         if (tone === "muted")
             return root.theme.textMuted;
-        return root.theme.textPrimary;
+        return root.theme.ink;
     }
 
     function batteryPercent() {
@@ -91,7 +91,7 @@ RowLayout {
     }
 
     component StatusLabel: Text {
-        color: root.theme.textPrimary
+        color: root.theme.ink
         font.family: root.theme.fontFamily
         font.pixelSize: root.theme.fontSize
     }
@@ -163,7 +163,7 @@ RowLayout {
                 Text {
                     text: control.text
                     textFormat: Text.PlainText
-                    color: control.inverted ? root.theme.background : (control.tone === "muted" ? root.theme.textMuted : root.theme.textPrimary)
+                    color: control.inverted ? root.theme.background : (control.tone === "muted" ? root.theme.textMuted : root.theme.ink)
                     font.family: root.theme.fontFamily
                     font.pixelSize: root.theme.fontSize
                 }

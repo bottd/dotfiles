@@ -29,14 +29,11 @@ let
   };
 
   mkSystem = import ./mkSystem.nix { inherit inputs mkSpecialArgs; };
-  mkHomeModules =
-    host:
-    [
-      inputs.stylix.homeModules.stylix
-      ../home.nix
-      ../hosts/${host.hostName}
-    ]
-    ++ host.extraHomeModules;
+  mkHomeModules = host: [
+    inputs.stylix.homeModules.stylix
+    ../home.nix
+    ../hosts/${host.hostName}
+  ];
   mkHome = import ./mkHome.nix { inherit inputs mkSpecialArgs mkHomeModules; };
 in
 {

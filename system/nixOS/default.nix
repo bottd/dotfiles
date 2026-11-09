@@ -13,7 +13,6 @@
   services.gvfs.enable = features.desktopApps;
 
   imports = [
-    ../common/nix.nix
     ./audio.nix
     ./bluetooth.nix
     ./cli.nix

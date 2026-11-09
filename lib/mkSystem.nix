@@ -4,8 +4,6 @@ host@{
   system,
   username,
   format,
-  extraHomeModules,
-  extraSystemModules,
   autologin,
   stateVersion,
   ...
@@ -56,8 +54,7 @@ let
             ]
         )
         # Host-specific home config sits next to the host's system module.
-        ++ inputs.nixpkgs.lib.optional (builtins.pathExists (path + "/home.nix")) (path + "/home.nix")
-        ++ extraHomeModules;
+        ++ inputs.nixpkgs.lib.optional (builtins.pathExists (path + "/home.nix")) (path + "/home.nix");
       };
     };
   };
@@ -76,7 +73,6 @@ systemBuilder {
       system.stateVersion = stateVersion.system;
     }
   ]
-  ++ extraSystemModules
   ++ inputs.nixpkgs.lib.optional (format == "nixos") ../system/common/nixos.nix
   ++ (
     if format == "nixos" then

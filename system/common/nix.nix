@@ -25,10 +25,10 @@
       cores = host.nix.cores;
       # Already the NixOS default; nix-darwin leaves it off.
       sandbox = true;
-      keep-outputs = host.nix.keepOutputs;
-      keep-derivations = host.nix.keepDerivations;
-      download-buffer-size = host.nix.downloadBufferSize;
-      http-connections = host.nix.httpConnections;
+      keep-outputs = true;
+      keep-derivations = true;
+      download-buffer-size = 536870912;
+      http-connections = 128;
     };
     optimise.automatic = true;
     gc = {
