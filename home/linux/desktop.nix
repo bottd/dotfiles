@@ -18,13 +18,7 @@
     profiles.drake.isDefault = true;
   };
 
-  xdg = {
-    configFile."mimeapps.list".force = true;
-
-    mimeApps.defaultApplications = {
-      "application/pdf" = "sioyek.desktop";
-    };
-
-    mimeApps.enable = true;
+  xdg.mimeApps.defaultApplications = {
+    "application/pdf" = "sioyek.desktop";
   };
 }

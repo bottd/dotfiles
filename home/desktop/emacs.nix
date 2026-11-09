@@ -12,8 +12,6 @@
     ];
 
     extraConfig = ''
-      (with-eval-after-load 'subed
-        (add-to-list 'auto-mode-alist '("\\.srt\\'" . subed-srt-mode)))
       (add-to-list 'auto-mode-alist '("\\.srt\\'" . subed-srt-mode))
 
       ;; subed bindings:

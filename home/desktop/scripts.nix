@@ -15,16 +15,22 @@ in
     flakeDirectory = "${config.home.homeDirectory}/dotfiles";
   };
 
-  # tresorit-install pins a ~107 MB installer blob and is a one-shot bootstrap,
-  # so it stays out of every generation's closure and is realised on demand via
-  # `nix run .#tresorit-install` instead.
+  # Left off PATH: tresorit-install is a one-shot bootstrap run through
+  # `nix run .#tresorit-install`, and the other two are only ever called by
+  # store path (equibop's theme build, darwin's sign-apps activation).
   home.packages = builtins.attrValues (
     builtins.removeAttrs scripts (
-      [ "tresorit-install" ]
+      [
+        "tresorit-install"
+        "discord-ramp"
+        "darwin-sign-apps"
+      ]
       ++ lib.optionals pkgs.stdenv.isDarwin [
-        "vpn"
+        "brightness"
         "games"
         "network"
+        "niri-layout"
+        "vpn"
       ]
     )
   );

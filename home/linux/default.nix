@@ -7,6 +7,7 @@
     ./desktop.nix
     ./equibop
     ./mpv
+    ./spicetify.nix
     ./tailscale.nix
     ./tresorit.nix
   ]
@@ -15,6 +16,12 @@
   ]
   ++ lib.optionals (features.desktopEnvironment == "niri") [
     ./niri
-    ./spicetify.nix
   ];
+
+  # Not behind desktopApps: every host sets default applications (the browser
+  # at least), and without `enable` they are silently never written.
+  xdg = {
+    mimeApps.enable = true;
+    configFile."mimeapps.list".force = true;
+  };
 }

@@ -39,11 +39,13 @@
 (defn all-windows []
   (or (niri-json "windows") []))
 
+(defn tiled [wins]
+  (filter (fn [w] (not (get w :is_floating))) wins))
+
 (defn reconcile-all! [ws-ids counts wins]
   (def by-ws
     (group-by (fn [w] (w :workspace_id))
-              (filter (fn [w] (and (get ws-ids (w :workspace_id)) (not (w :is_floating))))
-                      wins)))
+              (filter (fn [w] (get ws-ids (w :workspace_id))) (tiled wins))))
   (each ws-id (keys ws-ids)
     (def cols (columns (get by-ws ws-id [])))
     (def n (length cols))
@@ -55,7 +57,7 @@
       (put counts ws-id n))))
 
 (defn apply-heights! [ws-id all]
-  (def wins (filter (fn [w] (= (w :workspace_id) ws-id)) all))
+  (def wins (filter (fn [w] (= (w :workspace_id) ws-id)) (tiled all)))
   (def overflow (> (length wins) max-visible))
   (def pct (string (div 100 max-visible) "%"))
   (each w wins
@@ -69,7 +71,7 @@
     (apply-heights! (get w :workspace_id) (all-windows))))
 
 (defn widen! [w]
-  (when (get w :is_focused)
+  (when (and (get w :is_focused) (not (get w :is_floating)))
     (niri-action "set-column-width" "100%")))
 
 (defn run []
@@ -118,6 +120,10 @@
   (assert (= 0 (column-of {:layout {:pos_in_scrolling_layout [0 1]}})))
   (assert (= nil (column-of (parse-line `{"layout":{"pos_in_scrolling_layout":null}}`))))
   (assert (= nil (column-of nil)))
+  (assert (deep= [1 3] (freeze (map (fn [w] (w :id))
+                                    (tiled [{:id 1 :is_floating false}
+                                            {:id 2 :is_floating true}
+                                            {:id 3}])))))
   (assert (empty? (columns [])))
   (def cols (columns [{:id 1 :layout {:pos_in_scrolling_layout [1 1]}}
                       {:id 2 :layout {:pos_in_scrolling_layout [1 2]}}

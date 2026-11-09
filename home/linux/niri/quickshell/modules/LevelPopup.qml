@@ -37,14 +37,12 @@ PanelWindow {
     WlrLayershell.keyboardFocus: keyboardDriven && open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     WlrLayershell.namespace: panelNamespace
 
+    // Also called by the owner: a repeated media key keeps the popup up for
+    // another full interval.
     function resetDismissal() {
         dismissTimer.stop();
         if (open && !interacting)
             dismissTimer.start();
-    }
-    // A repeated media key keeps the popup up for another full interval.
-    function poke() {
-        resetDismissal();
     }
     onOpenChanged: {
         if (open) {

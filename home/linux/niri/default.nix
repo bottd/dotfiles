@@ -94,8 +94,8 @@ let
     export TERM=xterm-256color
     # Keep a shell parent: QMLTermWidget does not emit finished on CrashExit.
     ${lib.getExe config.programs.neovim.finalPackage} \
-      -c 'lua vim.api.nvim_create_user_command("JournalToday", function() vim.cmd("keepalt hide edit " .. vim.fn.fnameescape(vim.fn.expand("~/chalet/journal/") .. os.date("%Y-%m-%d") .. ".norg")) end, {})' \
-      "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).norg"
+      -c 'lua vim.api.nvim_create_user_command("JournalToday", function() vim.cmd("keepalt hide edit " .. vim.fn.fnameescape(vim.fn.expand("~/chalet/journal/") .. os.date("%Y-%m-%d") .. ".mg")) end, {})' \
+      "$journal_dir/$(${pkgs.coreutils}/bin/date +%F).mg"
     exit 0
   '';
 
@@ -107,15 +107,14 @@ in
   # home-manager module automatically (via home-manager.sharedModules) — so we
   # must NOT import homeModules.niri again. The same auto-wiring pulls in
   # niri-flake's stylix target (homeModules.stylix, active because stylix is a
-  # NixOS module here); it owns the window border + cursor colors, so we don't
-  # set focus-ring/border/cursor below.
+  # NixOS module here); it sets the window border + cursor colors with mkDefault;
+  # only the border is overridden below (layout.border).
 
   programs.swaylock.enable = true;
 
   home.packages =
     with pkgs;
     [
-      brightnessctl
       playerctl
       quickshell
       xdg-terminal-exec # Terminal=true desktop entries use the configured terminal
@@ -138,16 +137,9 @@ in
             // (home/common/dither-press.nix), which Glide's chrome and new tab
             // page read too.
             readonly property color background: "${press.colors.paper}"
-            readonly property color surface: "${press.colors.surface}"
             readonly property color surfaceHover: "${press.colors.hover}"
-            readonly property color surfaceSelected: "${press.colors.hover}"
-            readonly property color surfacePressed: "${press.colors.rule}"
-            readonly property color border: "${press.colors.rule}"
             readonly property color textPrimary: "${press.colors.ink}"
             readonly property color textMuted: "${press.colors.muted}"
-            readonly property color accent: "${press.colors.plate}"
-            readonly property color textOnAccent: "${press.colors.paper}"
-            readonly property color focusRing: "${press.colors.plate}"
             // Dither Press: ink keylines, one accent plate printed off-register
             // behind whatever is selected, square trims everywhere.
             readonly property color ink: "${press.colors.ink}"

@@ -118,7 +118,7 @@ ShellRoot {
             brightnessPopup.keyboardDriven = keyboard;
             root.brightnessScreen = screen;
             root.brightnessOpen = true;
-            brightnessPopup.poke();
+            brightnessPopup.resetDismissal();
         } else {
             if (!root.audioReady)
                 return;
@@ -126,7 +126,7 @@ ShellRoot {
             volumePopup.keyboardDriven = keyboard;
             root.volumeScreen = screen;
             root.volumeOpen = true;
-            volumePopup.poke();
+            volumePopup.resetDismissal();
         }
     }
 
@@ -504,15 +504,18 @@ ShellRoot {
         }
     }
 
-    Modules.VolumePopup {
+    Modules.LevelPopup {
         id: volumePopup
 
+        title: "Volume"
+        panelNamespace: "drake-volume-popup"
+        showMute: true
         screen: root.volumeScreen || Quickshell.screens[0]
         theme: shellTheme
         open: root.volumeOpen
         level: root.volumeLevel
         muted: root.volumeMuted
-        onSetVolume: level => {
+        onMoved: level => {
             if (root.audioReady)
                 root.audioSink.audio.volume = Math.max(0, Math.min(Math.max(1, root.volumeLevel), level));
         }
@@ -523,14 +526,16 @@ ShellRoot {
         onDismissed: root.volumeOpen = false
     }
 
-    Modules.BrightnessPopup {
+    Modules.LevelPopup {
         id: brightnessPopup
 
+        title: "Brightness"
+        panelNamespace: "drake-brightness-popup"
         screen: root.brightnessScreen || Quickshell.screens[0]
         theme: shellTheme
         open: root.brightnessOpen
         level: root.brightnessLevel
-        onSetBrightness: level => root.setBrightness(level)
+        onMoved: level => root.setBrightness(level)
         onDismissed: root.brightnessOpen = false
     }
 

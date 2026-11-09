@@ -3,8 +3,11 @@
 
 (gitsigns.setup {})
 
-(binds [[:ih #(gitsigns.select_hunk) "Select hunk"]
-        (group "Git hunks" :<leader>h
+;; A text object, so operator-pending and visual only: `binds` registers in
+;; normal mode, where an `ih` map makes `i` wait out timeoutlen.
+(vim.keymap.set [:o :x] :ih #(gitsigns.select_hunk) {:desc "Select hunk"})
+
+(binds [(group "Git hunks" :<leader>h
                [[:s #(gitsigns.stage_hunk) "Stage hunk"]
                 [:r #(gitsigns.reset_hunk) "Reset hunk"]
                 [:S #(gitsigns.stage_buffer) "Stage buffer"]

@@ -22,7 +22,6 @@
       svelte-language-server
       typescript-language-server
       prettierd
-      stylelint-lsp
       tailwindcss-language-server
       vscode-langservers-extracted
 

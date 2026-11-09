@@ -13,7 +13,6 @@ in
     packages = with pkgs; [
       ghostscript
       imagemagick
-      luajitPackages.magick
       mermaid-cli
       cargo
       rust-analyzer

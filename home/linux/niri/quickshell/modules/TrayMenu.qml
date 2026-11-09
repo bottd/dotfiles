@@ -55,10 +55,6 @@ PanelWindow {
         stack = stack.slice(0, -1);
         last.opener.destroy();
     }
-    function label(text) {
-        // QsMenuEntry.text already removes DBusMenu mnemonic markers.
-        return text;
-    }
     function selectNext(direction) {
         const start = selectedIndex < 0 && direction < 0 ? 0 : selectedIndex;
         for (let offset = 1; offset <= entries.length; ++offset) {
@@ -82,7 +78,7 @@ PanelWindow {
             stack = stack.concat([
                 {
                     opener: opener,
-                    title: label(entry.text)
+                    title: entry.text
                 }
             ]);
         } else {
@@ -222,7 +218,7 @@ PanelWindow {
                             visible: !modelData.isSeparator
                             enabled: modelData.enabled
                             selected: index === root.selectedIndex
-                            Accessible.name: root.label(modelData.text)
+                            Accessible.name: modelData.text
                             Accessible.checkable: modelData.buttonType !== QsMenuButtonType.None
                             Accessible.checked: modelData.checkState === Qt.Checked
                             onClicked: {
@@ -262,7 +258,7 @@ PanelWindow {
                                 }
                                 Text {
                                     Layout.fillWidth: true
-                                    text: root.label(modelData.text)
+                                    text: modelData.text
                                     textFormat: Text.PlainText
                                     elide: Text.ElideRight
                                     color: entryButton.foreground

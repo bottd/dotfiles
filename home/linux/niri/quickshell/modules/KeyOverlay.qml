@@ -849,7 +849,6 @@ PanelWindow {
         running: root.open && root.mode === "network"
         onTriggered: root.refreshNetwork(false)
     }
-    // Leave compositor toggle binds and media keys available, including in nvim.
     Timer {
         id: pointerGuard
         interval: Qt.styleHints.mouseDoubleClickInterval
@@ -1249,7 +1248,7 @@ PanelWindow {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".norg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.secretItem ? "ENTER  CONNECT     ESC  CANCEL" : (root.mode === "games" ? "ENTER  PLAY     SHIFT+ENTER  PLAY IN STEAM     " + (root.steamEntry ? "CTRL+S  OPEN STEAM     " : "") + "ESC  " : (root.mode === "network" ? "↑ ↓  SELECT     ENTER  CONNECT     CTRL+R  RESCAN     ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ")) + (search.text ? "CLEAR" : "BACK")))
+                    text: root.mode === "journal" ? (root.journalDate === Qt.formatDateTime(root.now, "yyyy-MM-dd") ? root.journalDate + ".mg · Mod+Space closes" : "Session started " + root.journalDate + " · :JournalToday opens today · Mod+Space closes") : (root.confirmationItem ? "ENTER / Y / TAP  CONFIRM     ESC  CANCEL" : (root.secretItem ? "ENTER  CONNECT     ESC  CANCEL" : (root.mode === "games" ? "ENTER  PLAY     SHIFT+ENTER  PLAY IN STEAM     " + (root.steamEntry ? "CTRL+S  OPEN STEAM     " : "") + "ESC  " : (root.mode === "network" ? "↑ ↓  SELECT     ENTER  CONNECT     CTRL+R  RESCAN     ESC  " : "↑ ↓  SELECT     ENTER  OPEN     ESC  ")) + (search.text ? "CLEAR" : "BACK")))
                     elide: Text.ElideRight
                     color: root.confirmationItem ? root.theme.danger : root.theme.textMuted
                     font.family: root.theme.fontFamily
