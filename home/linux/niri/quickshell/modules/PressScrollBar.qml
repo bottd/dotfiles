@@ -15,7 +15,6 @@ ScrollBar {
         implicitWidth: root.theme.ruleWidth * 2
         implicitHeight: root.theme.ruleWidth * 2
         color: root.theme.ink
-        // The stock style hides an idle bar by fading it; this one is cut.
         visible: root.size < 1
     }
     background: Rectangle {

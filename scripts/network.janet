@@ -390,6 +390,9 @@
   (print "ok"))
 
 (defn main [script & args]
+  # explain, the "Error: " strip and pin-tries all read nmcli's and mmcli's
+  # English wording.
+  (os/setenv "LC_ALL" "C")
   (case (first args)
     nil (print (json/encode (status-json (snapshot))))
     "list" (if-let [s (snapshot (= "--rescan" (get args 1)))]

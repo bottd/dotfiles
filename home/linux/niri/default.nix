@@ -170,10 +170,21 @@ in
             readonly property int listRowHeight: Math.round(fontSize * 4)    // 48
             readonly property int iconSize: Math.round(fontSize * 1.5)       // 18
             readonly property int listIconSize: Math.round(fontSize * 1.85)  // 22
+            // The square, circle or diamond that travels with a status hue.
+            readonly property int markerSize: Math.max(5, Math.round(fontSize / 2.4)) // 5
             readonly property int overlayGap: Math.round(fontSize * 1.33)    // 16
             readonly property int overlayEdgeMargin: Math.round(fontSize * 10) // 120
             readonly property bool animationsEnabled: ${lib.boolToString features.animations}
             readonly property string journalProgram: ${builtins.toJSON journalNvim}
+            readonly property var airplaneToggleCommand: ${
+              builtins.toJSON [
+                "sh"
+                "-c"
+                airplaneToggle
+              ]
+            }
+            // The toggle's own test, for the overlay row that says which way it will go.
+            readonly property var airplaneStateCommand: ["rfkill", "-n", "-o", "SOFT"]
             readonly property var launcherCommand: ${
               builtins.toJSON (scopeRun [
                 "--"

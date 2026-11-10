@@ -111,7 +111,7 @@ RowLayout {
         property string tone: "neutral"
         readonly property bool toned: tone !== "neutral" && tone !== "muted"
         readonly property bool inverted: interactive && buttonMouse.containsMouse
-        readonly property int marker: Math.max(5, Math.round(root.theme.fontSize / 2.4)) // 5
+        readonly property int marker: root.theme.markerSize
         signal activated
         signal scrolled(bool increase)
 
@@ -253,20 +253,35 @@ RowLayout {
         tone: root.batteryTone()
     }
 
-    // Date set muted, time set bold: the bar's one typographic moment.
-    Row {
+    // Date set muted, time set bold: the bar's one typographic moment. It is
+    // boxed like a slug's face, so its type sits on the slugs' baseline rather
+    // than two pixels under it.
+    Item {
         Layout.leftMargin: Math.round(root.theme.fontSize / 2) // 6
-        spacing: Math.round(root.theme.fontSize / 2) // 6
+        implicitWidth: clock.implicitWidth
+        implicitHeight: root.theme.controlSize
         Accessible.role: Accessible.StaticText
         Accessible.name: Qt.formatDateTime(root.now, "dddd, MMMM d, h:mm AP")
 
-        StatusLabel {
-            text: Qt.formatDateTime(root.now, "ddd MMM d")
-            color: root.theme.textMuted
-        }
-        StatusLabel {
-            text: Qt.formatTime(root.now, "h:mm AP")
-            font.bold: true
+        Item {
+            width: parent.width
+            height: parent.height - root.theme.plateOffset
+
+            Row {
+                id: clock
+
+                anchors.centerIn: parent
+                spacing: Math.round(root.theme.fontSize / 2) // 6
+
+                StatusLabel {
+                    text: Qt.formatDateTime(root.now, "ddd MMM d")
+                    color: root.theme.textMuted
+                }
+                StatusLabel {
+                    text: Qt.formatTime(root.now, "h:mm AP")
+                    font.bold: true
+                }
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ PanelWindow {
     property var stack: []
     property int selectedIndex: -1
     // The sheet lifts out before its menu is let go, so it leaves as it came.
-    property bool closing: false
+    readonly property bool closing: menuPanel.closing
     readonly property var currentOpener: stack.length ? stack[stack.length - 1].opener : topMenu
     readonly property var entries: currentOpener.children.values
     readonly property string title: stack.length ? stack[stack.length - 1].title : (trayItem ? trayItem.tooltipTitle || trayItem.title || trayItem.id : "")
@@ -42,11 +42,9 @@ PanelWindow {
     function close() {
         if (trayItem === null || closing)
             return;
-        closing = true;
         menuPanel.pressOut();
     }
     function teardown() {
-        closing = false;
         const oldStack = stack;
         stack = [];
         for (let i = oldStack.length - 1; i >= 0; --i)
@@ -161,10 +159,7 @@ PanelWindow {
         PressPanel {
             id: menuPanel
             theme: root.theme
-            onPressedOut: {
-                if (root.closing)
-                    root.teardown();
-            }
+            onPressedOut: root.teardown()
             anchors.centerIn: parent
             width: Math.min(parent.width - root.theme.fontSize * 4, root.theme.fontSize * 38)
             height: Math.min(parent.height - root.theme.fontSize * 4, Math.max(root.theme.fontSize * 14, list.contentHeight + root.theme.fontSize * 10))
@@ -174,7 +169,6 @@ PanelWindow {
                 spacing: root.theme.gap
                 RowLayout {
                     Layout.fillWidth: true
-                    // BACK on the left, CLOSE on the right, as on the key overlay.
                     PressButton {
                         id: backButton
                         theme: root.theme
@@ -182,14 +176,7 @@ PanelWindow {
                         implicitWidth: root.theme.fontSize * 6
                         Accessible.name: "Back"
                         onClicked: root.back()
-                        Text {
-                            anchors.centerIn: parent
-                            text: "BACK"
-                            color: backButton.foreground
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
+                        label: "BACK"
                     }
                     Text {
                         Layout.fillWidth: true
@@ -207,14 +194,7 @@ PanelWindow {
                         implicitWidth: root.theme.fontSize * 7
                         Accessible.name: "Close menu"
                         onClicked: root.close()
-                        Text {
-                            anchors.centerIn: parent
-                            text: "CLOSE"
-                            color: closeButton.foreground
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
+                        label: "CLOSE"
                     }
                 }
                 Rectangle {

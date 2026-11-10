@@ -11,6 +11,9 @@ ShellRoot {
 
     property bool drawerOpen: false
     property string drawerMode: "commands"
+    // The mode a keybind or the bar last asked for, as opposed to one the
+    // overlay stepped into itself.
+    property string drawerEntryMode: "commands"
     property var drawerScreen: null
     property bool volumeOpen: false
     property var volumeScreen: null
@@ -210,6 +213,7 @@ ShellRoot {
     function toggleDrawer(mode, screen) {
         root.volumeOpen = false;
         root.brightnessOpen = false;
+        root.drawerEntryMode = mode;
         if (root.drawerOpen) {
             root.drawerOpen = root.drawerMode !== mode;
             root.drawerMode = mode;
@@ -353,6 +357,7 @@ ShellRoot {
                     root.vpnStatus = {
                         text: value.text || "",
                         tone: root.connectionTone(state),
+                        exit: value.exit || "",
                         tooltip: value.tooltip || "VPN status unavailable"
                     };
                 } catch (error) {
@@ -543,6 +548,7 @@ ShellRoot {
         theme: shellTheme
         open: root.drawerOpen
         mode: root.drawerMode
+        entryMode: root.drawerEntryMode
         now: clock.date
         vpnStatus: root.vpnStatus
         backlightAvailable: root.backlightAvailable

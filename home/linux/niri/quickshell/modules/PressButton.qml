@@ -7,6 +7,8 @@ Item {
     required property var theme
     property bool selected: false
     property bool dangerous: false
+    // Most buttons are one stamped word; rows leave this empty and bring their own content.
+    property string label: ""
     // Lists driven by the keyboard turn this off so a resting pointer can't
     // print a second "selected" row.
     property bool hoverable: true
@@ -57,6 +59,16 @@ Item {
         color: root.inverted ? root.theme.ink : root.theme.background
         border.color: root.rule
         border.width: root.focused ? root.theme.ruleWidth * 2 : root.theme.ruleWidth
+
+        Text {
+            anchors.centerIn: parent
+            visible: root.label !== ""
+            text: root.label
+            color: root.foreground
+            font.family: root.theme.fontFamily
+            font.pixelSize: root.theme.fontSize
+            font.bold: true
+        }
     }
 
     Timer {

@@ -23,14 +23,16 @@
     {:text "󰦞 tailscale off"
      :tooltip (string "tailscale: " (string/ascii-lower (or backend "unknown")))
      :class "disconnected"}
-    (nil? exit) {:text "󰦞 exit off" :tooltip "vpn: no exit node" :class "disconnected"}
+    (nil? exit) {:text "󰦞 exit off" :tooltip "vpn: no exit node" :class "disconnected" :exit "off"}
     (not (get exit :Online))
     {:text "󰦞 offline"
      :tooltip (string "vpn: exit node offline · " (place (get peer :HostName)))
-     :class "failed"}
+     :class "failed"
+     :exit "offline"}
     {:text (string "󰦝 " (or (get peer :HostName) "on"))
      :tooltip (string "vpn: connected · " (place city country))
-     :class "connected"}))
+     :class "connected"
+     :exit "on"}))
 
 (defn toggle []
   (sh/exec-fail "tailscale" "set"
@@ -42,6 +44,8 @@
               :b {:HostName "loge"}})
   (def running {:BackendState "Running" :Peer peers})
   (assert (= "connected" (get (status-json (merge running {:ExitNodeStatus {:Online true}})) :class)))
+  (assert (= "on" (get (status-json (merge running {:ExitNodeStatus {:Online true}})) :exit)))
+  (assert (= "off" (get (status-json running) :exit)))
   (assert (= "󰦝 se-mma-wg-001" (get (status-json (merge running {:ExitNodeStatus {:Online true}})) :text)))
   (assert (= "vpn: connected · Malmö, Sweden"
              (get (status-json (merge running {:ExitNodeStatus {:Online true}})) :tooltip)))

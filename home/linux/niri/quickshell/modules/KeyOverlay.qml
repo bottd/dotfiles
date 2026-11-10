@@ -52,7 +52,7 @@ PanelWindow {
     property var secretItem: null
     property bool secretRevealed: false
     property string secretNote: ""
-    property bool secretFailed: false
+    readonly property bool secretFailed: secretNote !== ""
     readonly property string emptySecretNote: "Nothing typed yet"
     // What the shell knows, so toggle rows can say which way they will go and
     // rows this host can't perform stay off the chart.
@@ -61,10 +61,23 @@ PanelWindow {
     property bool audioAvailable: true
     // "on", "off", or "" until rfkill has answered.
     property string airplane: ""
-    // The mode the panel was opened in. Esc closes from there; it only steps
-    // back to COMMANDS from a mode that was reached through it.
-    property string entryMode: "commands"
-    property bool internalSwitch: false
+    // The mode the shell opened the panel in. Esc closes from there; it only
+    // steps back to COMMANDS from a mode that was reached through it.
+    required property string entryMode
+    // Strings, so the shell's five-second status poll reaches `menu` only when
+    // the wording actually changes.
+    readonly property string vpnNote: {
+        const note = (vpnStatus.tooltip || "").replace(/^vpn: /, "");
+        if (!note)
+            return "Turns the Tailscale exit node on or off";
+        const state = note.charAt(0).toUpperCase() + note.slice(1);
+        return vpnStatus.exit === "on" ? state + " · Enter turns it off" : (vpnStatus.exit === "off" ? state + " · Enter turns one on" : state);
+    }
+    readonly property string airplaneNote: ({
+            on: "On · every radio is blocked · Enter turns it off",
+            off: "Off · Enter blocks every radio"
+        })[airplane] || "Blocks or unblocks every radio"
+    readonly property bool hasQuery: search.text !== ""
     readonly property bool canGoBack: path.length > 0 || (mode !== "commands" && mode !== entryMode)
 
     // Ordered by group, then by the chart's reading order within a group.
@@ -124,6 +137,7 @@ PanelWindow {
                 {
                     key: "s",
                     label: "Sleep",
+                    description: "Suspends until a key or the power button",
                     command: ["systemctl", "suspend"]
                 },
                 {
@@ -143,6 +157,7 @@ PanelWindow {
                 {
                     key: "l",
                     label: "Lock",
+                    description: "Locks the session, leaves everything running",
                     command: ["systemd-run", "--user", "--collect", "--", "swaylock"]
                 }
             ]
@@ -152,17 +167,18 @@ PanelWindow {
             group: "System",
             label: "Connections",
             description: "Network, VPN, airplane mode",
+            probesAirplane: true,
             items: [
                 {
                     key: "a",
                     label: "Airplane mode",
-                    description: airplane === "on" ? "On · every radio is blocked · Enter turns it off" : (airplane === "off" ? "Off · Enter blocks every radio" : "Blocks or unblocks every radio"),
-                    command: ["sh", "-c", "if LC_ALL=C rfkill -n -o SOFT | grep -q unblocked; then rfkill block all; else rfkill unblock all; fi"]
+                    description: airplaneNote,
+                    command: theme.airplaneToggleCommand
                 },
                 {
                     key: "v",
                     label: "VPN exit node",
-                    description: vpnDescription(),
+                    description: vpnNote,
                     shellAction: "vpn"
                 },
                 {
@@ -253,7 +269,7 @@ PanelWindow {
     }
     // The footer's key caps. Esc is labelled with what it will actually do.
     readonly property var hints: {
-        const escape = ["ESC", search.text && !secretItem ? "Clear" : (canGoBack ? "Back" : "Close")];
+        const escape = ["ESC", hasQuery ? "Clear" : (canGoBack ? "Back" : "Close")];
         if (mode === "journal")
             return [["MOD+SPACE", "Close"]];
         if (confirmationItem)
@@ -265,8 +281,8 @@ PanelWindow {
         if (mode === "network")
             return [["↑ ↓", "Select"], ["ENTER", "Connect"], ["CTRL+R", "Rescan"], escape];
         if (charted)
-            return [["← ↑ ↓ →", "Move"], ["ENTER", "Open"], ["/", "Search"], escape];
-        return [["↑ ↓", "Select"], ["ENTER", "Open"], escape];
+            return [["A–Z", "Run"], ["← ↑ ↓ →", "Move"], ["ENTER", "Open"], ["/", "Search"], escape];
+        return (mode === "commands" ? [["A–Z", "Run"]] : []).concat([["↑ ↓", "Select"], ["ENTER", "Open"], escape]);
     }
     readonly property var modeText: ({
             commands: {
@@ -306,7 +322,9 @@ PanelWindow {
                 empty: ""
             }
         })
-    readonly property var activeItems: path.length ? path[path.length - 1].items : menu
+    // Resolved through `menu` by key, so a submenu's rows follow live state
+    // (the airplane and VPN notes) rather than the copy taken when it opened.
+    readonly property var activeItems: path.reduce((items, entry) => (items.find(item => item.key === entry.key) || entry).items, menu)
     // Each list is only computed in its own mode; the others would be rescored
     // on every keystroke for nothing.
     readonly property var filteredCommands: mode !== "commands" ? [] : activeItems.filter(item => available(item) && (!search.text.trim() || fuzzyScore(search.text.trim().toLowerCase(), item.label + " " + (item.description || "")) > Number.NEGATIVE_INFINITY))
@@ -317,7 +335,12 @@ PanelWindow {
         return applicationIndex.map(entry => ({
                     entry: entry,
                     score: needle ? applicationScore(needle, entry) : 0
-                })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || applicationRecency(a.entry.id) - applicationRecency(b.entry.id) || a.entry.name.localeCompare(b.entry.name)).map(item => item.entry);
+                })).filter(item => item.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score || applicationRecency(a.entry.id) - applicationRecency(b.entry.id) || a.entry.name.localeCompare(b.entry.name)).map(item => ({
+                    label: item.entry.name,
+                    description: item.entry.genericName || item.entry.comment || "",
+                    icon: item.entry.icon,
+                    entry: item.entry
+                }));
     }
     readonly property var filteredGames: {
         if (mode !== "games")
@@ -419,22 +442,6 @@ PanelWindow {
         if (item.shellAction === "volume" && !audioAvailable)
             return false;
         return true;
-    }
-    // The vpn script's tooltip already says the state ("vpn: connected · Oslo,
-    // Norway"); the row adds which way Enter will take it.
-    function vpnDescription() {
-        const note = (vpnStatus.tooltip || "").replace(/^vpn: /, "");
-        if (!note)
-            return "Turns the Tailscale exit node on or off";
-        const state = note.charAt(0).toUpperCase() + note.slice(1);
-        if (vpnStatus.tone === "positive")
-            return state + " · Enter turns it off";
-        return vpnStatus.tone === "muted" && /exit node/.test(note) ? state + " · Enter turns one on" : state;
-    }
-    function switchMode(target) {
-        internalSwitch = true;
-        modeRequested(target);
-        internalSwitch = false;
     }
     function moveSelection(delta, wrap) {
         const count = visibleItems.length;
@@ -628,6 +635,12 @@ PanelWindow {
         networkListProcess.command = ["network", "list"].concat(rescan ? ["--rescan"] : []);
         networkListProcess.running = true;
     }
+    // Where the highlight starts: the first row whose Enter brings something up
+    // rather than taking it down, so a stray Enter never drops a live link.
+    // The editor row always qualifies, so there is always an answer.
+    function networkStart() {
+        return Math.max(0, filteredNetwork.findIndex(item => !item.active && (item.args || item.editor)));
+    }
     function parseNetwork(text) {
         try {
             const items = JSON.parse(text);
@@ -635,15 +648,16 @@ PanelWindow {
                 throw new Error("not a list");
             // Keep the highlight on the row it was on: a scan that adds or
             // drops a network must not retarget Enter.
-            const selected = mode === "network" ? filteredNetwork[selectedIndex] : null;
+            // The first answer has nothing to keep: before it the only row
+            // is the editor, and Enter should land on a connection.
+            const selected = mode === "network" && networkLoaded ? filteredNetwork[selectedIndex] : null;
             networkItems = items;
             networkFailed = false;
             // An open prompt follows its row, so a SIM's remaining tries stay current.
             const prompted = secretItem ? items.find(item => item.id === secretItem.id && item.secret) : null;
             if (prompted)
                 secretItem = prompted;
-            if (selected)
-                selectedIndex = Math.max(0, filteredNetwork.findIndex(item => item.id === selected.id));
+            selectedIndex = selected ? Math.max(0, filteredNetwork.findIndex(item => item.id === selected.id)) : networkStart();
         } catch (error) {
             networkFailed = true;
         }
@@ -675,7 +689,6 @@ PanelWindow {
     function submitSecret() {
         if (!secretItem || networkActionProcess.running)
             return;
-        secretFailed = !search.text;
         secretNote = search.text ? "" : emptySecretNote;
         if (search.text)
             runNetwork(secretItem, search.text);
@@ -684,7 +697,6 @@ PanelWindow {
         secretItem = null;
         secretRevealed = false;
         secretNote = "";
-        secretFailed = false;
         search.text = "";
     }
     function cancelSecret() {
@@ -696,8 +708,7 @@ PanelWindow {
             cancelSecret();
             return;
         }
-        secretNote = message || "That didn't work";
-        secretFailed = true;
+        secretNote = (message || "That didn't work") + " · retype and press Enter";
         networkMessage = "";
         search.forceActiveFocus();
         search.selectAll();
@@ -732,7 +743,7 @@ PanelWindow {
             search.text = "";
             selectedIndex = 0;
         } else if (canGoBack)
-            switchMode("commands");
+            modeRequested("commands");
         else
             dismissed();
     }
@@ -762,6 +773,8 @@ PanelWindow {
     function runItem(item) {
         clearDangerConfirmation();
         if (item.items) {
+            if (item.probesAirplane)
+                airplaneProcess.running = true;
             path = path.concat([item]);
             search.text = "";
             selectedIndex = 0;
@@ -769,7 +782,7 @@ PanelWindow {
             return;
         }
         if (item.targetMode) {
-            switchMode(item.targetMode);
+            modeRequested(item.targetMode);
             return;
         }
         if (item.shellAction)
@@ -800,7 +813,7 @@ PanelWindow {
         if (!item)
             return;
         if (mode === "launcher")
-            launchApplication(item);
+            launchApplication(item.entry);
         else if (mode === "games")
             launchGame(item, !!alternate);
         else if (mode === "web")
@@ -881,7 +894,6 @@ PanelWindow {
             }
             return;
         }
-        const selected = visibleItems[selectedIndex];
         if (event.key === Qt.Key_Escape && search.text) {
             search.text = "";
             event.accepted = true;
@@ -893,8 +905,8 @@ PanelWindow {
             if (!event.isAutoRepeat)
                 goBack();
             event.accepted = true;
-        } else if (event.key === Qt.Key_Backspace && !search.text) {
-            // Steps back like Esc, but never closes the panel: an extra
+        } else if ((event.key === Qt.Key_Backspace && !search.text) || (!typing && !charted && mode === "commands" && event.key === Qt.Key_Left)) {
+            // Both step back like Esc, but never close the panel: an extra
             // Backspace after emptying the field must not throw the sheet away.
             if (!event.isAutoRepeat && canGoBack)
                 goBack();
@@ -906,7 +918,7 @@ PanelWindow {
                 focusKeys();
             event.accepted = true;
         } else if (event.key === Qt.Key_PageDown || event.key === Qt.Key_PageUp) {
-            const page = charted ? visibleItems.length : Math.max(1, Math.floor(results.height / (theme.listRowHeight + theme.pressOffset * 2 + theme.ruleWidth)) - 1);
+            const page = charted ? visibleItems.length : Math.max(1, Math.floor(results.height / (theme.listRowHeight + theme.pressOffset + results.spacing)) - 1);
             moveSelection(event.key === Qt.Key_PageDown ? page : -page, false);
             event.accepted = true;
         } else if (!typing && (event.key === Qt.Key_Home || event.key === Qt.Key_End)) {
@@ -915,13 +927,10 @@ PanelWindow {
         } else if (!typing && charted && (event.key === Qt.Key_Left || event.key === Qt.Key_Right)) {
             crossColumn(event.key === Qt.Key_Right ? 1 : 0);
             event.accepted = true;
-        } else if (!typing && mode === "commands" && event.key === Qt.Key_Left) {
-            if (!event.isAutoRepeat && canGoBack)
-                goBack();
-            event.accepted = true;
         } else if (!typing && mode === "commands" && event.key === Qt.Key_Right) {
-            if (!event.isAutoRepeat && selected && (selected.items || selected.targetMode))
-                activate(selected);
+            const row = visibleItems[selectedIndex];
+            if (!event.isAutoRepeat && row && (row.items || row.targetMode))
+                activate(row);
             event.accepted = true;
         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || (!typing && event.key === Qt.Key_Space)) {
             if (!event.isAutoRepeat)
@@ -954,17 +963,15 @@ PanelWindow {
         clearSecret();
         networkMessage = "";
         if (open) {
-            entryMode = mode;
-            airplaneProcess.running = true;
             screenshotTimer.stop();
             presented = true;
             path = [];
-            search.text = "";
             selectedIndex = 0;
             panel.printIn();
             if (mode === "games")
                 refreshGames();
             if (mode === "network") {
+                selectedIndex = networkStart();
                 refreshNetwork(false);
                 refreshNetwork(true);
             }
@@ -982,9 +989,6 @@ PanelWindow {
     }
     onModeChanged: {
         clearDangerConfirmation();
-        // A keybind that swaps the mode under an open panel is a new entry point.
-        if (!internalSwitch)
-            entryMode = mode;
         // A new mode is a fresh proof pulled over the same sheet.
         if (open)
             panel.printIn();
@@ -998,8 +1002,7 @@ PanelWindow {
             refreshNetwork(true);
         }
         path = [];
-        search.text = "";
-        selectedIndex = 0;
+        selectedIndex = mode === "network" ? networkStart() : 0;
         Qt.callLater(() => {
             if (root.open)
                 root.focusCurrentMode();
@@ -1071,10 +1074,10 @@ PanelWindow {
             root.shellActionRequested("network-changed", false);
         }
     }
-    // Asked once per open, so the airplane row can say which way it will go.
+    // Asked when Connections opens, so the airplane row can say which way it will go.
     Process {
         id: airplaneProcess
-        command: ["rfkill", "-n", "-o", "SOFT"]
+        command: root.theme.airplaneStateCommand
         environment: ({
                 LC_ALL: "C"
             })
@@ -1159,6 +1162,7 @@ PanelWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
+                    spacing: root.theme.gap
                     PressButton {
                         id: backButton
                         theme: root.theme
@@ -1166,14 +1170,7 @@ PanelWindow {
                         implicitWidth: root.theme.fontSize * 6
                         Accessible.name: "Back"
                         onClicked: root.goBack()
-                        Text {
-                            anchors.centerIn: parent
-                            text: "BACK"
-                            color: backButton.foreground
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
+                        label: "BACK"
                     }
                     Text {
                         Layout.fillWidth: true
@@ -1196,7 +1193,7 @@ PanelWindow {
                         Rectangle {
                             visible: root.gamesFailed
                             anchors.verticalCenter: parent.verticalCenter
-                            width: Math.max(5, Math.round(root.theme.fontSize / 2.4))
+                            width: root.theme.markerSize
                             height: width
                             color: root.theme.danger
                         }
@@ -1224,7 +1221,7 @@ PanelWindow {
                         Accessible.name: note
                         Rectangle {
                             visible: networkStatus.failed
-                            implicitWidth: Math.max(5, Math.round(root.theme.fontSize / 2.4))
+                            implicitWidth: root.theme.markerSize
                             implicitHeight: implicitWidth
                             color: root.theme.danger
                         }
@@ -1245,14 +1242,7 @@ PanelWindow {
                         implicitWidth: root.theme.fontSize * 7
                         Accessible.name: "Close panel"
                         onClicked: root.dismissed()
-                        Text {
-                            anchors.centerIn: parent
-                            text: "CLOSE"
-                            color: closeButton.foreground
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
+                        label: "CLOSE"
                     }
                 }
                 Rectangle {
@@ -1291,7 +1281,6 @@ PanelWindow {
                                 // retyped; "nothing typed" is answered by typing.
                                 if (text && root.secretNote === root.emptySecretNote) {
                                     root.secretNote = "";
-                                    root.secretFailed = false;
                                 }
                                 return;
                             }
@@ -1315,6 +1304,8 @@ PanelWindow {
                     PressButton {
                         id: revealButton
                         theme: root.theme
+                        // As tall as the field it belongs to, plate included.
+                        Layout.preferredHeight: search.height
                         visible: !!root.secretItem
                         activeFocusOnTab: false
                         implicitWidth: root.theme.fontSize * 6
@@ -1323,14 +1314,7 @@ PanelWindow {
                             root.secretRevealed = !root.secretRevealed;
                             search.forceActiveFocus();
                         }
-                        Text {
-                            anchors.centerIn: parent
-                            text: root.secretRevealed ? "HIDE" : "SHOW"
-                            color: revealButton.foreground
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
+                        label: root.secretRevealed ? "HIDE" : "SHOW"
                     }
                 }
 
@@ -1346,14 +1330,14 @@ PanelWindow {
                         visible: root.secretFailed
                         Layout.alignment: Qt.AlignTop
                         Layout.topMargin: Math.round(root.theme.captionSize / 4)
-                        implicitWidth: Math.max(5, Math.round(root.theme.fontSize / 2.4))
+                        implicitWidth: root.theme.markerSize
                         implicitHeight: implicitWidth
                         color: root.theme.danger
                     }
                     Text {
                         id: secretLine
                         Layout.fillWidth: true
-                        text: root.secretNote ? root.secretNote + (root.secretNote === root.emptySecretNote ? "" : " · retype and press Enter") : (root.networkPending ? "Connecting…" : (root.secretItem ? root.secretItem.secret : ""))
+                        text: root.secretNote || (root.networkPending ? "Connecting…" : (root.secretItem ? root.secretItem.secret : ""))
                         textFormat: Text.PlainText
                         wrapMode: Text.Wrap
                         maximumLineCount: 2
@@ -1368,6 +1352,7 @@ PanelWindow {
                 Flickable {
                     id: chartView
                     readonly property int columnWidth: Math.floor((width - root.theme.gap) / 2)
+                    readonly property int columnPitch: columnWidth + root.theme.gap
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     visible: root.charted
@@ -1381,7 +1366,7 @@ PanelWindow {
                         model: root.chart.headings
                         Item {
                             required property var modelData
-                            x: modelData.column * (chartView.columnWidth + root.theme.gap)
+                            x: modelData.column * chartView.columnPitch
                             y: modelData.y
                             width: chartView.columnWidth - root.theme.pressOffset
                             height: root.chartHeadingHeight
@@ -1447,13 +1432,15 @@ PanelWindow {
                         readonly property bool game: root.mode === "games"
                         readonly property bool confirming: !!root.confirmationItem && root.confirmationItem.key === modelData.key
                         readonly property bool awaitingSecret: !!root.secretItem && root.secretItem.id === modelData.id
-                        readonly property var slot: root.charted ? root.chart.slots[index] || null : null
+                        readonly property var slot: root.chart.slots[index] || null
                         theme: root.theme
                         width: slot ? chartView.columnWidth : results.width - root.theme.fontSize
-                        height: slot ? root.chartRowHeight : root.theme.listRowHeight + root.theme.pressOffset
+                        // Commands are set at the chart's height in a submenu too; rows
+                        // that carry an icon and a sentence keep the taller list row.
+                        height: root.mode === "commands" ? root.chartRowHeight : root.theme.listRowHeight + root.theme.pressOffset
                         Binding on x {
                             when: !!result.slot
-                            value: result.slot ? result.slot.column * (chartView.columnWidth + root.theme.gap) : 0
+                            value: result.slot ? result.slot.column * chartView.columnPitch : 0
                         }
                         Binding on y {
                             when: !!result.slot
@@ -1462,8 +1449,7 @@ PanelWindow {
                         selected: index === root.selectedIndex
                         hoverable: false
                         dangerous: !!modelData.destructive
-                        // A row can outlive its mode by a frame, holding the other kind of entry.
-                        Accessible.name: (application ? modelData.name : (web ? modelData.label + ", " + modelData.description : modelData.label)) || ""
+                        Accessible.name: web ? modelData.label + ", " + modelData.description : modelData.label
                         Accessible.description: confirming ? "Armed. Enter confirms, Escape cancels." : (web ? "" : (game ? [modelData.description, "Shift+Enter plays in Steam"].filter(Boolean).join(". ") : (modelData.description || "")))
                         onClicked: {
                             if (!root.open || pointerGuard.running)
@@ -1500,7 +1486,7 @@ PanelWindow {
                                 spacing: 1
                                 Text {
                                     Layout.fillWidth: true
-                                    text: (result.application ? result.modelData.name : result.modelData.label) || ""
+                                    text: result.modelData.label
                                     textFormat: Text.PlainText
                                     elide: Text.ElideRight
                                     color: result.foreground
@@ -1510,7 +1496,7 @@ PanelWindow {
                                 }
                                 Text {
                                     Layout.fillWidth: true
-                                    text: result.confirming ? "Enter or tap again confirms · Esc cancels" : (result.awaitingSecret ? "Waiting for what you type above" : (result.application ? (result.modelData.genericName || result.modelData.comment || "") : (result.modelData.description || "")))
+                                    text: result.confirming ? "Enter or tap again confirms · Esc cancels" : (result.awaitingSecret ? "Waiting for what you type above" : (result.modelData.description || ""))
                                     textFormat: Text.PlainText
                                     visible: text !== ""
                                     elide: Text.ElideRight
@@ -1564,7 +1550,7 @@ PanelWindow {
                                     root.journalStarted = false;
                                     root.journalDate = "";
                                     if (root.open)
-                                        root.switchMode("commands");
+                                        root.modeRequested("commands");
                                 }
                             }
                             Keys.priority: Keys.BeforeItem
@@ -1644,7 +1630,7 @@ PanelWindow {
                     }
                     Rectangle {
                         visible: !!root.confirmationItem
-                        implicitWidth: Math.max(5, Math.round(root.theme.fontSize / 2.4))
+                        implicitWidth: root.theme.markerSize
                         implicitHeight: implicitWidth
                         color: root.theme.danger
                     }

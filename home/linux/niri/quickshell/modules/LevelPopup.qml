@@ -150,14 +150,7 @@ PanelWindow {
                         root.toggleMute();
                         root.resetDismissal();
                     }
-                    Text {
-                        anchors.centerIn: parent
-                        text: root.muted ? "UNMUTE" : "MUTE"
-                        color: muteButton.foreground
-                        font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize
-                        font.bold: true
-                    }
+                    label: root.muted ? "UNMUTE" : "MUTE"
                 }
             }
             Text {
