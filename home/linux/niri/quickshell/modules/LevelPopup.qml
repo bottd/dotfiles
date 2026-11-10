@@ -145,7 +145,6 @@ PanelWindow {
                     theme: root.theme
                     visible: root.showMute
                     implicitWidth: root.theme.fontSize * 7
-                    selected: root.muted
                     Accessible.name: root.muted ? "Unmute" : "Mute"
                     onClicked: {
                         root.toggleMute();
@@ -156,14 +155,16 @@ PanelWindow {
                         text: root.muted ? "UNMUTE" : "MUTE"
                         color: muteButton.foreground
                         font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.captionSize
+                        font.pixelSize: root.theme.fontSize
                         font.bold: true
                     }
                 }
             }
             Text {
                 visible: root.keyboardDriven
-                text: "Esc or click outside to close"
+                Layout.fillWidth: true
+                text: (root.showMute ? "← → adjust · M mutes · " : "← → adjust · ") + "Esc closes"
+                elide: Text.ElideRight
                 color: root.theme.textMuted
                 font.family: root.theme.fontFamily
                 font.pixelSize: root.theme.captionSize

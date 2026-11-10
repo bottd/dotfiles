@@ -491,8 +491,13 @@ ShellRoot {
     IpcHandler {
         target: "key-overlay"
 
+        // The overlay key closes whatever sheet is up, as its tap-release
+        // already does; it only opens COMMANDS from a clear desk.
         function toggle(): void {
-            root.toggleDrawer("commands");
+            if (root.drawerOpen)
+                root.drawerOpen = false;
+            else
+                root.toggleDrawer("commands");
         }
     }
 
@@ -539,6 +544,9 @@ ShellRoot {
         open: root.drawerOpen
         mode: root.drawerMode
         now: clock.date
+        vpnStatus: root.vpnStatus
+        backlightAvailable: root.backlightAvailable
+        audioAvailable: root.audioReady
         onDismissed: root.drawerOpen = false
         onModeRequested: mode => root.drawerMode = mode
         onShellActionRequested: (action, keyboard) => {

@@ -96,6 +96,22 @@
     (= state "locked") "SIM locked · PIN required"
     (= (get info "modem.generic.power-state") "low") "Radio off (low power or FCC lock)"))
 
+# How many wrong PINs the SIM will still take before it wants its PUK. mmcli
+# lists the counters as "sim-pin (3)"; nil when it doesn't say.
+(defn pin-tries [info]
+  (some (fn [[k v]]
+          (when (string/has-prefix? "modem.generic.unlock-retries.value" k)
+            (when-let [[n] (peg/match '(* "sim-pin" :s* "(" (<- :d+) ")") v)]
+              (scan-number n))))
+        (pairs info)))
+
+(defn pin-prompt [info]
+  (def tries (pin-tries info))
+  (cond
+    (nil? tries) "SIM PIN"
+    (= tries 1) "SIM PIN · last try before the SIM locks"
+    (string "SIM PIN · " tries " tries left")))
+
 (def wifi-glyphs ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"])
 (def cell-glyphs ["󰢿" "󰢼" "󰢽" "󰢾"])
 (defn level [glyphs signal]
@@ -198,7 +214,7 @@
                                 (join (capitalize (or (get info "modem.generic.state") "unknown")) (technology info) (when signal (string signal "%")) "Enter connects"))
                  :args (when (and profile (r :wwan) (or up locked (nil? problem)))
                          [(if up "deactivate" "activate") (profile :name)])
-                 :secret (when (and locked (not up)) "SIM PIN")}))
+                 :secret (when (and locked (not up)) (pin-prompt info))}))
   (when (r :wwan-hw)
     (array/push items
                 {:id "radio:wwan" :key "󰒢" :kind "radio" :active (r :wwan)
@@ -233,12 +249,22 @@
                            (string "Password for " (n :ssid)))}))
   items)
 
+# nmcli's wording for the failures a person can act on, in theirs. Anything
+# else passes through as nmcli said it.
+(defn explain [message]
+  (cond
+    (string/find "Secrets were required" message) "That password or PIN was not accepted"
+    (string/find "psk: property is invalid" message) "A Wi-Fi password is 8 to 63 characters"
+    (string/find "No network with SSID" message) "That network is no longer in range"
+    (string/find "Timeout" message) "No answer before the timeout"
+    message))
+
 (defn outcome [result ok-message]
   (if (zero? (result :status))
     {:ok true :message ok-message}
     {:ok false
      :message (let [text (string/trim (if (empty? (result :err)) (result :out) (result :err)))]
-                (string/replace "Error: " "" (or (last (lines text)) "failed")))}))
+                (explain (string/replace "Error: " "" (or (last (lines text)) "failed"))))}))
 
 (defn secret [] (let [v (os/getenv "NETWORK_SECRET")] (unless (empty? (or v "")) v)))
 
@@ -259,12 +285,17 @@
           (outcome result (string "Connected to " ssid)))))
     (outcome (run ["nmcli" "--wait" "45" "device" "wifi" "connect" ssid]) (string "Connected to " ssid))))
 
+# A PIN that can't be one is refused here: sending it would spend one of the
+# SIM's few tries on a typo.
 (defn activate [name]
-  (outcome (if-let [pin (secret)]
-             (run ["nmcli" "--wait" "60" "connection" "up" "id" name "passwd-file" "/dev/stdin"]
-                  (string "gsm.pin:" pin "\n"))
-             (run ["nmcli" "--wait" "60" "connection" "up" "id" name]))
-           (string "Connected " name)))
+  (def pin (secret))
+  (if (and pin (not (peg/match '(* (between 4 8 :d) -1) pin)))
+    {:ok false :message "A SIM PIN is 4 to 8 digits"}
+    (outcome (if pin
+               (run ["nmcli" "--wait" "60" "connection" "up" "id" name "passwd-file" "/dev/stdin"]
+                    (string "gsm.pin:" pin "\n"))
+               (run ["nmcli" "--wait" "60" "connection" "up" "id" name]))
+             (string "Connected " name))))
 
 (defn action [args]
   (match args
@@ -330,6 +361,12 @@
   (def locked (menu (merge base {:devices (devices "cdc-wdm0:gsm:disconnected:")
                                  :modem {"modem.generic.state" "locked"}})))
   (assert (= "SIM PIN" ((first locked) :secret)))
+  (assert (= 3 (pin-tries {"modem.generic.unlock-retries.value[1]" "sim-pin (3)"
+                           "modem.generic.unlock-retries.value[2]" "sim-puk (10)"})))
+  (assert (= "SIM PIN · 3 tries left" (pin-prompt {"modem.generic.unlock-retries.value[1]" "sim-pin (3)"})))
+  (assert (= "SIM PIN · last try before the SIM locks" (pin-prompt {"modem.generic.unlock-retries.value[1]" "sim-pin (1)"})))
+  (assert (= "Nothing like nmcli" (explain "Nothing like nmcli")))
+  (assert (= "A Wi-Fi password is 8 to 63 characters" (explain "802-11-wireless-security.psk: property is invalid")))
   (assert (deep= ["activate" "cellular"] ((first locked) :args)))
   (def calls @[])
   (with-dyns [:network-exec (fn [args input] (array/push calls [args input])
@@ -340,11 +377,15 @@
     (def result (action ["wifi" "Neighbour" "WPA3"]))
     (os/setenv "NETWORK_SECRET" nil)
     (assert (not (result :ok)))
-    (assert (= "Connection activation failed: Secrets were required, but not provided." (result :message)))
+    (assert (= "That password or PIN was not accepted" (result :message)))
     (assert (= "sae" (last (first (get calls 0)))))
     (assert (= "802-11-wireless-security.psk:hunter2\n" (get-in calls [1 1])))
     (assert (not (find |(= $ "hunter2") (get-in calls [1 0]))))
     (assert (deep= ["nmcli" "connection" "delete" "id" "Neighbour"] (get-in calls [2 0]))))
+  (os/setenv "NETWORK_SECRET" "12ab")
+  (def typo (action ["activate" "cellular"]))
+  (os/setenv "NETWORK_SECRET" nil)
+  (assert (= "A SIM PIN is 4 to 8 digits" (typo :message)))
   (assert (nil? (action ["bogus"])))
   (print "ok"))
 

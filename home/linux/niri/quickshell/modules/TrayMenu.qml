@@ -12,6 +12,8 @@ PanelWindow {
     property var trayItem: null
     property var stack: []
     property int selectedIndex: -1
+    // The sheet lifts out before its menu is let go, so it leaves as it came.
+    property bool closing: false
     readonly property var currentOpener: stack.length ? stack[stack.length - 1].opener : topMenu
     readonly property var entries: currentOpener.children.values
     readonly property string title: stack.length ? stack[stack.length - 1].title : (trayItem ? trayItem.tooltipTitle || trayItem.title || trayItem.id : "")
@@ -30,7 +32,7 @@ PanelWindow {
     WlrLayershell.namespace: "drake-tray-menu"
 
     function show(item) {
-        close();
+        teardown();
         trayItem = item;
         menuPanel.printIn();
         Qt.callLater(() => {
@@ -38,6 +40,13 @@ PanelWindow {
         });
     }
     function close() {
+        if (trayItem === null || closing)
+            return;
+        closing = true;
+        menuPanel.pressOut();
+    }
+    function teardown() {
+        closing = false;
         const oldStack = stack;
         stack = [];
         for (let i = oldStack.length - 1; i >= 0; --i)
@@ -68,7 +77,7 @@ PanelWindow {
         selectedIndex = -1;
     }
     function activate(entry) {
-        if (!entry || !entry.enabled || entry.isSeparator)
+        if (closing || !entry || !entry.enabled || entry.isSeparator)
             return;
         if (entry.hasChildren) {
             const opener = submenuFactory.createObject(root, {
@@ -87,6 +96,10 @@ PanelWindow {
         }
     }
     function handleKey(event) {
+        if (closing) {
+            event.accepted = true;
+            return;
+        }
         if (event.key === Qt.Key_Escape || event.key === Qt.Key_Left || event.key === Qt.Key_Backspace) {
             if (!event.isAutoRepeat)
                 back();
@@ -110,7 +123,7 @@ PanelWindow {
     }
     onVisibleChanged: {
         if (!visible && trayItem !== null)
-            close();
+            teardown();
     }
     QsMenuOpener {
         id: topMenu
@@ -148,6 +161,10 @@ PanelWindow {
         PressPanel {
             id: menuPanel
             theme: root.theme
+            onPressedOut: {
+                if (root.closing)
+                    root.teardown();
+            }
             anchors.centerIn: parent
             width: Math.min(parent.width - root.theme.fontSize * 4, root.theme.fontSize * 38)
             height: Math.min(parent.height - root.theme.fontSize * 4, Math.max(root.theme.fontSize * 14, list.contentHeight + root.theme.fontSize * 10))
@@ -157,6 +174,23 @@ PanelWindow {
                 spacing: root.theme.gap
                 RowLayout {
                     Layout.fillWidth: true
+                    // BACK on the left, CLOSE on the right, as on the key overlay.
+                    PressButton {
+                        id: backButton
+                        theme: root.theme
+                        visible: root.stack.length > 0
+                        implicitWidth: root.theme.fontSize * 6
+                        Accessible.name: "Back"
+                        onClicked: root.back()
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BACK"
+                            color: backButton.foreground
+                            font.family: root.theme.fontFamily
+                            font.pixelSize: root.theme.fontSize
+                            font.bold: true
+                        }
+                    }
                     Text {
                         Layout.fillWidth: true
                         text: root.title.toUpperCase()
@@ -168,15 +202,15 @@ PanelWindow {
                         font.bold: true
                     }
                     PressButton {
-                        id: backButton
+                        id: closeButton
                         theme: root.theme
                         implicitWidth: root.theme.fontSize * 7
-                        Accessible.name: root.stack.length ? "Back" : "Close menu"
-                        onClicked: root.back()
+                        Accessible.name: "Close menu"
+                        onClicked: root.close()
                         Text {
                             anchors.centerIn: parent
-                            text: root.stack.length ? "BACK" : "CLOSE"
-                            color: backButton.foreground
+                            text: "CLOSE"
+                            color: closeButton.foreground
                             font.family: root.theme.fontFamily
                             font.pixelSize: root.theme.fontSize
                             font.bold: true
@@ -195,8 +229,8 @@ PanelWindow {
                     clip: true
                     spacing: root.theme.pressOffset
                     model: root.entries
-                    ScrollBar.vertical: ScrollBar {
-                        policy: ScrollBar.AsNeeded
+                    ScrollBar.vertical: PressScrollBar {
+                        theme: root.theme
                     }
                     delegate: Item {
                         required property var modelData

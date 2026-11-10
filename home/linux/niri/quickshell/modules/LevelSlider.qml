@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 
 Item {
     id: root
@@ -80,7 +79,6 @@ Item {
         id: sliderMouse
 
         anchors.fill: parent
-        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onPressed: function (mouse) {
             root.forceActiveFocus();
@@ -91,8 +89,4 @@ Item {
                 root.moveTo(mouse.x);
         }
     }
-
-    ToolTip.visible: sliderMouse.containsMouse
-    ToolTip.delay: 500
-    ToolTip.text: root.accessibleName + " " + Math.round(root.clampedValue * 100) + "%"
 }
