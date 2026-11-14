@@ -16,18 +16,8 @@
   ]
   # mango reuses the niri module's shell (Quickshell, mako, swaylock, wallpaper)
   # and adds its own compositor config on top.
-  ++
-    lib.optionals
-      (lib.elem features.desktopEnvironment [
-        "niri"
-        "mango"
-      ])
-      [
-        ./niri
-      ]
-  ++ lib.optionals (features.desktopEnvironment == "mango") [
-    ./mango.nix
-  ];
+  ++ lib.optional (features.desktopEnvironment != null) ./niri
+  ++ lib.optional (features.desktopEnvironment == "mango") ./mango.nix;
 
   # Not behind desktopApps: every host sets default applications (the browser
   # at least), and without `enable` they are silently never written.

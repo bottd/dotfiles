@@ -6,18 +6,10 @@
   ...
 }:
 {
-  home.packages =
-    lib.optionals
-      (lib.elem features.desktopEnvironment [
-        "niri"
-        "mango"
-      ])
-      (
-        with pkgs;
-        [
-          wl-clipboard
-        ]
-      );
+  # Wayland desktops only; macOS has pbcopy.
+  home.packages = lib.optional (
+    features.desktopEnvironment != null && features.desktopEnvironment != "macos"
+  ) pkgs.wl-clipboard;
 
   programs.zellij = {
     enable = true;

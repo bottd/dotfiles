@@ -1,4 +1,4 @@
-# The non-autologin greeter. Only imported for niri hosts.
+# The non-autologin greeter. Only imported for Linux desktop hosts.
 {
   # X11 greeter, not Wayland. wlroots/cage and SDDM's Wayland greeter both
   # ignore the DRM panel-orientation property the kernel sets, and neither

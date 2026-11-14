@@ -25,21 +25,14 @@
   ++ lib.optionals features.gaming [
     ./gaming.nix
   ]
-  ++ lib.optional (features.desktopEnvironment == "mango") ./mango.nix
-  # mango hosts keep the niri module too: it carries keyd, the polkit agent, the
-  # swaylock PAM service, and the home-manager options the shell config uses.
-  ++
-    lib.optionals
-      (lib.elem features.desktopEnvironment [
-        "niri"
-        "mango"
-      ])
-      (
-        [
-          ./niri
-          # greetd drops straight into the session; sddm gives a themed password
-          # prompt (and, on pocket, is the only greeter that can rotate itself).
-        ]
-        ++ (if autologin then [ ./greetd.nix ] else [ ./sddm.nix ])
-      );
+  # Every Linux desktop (niri or mango) imports the niri module: it carries
+  # keyd, the polkit agent, the swaylock PAM service, and the home-manager
+  # options the shell config uses. greetd drops straight into the session; sddm
+  # gives a themed password prompt (and, on pocket, is the only greeter that
+  # can rotate itself).
+  ++ lib.optionals (features.desktopEnvironment != null) [
+    ./niri
+    (if autologin then ./greetd.nix else ./sddm.nix)
+  ]
+  ++ lib.optional (features.desktopEnvironment == "mango") ./mango.nix;
 }
