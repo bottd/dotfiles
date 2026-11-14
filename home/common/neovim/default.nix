@@ -42,6 +42,13 @@ in
         source = config.lib.meta.createSymlink "home/common/neovim/lux.toml";
       };
 
+      # `scm` deps in lux.toml only exist on luarocks.org/dev, which lux skips
+      # unless this is set. lux.nvim hardcodes its config, but lux-lua's
+      # config.new() still reads this file.
+      ".config/lux/config.toml".text = ''
+        enable_development_packages = true
+      '';
+
       # luxstrap downloads a prebuilt lux.so that needs libz.so.1, which
       # NixOS doesn't provide. With one already here it skips the download.
       ".local/share/nvim/lux.so".source =
