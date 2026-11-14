@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   lib,
   pkgs,
@@ -18,16 +17,9 @@ in
       rust-analyzer
       temurin-bin-21
     ];
-    file = {
-      ".config/nvim/rocks.toml".source = lib.mkForce (
-        config.lib.meta.createSymlink "home/desktop/neovim/rocks.toml"
-      );
-      ".config/nvim/rocks-common.toml".source =
-        config.lib.meta.createSymlink "home/common/neovim/rocks.toml";
-    };
   };
 
-  # Set plugin-specific options before Rocks loads the shared Fennel configuration.
+  # Set plugin-specific options before the shared Fennel configuration loads.
   programs.neovim.initLua = lib.mkBefore ''
     -- parser/mog.so and queries/mog, built per platform by the tree-sitter-mog flake.
     -- Prepended so a stale rocks-installed mog.so can't shadow it.

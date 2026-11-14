@@ -1,0 +1,176 @@
+package = "neovim-config"
+version = "1.0.0"
+lua = "5.1"               # lux.nvim requires 5.1, don't change
+
+[description]
+labels = ["neovim"]
+
+[run]
+command = "nvim"
+
+[build]
+type = "builtin"
+
+[dependencies]
+# rocks.nvim and its extensions. lux.nvim now does what rocks-git/edit/dev did.
+# rocks-config and rocks-treesitter have no lux ports yet (lux-config.nvim,
+# lux-treesitter.nvim); fnl/plugin_setup.fnl stands in for rocks-config.
+# "rocks.nvim" = "2.49.1"
+# "rocks-config.nvim" = "3.2.0"
+# "rocks-dev.nvim" = "1.8.1"
+# "rocks-git.nvim" = "2.6.0"
+# "rocks-treesitter.nvim" = "1.3.2"
+# "rocks-edit.nvim" = "scm"
+
+"nvim-thyme" = "1.6.1"
+"which-key.nvim" = "3.17.0"
+"lualine.nvim" = "scm"
+"nvim-dap" = "0.10.0"
+"nvim-lspconfig" = "2.12.0"
+"nvim-ts-autotag" = "scm"
+"nvim-parinfer" = "1.2.0"
+"nui.nvim" = "0.4.0"
+tree-sitter-json = "0.0.41"
+tree-sitter-javascript = "0.0.41"
+tree-sitter-toml = "0.0.31"
+tree-sitter-bash = "0.0.50"
+tree-sitter-css = "0.0.39"
+tree-sitter-comment = "0.0.33"
+tree-sitter-diff = "0.0.43"
+tree-sitter-gitignore = "0.0.29"
+tree-sitter-html = "0.0.40"
+tree-sitter-markdown = "0.0.53"
+tree-sitter-markdown_inline = "0.0.53"
+tree-sitter-nix = "0.0.73"
+tree-sitter-lua = "0.0.44"
+tree-sitter-python = "0.0.57"
+tree-sitter-rust = "0.0.59"
+tree-sitter-sql = "0.0.58"
+tree-sitter-svelte = "0.0.33"
+tree-sitter-tsx = "0.0.37"
+tree-sitter-typescript = "0.0.38"
+tree-sitter-typst = "0.0.39"
+tree-sitter-jsonc = "0.0.29"
+tree-sitter-yaml = "0.0.39"
+"conform.nvim" = "9.1.0"
+"helpview.nvim" = "2.2.0"
+nvim-treesitter-context = "scm"
+"snacks.nvim" = "scm"
+"package-info.nvim" = "scm"
+"flash.nvim" = "2.1.0"
+"nvim-web-devicons" = "0.100"
+tree-sitter-clojure = "0.0.32"
+tree-sitter-fennel = "0.0.37"
+tree-sitter-janet_simple = "0.0.37"
+tree-sitter-cpp = "0.0.51"
+"plenary.nvim" = "scm"
+tree-sitter-kotlin = "0.0.48"
+tree-sitter-kdl = "0.0.32"
+
+# Was desktop-only via rocks.toml `import`; lux has no import, so every host
+# gets them. Harmless where rust-analyzer/jdtls aren't installed.
+"rustaceanvim" = "9.2.2"
+
+# Git dependencies: rocks-git's `rev` becomes lux's `version` (tag or SHA).
+[dependencies."nvim-java"]
+git = "nvim-java/nvim-java"
+version = "v4.1.2"
+
+[dependencies."github-nvim-theme"]
+git = "projekt0n/github-nvim-theme"
+version = "v1.1.2"
+
+[dependencies."melange-nvim"]
+git = "savq/melange-nvim"
+version = "v0.9.0"
+
+[dependencies."lazydev.nvim"]
+git = "folke/lazydev.nvim"
+version = "v1.10.0"
+
+[dependencies."blink.cmp"]
+git = "Saghen/blink.cmp"
+version = "v1.10.2"
+
+[dependencies."blink.indent"]
+git = "Saghen/blink.indent"
+version = "v2.3.0"
+
+[dependencies."blink.lib"]
+git = "Saghen/blink.lib"
+version = "fd9a48ebbe6ec30d5dfcc5b42c243941ccdca1aa"
+
+[dependencies."blink.pairs"]
+git = "Saghen/blink.pairs"
+version = "v0.7.1"
+
+[dependencies."conjure"]
+git = "Olical/conjure"
+version = "v4.60.0"
+
+[dependencies."ts-comments.nvim"]
+git = "folke/ts-comments.nvim"
+version = "v1.5.0"
+
+[dependencies."gitsigns.nvim"]
+git = "lewis6991/gitsigns.nvim"
+version = "v2.1.0"
+
+[dependencies."lsp_lines.nvim"]
+git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+version = "v3.0.0"
+
+[dependencies."fyler.nvim"]
+git = "A7Lavinraj/fyler.nvim"
+version = "v2.0.0"
+
+# --- rocks-config.nvim (no lux port yet) -----------------------------------
+# Bundles mapped several plugins onto one fnl/plugins/<bundle>.fnl. The
+# stopgap loader just requires every fnl/plugins/*.fnl, so these are unused.
+#
+# [bundles.blink]
+# items = ["blink.cmp"]
+#
+# [bundles.lsp]
+# items = ["lsp_lines.nvim", "nvim-lspconfig"]
+#
+# [bundles.theme]
+# items = ["github-nvim-theme", "melange-nvim"]
+#
+# [bundles.treesitter]
+# items = ["nvim-treesitter-context", "nvim-ts-autotag"]
+#
+# Migration guide says these become [neovim.config] / [neovim.config.options]
+# once lux-config.nvim exists. Until then the options are mirrored in
+# fnl/plugin_setup.fnl.
+#
+# [config]
+# auto_setup = true
+#
+# [config.options]
+# cursorline = true
+# expandtab = true
+# foldlevelstart = 99
+# guifont = "MonoLisa Nerd Font"
+# number = true
+# shiftwidth = 2
+# smartindent = true
+# tabstop = 2
+# timeout = true
+# timeoutlen = 300
+# equalalways = false
+# winborder = "rounded"
+# winwidth = 10
+# winminwidth = 10
+
+# --- rocks-treesitter.nvim (no lux port yet) -------------------------------
+# Parsers above still install. Highlighting is started by the FileType autocmd
+# in fnl/plugin_setup.fnl; auto_install has no equivalent.
+#
+# [treesitter]
+# auto_highlight = "all"
+# auto_install = "prompt"
+#
+# [treesitter.parser_map]
+# lisp = "fennel"
+# janet = "janet_simple"

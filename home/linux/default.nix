@@ -14,8 +14,19 @@
   ++ lib.optionals features.gaming [
     ./games
   ]
-  ++ lib.optionals (features.desktopEnvironment == "niri") [
-    ./niri
+  # mango reuses the niri module's shell (Quickshell, mako, swaylock, wallpaper)
+  # and adds its own compositor config on top.
+  ++
+    lib.optionals
+      (lib.elem features.desktopEnvironment [
+        "niri"
+        "mango"
+      ])
+      [
+        ./niri
+      ]
+  ++ lib.optionals (features.desktopEnvironment == "mango") [
+    ./mango.nix
   ];
 
   # Not behind desktopApps: every host sets default applications (the browser

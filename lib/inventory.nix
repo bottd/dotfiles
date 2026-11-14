@@ -72,6 +72,7 @@ let
                       type = types.nullOr (
                         types.enum [
                           "niri"
+                          "mango"
                           "macos"
                         ]
                       );
@@ -129,7 +130,7 @@ let
         )
         "invalid system state version for format"
         (
-          require (desktop == null || desktop == (if darwin then "macos" else "niri"))
+          require (desktop == null || (if darwin then desktop == "macos" else desktop != "macos"))
             "desktop environment does not match platform"
             (
               require

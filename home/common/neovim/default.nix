@@ -6,15 +6,6 @@
   ...
 }:
 let
-  luarocksArch =
-    {
-      "aarch64-darwin" = "macosx-aarch64";
-      "x86_64-darwin" = "macosx-x86_64";
-      "x86_64-linux" = "linux-x86_64";
-      "aarch64-linux" = "linux-aarch64";
-    }
-    .${pkgs.stdenv.hostPlatform.system} or "unknown-${pkgs.stdenv.hostPlatform.system}";
-
   # nvim sources ftdetect/ftplugin as *.{vim,lua} only, so the fnl sources get
   # compiled here rather than at runtime. A syntax error fails the switch.
   afterCompiled = pkgs.callPackage ./compile-after.nix { };
@@ -46,13 +37,15 @@ in
         source = ./.nvim-thyme.fnl;
       };
 
-      ".config/nvim/rocks.toml" = {
-        source = config.lib.meta.createSymlink "home/common/neovim/rocks.toml";
+      # Out-of-store so `:Lux add`/`:Lux remove` edit the tracked file.
+      ".config/nvim/lux.toml" = {
+        source = config.lib.meta.createSymlink "home/common/neovim/lux.toml";
       };
 
-      ".luarocks/config-5.1.lua".text = ''
-        arch = "${luarocksArch}"
-      '';
+      # luxstrap downloads a prebuilt lux.so that needs libz.so.1, which
+      # NixOS doesn't provide. With one already here it skips the download.
+      ".local/share/nvim/lux.so".source =
+        "${nixpkgs-unstable.luajitPackages.lux-lua}/share/lux-lua/jit/lux.so";
     };
 
     packages = with pkgs; [
@@ -72,7 +65,6 @@ in
     sessionVariables = {
       VISUAL = "nvim";
       SUDO_EDITOR = "nvim";
-      LUA_INCDIR = "${pkgs.lua5_1}/include";
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
   };
@@ -86,52 +78,9 @@ in
     initLua =
       #lua
       ''
-        do
-        -- Specifies where to install/use rocks.nvim
-        local install_location = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "rocks")
-
-        -- Set up configuration options related to rocks.nvim (recommended to leave as default)
-        local rocks_config = {
-        rocks_path = vim.fs.normalize(install_location),
-        luarocks_binary = "${pkgs.lua51Packages.luarocks}/bin/luarocks",
-        }
-
-        vim.g.rocks_nvim = rocks_config
-
-        -- Configure the package path (so that plugin code can be found)
-        local luarocks_path = {
-        vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?.lua"),
-        vim.fs.joinpath(rocks_config.rocks_path, "share", "lua", "5.1", "?", "init.lua"),
-        }
-        package.path = package.path .. ";" .. table.concat(luarocks_path, ";")
-
-        -- Configure the C path (so that e.g. tree-sitter parsers can be found)
-        local luarocks_cpath = {
-        vim.fs.joinpath(rocks_config.rocks_path, "lib", "lua", "5.1", "?.so"),
-        vim.fs.joinpath(rocks_config.rocks_path, "lib64", "lua", "5.1", "?.so"),
-        }
-        package.cpath = package.cpath .. ";" .. table.concat(luarocks_cpath, ";")
-
-        -- Add rocks.nvim to the runtimepath
-        vim.opt.runtimepath:append(vim.fs.joinpath(rocks_config.rocks_path, "lib", "luarocks", "rocks-5.1", "rocks.nvim", "*"))
-
-        -- If rocks.nvim is not installed then install it!
-        if not pcall(require, "rocks") then
-        vim.notify("Installing rocks.nvim...")
-        local sc = vim.system({
-        rocks_config.luarocks_binary,
-        "--lua-version=5.1",
-        "--tree=" .. rocks_config.rocks_path,
-        "--server=https://lumen-oss.github.io/rocks-binaries/",
-        "install",
-        "rocks.nvim",
-        }):wait()
-        if sc.code ~= 0 then
-        error("rocks.nvim installation failed.\nstderr: " .. (sc.stderr or "") .. "\nstdout: " .. (sc.stdout or ""))
-        end
-        vim.notify("rocks.nvim installed! Please restart Neovim.")
-        end
-        end
+        -- Loads lux.so (nix-provided, symlinked into stdpath("data")) and installs lux.nvim on first
+        -- run. Once installed, lux.nvim is loaded synchronously right here.
+        vim.pack.add({ "https://github.com/lumen-oss/luxstrap.nvim" }, { load = true })
 
         vim.g.stylix_theme = "${theme.scheme}"
         vim.g.stylix_appearance = "${theme.appearance}"
@@ -153,8 +102,9 @@ in
         })
         thyme.setup()
         require("general_config")
+        require("plugin_setup")
         else
-        vim.notify("nvim-thyme not installed yet - run :Rocks sync", vim.log.levels.WARN)
+        vim.notify("nvim-thyme not installed yet - watch :messages, then :Lux sync and restart", vim.log.levels.WARN)
         end
       '';
   };

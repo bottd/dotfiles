@@ -6,12 +6,18 @@
   ...
 }:
 {
-  home.packages = lib.optionals (features.desktopEnvironment == "niri") (
-    with pkgs;
-    [
-      wl-clipboard
-    ]
-  );
+  home.packages =
+    lib.optionals
+      (lib.elem features.desktopEnvironment [
+        "niri"
+        "mango"
+      ])
+      (
+        with pkgs;
+        [
+          wl-clipboard
+        ]
+      );
 
   programs.zellij = {
     enable = true;
