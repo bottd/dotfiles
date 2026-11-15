@@ -81,6 +81,9 @@ in
         -- Loads lux.so (nix-provided, symlinked into stdpath("data")) and installs lux.nvim on first
         -- run. Once installed, lux.nvim is loaded synchronously right here.
         vim.pack.add({ "https://github.com/lumen-oss/luxstrap.nvim" }, { load = true })
+        -- lux installs into site/pack/lux/start, which nvim only adds to rtp
+        -- after init.lua finishes. Load it now so require("thyme") below works.
+        vim.cmd.packloadall()
 
         vim.g.stylix_theme = "${theme.scheme}"
         vim.g.stylix_appearance = "${theme.appearance}"
