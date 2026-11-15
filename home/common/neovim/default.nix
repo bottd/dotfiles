@@ -13,6 +13,9 @@ let
   spork = pkgs.callPackage ../../../packages/janet/spork.nix { };
   janet-lsp = pkgs.callPackage ./janet/janet-lsp.nix { inherit spork; };
 
+  blinkCmp = nixpkgs-unstable.vimPlugins.blink-cmp;
+  blinkPairs = nixpkgs-unstable.vimPlugins.blink-pairs;
+
 in
 {
   imports = [ ./nixd.nix ];
@@ -46,6 +49,18 @@ in
       # NixOS doesn't provide. With one already here it skips the download.
       ".local/share/nvim/lux.so".source =
         "${nixpkgs-unstable.luajitPackages.lux-lua}/share/lux-lua/jit/lux.so";
+
+      # lux installs blink.* as bare rocks (no .git, no cargo build), so their
+      # download/build helpers can't run. Take the native libs from nixpkgs,
+      # whose versions must match the lux.toml pins (assert below).
+      # blink.cmp: `require("blink_cmp_fuzzy")` finds $rtp/lua/*.so.
+      ".config/nvim/lua/blink_cmp_fuzzy.so".source =
+        assert blinkCmp.version == "1.10.2";
+        "${blinkCmp}/target/release/libblink_cmp_fuzzy.so";
+      # blink.pairs (via blink.lib): resolves $rtp/lib/lib<name>.so.
+      ".config/nvim/lib/libblink_pairs_parser.so".source =
+        assert blinkPairs.version == "0.7.1";
+        "${blinkPairs}/lib/libblink_pairs_parser.so";
     };
 
     packages = with pkgs; [

@@ -1,6 +1,5 @@
 (local pairs (require :blink.pairs))
 
-; v0.6+ needs the native lib present before setup; no-ops once downloaded
-(: (pairs.download) :pwait 60000)
-
+; native lib comes from nixpkgs (see neovim/default.nix); download() can't run
+; on a lux install since it needs a git checkout
 (pairs.setup {})
