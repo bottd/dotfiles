@@ -23,7 +23,14 @@ ShellRoot {
     property var windowTitles: ({})
     property int focusedWindowId: -1
     property string windowTitle: ""
+    // mango-session exports this; niri-session sets "niri".
+    readonly property bool onMango: Quickshell.env("XDG_CURRENT_DESKTOP") === "mango"
+    // mango's focused monitor, from `mmsg -w -o`. Sloppy focus makes it the
+    // monitor under the cursor, so sheets open where you're pointing.
+    property string mangoOutput: ""
     readonly property string focusedOutput: {
+        if (root.onMango)
+            return root.mangoOutput;
         const focused = root.workspaces.find(workspace => workspace.is_focused);
         return focused ? focused.output : "";
     }
@@ -326,11 +333,34 @@ ShellRoot {
         id: niriEventProcess
 
         command: ["niri", "msg", "-j", "event-stream"]
-        running: true
+        running: !root.onMango
         stdout: SplitParser {
             onRead: line => root.handleNiriEvent(line)
         }
         onExited: niriEventRestartTimer.restart()
+    }
+
+    // Lines look like "DP-1 selmon 1"; every output reports on each change.
+    Process {
+        id: mangoOutputProcess
+
+        command: ["mmsg", "-w", "-o"]
+        running: root.onMango
+        stdout: SplitParser {
+            onRead: line => {
+                const [output, key, value] = line.trim().split(" ");
+                if (key === "selmon" && value === "1")
+                    root.mangoOutput = output;
+            }
+        }
+        onExited: mangoOutputRestartTimer.restart()
+    }
+
+    Timer {
+        id: mangoOutputRestartTimer
+
+        interval: 2000
+        onTriggered: mangoOutputProcess.running = root.onMango
     }
 
     Timer {
