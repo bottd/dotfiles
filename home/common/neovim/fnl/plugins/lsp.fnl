@@ -1,11 +1,12 @@
 (local blink (require :blink.cmp))
 (local wk (require :which-key))
-(local lsp-lines (require :lsp_lines))
-
-(lsp-lines.setup)
+; virtual_lines is built in since nvim 0.11 (upstreamed lsp_lines.nvim)
+(fn toggle-virtual-lines []
+  (let [on (. (vim.diagnostic.config) :virtual_lines)]
+    (vim.diagnostic.config {:virtual_lines (not on)})))
 
 (wk.add [{1 :<leader>m :desc :Meta}
-         {1 :<leader>ml 2 lsp-lines.toggle :desc "Toggle Lsp Info"}])
+         {1 :<leader>ml 2 toggle-virtual-lines :desc "Toggle Lsp Info"}])
 
 (vim.keymap.set :n :gl vim.diagnostic.open_float)
 (vim.keymap.set :n "[d" #(vim.diagnostic.jump {:count -1 :float true}))

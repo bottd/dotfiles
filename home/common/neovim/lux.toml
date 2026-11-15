@@ -111,10 +111,6 @@ version = "v1.5.0"
 git = "lewis6991/gitsigns.nvim"
 version = "v2.1.0"
 
-[dependencies."lsp_lines.nvim"]
-git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
-version = "v3.0.0"
-
 [dependencies."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
 version = "v2.0.0"
