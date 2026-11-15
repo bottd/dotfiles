@@ -24,10 +24,8 @@ type = "builtin"
 
 "nvim-thyme" = "1.6.1"
 "which-key.nvim" = "3.17.0"
-"lualine.nvim" = "scm"
 "nvim-dap" = "0.10.0"
 "nvim-lspconfig" = "2.12.0"
-"nvim-ts-autotag" = "scm"
 "nvim-parinfer" = "1.2.0"
 "nui.nvim" = "0.4.0"
 tree-sitter-json = "0.0.41"
@@ -54,9 +52,6 @@ tree-sitter-jsonc = "0.0.29"
 tree-sitter-yaml = "0.0.39"
 "conform.nvim" = "9.1.0"
 "helpview.nvim" = "2.2.0"
-nvim-treesitter-context = "scm"
-"snacks.nvim" = "scm"
-"package-info.nvim" = "scm"
 "flash.nvim" = "2.1.0"
 "nvim-web-devicons" = "0.100"
 tree-sitter-clojure = "0.0.32"
@@ -123,6 +118,29 @@ version = "v3.0.0"
 [dependencies."fyler.nvim"]
 git = "A7Lavinraj/fyler.nvim"
 version = "v2.0.0"
+
+# These were "scm" luarocks deps, but scm rocks only live on luarocks.org/dev.
+# Enabling dev packages makes lux also probe rocks-binaries/dev/, which 404s
+# and aborts every sync, so they're pinned git deps at HEAD instead.
+[dependencies."lualine.nvim"]
+git = "nvim-lualine/lualine.nvim"
+version = "221ce6b2d999187044529f49da6554a92f740a96"
+
+[dependencies."nvim-ts-autotag"]
+git = "windwp/nvim-ts-autotag"
+version = "d7220b55e16ed3c04e88086256def5d282429493"
+
+[dependencies."nvim-treesitter-context"]
+git = "nvim-treesitter/nvim-treesitter-context"
+version = "8decd73460d26ef0a0befb745d022dd1fc2c38b8"
+
+[dependencies."snacks.nvim"]
+git = "folke/snacks.nvim"
+version = "882c996cf28183f4d63640de0b4c02ec886d01f2"
+
+[dependencies."package-info.nvim"]
+git = "vuki656/package-info.nvim"
+version = "b86cf49efc3855dd94afb33304b278f6f122bf1a"
 
 # --- rocks-config.nvim (no lux port yet) -----------------------------------
 # Bundles mapped several plugins onto one fnl/plugins/<bundle>.fnl. The
