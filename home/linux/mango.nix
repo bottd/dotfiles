@@ -25,8 +25,10 @@ let
 
   # Same layout as home/linux/niri/host/desktop.nix: DP-3 is the portrait
   # panel to the right (wlroots transform 3 = niri's rotation 270).
+  # DP-1 is pinned to 144: its preferred mode is the 170 Hz overclock, and
+  # both 170 and 165 tear in every app.
   outputs = lib.optionalString (hostName == "desktop") ''
-    monitorrule=name:^DP-1$,width:2560,height:1440,x:0,y:282,scale:1
+    monitorrule=name:^DP-1$,width:2560,height:1440,refresh:143.912003,x:0,y:282,scale:1
     monitorrule=name:^DP-3$,width:2560,height:1440,x:2560,y:0,scale:1,rr:3
     ${lib.concatMapStrings (i: ''
       tagrule=id:${toString i},monitor_name:DP-3,layout_name:vertical_scroller
