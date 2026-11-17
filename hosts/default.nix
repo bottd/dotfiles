@@ -12,8 +12,7 @@
     username = "drakeb";
     autologin = true;
     features = {
-      # niri stays installed and configured; mango is the session greetd starts.
-      desktopEnvironment = "mango";
+      desktopEnvironment = "niri";
       gaming = true;
     };
     stateVersion = {
