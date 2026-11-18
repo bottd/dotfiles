@@ -11,10 +11,13 @@ in
 {
   programs.niri.settings = {
     outputs = {
+      # Pinned to 144: the preferred mode is the 170 Hz overclock, and both
+      # 170 and 165 tear in every app (same pin as home/linux/mango.nix).
       "DP-1" = {
         mode = {
           width = 2560;
           height = 1440;
+          refresh = 143.912;
         };
         scale = 1.0;
         position = {
