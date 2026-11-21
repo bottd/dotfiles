@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795001606,
-        "narHash": "sha256-wkVdryJnMWtVDZ8kMBpDw6+WbU134G2BV0AB9EAjwPw=",
+        "lastModified": 1795289177,
+        "narHash": "sha256-yj59/g5hypxeASBwn/+/8Rhwvj/Eax84LWc7qvlKGg0=",
         "owner": "Drackrath",
         "repo": "Aurelia",
-        "rev": "05f11be7534a84f3aa61dd9f0928f6b175e661da",
+        "rev": "d6bc0a1661628b72a79ad47c6838218c45a01085",
         "type": "github"
       },
       "original": {
@@ -580,11 +580,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1795155813,
-        "narHash": "sha256-9dFqyDnQ8fKpkdv5pha+S7qR1HXIiJ8Ndkv+CXDzJu8=",
+        "lastModified": 1795249095,
+        "narHash": "sha256-8JDgyVvWUZg5m9hNlL8Ge9aT647ng3Ukc8NPMiKNTPQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b758f1622588b4d5ce019971748a68be80e5943c",
+        "rev": "93a9ed0a866099a230ed5146a5bb7d16fd5c9b14",
         "type": "github"
       },
       "original": {

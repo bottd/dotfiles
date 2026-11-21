@@ -18,7 +18,8 @@
       "Bash(git cherry-pick:*)"
     ]
   },
-  "model": "opus[1m]",
+  "model": "claude-opus-5-5[1m]",
+  "advisorModel": "claude-fable-5-2",
   "enabledPlugins": {
     "improve@improve": true,
     "lazyweb@lazyweb": true,
