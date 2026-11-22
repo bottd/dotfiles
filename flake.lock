@@ -5,14 +5,15 @@
         "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
-        ]
+        ],
+        "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1795289177,
-        "narHash": "sha256-yj59/g5hypxeASBwn/+/8Rhwvj/Eax84LWc7qvlKGg0=",
+        "lastModified": 1795373404,
+        "narHash": "sha256-Pbr+K78BivIOkr+3qkjjTkx7t/rWnchKgN3GQdsoZ8U=",
         "owner": "Drackrath",
         "repo": "Aurelia",
-        "rev": "d6bc0a1661628b72a79ad47c6838218c45a01085",
+        "rev": "01f8d3101e1dfe896bcb51aa25cf233ade096cce",
         "type": "github"
       },
       "original": {
@@ -359,11 +360,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794943722,
-        "narHash": "sha256-Qkh6uNyMsic61gfyOO8VXnC+HEBdti6Xe2kKiMf66O0=",
+        "lastModified": 1795325060,
+        "narHash": "sha256-XYoMPsqRFZ6jOaYI1KAAu8fzqif4tkCX8mhEKrViDXQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5643e73425b85ac359ba2aaf83deae8ce1cd7968",
+        "rev": "6480d7d8533b88c78cc6dcda395ab89cd546e450",
         "type": "github"
       },
       "original": {
@@ -792,6 +793,27 @@
         "treefmt-nix": "treefmt-nix_3"
       }
     },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "aurelia",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795340093,
+        "narHash": "sha256-fosvQ7eeQMrh6RvUXotBc6d92dHskAI6tu1EERJQ2LY=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "5aa410a1df0e4e9c25f3818320651c2bddf66aff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
     "spicetify-nix": {
       "inputs": {
         "nixpkgs": [
@@ -800,11 +822,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1794871977,
-        "narHash": "sha256-An9Qcr31Z+PmF4TlJWY6RkM4yPbBKc2vkyp6NctvMEk=",
+        "lastModified": 1795350154,
+        "narHash": "sha256-ehnFBWuqh6wzu7CtBlKBZJt/qxWugEFLNSu2tNPjC3c=",
         "owner": "Gerg-L",
         "repo": "spicetify-nix",
-        "rev": "cd7d88aca6db91899373d5574bb252547f4c8c2c",
+        "rev": "5bbd2930ff14300a9d90008003d37fe5baa4dd4d",
         "type": "github"
       },
       "original": {
