@@ -50,6 +50,9 @@ const addons: Addon[] = [
     // Saves pages to deck.drena.haus (loge); sign in via the extension's options.
     url: "https://addons.mozilla.org/firefox/downloads/latest/readeck/latest.xpi",
   },
+  {
+    url: "https://addons.mozilla.org/firefox/downloads/latest/no-noise-linkedin/latest.xpi",
+  },
 ];
 
 addons.forEach(({ url, ...options }) => glide.addons.install(url, options));
